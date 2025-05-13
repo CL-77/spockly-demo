@@ -8,6 +8,13 @@ import TutorialWho from "./tutorials/TutorialWho";
 import TutorialHow from "./tutorials/TutorialHow";
 import TutorialExample from "./tutorials/TutorialExample";
 
+const tutorialRoutes = [
+  { path: "introduction", label: "Introduction" },
+  { path: "why", label: "Why use SPOCKLY?" },
+  { path: "who", label: "Who is it for?" },
+  { path: "how", label: "How to use SPOCKLY?" },
+  { path: "example", label: "Example Use Case" },
+];
 
 const Tutorials = ({ isDarkMode }) => {
   const [value, setValue] = React.useState(0);
@@ -19,52 +26,89 @@ const Tutorials = ({ isDarkMode }) => {
   };
 
   return (
-    <div>
+    <Box sx={{ display: "flex", minHeight: "calc(100vh - 64px)" }}>
+      {/* Sidebar */}
+      <Box
+        sx={{
+          width: 250,
+          borderRight: 1,
+          borderColor: "divider",
+          paddingTop: 4,
+          paddingLeft: 2,
+        }}
+      >
       <Typography
-        variant="h2"
-        textAlign="center"
+        variant="h6"
         fontWeight="bold"
-        sx={{ color: isDarkMode ? "#FFFFFA" : "#000000" }}
+        sx={{
+          marginBottom: 2,
+          paddingLeft: 1,
+          color: isDarkMode ? "#FFFFFF" : "#000000",
+        }}
       >
         Tutorials
       </Typography>
-      <Box sx={{ display: "flex", paddingLeft: 20 }}>
         <Tabs
           orientation="vertical"
           variant="scrollable"
           value={value}
           onChange={handleChange}
-          sx={{ borderRight: 1, borderColor: "divider", minWidth: 200 }}
+          TabIndicatorProps={{ 
+            style: {
+              backgroundColor: isDarkMode ? "#B58FFF" : theme.palette.primary.main, 
+              width: "3px",
+            },
+          }}
+          sx={{
+            ".MuiTab-root": {
+              alignItems: "flex-start",
+              textAlign: "left",
+              fontSize: "1rem",
+              fontWeight: 500,
+              opacity: 1,
+              textTransform: "none",
+              color: isDarkMode ? "#DDD" : "#333",
+              paddingY: 1,
+              justifyContent: "flex-start",
+              minHeight: "auto",
+            },
+            ".Mui-selected": {
+              fontWeight: 600,
+              color: theme.palette.primary.main,
+            },
+          }}
         >
           {tutorialRoutes.map((route, index) => (
             <Tab key={route.path} label={route.label} />
           ))}
         </Tabs>
-        <Box
-          sx={{
-            color: isDarkMode ? "#FFFFFA" : "#000000",
-            flexGrow: 1,
-            paddingLeft: 2,
-          }}
-        >
-          <TabPanel value={value} index={0}>
-            <TutorialIntroduction />
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            <TutorialWhy />
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-            <TutorialWho />
-          </TabPanel>
-          <TabPanel value={value} index={3}>
-            <TutorialHow />
-          </TabPanel>
-          <TabPanel value={value} index={4}>
-            <TutorialExample />
-          </TabPanel>
-        </Box>
       </Box>
-    </div>
+
+      {/* Content */}
+      <Box
+        sx={{
+          color: isDarkMode ? "#FFFFFA" : "#000000",
+          flexGrow: 1,
+          padding: 4,
+        }}
+      >
+        <TabPanel value={value} index={0}>
+          <TutorialIntroduction />
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <TutorialWhy />
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          <TutorialWho />
+        </TabPanel>
+        <TabPanel value={value} index={3}>
+          <TutorialHow />
+        </TabPanel>
+        <TabPanel value={value} index={4}>
+          <TutorialExample />
+        </TabPanel>
+      </Box>
+    </Box>
   );
 };
 
