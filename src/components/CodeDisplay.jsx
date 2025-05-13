@@ -67,7 +67,7 @@ const CodeDisplay = ({ code, isDarkMode }) => {
             padding: "20px",
           }}
         >
-          {">>"} {code || "Generated Python code will appear here..."}
+          {">>"} {code || "Generated R code will appear here..."}
         </Typography>
       </Box>
     </Box>
