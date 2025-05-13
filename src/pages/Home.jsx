@@ -15,10 +15,6 @@ const sectionBoxStyle = (theme, isDarkMode) => ({
     : theme.palette.background.paper,
 });
 
-const sectionTextColor = (theme) => ({
-  color: theme.palette.primary.contrastText,
-});
-
 const centeredFlexColumn = {
   display: "flex",
   flexDirection: "column",
@@ -40,14 +36,14 @@ const buttonWrapperStyle = (theme, isDarkMode) => ({
 
 const infoBoxStyle = (theme, isDarkMode) => ({
   padding: 5,
-  color: theme.palette.primary.contrastText,
+  color: isDarkMode ? "#FFFFFA" : "#000000",
   backgroundColor: isDarkMode
     ? theme.palette.secondary.main
     : theme.palette.background.default,
 });
 
-const iconButtonGroupStyle = (theme) => ({
-  color: theme.palette.primary.contrastText,
+const iconButtonGroupStyle = (theme, isDarkMode) => ({
+  color: isDarkMode ? "#FFFFFA" : "#000000",
   display: "flex",
   justifyContent: "center",
   gap: "2rem",
@@ -95,7 +91,7 @@ const Home = ({ isDarkMode }) => {
             <Typography
               variant="h4"
               sx={{
-                color: theme.palette.primary.contrastText,
+                color: isDarkMode ? "#FFFFFA" : "#000000",
                 fontWeight: "bold",
               }}
             >
@@ -123,7 +119,7 @@ const Home = ({ isDarkMode }) => {
             <Typography
               variant="h6"
               sx={{
-                color: theme.palette.primary.contrastText,
+                color: isDarkMode ? "#FFFFFA" : "#000000",
                 fontWeight: "bold",
               }}
             >
@@ -132,7 +128,7 @@ const Home = ({ isDarkMode }) => {
             <Typography
               variant="h6"
               sx={{
-                color: theme.palette.primary.contrastText,
+                color: isDarkMode ? "#FFFFFA" : "#000000",
                 fontWeight: "bold",
                 marginBottom: 2,
               }}
@@ -187,7 +183,7 @@ const Home = ({ isDarkMode }) => {
             Perfect for students, schools, and educators.
           </Typography>
 
-          <Box sx={iconButtonGroupStyle(theme)}>
+          <Box sx={iconButtonGroupStyle(theme, isDarkMode)}>
             <HoverGrowButton icon={<FaGlobe size={32} />} text="Spatial Data" />
             <HoverGrowButton
               icon={<FaCube size={32} />}
@@ -214,19 +210,19 @@ const Home = ({ isDarkMode }) => {
         style={{
           width: "100%",
           textAlign: "center",
-          color: theme.palette.primary.contrastText,
+          color: isDarkMode ? "#FFFFFA" : "#000000",
         }}
       >
         <motion.div
           initial={{
             opacity: 0,
             y: 20,
-            color: theme.palette.primary.contrastText,
+            color: isDarkMode ? "#FFFFFA" : "#000000",
           }}
           animate={{
             opacity: 1,
             y: 0,
-            color: theme.palette.primary.contrastText,
+            color: isDarkMode ? "#FFFFFA" : "#000000",
           }}
           transition={{ delay: 0.2 }}
         >
@@ -239,7 +235,7 @@ const Home = ({ isDarkMode }) => {
               backgroundColor: isDarkMode
                 ? theme.palette.background.default
                 : theme.palette.background.paper,
-              color: theme.palette.primary.contrastText,
+              color: isDarkMode ? "#FFFFFA" : "#000000",
               paddingTop: 5,
             }}
           >
@@ -264,7 +260,7 @@ const Home = ({ isDarkMode }) => {
                 boxShadow: "none",
                 "&:hover": {
                   bgcolor: theme.palette.secondary.main,
-                  color: theme.palette.secondary.contrastText,
+                  color: isDarkMode ? "#FFFFFA" : "#000000",
                 },
               }}
             >
@@ -283,7 +279,7 @@ const Home = ({ isDarkMode }) => {
                 boxShadow: "none",
                 "&:hover": {
                   bgcolor: theme.palette.secondary.main,
-                  color: theme.palette.secondary.contrastText,
+                  color: isDarkMode ? "#FFFFFA" : "#000000",
                 },
               }}
             >

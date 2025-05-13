@@ -60,7 +60,7 @@ function App() {
               path="spockly"
               element={<SPOCKLY isDarkMode={isDarkMode} />}
             />
-            <Route path="/tutorials/*" element={<Tutorials />}>
+            <Route path="/tutorials/*" element={<Tutorials isDarkMode={isDarkMode} />}>
               <Route index element={<TutorialIntroduction />} />
               <Route path="introduction" element={<TutorialIntroduction />} />
               <Route path="why" element={<TutorialWhy />} />

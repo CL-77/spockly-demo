@@ -61,7 +61,7 @@ const WebRRunner = ({ code, isDarkMode }) => {
           variant="h6"
           fontWeight="bold"
           sx={{
-            color: theme.palette.primary.light,
+            color: theme.palette.primary.contrastText,
             paddingBottom: "15px",
           }}
         >
@@ -75,7 +75,7 @@ const WebRRunner = ({ code, isDarkMode }) => {
             left: 20,
             width: "140px",
             bgcolor: "#33bfff",
-            color: theme.palette.primary.light,
+            color: theme.palette.primary.contrastText,
             "&:hover": {
               bgcolor: "#00b0ff",
             },
@@ -103,7 +103,7 @@ const WebRRunner = ({ code, isDarkMode }) => {
         <Typography
           fontWeight="bold"
           sx={{
-            color: theme.palette.primary.contrastText,
+            color: isDarkMode ? "#FFFFFA" : "#000000",
             paddingBottom: "10px",
             padding: "20px",
           }}
