@@ -1,6 +1,6 @@
 import { Box, Tab, Tabs, Typography, useTheme } from "@mui/material";
 import React from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import TabPanel from "../components/TabPanel";
 import TutorialIntroduction from "./tutorials/TutorialIntroduction";
 import TutorialWhy from "./tutorials/TutorialWhy";
@@ -20,6 +20,7 @@ const Tutorials = () => {
   const [value, setValue] = React.useState(0);
   const location = useLocation();
   const theme = useTheme();
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -43,11 +44,9 @@ const Tutorials = () => {
           aria-label="Vertical tabs example"
           sx={{ borderRight: 1, borderColor: "divider", minWidth: 200 }}
         >
-          <Tab label="Introduction"></Tab>
-          <Tab label="Why use SPOCKLY?"></Tab>
-          <Tab label="Who is it for?"></Tab>
-          <Tab label="How to use SPOCKLY?"></Tab>
-          <Tab label="Example Use Case"></Tab>
+          {tutorialRoutes.map((route, index) => (
+            <Tab key={route.path} label={route.label} />
+          ))}
         </Tabs>
         <Box
           sx={{
@@ -57,23 +56,18 @@ const Tutorials = () => {
           }}
         >
           <TabPanel value={value} index={0}>
-            {" "}
             <TutorialIntroduction />
           </TabPanel>
           <TabPanel value={value} index={1}>
-            {" "}
             <TutorialWhy />
           </TabPanel>
           <TabPanel value={value} index={2}>
-            {" "}
             <TutorialWho />
           </TabPanel>
           <TabPanel value={value} index={3}>
-            {" "}
             <TutorialHow />
           </TabPanel>
           <TabPanel value={value} index={4}>
-            {" "}
             <TutorialExample />
           </TabPanel>
         </Box>
