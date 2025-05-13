@@ -1,140 +1,304 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FaGlobe, FaCodeBranch, FaCube, FaRocket, FaBookOpen, FaCompass } from "react-icons/fa";
+import { Box, Typography, Fab } from "@mui/material";
+import { Rocket, ImportContacts } from "@mui/icons-material";
+import { FaGlobe, FaCube, FaCodeBranch, FaCompass } from "react-icons/fa";
 import logo from "../assets/spockly_logo.png";
+import { useTheme } from "@emotion/react";
+import HoverGrowButton from "../components/HoverGrowButton";
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 50 },
-  visible: {
-    opacity: 1, y: 0,
-    transition: { type: "spring", stiffness: 60, damping: 15 }
-  }
-};
+const sectionBoxStyle = (theme, isDarkMode) => ({
+  width: "100%",
+  backgroundColor: isDarkMode
+    ? theme.palette.background.default
+    : theme.palette.background.paper,
+});
 
-const Home = () => (
-  <div style={{ fontFamily: "system-ui, sans-serif", color: "var(--color-text-dark)" }}>
+const sectionTextColor = (theme) => ({
+  color: theme.palette.primary.contrastText,
+});
 
-    {/* Hero Section */}
-    <section style={{
-      backgroundColor: "var(--color-bg-light)",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      textAlign: "center",
-    }}>
-      <motion.img
-        src={logo}
-        alt="SPOCKLY Logo"
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.2, ease: "easeOut" }}
-        style={{ width: "min(80vw, 380px)", marginBottom: "1.8rem" }}
-      />
-
-      <motion.h1
-        initial="hidden"
-        animate="visible"
-        variants={fadeInUp}
-        transition={{ delay: 0.3, duration: 0.6 }}
-        style={{ fontSize: "2.8rem", color: "var(--color-primary)", margin: 0 }}
-      >
-        SPOCKLY
-      </motion.h1>
-
-      <motion.p
-        initial="hidden"
-        animate="visible"
-        variants={fadeInUp}
-        transition={{ delay: 0.6, duration: 0.6 }}
-        style={{ fontSize: "1.2rem", maxWidth: "700px", marginTop: "1.5rem", lineHeight: "1.6" }}
-      >
-        <strong>Spatial Blockly</strong> — A visual programming tool for <strong>spatial data science</strong>.
-      </motion.p>
-    </section>
-
-    {/* What is SPOCKLY Section */}
-    <motion.section
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={fadeInUp}
-      transition={{ duration: 0.7 }}
-      style={{ backgroundColor: "white", padding: "2rem 2rem", textAlign: "center" }}
-    >
-      <h2 style={{ fontSize: "2rem", marginBottom: "1rem" }}>What is SPOCKLY?</h2>
-      <p style={{ maxWidth: "800px", margin: "0 auto", fontSize: "1.1rem", lineHeight: "1.8" }}>
-        Learn data science visually – no syntax, just blocks.<br />
-        Use SPOCKLY to organize, filter, map and analyze real-world geospatial datasets.<br/>
-        Perfect for students, schools and educators.
-      </p>
-
-      <div style={{ display: "flex", justifyContent: "center", gap: "2rem", marginTop: "2rem", flexWrap: "wrap" }}>
-        <motion.div whileHover={{ scale: 1.1 }} style={iconBox}><FaGlobe size={32} /> <span>Spatial Data</span></motion.div>
-        <motion.div whileHover={{ scale: 1.1 }} style={iconBox}><FaCube size={32} /> <span>Blockly Interface</span></motion.div>
-        <motion.div whileHover={{ scale: 1.1 }} style={iconBox}><FaCodeBranch size={32} /> <span>Using R</span></motion.div>
-      </div>
-    </motion.section>
-
-    {/* Call to Action */}
-    <motion.section
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      variants={fadeInUp}
-      transition={{ delay: 0.1 }}
-      style={{ backgroundColor: "var(--color-accent)", padding: "4rem 2rem", textAlign: "center", color: "white" }}
-    >
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-        <FaCompass size={40} style={{ marginBottom: "1rem" }} />
-        <h2 style={{ fontSize: "2rem", marginBottom: "1.5rem" }}>Start exploring</h2>
-      </motion.div>
-
-      <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
-        <Link to="/SPOCKLY">
-          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} style={buttonPrimary}>
-            <FaRocket style={{ marginRight: "0.5rem" }} /> Start SPOCKLY Editor
-          </motion.button>
-        </Link>
-        <Link to="/tutorials">
-          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} style={buttonOutline}>
-            <FaBookOpen style={{ marginRight: "0.5rem" }} /> View Tutorials
-          </motion.button>
-        </Link>
-      </div>
-    </motion.section>
-  </div>
-);
-
-// Button Styles
-const buttonPrimary = {
-  padding: "0.75rem 1.5rem",
-  fontSize: "1rem",
-  fontWeight: "600",
-  border: "none",
-  borderRadius: "6px",
-  backgroundColor: "var(--color-primary)",
-  color: "white",
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center"
-};
-
-const buttonOutline = {
-  ...buttonPrimary,
-  backgroundColor: "white",
-  border: "2px solid var(--color-primary)",
-  color: "var(--color-primary)"
-};
-
-const iconBox = {
+const centeredFlexColumn = {
   display: "flex",
   flexDirection: "column",
+  justifyContent: "center",
   alignItems: "center",
-  fontSize: "1rem",
-  color: "var(--color-text-dark)",
-  transition: "transform 0.2s ease"
+  textAlign: "center",
+};
+
+const buttonWrapperStyle = (theme, isDarkMode) => ({
+  padding: 5,
+  backgroundColor: isDarkMode
+    ? theme.palette.background.default
+    : theme.palette.background.paper,
+  display: "flex",
+  justifyContent: "center",
+  gap: "1rem",
+  flexWrap: "wrap",
+});
+
+const infoBoxStyle = (theme, isDarkMode) => ({
+  padding: 5,
+  color: theme.palette.primary.contrastText,
+  backgroundColor: isDarkMode
+    ? theme.palette.secondary.main
+    : theme.palette.background.default,
+});
+
+const iconButtonGroupStyle = (theme) => ({
+  color: theme.palette.primary.contrastText,
+  display: "flex",
+  justifyContent: "center",
+  gap: "2rem",
+  marginTop: "2rem",
+  flexWrap: "wrap",
+});
+
+const Home = ({ isDarkMode }) => {
+  const theme = useTheme();
+
+  return (
+    <div>
+      <motion.section
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0, y: 50 },
+          visible: {
+            opacity: 1,
+            y: 0,
+            transition: { type: "spring", stiffness: 60, damping: 15 },
+          },
+        }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
+        style={centeredFlexColumn}
+      >
+        <Box sx={sectionBoxStyle(theme, isDarkMode)}>
+          <motion.img
+            src={logo}
+            alt="SPOCKLY Logo"
+            style={{ width: "min(80vw, 380px)", marginBottom: "1.8rem" }}
+          />
+
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 50 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { type: "spring", stiffness: 60, damping: 15 },
+              },
+            }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+          >
+            <Typography
+              variant="h4"
+              sx={{
+                color: theme.palette.primary.contrastText,
+                fontWeight: "bold",
+              }}
+            >
+              SPOCKLY
+            </Typography>
+          </motion.div>
+
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 50 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { type: "spring", stiffness: 60, damping: 15 },
+              },
+            }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+            sx={{
+              fontSize: "1.2rem",
+              maxWidth: "700px",
+              marginTop: "1.5rem",
+              lineHeight: "1.6",
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{
+                color: theme.palette.primary.contrastText,
+                fontWeight: "bold",
+              }}
+            >
+              Spatial Blockly — A visual programming tool for{" "}
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                color: theme.palette.primary.contrastText,
+                fontWeight: "bold",
+                marginBottom: 2,
+              }}
+            >
+              spatial data science.
+            </Typography>
+          </motion.div>
+        </Box>
+      </motion.section>
+
+      {/* What is SPOCKLY Section */}
+      <motion.section
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0, y: 50 },
+          visible: {
+            opacity: 1,
+            y: 0,
+            transition: { type: "spring", stiffness: 60, damping: 15 },
+          },
+        }}
+        transition={{ duration: 0.7 }}
+        style={{
+          textAlign: "center",
+        }}
+      >
+        <Box sx={infoBoxStyle(theme, isDarkMode)}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: "bold",
+            }}
+            gutterBottom
+          >
+            What is SPOCKLY?
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              maxWidth: "800px",
+              margin: "0 auto",
+              fontSize: "1.1rem",
+              lineHeight: "1.8",
+            }}
+          >
+            Learn data science visually – no syntax, just blocks.
+            <br />
+            Use SPOCKLY to organize, filter, map, and analyze real-world
+            geospatial datasets.
+            <br />
+            Perfect for students, schools, and educators.
+          </Typography>
+
+          <Box sx={iconButtonGroupStyle(theme)}>
+            <HoverGrowButton icon={<FaGlobe size={32} />} text="Spatial Data" />
+            <HoverGrowButton
+              icon={<FaCube size={32} />}
+              text="Blockly Interface"
+            />
+            <HoverGrowButton icon={<FaCodeBranch size={32} />} text="Using R" />
+          </Box>
+        </Box>
+      </motion.section>
+
+      {/* Explore Section */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        variants={{
+          hidden: { opacity: 0, y: 50 },
+          visible: {
+            opacity: 1,
+            y: 0,
+            transition: { type: "spring", stiffness: 60, damping: 15 },
+          },
+        }}
+        transition={{ delay: 0.1 }}
+        style={{
+          width: "100%",
+          textAlign: "center",
+          color: theme.palette.primary.contrastText,
+        }}
+      >
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 20,
+            color: theme.palette.primary.contrastText,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            color: theme.palette.primary.contrastText,
+          }}
+          transition={{ delay: 0.2 }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: isDarkMode
+                ? theme.palette.background.default
+                : theme.palette.background.paper,
+              color: theme.palette.primary.contrastText,
+              paddingTop: 5,
+            }}
+          >
+            <FaCompass size={40} style={{ marginBottom: "1rem" }} />
+            <Typography
+              variant="h2"
+              sx={{
+                fontSize: "2rem",
+                marginBottom: "1.5rem",
+                textAlign: "center",
+              }}
+            >
+              Start exploring
+            </Typography>
+          </Box>
+        </motion.div>
+        <Box sx={buttonWrapperStyle(theme, isDarkMode)}>
+          <Link to="/SPOCKLY">
+            <Fab
+              variant="extended"
+              sx={{
+                boxShadow: "none",
+                "&:hover": {
+                  bgcolor: theme.palette.secondary.main,
+                  color: theme.palette.secondary.contrastText,
+                },
+              }}
+            >
+              <Box display="flex" alignItems="center" gap={0.5}>
+                <Rocket fontSize="small" />
+                <Typography sx={{ fontWeight: "bold" }}>
+                  Start SPOCKLY Editor
+                </Typography>
+              </Box>
+            </Fab>
+          </Link>
+          <Link to="/tutorials">
+            <Fab
+              variant="extended"
+              sx={{
+                boxShadow: "none",
+                "&:hover": {
+                  bgcolor: theme.palette.secondary.main,
+                  color: theme.palette.secondary.contrastText,
+                },
+              }}
+            >
+              <Box display="flex" alignItems="center" gap={0.5}>
+                <ImportContacts fontSize="small" />
+                <Typography sx={{ fontWeight: "bold" }}>
+                  View Tutorials
+                </Typography>
+              </Box>
+            </Fab>
+          </Link>
+        </Box>
+      </motion.section>
+    </div>
+  );
 };
 
 export default Home;

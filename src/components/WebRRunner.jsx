@@ -1,11 +1,16 @@
 // components/WebRRunner.js
 import React, { useState, useEffect } from "react";
 import { WebR } from "@r-wasm/webr"; // Correct import
+import { Box, Fab, Stack, Typography } from "@mui/material";
+import { PlayArrow } from "@mui/icons-material";
+import { darkTheme, lightTheme } from "./../appTheme";
+import { lightBlue } from "@mui/material/colors";
 
 const webR = new WebR();
 
-const WebRRunner = ({ code }) => {
+const WebRRunner = ({ code, isDarkMode }) => {
   const [output, setOutput] = useState("Loading WebR...");
+  const theme = isDarkMode ? darkTheme : lightTheme;
 
   // Initialize WebR only once when the component mounts
   useEffect(() => {
@@ -41,33 +46,72 @@ const WebRRunner = ({ code }) => {
   };
 
   return (
-    <div style={{ marginTop: "1rem" }}>
-      <button
-        onClick={runCode}
-        style={{
-          marginBottom: "1rem",
-          padding: "10px",
-          cursor: "pointer",
-          backgroundColor: "#28a745",
-          color: "white",
-          border: "none",
+    <Box
+      sx={{
+        top: 20,
+        left: 20,
+        right: 20,
+        height: "100%",
+        borderRadius: "5px",
+        zIndex: 1,
+      }}
+    >
+      <Stack direction="row">
+        <Typography
+          variant="h6"
+          fontWeight="bold"
+          sx={{
+            color: theme.palette.primary.light,
+            paddingBottom: "15px",
+          }}
+        >
+          Output
+        </Typography>
+
+        <Fab
+          size="small"
+          variant="extended"
+          sx={{
+            left: 20,
+            width: "140px",
+            bgcolor: "#33bfff",
+            color: theme.palette.primary.light,
+            "&:hover": {
+              bgcolor: "#00b0ff",
+            },
+            boxShadow: "none",
+          }}
+          onClick={runCode}
+        >
+          <Box display="flex" alignItems="center" gap={0.5}>
+            <PlayArrow fontSize="small" />
+            <Typography fontWeight="bold">Run R Code</Typography>
+          </Box>
+        </Fab>
+      </Stack>
+
+      <Box
+        sx={{
+          position: "relative",
           borderRadius: "5px",
+          width: "100%",
+          height: "75%",
+          bgcolor: theme.palette.background.paper,
+          zIndex: 1,
         }}
       >
-        Run R Code
-      </button>
-      <div
-        style={{
-          whiteSpace: "pre-wrap",
-          background: "#e8f5e9",
-          padding: "1rem",
-          borderRadius: "5px",
-        }}
-      >
-        <strong>Output:</strong>
-        <div>{output}</div>
-      </div>
-    </div>
+        <Typography
+          fontWeight="bold"
+          sx={{
+            color: theme.palette.primary.contrastText,
+            paddingBottom: "10px",
+            padding: "20px",
+          }}
+        >
+          {output}
+        </Typography>
+      </Box>
+    </Box>
   );
 };
 
