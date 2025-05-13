@@ -8,6 +8,13 @@ import TutorialWho from "./tutorials/TutorialWho";
 import TutorialHow from "./tutorials/TutorialHow";
 import TutorialExample from "./tutorials/TutorialExample";
 
+const tutorialRoutes = [
+  { path: "introduction", label: "Introduction" },
+  { path: "why", label: "Why use SPOCKLY?" },
+  { path: "who", label: "Who is it for?" },
+  { path: "how", label: "How to use SPOCKLY?" },
+  { path: "example", label: "Example Use Case" },
+];
 
 const Tutorials = ({ isDarkMode }) => {
   const [value, setValue] = React.useState(0);
