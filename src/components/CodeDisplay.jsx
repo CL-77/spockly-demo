@@ -21,7 +21,7 @@ const CodeDisplay = ({ code, isDarkMode }) => {
           variant="h6"
           fontWeight="bold"
           sx={{
-            color: theme.palette.primary.light,
+            color: theme.palette.primary.contrastText,
             paddingBottom: "15px",
           }}
         >
@@ -35,7 +35,7 @@ const CodeDisplay = ({ code, isDarkMode }) => {
             left: 20,
             width: "120px",
             bgcolor: "#00c853",
-            color: theme.palette.primary.light,
+            color: theme.palette.primary.contrastText,
             "&:hover": {
               bgcolor: "#05A255",
             },
@@ -62,7 +62,7 @@ const CodeDisplay = ({ code, isDarkMode }) => {
         <Typography
           fontWeight="bold"
           sx={{
-            color: theme.palette.primary.contrastText,
+            color: isDarkMode ? "#FFFFFA" : "#000000",
             paddingBottom: "10px",
             padding: "20px",
           }}

@@ -8,15 +8,8 @@ import TutorialWho from "./tutorials/TutorialWho";
 import TutorialHow from "./tutorials/TutorialHow";
 import TutorialExample from "./tutorials/TutorialExample";
 
-const tutorialRoutes = [
-  { path: "introduction", label: "Introduction" },
-  { path: "why", label: "Why use SPOCKLY?" },
-  { path: "who", label: "Who is it for?" },
-  { path: "how", label: "How to use SPOCKLY?" },
-  { path: "example", label: "Example Use Case" },
-];
 
-const Tutorials = () => {
+const Tutorials = ({ isDarkMode }) => {
   const [value, setValue] = React.useState(0);
   const location = useLocation();
   const theme = useTheme();
@@ -31,7 +24,7 @@ const Tutorials = () => {
         variant="h2"
         textAlign="center"
         fontWeight="bold"
-        sx={{ color: theme.palette.primary.contrastText }}
+        sx={{ color: isDarkMode ? "#FFFFFA" : "#000000" }}
       >
         Tutorials
       </Typography>
@@ -41,7 +34,6 @@ const Tutorials = () => {
           variant="scrollable"
           value={value}
           onChange={handleChange}
-          aria-label="Vertical tabs example"
           sx={{ borderRight: 1, borderColor: "divider", minWidth: 200 }}
         >
           {tutorialRoutes.map((route, index) => (
@@ -50,7 +42,7 @@ const Tutorials = () => {
         </Tabs>
         <Box
           sx={{
-            color: theme.palette.primary.contrastText,
+            color: isDarkMode ? "#FFFFFA" : "#000000",
             flexGrow: 1,
             paddingLeft: 2,
           }}
