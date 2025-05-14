@@ -1,12 +1,36 @@
-import React from "react";
+import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import tutorialData from "../../data/tutorialData.json";
 
-const TutorialIntroduction = () => (
-  <div>
-    <h1>Introduction</h1>
-    <p>
-      SPOCKLY is a visual programming tool for spatial data science. It allows you to build data workflows by connecting blocks – no syntax errors, just pure logic.
-    </p>
-  </div>
-);
+const TutorialIntroduction = () => {
+  const [selected, setSelected] = useState(0);
+
+  return (
+    <div className="flex flex-col items-center px-4 py-8">
+      {/* Tabs oben */}
+      <div className="flex flex-wrap justify-center gap-2 mb-8">
+        {tutorialData.map((tut, index) => (
+          <button
+            key={index}
+            className={`border px-4 py-2 rounded ${
+              selected === index
+                ? "bg-black text-white"
+                : "bg-white text-black hover:bg-gray-100"
+            }`}
+            onClick={() => setSelected(index)}
+          >
+            {tut.headline}
+          </button>
+        ))}
+      </div>
+
+      {/* Content */}
+      <div className="prose max-w-3xl w-full">
+        <h1>{tutorialData[selected].headline}</h1>
+        <ReactMarkdown>{tutorialData[selected].description}</ReactMarkdown>
+      </div>
+    </div>
+  );
+};
 
 export default TutorialIntroduction;

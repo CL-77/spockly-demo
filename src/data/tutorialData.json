@@ -1,0 +1,22 @@
+[
+  {
+    "headline": "Introduction",
+    "description": "SPOCKLY is a **visual programming tool** for spatial data science. It allows you to build data workflows by connecting blocks – no syntax errors, just pure logic."
+  },
+  {
+    "headline": "Why use SPOCKLY?",
+    "description": "- Visualize data workflows interactively\n- Use real R code behind the scenes\n- Explore geospatial data without prior coding experience"
+  },
+  {
+    "headline": "Who is SPOCKLY for?",
+    "description": "SPOCKLY is designed for **students, educators**, and **beginners in geospatial data science**. It's ideal for classrooms, workshops, and hands-on learning."
+  },
+  {
+    "headline": "How to use SPOCKLY",
+    "description": "Using SPOCKLY is simple and intuitive. Here's how to get started:\n\n1. **Open the Editor**  \nClick on \"SPOCKLY\" in the navigation bar to launch the SPOCKLY workspace.\n\n2. **Drag & Drop Blocks**  \nSelect blocks from the left panel and drag them into the workspace to build your analysis.\n\n3. **Load Data**  \nUse a data block to load CSV files or connect to an API (e.g., openSenseMap).\n\n4. **Process Data**  \nUse blocks for filtering, aggregating, and transforming your data.\n\n5. **Visualize**  \nAdd map or chart blocks to view your data results.\n\n6. **Export**  \nDownload your plot or the generated R code to continue your work elsewhere.\n\n> SPOCKLY runs entirely in the browser. No installation or account is needed. All computations happen on your device using WebAssembly."
+  },
+  {
+    "headline": "Example Use Case: Analyzing Temperature Data",
+    "description": "In this tutorial, we explore **real-world temperature data** collected from SenseBox sensors. You will learn how to process, visualize, and analyze the data using SPOCKLY’s block-based interface.\n\n---\n\n### 1. Get the Data\nGo to [opensensemap.org](https://opensensemap.org) and search for a SenseBox near your location. Select a temperature sensor and export its data as CSV.\n\n### 2. Load the Data\nUse the **\"Load CSV File\"** block in SPOCKLY to load your exported file, e.g. `sensebox_temperature_data.csv`.\n\n### 3. Prepare the Data\n- Convert the timestamp column (`createdAt`) to POSIXct using the relevant block.  \n- Extract the date and hour as new variables.\n\n### 4. Aggregate the Data\n- Calculate the **daily mean temperature**.  \n- Calculate the **hourly mean temperature**.\n\n### 5. Visualize\n- Plot the **daily mean temperature** as a line chart.  \n- Plot the **average temperature by hour** to explore daily cycles.\n\n### 6. Model the Trend\nFit a simple **linear regression model** to the daily mean data and add a **regression line** to your plot.\n\n### 7. Reflect\n- At what hour is it usually warmest or coldest?  \n- Does the temperature trend go up or down over the days?  \n- What environmental factors might explain the results?\n\n---\n\nWith SPOCKLY, each of these steps can be completed by connecting **intuitive visual blocks** — perfect for classroom use and self-paced learning."
+  }
+]
