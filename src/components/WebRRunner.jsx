@@ -1,15 +1,13 @@
-// components/WebRRunner.js
-import React, { useState, useEffect } from "react";
-import { WebR } from "@r-wasm/webr"; // Correct import
+import React, { useEffect, useRef } from "react";
+import { WebR } from "@r-wasm/webr";
 import { Box, Fab, Stack, Typography } from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
 import { darkTheme, lightTheme } from "./../appTheme";
-import { lightBlue } from "@mui/material/colors";
 
 const webR = new WebR();
 
 const WebRRunner = ({ code, isDarkMode }) => {
-  const [output, setOutput] = useState("Loading WebR...");
+  const canvasRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
 
   // Initialize WebR only once when the component mounts
@@ -21,7 +19,6 @@ const WebRRunner = ({ code, isDarkMode }) => {
         console.log("WebR initialized");
       } catch (err) {
         console.error("WebR initialization failed:", err);
-        setOutput(`Error initializing WebR: ${err.message}`);
       }
     };
     initWebR();
@@ -30,17 +27,37 @@ const WebRRunner = ({ code, isDarkMode }) => {
   // Function to run R code
   const runCode = async () => {
     try {
-      // Evaluate R code
-      const result = await webR.evalR(code);
+      // Set the default graphics device to webr::canvas
+      await webR.evalRVoid('options(device=webr::canvas)');
 
-      // Get the result as an array or another format
-      const values = await result.toArray();
+      // Handle webR output messages in an async loop
+      (async () => {
+        for (;;) {
+          const output = await webR.read();
+          switch (output.type) {
+            case 'canvas':
+              if (output.data.event === 'canvasImage') {
+                // Add plot image data to the current canvas element
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(output.data.image, 0, 0);
+              } else if (output.data.event === 'canvasNewPage') {
+                // Clear the canvas for a new plot
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+              }
+              break;
+            default:
+              console.log(output);
+          }
+        }
+      })();
 
-      // Update the output state with the result
-      setOutput(values.join("\n"));
+      // Evaluate the R code
+      await webR.evalRVoid(code);
     } catch (err) {
       // Handle errors gracefully
-      setOutput(`Error: ${err.message}`);
       console.error("WebR Error:", err);
     }
   };
@@ -100,16 +117,12 @@ const WebRRunner = ({ code, isDarkMode }) => {
           zIndex: 1,
         }}
       >
-        <Typography
-          fontWeight="bold"
-          sx={{
-            color: isDarkMode ? "#FFFFFA" : "#000000",
-            paddingBottom: "10px",
-            padding: "20px",
-          }}
-        >
-          {output}
-        </Typography>
+        <canvas
+          ref={canvasRef}
+          width="1008"
+          height="1008"
+          style={{ width: "450px", height: "450px", display: "inline-block" }}
+        />
       </Box>
     </Box>
   );
