@@ -7,9 +7,8 @@ import "./blockly/rBlocks"; // Import R blocks
 import { Box } from "@mui/material";
 import { lightTheme, darkTheme } from "./blockly/blocklyThemes";
 
-const BlocklyComponent = ({ setCode, isDarkMode }) => {
+const BlocklyComponent = ({ setCode, isDarkMode, workspaceRef }) => {
   const blocklyDiv = useRef(null);
-  const workspaceRef = useRef(null);
   const linkRef = useRef(null);
 
   useEffect(() => {
@@ -29,8 +28,8 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
           <block type="math_arithmetic"></block>
           <block type="text"></block>
           <block type="text_print"></block>
-		  <block type="histogram_block"></block>
-		  <block type="rnorm_block"></block>
+          <block type="histogram_block"></block>
+          <block type="rnorm_block"></block>
         </category>
         <category name="Custom Blocks" colour="#5C81A6">
           <block type="print_hello"></block>
@@ -113,7 +112,7 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
       theme: isDarkMode ? darkTheme : lightTheme,
       grid: {
         spacing: 40,
-        length:4,
+        length: 4,
         colour: "#fff",
         snap: true,
       },
@@ -126,9 +125,7 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
         drag: true,
         wheel: true,
       },
-      trashcan: {
-
-      }
+      trashcan: {},
     });
 
     return () => {
@@ -139,16 +136,6 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
       workspaceRef.current?.dispose();
     };
   }, [isDarkMode]);
-
-  const generateCode = () => {
-    if (!workspaceRef.current) {
-      console.error("Blockly workspace is not initialized.");
-      return;
-    }
-
-    const pythonCode = pythonGenerator.workspaceToCode(workspaceRef.current);
-    setCode(pythonCode);
-  };
 
   return (
     <Box

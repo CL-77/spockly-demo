@@ -1,9 +1,20 @@
 import { Box, Fab, Stack, Typography } from "@mui/material";
 import { darkTheme, lightTheme } from "./../appTheme";
 import { PlayArrow } from "@mui/icons-material";
+import * as Blockly from "blockly/core";
 
-const CodeDisplay = ({ code, isDarkMode }) => {
+const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
   const theme = isDarkMode ? darkTheme : lightTheme;
+
+  const generateCode = () => {
+    if (!workspaceRef.current) {
+      console.error("Blockly workspace is not initialized.");
+      return;
+    }
+
+    const rCode = Blockly.Generator.R.workspaceToCode(workspaceRef.current);
+    setCode(rCode);
+  };
 
   return (
     <Box
@@ -31,6 +42,7 @@ const CodeDisplay = ({ code, isDarkMode }) => {
         <Fab
           size="small"
           variant="extended"
+          onClick={generateCode}
           sx={{
             left: 20,
             width: "120px",

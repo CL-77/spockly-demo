@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import BlocklyComponent from "./BlocklyComponent";
 import CodeDisplay from "./CodeDisplay";
-import {Card, Box, Grid } from "@mui/material";
+import { Card, Box, Grid } from "@mui/material";
 import { darkTheme, lightTheme } from "./../appTheme";
 import WebRRunner from "./WebRRunner";
 
-function SPOCKLY({isDarkMode}) {
+function SPOCKLY({ isDarkMode }) {
   const [code, setCode] = useState("");
+  const workspaceRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
 
   return (
@@ -29,7 +30,11 @@ function SPOCKLY({isDarkMode}) {
               boxShadow: 3,
             }}
           >
-            <BlocklyComponent setCode={setCode} isDarkMode={isDarkMode} />
+            <BlocklyComponent
+              setCode={setCode}
+              isDarkMode={isDarkMode}
+              workspaceRef={workspaceRef}
+            />
           </Card>
         </Grid>
 
@@ -52,7 +57,12 @@ function SPOCKLY({isDarkMode}) {
             }}
           >
             <Box sx={{ height: "50%", p: 2 }}>
-              <CodeDisplay code={code} isDarkMode={isDarkMode} />
+              <CodeDisplay
+                code={code}
+                setCode={setCode}
+                workspaceRef={workspaceRef}
+                isDarkMode={isDarkMode}
+              />
             </Box>
             <Box sx={{ height: "50%", p: 2 }}>
               <WebRRunner code={code} isDarkMode={isDarkMode} />
