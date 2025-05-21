@@ -50,20 +50,31 @@ Blockly.Generator.R.forBlock["plot_vector"] = function (block, generator) {
 
 // --- Load Data ---
 Blockly.defineBlocksWithJsonArray([
-  {
-    type: "load_csv",
-    message0: "load CSV file %1",
-    args0: [
-      {
-        type: "field_input",
-        name: "FILENAME",
-        text: "data.csv",
-      },
-    ],
-    output: null,
-    colour: "#FFA726",
-    tooltip: "Load a CSV file",
-  },
+	{
+	  type: "load_csv",
+	  message0: "load CSV file %1",
+	  args0: [
+		{
+		  type: "field_input",
+		  name: "FILENAME",
+		  text: "data.csv",
+		},
+	  ],
+	  output: null,
+	  colour: "#FFA726",
+	  tooltip: "Load a CSV file",
+	  helpUrl: "",
+	},
+  ]);
+  
+  Blockly.Generator.R.forBlock["load_csv"] = function (block) {
+	const filename = block.getFieldValue("FILENAME");
+	return `
+	  data <- read.csv("${filename}")
+	`;
+  };
+  
+Blockly.defineBlocksWithJsonArray([
   {
     type: "load_shapefile",
     message0: "load shapefile %1",
