@@ -171,6 +171,9 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
             <block type="create_marker"></block>
             <block type="create_polygon"></block>
             <block type="create_circle"></block>
+            <block type="create_rectangle"></block>
+            <block type="create_polyline"></block>
+            <block type="Choropleth_map"></block>
             <block type="JSON_on_map"></block>
           </category>
 
