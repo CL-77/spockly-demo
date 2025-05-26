@@ -14,10 +14,21 @@ import { darkTheme, lightTheme } from "./appTheme";
 import SPOCKLY from "./components/Spockly";
 import Toast from "./components/Toast";
 
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
+
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(getCookie('isDarkMode') === 'true');
   const toggleTheme = () => setIsDarkMode((prev) => !prev);
   const theme = isDarkMode ? darkTheme : lightTheme;
+
+  useEffect(() => {
+  document.cookie = `isDarkMode=${isDarkMode}; path=/; max-age=31536000`; //1 year
+}, [isDarkMode]);
 
   useEffect(() => {
     if (~window.location.href.indexOf('SPOCKLY')) {
