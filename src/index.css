@@ -49,21 +49,21 @@ button {
 }
 
 @keyframes slideIn {
-    0% {
+    from {
         transform: translateX(150%);
     }
 
-    100% {
+    to {
         transform: translateX(0%);
     }
 }
 
 @keyframes slideOut {
-    0% {
+    from {
         transform: translateX(0%);
     }
 
-    100% {
+    to {
         transform: translateX(150%);
     }
 }

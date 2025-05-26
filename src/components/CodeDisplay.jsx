@@ -3,10 +3,34 @@ import { Box, Fab, Stack, Typography } from "@mui/material";
 import { darkTheme, lightTheme } from "./../appTheme";
 import { PlayArrow } from "@mui/icons-material";
 import { ContentPaste } from '@mui/icons-material';
+import { m } from "framer-motion";
 
 const CodeDisplay = ({ code, isDarkMode }) => {
   const theme = isDarkMode ? darkTheme : lightTheme;
   const codeRef = useRef(null);
+  document.addEventListener(
+  "keydown",
+  (ev) => {
+    const keyName = ev.key;
+    if (keyName === "Control") {
+      return;
+    }
+    if ((ev.ctrlKey || ev.metaKey) && !ev.altKey && keyName === 'c' && !window.getSelection().toString()) {
+        ev.preventDefault();
+        navigator.clipboard.writeText(code)
+          .then(() => {
+            codeRef.current.innerText = 'Code Copied!';
+            setTimeout(() => codeRef.current.innerText = 'Copy Code', 1500);
+          })
+          .catch((e) => console.error('The code could not be copied. ' + e));
+      }
+      if ((ev.ctrlKey || ev.metaKey) && !ev.altKey && keyName === 'Enter') {
+        ev.preventDefault();
+        window.generateCode();
+      }
+    },
+    false,
+  );
 
   return (
     <Box
@@ -46,19 +70,21 @@ const CodeDisplay = ({ code, isDarkMode }) => {
           }}
           onClick={ window.generateCode }
         >
-          <Box display="flex" alignItems="center" gap={0.5}>
+          <Box display="flex" alignItems="center" gap={ 0.5 }>
             <PlayArrow fontSize="small" />
             <Typography fontWeight="bold">Generate</Typography>
           </Box>
         </Fab>
         <Box display="flex" alignItems="center" gap={ 0.5 }>
-          <Typography sx={{ fontSize: "0.9em", marginLeft: '30px', color: "#BBB" }}>Ctrl + Alt + Enter</Typography>
+          <Typography sx={{ fontSize: "0.9em", marginLeft: "30px", color: "#BBB" }}>Ctrl + Enter</Typography>
+        </Box>
+        <Box display="flex" marginLeft="auto" alignItems="center" gap={ 0.5 }>
+          <Typography sx={{ fontSize: "0.9em", marginRight: "10px", color: "#BBB" }}>Ctrl + C</Typography>  
         </Box>
         <Fab 
           size="small"
           variant="extended"
           sx={{
-            right: -115,
             width: "150px",
             bgcolor: "#f58a42",
             color: theme.palette.primary.light,
@@ -67,7 +93,12 @@ const CodeDisplay = ({ code, isDarkMode }) => {
             },
             boxShadow: "none",
           }}
-          onClick={ () => navigator.clipboard.writeText(code).then(codeRef.current.innerText = 'Code Copied!').then(setTimeout(() => codeRef.current.innerText = 'Copy Code', 1500)).catch((e) => console.error('The code could not be copied; ' + e)) }
+          onClick={
+            () => navigator.clipboard.writeText(code)
+              .then(codeRef.current.innerText = 'Code Copied!')
+              .then(setTimeout(() => codeRef.current.innerText = 'Copy Code', 1500))
+              .catch((e) => console.error('The code could not be copied. ' + e))
+          }
           >
           <Box display="flex" alignItems="center" gap={ 0.5 }>
             <ContentPaste fontSize="small" />

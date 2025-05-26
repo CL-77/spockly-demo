@@ -127,7 +127,7 @@ const Home = ({ isDarkMode }) => {
                 fontWeight: "bold",
               }}
             >
-              Spatial Blockly — A visual programming tool for{" "}
+              Spatial Blockly — A visual programming tool for{ " " }
             </Typography>
             <Typography
               variant="h6"
@@ -187,13 +187,13 @@ const Home = ({ isDarkMode }) => {
             Perfect for students, schools, and educators.
           </Typography>
 
-          <Box sx={iconButtonGroupStyle(theme)}>
-            <HoverGrowButton icon={<FaGlobe size={32} />} text="Spatial Data" />
+          <Box sx={ iconButtonGroupStyle(theme) }>
+            <HoverGrowButton icon={ <FaGlobe size={32} /> } text="Spatial Data" />
             <HoverGrowButton
-              icon={<FaCube size={32} />}
+              icon={ <FaCube size={32} /> }
               text="Blockly Interface"
             />
-            <HoverGrowButton icon={<FaCodeBranch size={32} />} text="Using R" />
+            <HoverGrowButton icon={ <FaCodeBranch size={32} /> } text="Using R" />
           </Box>
         </Box>
       </motion.section>
@@ -256,7 +256,7 @@ const Home = ({ isDarkMode }) => {
             </Typography>
           </Box>
         </motion.div>
-        <Box sx={buttonWrapperStyle(theme, isDarkMode)}>
+        <Box sx={ buttonWrapperStyle(theme, isDarkMode) }>
           <Link to="/SPOCKLY">
             <Fab
               variant="extended"

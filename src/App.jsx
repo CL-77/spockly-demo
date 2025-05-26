@@ -12,6 +12,7 @@ import Impressum from "./pages/Impressum";
 import { GlobalStyles, ThemeProvider } from "@mui/material";
 import { darkTheme, lightTheme } from "./appTheme";
 import SPOCKLY from "./components/Spockly";
+import Toast from "./components/Toast";
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -19,8 +20,10 @@ function App() {
   const theme = isDarkMode ? darkTheme : lightTheme;
 
   useEffect(() => {
-    document.getElementById('toast').style.animation = 'slideIn 5s ease-in-out';
-    document.getElementById('toast').style.display = 'block';
+    if (~window.location.href.indexOf('SPOCKLY')) {
+      document.getElementById('toast').style.animation = 'slideIn 5s ease-in-out';
+      document.getElementById('toast').style.display = 'block';
+    }
   }, []);
 
   return (
@@ -52,28 +55,7 @@ function App() {
           },
         }}
       />
-      <div>
-      <div id="toast"
-        style={{
-          position: "absolute",
-          fontSize: "20px",
-          color: "orange",
-          zIndex: 1051,
-          float: "right",
-          overflow: "hidden",
-          right: "10px",
-          top: "70px",
-          backgroundColor: "#FEFEFE",
-          boxShadow: "-1px 1px 10px #9f9f9f",
-          padding: "0 10px 0 10px",
-          borderRadius: "3px",
-          margin: "10px",
-          display: "none"
-        }}
-      >
-        <p>Loading libraries...</p>
-      </div>
-    </div>
+      <Toast />
       <Router>
         <Routes>
           <Route

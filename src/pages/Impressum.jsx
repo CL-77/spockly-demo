@@ -2,9 +2,9 @@ import React from "react";
 
 const Impressum = () => {
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>Impressum</h1>
-      <p style={styles.placeholder}>
+    <div style={ styles.container }>
+      <h1 style={ styles.title }>Impressum</h1>
+      <p style={ styles.placeholder }>
         This legal notice will be added soon.
       </p>
     </div>

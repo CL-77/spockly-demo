@@ -155,11 +155,27 @@ const firstRunRef = useRef(false);
             function onInfo(message){
                 cslInfo(message);
                 if (message === 'Imports loaded!') {
-                  document.getElementsByClassName('Mui-disabled')[0].classList.remove('Mui-disabled');
+                  try {
+                    document.getElementsByClassName('Mui-disabled')[0].classList.remove('Mui-disabled');
+                  } catch {}
                   document.getElementById('toast').style.color = '#089d08';
                   document.querySelector('#toast p').innerHTML = 'Libraries loaded!';
                   document.getElementById('toast').style.animation = 'slideOut 5s ease-in-out';
                   setTimeout(() => document.getElementById('toast').style.display = 'none', 4950);
+                  document.addEventListener(
+                    "keydown",
+                    (ev) => {
+                      const keyName = ev.key;
+                        if (keyName === "Control") {
+                        return;
+                      }
+                        if ((ev.ctrlKey || ev.metaKey) && ev.altKey && keyName === 'Enter') {
+                          ev.preventDefault();
+                          runCode();
+                      }
+                    },
+                    false,
+                  );
                 }
             }
         };
@@ -173,14 +189,14 @@ document.addEventListener(
     if (keyName === "Control") {
       return;
     }
-
-    if ((ev.ctrlKey || ev.metaKey) && ev.altKey && keyName === 'Enter') {
+    if ((ev.ctrlKey || ev.metaKey) && ev.altKey && keyName === 'c') {
       ev.preventDefault();
-      window.generateCode();
-    }
-    if ((ev.ctrlKey || ev.metaKey) && keyName === 'Enter' && !ev.altKey) {
-      ev.preventDefault();
-      runCode();
+      navigator.clipboard.writeText(output)
+        .then(() => {
+          refCode.current.innerText = 'Output Copied!';
+          setTimeout(() => refCode.current.innerText = 'Copy Output', 1500);
+        })
+        .catch((e) => console.error('The output could not be copied. ' + e));
     }
   },
   false,
@@ -242,13 +258,15 @@ document.addEventListener(
           </Box>
         </Fab>
         <Box display="flex" alignItems="center" gap={ 0.5 }>
-          <Typography sx={{ fontSize: "0.9em", marginLeft: '30px', color: "#BBB" }}>Ctrl + Enter</Typography>  
+          <Typography sx={{ fontSize: "0.9em", marginLeft: "30px", color: "#BBB" }}>Ctrl + Alt + Enter</Typography>  
+        </Box>
+        <Box display="flex" marginLeft="auto" alignItems="center" gap={ 0.5 }>
+          <Typography sx={{ fontSize: "0.9em", marginRight: "10px", color: "#BBB" }}>Ctrl + Alt + C</Typography>  
         </Box>
         <Fab 
           size="small"
           variant="extended"
           sx={{
-            right: -45,
             width: "160px",
             bgcolor: "#f58a42",
             color: theme.palette.primary.light,
@@ -257,7 +275,13 @@ document.addEventListener(
             },
             boxShadow: "none",
           }}
-          onClick={ () => navigator.clipboard.writeText(output).then(refCode.current.innerText = 'Output Copied!').then(setTimeout(() => refCode.current.innerText = 'Copy Output', 1500)).catch((e) => console.error('The output could not be copied. ' + e)) }
+          onClick={
+            () => navigator.clipboard.writeText(output)
+              .then(input.select())
+              .then(refCode.current.innerText = 'Output Copied!')
+              .then(setTimeout(() => refCode.current.innerText = 'Copy Output', 1500))
+              .catch((e) => console.error('The output could not be copied. ' + e))
+          }
           >
           <Box display="flex" alignItems="center" gap={ 0.5 }>
             <ContentPaste fontSize="small" />

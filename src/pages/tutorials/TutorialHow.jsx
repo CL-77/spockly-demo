@@ -23,11 +23,11 @@ const TutorialHow = () => (
         <strong>Visualize:</strong> Add map or chart blocks to view your data results.
       </li>
       <li>
-        <strong>Export:</strong> Download your plot or the generated R code to continue your work elsewhere.
+        <strong>Export:</strong> Download your plot or the generated Python code to continue your work elsewhere.
       </li>
     </ol>
     <p>
-      SPOCKLY runs entirely in the browser. No installation or account is needed. All computations happen on your device using WebAssembly.
+      SPOCKLY runs entirely in the browser. No installation or account is needed. All computations happen on your device using Pyodide.
     </p>
   </div>
 );

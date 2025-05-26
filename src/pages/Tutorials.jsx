@@ -38,8 +38,8 @@ const Tutorials = () => {
         <Tabs
           orientation="vertical"
           variant="scrollable"
-          value={value}
-          onChange={handleChange}
+          value={ value }
+          onChange={ handleChange }
           aria-label="Vertical tabs example"
           sx={{ borderRight: 1, borderColor: "divider", minWidth: 200 }}
         >
@@ -56,24 +56,24 @@ const Tutorials = () => {
             paddingLeft: 2,
           }}
         >
-          <TabPanel value={value} index={0}>
-            {" "}
+          <TabPanel value={ value } index={ 0 }>
+            { " " }
             <TutorialIntroduction />
           </TabPanel>
-          <TabPanel value={value} index={1}>
-            {" "}
+          <TabPanel value={ value } index={ 1 }>
+            { " " }
             <TutorialWhy />
           </TabPanel>
-          <TabPanel value={value} index={2}>
-            {" "}
+          <TabPanel value={ value } index={ 2 }>
+            { " " }
             <TutorialWho />
           </TabPanel>
-          <TabPanel value={value} index={3}>
-            {" "}
+          <TabPanel value={ value } index={ 3 }>
+            { " " }
             <TutorialHow />
           </TabPanel>
-          <TabPanel value={value} index={4}>
-            {" "}
+          <TabPanel value={ value } index={ 4 }>
+            { " " }
             <TutorialExample />
           </TabPanel>
         </Box>

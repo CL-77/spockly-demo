@@ -43,7 +43,7 @@ const TutorialExample = () => (
 
     <h2>7. Reflect</h2>
     <ul>
-      <li>At what hour is it usually warmest or coldest?</li>
+      <li>At what time is it usually warmest or coldest?</li>
       <li>Does the temperature trend go up or down over the days?</li>
       <li>What environmental factors might explain the results?</li>
     </ul>
