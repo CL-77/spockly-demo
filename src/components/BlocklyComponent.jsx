@@ -4,10 +4,12 @@ import { pythonGenerator } from "blockly/python";
 import "./blockly/customBlocks"; // Import custom blocks
 import "./blockly/customGenerator"; // Import custom generator
 import "./blockly/rBlocks"; // Import R blocks
-import { Box } from "@mui/material";
+import { Box, Fab, Typography, useTheme } from "@mui/material";
 import { lightTheme, darkTheme } from "./blockly/blocklyThemes";
+import { Upload, UploadFile } from "@mui/icons-material";
 
 const BlocklyComponent = ({ setCode, isDarkMode, workspaceRef }) => {
+  const theme = useTheme();
   const blocklyDiv = useRef(null);
   const linkRef = useRef(null);
 
@@ -121,7 +123,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, workspaceRef }) => {
         wheel: true,
       },
       move: {
-        scrollbars: true,
         drag: true,
         wheel: true,
       },
@@ -139,14 +140,39 @@ const BlocklyComponent = ({ setCode, isDarkMode, workspaceRef }) => {
 
   return (
     <Box
-      ref={blocklyDiv}
       sx={{
         height: "100%",
         width: "100%",
         margin: 0,
         padding: 0,
       }}
-    />
+    >
+      <Fab
+        variant="extended"
+        sx={{
+          boxShadow: "none",
+          "&:hover": {
+            bgcolor: theme.palette.secondary.main,
+            color: isDarkMode ? "#FFFFFA" : "#000000",
+          },
+          marginBottom: 2,
+        }}
+      >
+        <Box display="flex" alignItems="center" gap={0.5}>
+          <Upload fontSize="small" />
+          <Typography sx={{ fontWeight: "bold" }}>Upload Data File</Typography>
+        </Box>
+      </Fab>
+      <Box
+        ref={blocklyDiv}
+        sx={{
+          height: "90%",
+          width: "100%",
+          margin: 0,
+          padding: 0,
+        }}
+      />
+    </Box>
   );
 };
 
