@@ -49,6 +49,7 @@ Blockly.Generator.R.forBlock["plot_vector"] = function (block, generator) {
 };
 
 // --- Load Data ---
+
 Blockly.defineBlocksWithJsonArray([
 	{
 	  type: "load_csv",
@@ -60,20 +61,19 @@ Blockly.defineBlocksWithJsonArray([
 		  text: "data.csv",
 		},
 	  ],
-	  output: null,
+	  output: "DataFrame",
 	  colour: "#FFA726",
-	  tooltip: "Load a CSV file",
+	  tooltip: "Load a CSV file from WebR filesystem",
 	  helpUrl: "",
 	},
   ]);
   
-  Blockly.Generator.R.forBlock["load_csv"] = function (block) {
+  Blockly.Generator.R.forBlock["load_csv"] = function (block, generator) {
 	const filename = block.getFieldValue("FILENAME");
-	return `
-	  data <- read.csv("${filename}")
-	`;
+	return [`read.csv("${filename}")`, Blockly.Generator.R.ORDER_NONE];
   };
-  
+
+	  
 Blockly.defineBlocksWithJsonArray([
   {
     type: "load_shapefile",
@@ -590,4 +590,46 @@ Blockly.Generator.R.forBlock["text_print"] = function (block, generator) {
 		generator.valueToCode(block, "TEXT", Blockly.Generator.R.ORDER_NONE) ||
 		'""';
 	return `print(${text})\n`;
+};
+
+// Get Working Directory block
+Blockly.defineBlocksWithJsonArray([
+	{
+	  type: "print_files",
+	  message0: "print files",
+	  previousStatement: null,
+	  nextStatement: null,
+	  colour: 230,
+	  tooltip: "Print the files in the current working directory.",
+	  helpUrl: ""
+	}
+  ]);
+  
+  Blockly.Generator.R.forBlock["print_files"] = function (block, generator) {
+	return "print(list.files())\n";
+  };
+
+  Blockly.defineBlocksWithJsonArray([
+	{
+		type: "head_print",
+		message0: "print header %1",
+		args0: [
+			{
+				type: "input_value",
+				name: "TEXT",
+			},
+		],
+		previousStatement: null,
+		nextStatement: null,
+		colour: 160,
+		tooltip: "Print header of csv to the console.",
+		helpUrl: "",
+	},
+]);
+
+Blockly.Generator.R.forBlock["head_print"] = function (block, generator) {
+	const text =
+		generator.valueToCode(block, "TEXT", Blockly.Generator.R.ORDER_NONE) ||
+		'""';
+	return `print(names(${text}))\n`;
 };

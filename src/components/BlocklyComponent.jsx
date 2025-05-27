@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import * as Blockly from "blockly";
-import { pythonGenerator } from "blockly/python";
 import "./blockly/customBlocks"; // Import custom blocks
 import "./blockly/customGenerator"; // Import custom generator
 import "./blockly/rBlocks"; // Import R blocks
@@ -8,7 +7,7 @@ import { Box, Fab, Typography, useTheme } from "@mui/material";
 import { lightTheme, darkTheme } from "./blockly/blocklyThemes";
 import { Upload, UploadFile } from "@mui/icons-material";
 
-const BlocklyComponent = ({ setCode, isDarkMode, workspaceRef }) => {
+const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) => {
   const theme = useTheme();
   const blocklyDiv = useRef(null);
   const linkRef = useRef(null);
@@ -32,6 +31,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, workspaceRef }) => {
           <block type="text_print"></block>
           <block type="histogram_block"></block>
           <block type="rnorm_block"></block>
+		  <block type="print_files"></block>
+		  <block type="head_print"></block>
         </category>
         <category name="Custom Blocks" colour="#5C81A6">
           <block type="print_hello"></block>
@@ -149,6 +150,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, workspaceRef }) => {
     >
       <Fab
         variant="extended"
+        onClick={onUploadClick}
         sx={{
           boxShadow: "none",
           "&:hover": {

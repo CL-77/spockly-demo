@@ -1,14 +1,25 @@
 import { useState, useRef } from "react";
 import BlocklyComponent from "./BlocklyComponent";
 import CodeDisplay from "./CodeDisplay";
-import { Card, Box, Grid } from "@mui/material";
+import {Card, Box, Grid } from "@mui/material";
 import { darkTheme, lightTheme } from "./../appTheme";
 import WebRRunner from "./WebRRunner";
+import FileUploadManager from "./FileUploadManager";
 
-function SPOCKLY({ isDarkMode }) {
+function SPOCKLY({isDarkMode}) {
   const [code, setCode] = useState("");
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const webRRef = useRef(null);
   const workspaceRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
+
+  const handleUploadClick = () => {
+    setUploadDialogOpen(true);
+  };
+
+  const handleUploadClose = () => {
+    setUploadDialogOpen(false);
+  };
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -30,9 +41,10 @@ function SPOCKLY({ isDarkMode }) {
               boxShadow: 3,
             }}
           >
-            <BlocklyComponent
-              setCode={setCode}
-              isDarkMode={isDarkMode}
+            <BlocklyComponent 
+              setCode={setCode} 
+              isDarkMode={isDarkMode} 
+              onUploadClick={handleUploadClick}
               workspaceRef={workspaceRef}
             />
           </Card>
@@ -57,19 +69,30 @@ function SPOCKLY({ isDarkMode }) {
             }}
           >
             <Box sx={{ height: "50%", p: 2 }}>
-              <CodeDisplay
-                code={code}
+              <CodeDisplay 
+                code={code} 
                 setCode={setCode}
+                isDarkMode={isDarkMode} 
                 workspaceRef={workspaceRef}
-                isDarkMode={isDarkMode}
               />
             </Box>
             <Box sx={{ height: "50%", p: 2 }}>
-              <WebRRunner code={code} isDarkMode={isDarkMode} />
+              <WebRRunner 
+                code={code} 
+                isDarkMode={isDarkMode} 
+                webRRef={webRRef}
+              />
             </Box>
           </Card>
         </Grid>
       </Grid>
+
+      <FileUploadManager
+        webRInstance={webRRef.current}
+        isDarkMode={isDarkMode}
+        open={uploadDialogOpen}
+        onClose={handleUploadClose}
+      />
     </Box>
   );
 }

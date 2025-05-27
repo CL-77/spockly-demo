@@ -6,7 +6,7 @@ import { darkTheme, lightTheme } from "./../appTheme";
 
 const webR = new WebR();
 
-const WebRRunner = ({ code, isDarkMode }) => {
+const WebRRunner = ({ code, isDarkMode, webRRef }) => {
   const canvasRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
 
@@ -17,6 +17,11 @@ const WebRRunner = ({ code, isDarkMode }) => {
         // Initialize WebR environment
         await webR.init();
         console.log("WebR initialized");
+        
+        // Make WebR instance available to parent components
+        if (webRRef) {
+          webRRef.current = webR;
+        }
       } catch (err) {
         console.error("WebR initialization failed:", err);
       }
