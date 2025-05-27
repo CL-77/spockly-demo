@@ -5,7 +5,7 @@ export default function Toast() {
     <div
       id="toast"
       style={{
-        position: "absolute",
+        position: "fixed",
         fontSize: "20px",
         color: "orange",
         zIndex: 1051,

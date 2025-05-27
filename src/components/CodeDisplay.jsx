@@ -115,7 +115,7 @@ const CodeDisplay = ({ code, isDarkMode }) => {
           height: "75%",
           bgcolor: theme.palette.background.paper,
           zIndex: 1,
-          overflow: "scroll",
+          overflow: "auto",
         }}
       >
         <Typography

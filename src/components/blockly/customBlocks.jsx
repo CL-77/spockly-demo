@@ -950,78 +950,51 @@ pythonGenerator.forBlock['import3'] = function(block) {
  * DATA VIZ BLOCKS
  *****************/
 
-Blockly.Blocks['create_data_and_output'] = {
+Blockly.Blocks['create_folder'] = {
   init: function() {
     this.appendDummyInput('')
-        .appendField('Create')
-        .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'DATA')
-        .appendField('and')
-        .appendField(new Blockly.FieldTextInput('output', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'OUTPUT')
-        .appendField('folders');
+        .appendField('Create folder')
+        .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(200);
     this.setTooltip('Create data and output folders for data visualisation');
   }
 };
-pythonGenerator.forBlock['create_data_and_output'] = function(block) {
-  const data = block.getFieldValue('DATA');
-  const output = block.getFieldValue('OUTPUT');
-  return '' + 
-    'import os\n\n' +
-    `data_folder = "${data}"\n` +
-    `output_folder = "${output}"\n\n` +
-    'if not os.path.exists(data_folder):\n' +
-        '\tos.mkdir(data_folder)\n' +
-    'if not os.path.exists(output_folder):\n' +
-        '\tos.mkdir(output_folder)\n'
-};
-
-Blockly.Blocks['def_download'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Definition: download (from URL)');
-    this.setTooltip('Define function to download file from URL into previously created \'data\' file.');
-    this.setNextStatement(true);
-    this.setPreviousStatement(true);
-    this.setColour('#888');
-  }
-};
-pythonGenerator.forBlock['def_download'] = function() {
+pythonGenerator.forBlock['create_folder'] = function(block) {
+  const folder = block.getFieldValue('FOLDER') || 'data';
   return '' +
-  'import requests\n' +
-  'def download(url):\n' +
-  '\tfilename = os.path.join(data_folder, os.path.basename(url))\n' +
-  '\tif not os.path.exists(filename):\n' + 
-    '\t\twith requests.get(url, stream=True, allow_redirects=True) as r:\n' +
-        '\t\t\twith open(filename, "wb") as f:\n' + 
-            '\t\t\t\tfor chunk in r.iter_content(chunk_size=8192):\n' +
-                '\t\t\t\t\tf.write(chunk)\n' + 
-    '\t\tprint("Downloaded ", filename)\n\n'
-}
+    `if not os.path.exists('${folder}'):\n` +
+        `\tos.mkdir('${folder}')\n`;
+};
 
 Blockly.Blocks['func_download'] = {
   init: function() {
     this.appendDummyInput()
         .appendField('Download (from URL)')
-        .appendField(new Blockly.FieldTextInput('http://file.zip'), 'NAME');
-    this.setTooltip('Use function to download file from URL into previously created \'data\' file.');
+        .appendField(new Blockly.FieldTextInput('http://file.zip'), 'NAME')
+        .appendField('into folder')
+        .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER');
+    this.setTooltip('Use function to download file from URL into given file.');
     this.setNextStatement(true);
     this.setPreviousStatement(true);
     this.setColour(200);
   }
-};
+}
 pythonGenerator.forBlock['func_download'] = function(block) {
-  const url = block.getFieldValue('NAME');
-  return `download('${url}')\n`
+  const url = block.getFieldValue('NAME') || 'http://file.zip';
+  const folder = block.getFieldValue('FOLDER') || 'data';
+  return `download('${url}', '${folder}')\n`
 }
 
 Blockly.Blocks['read_file'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField('read file')
-        .appendField(new Blockly.FieldTextInput('file.zip'), 'NAME');
-    this.setTooltip('Use function to read file from URL from previously created \'data\' file.');
+        .appendField('Read file')
+        .appendField(new Blockly.FieldTextInput('file.zip'), 'NAME')
+        .appendField('from folder')
+        .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER');
+    this.setTooltip('Use function to read file with given folder name.');
     this.setNextStatement(true);
     this.setPreviousStatement(true);
     this.setColour(200);
@@ -1029,16 +1002,22 @@ Blockly.Blocks['read_file'] = {
 };
 pythonGenerator.forBlock['read_file'] = function(block) {
   const fileName = block.getFieldValue('NAME');
-  return `gpd.read_file(os.path.join(data_folder, '${fileName}'))\n`
+  const dataFolder = block.getFieldValue('FOLDER') || 'data';
+  return `gpd.read_file(os.path.join(${dataFolder}, ${fileName}))\n`
 }
 
 Blockly.Blocks['write_file'] = {
   init: function() {
-    this.appendValueInput('RES')
+    this.appendDummyInput()
         .appendField('Create GeoPackage')
-        .appendField(new Blockly.FieldTextInput('file_name'), 'NAME')
-        .appendField('.gpkg with data:');
-    this.setTooltip('Write to previously created output folder. The format of this file is GeoPackage (.gpkg).');
+        .appendField(new Blockly.FieldTextInput('file_name'), 'NAME');
+    this.appendDummyInput()
+        .appendField('In folder')
+        .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER')
+        .appendField('.gpkg')
+    this.appendValueInput('RES')
+        .appendField('With data');
+    this.setTooltip('Write to given output folder. The format of this file is GeoPackage (.gpkg). A variable is expected as input.');
     this.setNextStatement(true);
     this.setPreviousStatement(true);
     this.setColour(200);
@@ -1048,9 +1027,23 @@ pythonGenerator.forBlock['write_file'] = function(block, generator) {
   const fileName = block.getFieldValue('NAME');
   const res = generator.valueToCode(block, 'RES', pythonGenerator.ORDER_ATOMIC);
   return '\n' + 
-  `output_file = "${fileName}.gpkg"\n` + 
-  'output_path = os.path.join(output_folder, output_file)\n' + 
-  `${res}.to_file(driver="GPKG", filename=output_path)\n`
+  `${res}.to_file(driver='GPKG', filename=os.path.join(output_folder, '${fileName}.gpkg'))\n`
+}
+
+Blockly.Blocks['chdir'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Change current directory to')
+        .appendField(new Blockly.FieldTextInput('path'), 'PATH');
+    this.setTooltip('Change directory to given path');
+    this.setNextStatement(true);
+    this.setPreviousStatement(true);
+    this.setColour(200); 
+  }
+}
+pythonGenerator.forBlock['chdir'] = function(block) {
+  const path = block.getFieldValue('PATH');
+  return `\nos.chdir('${path}')`;
 }
 
 Blockly.Blocks['listdir'] = {
@@ -1064,9 +1057,8 @@ Blockly.Blocks['listdir'] = {
   }
 }
 pythonGenerator.forBlock['listdir'] = function(block) {
-  let path = block.getFieldValue('PATH');
-  if (path) { path = "'" + path + "'"; }
-  return [`os.listdir(${path})`, pythonGenerator.ORDER_ATOMIC];
+  const path = block.getFieldValue('PATH');
+  return [`os.listdir('${path}')`, pythonGenerator.ORDER_ATOMIC];
 }
 
 Blockly.Blocks['type'] = {
@@ -1082,6 +1074,7 @@ pythonGenerator.forBlock['type'] = function(block, generator) {
   const type = generator.valueToCode(block, 'TYPE', pythonGenerator.ORDER_ATOMIC);
   return [`type(${type})`, pythonGenerator.ORDER_ATOMIC];
 }
+
 /** Show data **/
 Blockly.Blocks['plot'] = {
   init: function() {

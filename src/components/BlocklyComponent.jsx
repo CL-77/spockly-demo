@@ -69,12 +69,12 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
           </category>
 
           <category name="Visualisation" colour="#90A4AE">
-            <block type="create_data_and_output"></block>
-            <block type="def_download"></block>
+            <block type="create_folder"></block>
             <block type="func_download"></block>
             <block type="read_file"></block>
             <block type="write_file"></block>
             <block type="listdir"></block>
+            <block type="chdir"></block>
             <block type="plot">
               <value name="title">
                 <shadow type="text">
@@ -254,20 +254,35 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
       console.error("Blockly workspace is not initialised.");
       return;
     }
-    var libs = "", np, pd, gpd, sns, plt;
+    var libs = "", np, pd, gpd, sns, plt, requests, os, def_download;
     var pythonCode = pythonGenerator.workspaceToCode(workspaceRef.current);
     if(~pythonCode.indexOf('np.')) np = true;
     if(~pythonCode.indexOf('pd.')) pd = true;
     if(~pythonCode.indexOf('sns.')) sns = true;
     if(~pythonCode.indexOf('plt.')) plt = true;
     if(~pythonCode.indexOf('gpd.')) gpd = true;
+    if(~pythonCode.indexOf('requests.')) requests = true;
+    if(~pythonCode.indexOf('os.')) os = true;
+    if(~pythonCode.indexOf('download(')) def_download = true;	
     libs += np ? "import numpy as np\n" : "";
     libs += pd ? "import pandas as pd\n" : "";
     libs += sns ? "import seaborn as sns\n" : ""; 
     libs += plt ? "import matplotlib.pyplot as plt\n" : "";
     libs += gpd ? "import geopandas as gpd\n" : "";
+    libs += requests ? "import requests\n" : "";
+    libs += os ? "import os\n" : "";
+    libs += def_download ?  '' +
+                            'def download(url, folder):\n' +
+                            '\tfilename = os.path.join(folder, os.path.basename(url))\n' +
+                            '\tif not os.path.exists(filename):\n' + 
+                              '\t\twith requests.get(url, stream=True, allow_redirects=True) as r:\n' +
+                                  '\t\t\twith open(filename, "wb") as f:\n' + 
+                                      '\t\t\t\tfor chunk in r.iter_content(chunk_size=8192):\n' +
+                                          '\t\t\t\t\tf.write(chunk)\n' + 
+                              '\t\tprint("Downloaded ", filename)\n\n'
+    : '';
 
-    setCode(libs + pythonCode);
+    setCode(libs + '\n' + pythonCode);
   };
 
   return (

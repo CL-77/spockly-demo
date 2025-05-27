@@ -45,11 +45,11 @@ function App() {
           body: {
             margin: 0,
             padding: 0,
-            height: "100%",
             backgroundColor: theme.palette.background.default,
           },
           "#root": {
             height: "100%",
+            width: "100%",
           },
           h1: { textTransform: "none" },
           h2: { textTransform: "none" },

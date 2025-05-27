@@ -107,6 +107,7 @@ const firstRunRef = useRef(false);
             // await pyodide.loadPackage("matplotlib");
             await pyodide.loadPackage("requests");
             // await pyodide.loadPackage("micropip");
+            await pyodide.loadPackage("os");
             await pyodide.loadPackage("pytest");
             return true;
         } catch {
@@ -115,21 +116,23 @@ const firstRunRef = useRef(false);
     };
 
     const runCode = async () => {
-      if (!pyodide || !code) return;
-        const importsOK = await ensureImports();
-        if (!importsOK) {
-          console.log('Imports not OK!');
-            setIsLoading(true);
-            await first();
-          console.log('Imports loaded again!');
-            setIsLoading(false);
-        }
+      console.info('Running code...');
+      // if (!pyodide || !code) return;
+        // const importsOK = await ensureImports();
+        // if (!importsOK) {
+          // console.log('Re-importing packages...');
+            // setIsLoading(true);
+            // await first();
+          // console.log('Imports loaded again!');
+            // setIsLoading(false);
+        // }
+        console.info(pyodide, code);
         if (pyodide && code) {
-            code =  "import pandas as pd\n" +
-                    "import numpy as np\n" +
-                    "import geopandas as gpd\n" +
-                    // "import matplotlib.pyplot as plt\n" +
-                    "from shapely.geometry import Polygon, LineString, Point, MultiPolygon\n\n" + code;
+            // code =  "import pandas as pd\n" +
+            //         "import numpy as np\n" +
+            //         "import geopandas as gpd\n" +
+            //         // "import matplotlib.pyplot as plt\n" +
+            //         "from shapely.geometry import Polygon, LineString, Point, MultiPolygon\n\n" + code;
             console.log("%cThis code is being compiled:\n", "font-size: 2em; color: violet", "\n" + code);
             pyodide.setDebug(true);
             setOutput("");
@@ -250,7 +253,7 @@ document.addEventListener(
             boxShadow: "none",
           }}
           onClick={ runCode }
-          disabled={true}
+          disabled={ !pyodide || isLoading }
         >
           <Box display="flex" alignItems="center" gap={ 0.5 }>
             <PlayArrow fontSize="small" />
@@ -298,7 +301,7 @@ document.addEventListener(
           height: "75%",
           bgcolor: theme.palette.background.paper,
           zIndex: 1,
-          overflow: "scroll",
+          overflow: "auto",
         }}
       >
         <Typography
