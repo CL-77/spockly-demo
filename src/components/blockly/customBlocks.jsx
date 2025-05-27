@@ -1778,7 +1778,7 @@ Blockly.Blocks['create_map'] = {
 };
 pythonGenerator.forBlock['create_map'] = function(block, generator) {
   const value_center = generator.valueToCode(block, 'center', pythonGenerator.ORDER_ATOMIC) || '(0, 0)';
-  return `import folium\nm = folium.Map(location=${value_center}, zoom_start=12)`;
+  return `import folium\nm = folium.Map(location=${value_center}, zoom_start=12)\n`;
 }
 
 Blockly.Blocks['create_marker'] = {
@@ -1808,7 +1808,7 @@ pythonGenerator.forBlock['create_marker'] = function(block, generator) {
     location=${value_position},
     popup=${text_popup},
     icon=${text_icon},
-).add_to(m)`;
+).add_to(m)\n`;
 }
 
 Blockly.Blocks['create_polygon'] = {
@@ -1843,7 +1843,82 @@ pythonGenerator.forBlock['create_polygon'] = function(block, generator) {
     popup=${text_popup},
     color=${color},
     fill_color=${fill_color},
-).add_to(m)`;
+).add_to(m)\n`;
+}
+
+Blockly.Blocks['create_polyline'] = {
+  init: function() {
+    this.appendDummyInput('NAME')
+      .appendField('Create polyline on map');
+    this.appendValueInput('position')
+      .appendField(new Blockly.FieldLabelSerializable('Position of polyline'), 'NAME');
+    this.appendDummyInput('weight')
+      .appendField(new Blockly.FieldLabelSerializable('Weight'), 'WEIGHT')
+      .appendField(new Blockly.FieldNumber(1), 'weight');
+    this.appendDummyInput('tooltip')
+      .appendField('Tooltip')
+      .appendField(new Blockly.FieldTextInput('polyline'), 'tooltip');
+    this.appendDummyInput('color')
+      .appendField('color')
+      .appendField(new Blockly.FieldTextInput('green'), 'color');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('');
+    this.setHelpUrl('https://python-visualization.github.io/folium/latest/user_guide/vector_layers/polyline.html');
+    this.setColour(270);
+  }
+};
+pythonGenerator.forBlock['create_polyline'] = function(block, generator) {
+  const polyline_shown = generator.valueToCode(block, 'position', pythonGenerator.ORDER_ATOMIC);
+  const weight = block.getFieldValue('weight') || '1';
+  const text_tooltip = block.getFieldValue('tooltip');
+  const color = block.getFieldValue('color');
+  return `folium.PolyLine(
+    locations=${polyline_shown},
+    color=${color},
+    weight=${weight},
+    tooltip=${text_tooltip}   
+).add_to(m)\n`;
+}
+
+Blockly.Blocks['create_rectangle'] = {
+  init: function() {
+    this.appendDummyInput('NAME')
+      .appendField('Create rectangle on map');
+    this.appendValueInput('position')
+      .appendField(new Blockly.FieldLabelSerializable('Opposite corners of rectangle'), 'NAME');
+    this.appendDummyInput('weight')
+      .appendField(new Blockly.FieldLabelSerializable('Weight'), 'WEIGHT')
+      .appendField(new Blockly.FieldNumber(1), 'weight');
+    this.appendDummyInput('popup')
+      .appendField('Popup')
+      .appendField(new Blockly.FieldTextInput('rectangle'), 'popup');
+    this.appendDummyInput('color')
+      .appendField('color')
+      .appendField(new Blockly.FieldTextInput('green'), 'color');
+    this.appendDummyInput('fill_color')
+      .appendField('fill_color')
+      .appendField(new Blockly.FieldTextInput('green'), 'fill_color');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('');
+    this.setHelpUrl('https://https://python-https://python-visualization.github.io/folium/latest/user_guide/vector_layers/rectangle.html');
+    this.setColour(270);
+  }
+};
+pythonGenerator.forBlock['create_rectangle'] = function(block, generator) {
+  const rect_shown = generator.valueToCode(block, 'position', pythonGenerator.ORDER_ATOMIC);
+  const weight = block.getFieldValue('weight') || '1';
+  const text_popup = block.getFieldValue('popup');
+  const color = block.getFieldValue('color');
+  const fill_color = block.getFieldValue('fill_color');
+  return `folium.Rectangle(
+    bounds=${rect_shown},
+    weight=${weight}
+    color=${color},
+    fill_color=${fill_color},
+    popup=${text_popup}
+).add_to(m)\n`;
 }
 
 Blockly.Blocks['create_circle'] = {
@@ -1854,7 +1929,7 @@ Blockly.Blocks['create_circle'] = {
       .appendField(new Blockly.FieldLabelSerializable('Position of circle'), 'NAME');
     this.appendDummyInput('radius')
       .appendField(new Blockly.FieldLabelSerializable('Radius'), 'RADIUS')
-      .appendField(new Blockly.FieldNumber(0), 'radius');
+      .appendField(new Blockly.FieldNumber(1), 'radius');
     this.appendDummyInput('popup')
       .appendField('Popup')
       .appendField(new Blockly.FieldTextInput('circle'), 'popup');
@@ -1883,7 +1958,7 @@ pythonGenerator.forBlock['create_circle'] = function(block, generator) {
     popup=${text_popup},
     color=${color},
     fill_color=${fill_color},
-).add_to(m)`;
+).add_to(m)\n`;
 }
 
 Blockly.Blocks['JSON_on_map'] = {
@@ -1901,5 +1976,38 @@ pythonGenerator.forBlock['JSON_on_map'] = function(block, generator) {
   const value_json = generator.valueToCode(block, 'json', pythonGenerator.ORDER_ATOMIC);
   return `\nimport requests\n
           geojson_data = requests.get(${value_json}).json()\n
-          folium.GeoJson(geojson_data).add_to(m)`;
+          folium.GeoJson(geojson_data).add_to(m)\n`;
+}
+
+Blockly.Blocks['Choropleth_map'] = {
+  init: function() {
+    this.appendDummyInput('NAME')
+      .appendField('Make a choropleth map');
+    this.appendValueInput('data')
+      .appendField('with data');
+    this.appendValueInput('columns_shown')
+      .appendField('of column');
+    this.appendDummyInput('fill_color')
+      .appendField('fill_color')
+      .appendField(new Blockly.FieldTextInput('green'), 'fill_color');
+    this.appendValueInput('bins')
+      .appendField('list of bins');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('');
+    this.setHelpUrl('https://python-visualization.github.io/folium/latest/user_guide/geojson/choropleth.html');
+    this.setColour(270);
+  }
+};
+pythonGenerator.forBlock['Choropleth_map'] = function(block, generator) {
+  const value_data = generator.valueToCode(block, 'data', pythonGenerator.ORDER_ATOMIC);
+  const columns_shown = generator.valueToCode(block, 'columns_shown', pythonGenerator.ORDER_ATOMIC);
+  const fill_color = block.getFieldValue('fill_color');
+  const value_bins = generator.valueToCode(block, 'bins', pythonGenerator.ORDER_ATOMIC);
+  return `folium.Choropleth(
+    data=${value_data},
+    columns=${columns_shown}
+    bins=${value_bins},
+    fill_color=${fill_color}
+).add_to(m)\n`;
 }
