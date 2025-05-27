@@ -119,6 +119,30 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
                 </shadow>
               </value>
             </block>
+            <block type="pie_chart">
+              <value name="title">
+                <shadow type="text">
+                  <field name="TEXT">Title</field>
+                </shadow>
+              </value>
+            </block>
+            <block type="bar_chart">
+              <value name="title">
+                <shadow type="text">
+                  <field name="TEXT">Title</field>
+                </shadow>
+              </value>
+              <value name="XLabel">
+                <shadow type="text">
+                  <field name="TEXT">X-axis</field>
+                </shadow>
+              </value>
+              <value name="YLabel">
+                <shadow type="text">
+                  <field name="TEXT">Y-axis</field>
+                </shadow>
+              </value>
+            </block>
           </category>
 
           <category name="Statistics" colour="#BA68C8">

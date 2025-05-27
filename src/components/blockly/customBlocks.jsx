@@ -2011,3 +2011,70 @@ pythonGenerator.forBlock['Choropleth_map'] = function(block, generator) {
     fill_color=${fill_color}
 ).add_to(m)\n`;
 }
+
+Blockly.Blocks['pie_chart'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Pie chart');
+    this.appendValueInput('sizes')
+        .appendField('Sizes');
+    this.appendValueInput('labels')
+        .appendField('Labels');
+    this.appendValueInput('title')
+        .appendField('Title');
+    this.setInputsInline(false);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('Plot a pie chart');
+    this.setHelpUrl('https://matplotlib.org/stable/gallery/pie_and_polar_charts/pie_features.html');
+    this.setColour(325);
+  }
+}
+pythonGenerator.forBlock['pie_chart'] = function(block, generator) {
+  const sizes = generator.valueToCode(block, 'sizes', pythonGenerator.ORDER_NONE) || "0";
+  const labels = generator.valueToCode(block, 'labels', pythonGenerator.ORDER_NONE) || "";
+  const title = generator.valueToCode(block, 'title', pythonGenerator.ORDER_NONE) || "";
+  return '' +
+  `sizes = ${sizes}\n` +
+  `labels = ${labels}\n` +
+  `fig, ax = plt.subplots()\n` +
+  `ax.pie(sizes, labels=labels, autopct='%1.1f%%')\n` + 
+  `ax.set.title(${title})\n`
+}
+
+Blockly.Blocks['bar_chart'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Bar chart');
+    this.appendValueInput('sizes')
+        .appendField('Sizes');
+    this.appendValueInput('label_bar')
+        .appendField('Labels');
+    this.appendValueInput('title')
+        .appendField('Title');
+    this.appendValueInput('XLabel')
+        .appendField('X-axis label');
+    this.appendValueInput('YLabel')
+        .appendField('Y-axis label');
+    this.setInputsInline(false);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('Plot a bar chart');
+    this.setHelpUrl('https://matplotlib.org/stable/gallery/pie_and_polar_charts/pie_features.html');
+    this.setColour(325);
+  }
+}
+pythonGenerator.forBlock['bar_chart'] = function(block, generator) {
+  const sizes = generator.valueToCode(block, 'sizes', pythonGenerator.ORDER_NONE) || "0";
+  const label_bar = generator.valueToCode(block, 'label_bar', pythonGenerator.ORDER_NONE) || "";
+  const labels = [generator.valueToCode(block, 'XLabel', pythonGenerator.ORDER_NONE) || "0", generator.valueToCode(block, 'YLabel', pythonGenerator.ORDER_NONE) || "0"];
+  const title = generator.valueToCode(block, 'title', pythonGenerator.ORDER_NONE) || "";
+  return '' +
+  `sizes = ${sizes}\n` +
+  `labels = ${label_bar}\n` +
+  `plt.bar(labels,sizes)\n` +
+  `plt.title(${title})\n` +
+  `plt.xlabel(${labels[0]})\n` + 
+  `plt.ylabel(${labels[1]})\n` +
+  `plt.show()`
+}
