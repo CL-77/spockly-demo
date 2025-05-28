@@ -207,6 +207,7 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
           </category>
 
           <category name="Other" colour="#5C81A6">
+            <block type="while_loop"></block>
             <block type="controls_if"></block>
             <block type="operators"></block>
             <block type="repeat_times"></block>

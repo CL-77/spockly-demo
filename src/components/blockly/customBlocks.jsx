@@ -2243,3 +2243,24 @@ pythonGenerator.forBlock['distance_haversine'] = function(block, generator) {
     `c = 2 * np.atan2(np.sqrt(a), np.sqrt(1 - a))\n`+
     `R * c`, pythonGenerator.ORDER_ATOMIC];
 }
+
+Blockly.Blocks['while_loop'] = {
+  init: function() {
+    this.appendValueInput("CONDITION")
+        .setCheck("Boolean")
+        .appendField("while");
+    this.appendStatementInput("DO")
+        .setCheck(null)
+        .appendField("do");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(210); // You can change the color
+    this.setTooltip("Repeat while the condition is true");
+    this.setHelpUrl("");
+  }
+};
+pythonGenerator.forBlock['while_loop'] = function(block, generator) {
+  const condition = generator.valueToCode(block, 'CONDITION', pythonGenerator.ORDER_NONE) || 'False';
+  const statements = generator.statementToCode(block, 'DO');
+  return `while ${condition}:\n${statements}`;
+};
