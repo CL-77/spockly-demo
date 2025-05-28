@@ -67,7 +67,7 @@ const firstRunRef = useRef(false);
             // Install pandas and other core packages
             await pyodide.loadPackage("pandas");
             await pyodide.loadPackage("geopandas");
-            // await pyodide.loadPackage("matplotlib");
+            await pyodide.loadPackage("matplotlib");
             await pyodide.loadPackage("requests");
             // await pyodide.loadPackage("micropip");
             await pyodide.loadPackage("pytest");
@@ -104,7 +104,7 @@ const firstRunRef = useRef(false);
             await pyodide.loadPackage("import pandas");
             await pyodide.loadPackage("pandas");
             await pyodide.loadPackage("geopandas");
-            // await pyodide.loadPackage("matplotlib");
+            await pyodide.loadPackage("matplotlib");
             await pyodide.loadPackage("requests");
             // await pyodide.loadPackage("micropip");
             await pyodide.loadPackage("os");
@@ -126,7 +126,15 @@ const firstRunRef = useRef(false);
           // console.log('Imports loaded again!');
             // setIsLoading(false);
         // }
-        console.info(pyodide, code);
+        const plt = ~code.indexOf('plt.');
+        if(plt) {
+          document.getElementById('codeOutputBox').childNodes.forEach((e) => {
+            if(e.tagName == 'DIV') {
+              e.remove();
+            }
+          });
+          document.pyodideMplTarget = document.getElementById('codeOutputBox');
+        }
         if (pyodide && code) {
             // code =  "import pandas as pd\n" +
             //         "import numpy as np\n" +
@@ -141,6 +149,7 @@ const firstRunRef = useRef(false);
                 if (result !== undefined && result !== null) {
                     setOutput(prev => prev + result.toString());
                 }
+                if(plt) setOutput('Matplotlib figure:');
             } catch (error) {
                 console.error("Error running Python code:", error);
                 setOutput(`Error: ${error.message}`);
@@ -217,7 +226,7 @@ document.addEventListener(
 //     };
 
     return (
-        <Box
+      <Box
       sx={{
         top: 20,
         left: 20,
@@ -280,7 +289,7 @@ document.addEventListener(
           }}
           onClick={
             () => navigator.clipboard.writeText(output)
-              .then(input.select())
+              // .then(document.getElementById('codeOutputBox').select())
               .then(refCode.current.innerText = 'Output Copied!')
               .then(setTimeout(() => refCode.current.innerText = 'Copy Output', 1500))
               .catch((e) => console.error('The output could not be copied. ' + e))
@@ -303,6 +312,7 @@ document.addEventListener(
           zIndex: 1,
           overflow: "auto",
         }}
+        id="codeOutputBox"
       >
         <Typography
           fontWeight="bold"

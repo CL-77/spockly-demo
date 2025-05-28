@@ -835,7 +835,7 @@ Blockly.Blocks['lambda'] = {
         .appendField('lambda')
         .appendField(new Blockly.FieldTextInput('x', (txt) => txt.match(/^[A-Za-z_][A-Za-z0-9_]*$/) ? txt : 'ERROR!'), 'LAMBDA')
         .appendField(':');
-    this.setTooltip('Python lambda function (used for plotting for example). You can use multiple arguments by separating them with a comma.');
+    this.setTooltip('Python lambda function. You can use multiple arguments by separating them with a comma.');
     this.setColour(120);
     this.setHelpUrl('https://www.w3schools.com/python/python_lambda.asp');
     this.setOutput(true);
