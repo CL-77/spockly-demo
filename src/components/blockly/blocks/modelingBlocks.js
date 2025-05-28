@@ -27,5 +27,21 @@ Blockly.defineBlocksWithJsonArray([
     output: null,
     colour: "#A1887F",
     tooltip: "Perform kriging interpolation",
+  },
+  {
+    type: "idw_interpolation",
+    message0: "interpolate using IDW on %1",
+    args0: [{ type: "input_value", name: "DATA" }],
+    output: null,
+    colour: "#A1887F",
+    tooltip: "Perform interpolation using inverse distance weighting"
+  },
+  {
+    type: "nn_interpolation",
+    message0: "interpolate using nearest neighbour on %1",
+    args0: [{ type: "input_value", name: "DATA" }],
+    output: null,
+    colour: "#A1887F",
+    tooltip: "Perform interpolation using nearest neighbour"
   }
 ]);

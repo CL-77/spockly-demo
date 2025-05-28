@@ -47,9 +47,14 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="plot_vector"></block>
   </category>
 
-  <category name="Data" colour="#FFA726">
+  <category name="Load Data" colour="#FFA726">
     <block type="load_builtin_dataset"></block>
     <block type="get_dataset"></block>
+  </category>
+
+  <category name="Data" colour="#FF7043">
+    <block type="preview_head_n"></block>
+    <block type="structure_overview"></block>
   </category>
 
   <category name="Variables" colour="#A65E2E" custom="VARIABLE"></category>
@@ -69,32 +74,52 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="math_number"></block>
     <block type="exp_of"></block>
     <block type="log_of"></block>
-    <block type="sin_of"></block>
-    <block type="round_value"></block>
-    <block type="modulo_values"></block>
-    <block type="math_arithmetic"></block>
   </category>
 
   <category name="Statistics" colour="#BA68C8">
     <block type="calculate_mean"></block>
     <block type="calculate_sd"></block>
     <block type="calculate_median"></block>
-    <block type="calculate_mse"></block>
     <block type="calculate_max"></block>
     <block type="calculate_min"></block>
     <block type="calculate_sum"></block>
   </category>  
 
-  <category name="Transform" colour="#FFD54F">
+  <category name="Transformations" colour="#FFD54F">
     <block type="filter_rows"></block>
     <block type="select_columns"></block>
     <block type="subset_rows"></block>
     <block type="subset_column_range"></block>
   </category>
 
+  <category name="Maps" colour="#81C784">
+    <block type="plot_map"></block>
+    <block type="set_map_title"></block>
+    <block type="color_by_attribute"></block>
+    <block type="create_marker"></block>
+    <block type="create_polygon"></block>
+    <block type="create_circle"></block>
+    <block type="create_polyline"></block>
+    <block type="create_rectangle"></block>
+    <block type="choropleth_map"></block>
+    <block type="add_geojson"></block>
+  </category>
+  
   <category name="Visualization" colour="#90A4AE">
-    <block type="text_print"></block>
+    <block type="print_output"></block>
+    <block type="preview_data"></block>
+    <block type="show_structure"></block>
     <block type="histogram_block"></block>
+    <block type="boxplot_block"></block>
+    <block type="barplot_block"></block>
+    <block type="piechart_block"></block>
+    <block type="scatterplot_block"></block>
+  </category>
+
+  <category name="Export" colour="#FFB74D">
+    <block type="export_plot_png"></block>
+    <block type="export_data_csv"></block>
+    <block type="save_workspace"></block>
   </category>
 </xml>
 `;
@@ -128,12 +153,27 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="plot_vector"></block>
   </category>
 
-  <category name="Data" colour="#FFA726">
+  <category name="Load Data" colour="#FFA726">
+    <block type="load_builtin_dataset"></block>
+    <block type="get_dataset"></block>
     <block type="load_csv"></block>
     <block type="load_shapefile"></block>
     <block type="load_raster"></block>
-    <block type="load_builtin_dataset"></block>
-    <block type="get_dataset"></block>
+    <block type="load_txt"></block>
+    <block type="load_json"></block>
+    <block type="load_csv_url"></block>
+    <block type="load_api_data"></block>
+  </category>
+
+  <category name="Data" colour="#FF7043">
+    <block type="preview_head_n"></block>
+    <block type="structure_overview"></block>
+    <block type="data_shape"></block>
+    <block type="sort_array"></block>
+    <block type="stack_data"></block>
+    <block type="append_array"></block>
+    <block type="create_array"></block>
+    <block type="slice_file"></block>
   </category>
 
   <category name="Variables" colour="#A65E2E" custom="VARIABLE"></category>
@@ -159,14 +199,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="math_arithmetic"></block>
   </category>
 
-  <category name="Transformations" colour="#FFD54F">
-    <block type="filter_rows"></block>
-    <block type="select_columns"></block>
-    <block type="group_by_summarise"></block>
-    <block type="subset_rows"></block>
-    <block type="subset_column_range"></block>
-  </category>
-
   <category name="Statistics" colour="#BA68C8">
     <block type="calculate_mean"></block>
     <block type="calculate_sd"></block>
@@ -180,34 +212,73 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="calculate_sum"></block>
   </category>
 
+  <category name="Transformations" colour="#FFD54F">
+    <block type="filter_rows"></block>
+    <block type="select_columns"></block>
+    <block type="group_by_summarise"></block>
+    <block type="subset_rows"></block>
+    <block type="subset_column_range"></block>
+  </category>
+
+    <category name="Maps" colour="#81C784">
+    <block type="plot_map"></block>
+    <block type="set_map_title"></block>
+    <block type="color_by_attribute"></block>
+    <block type="create_marker"></block>
+    <block type="create_polygon"></block>
+    <block type="create_circle"></block>
+    <block type="create_polyline"></block>
+    <block type="create_rectangle"></block>
+    <block type="choropleth_map"></block>
+    <block type="add_geojson"></block>
+  </category>y>
+
+  <category name="Visualization" colour="#90A4AE">
+    <block type="print_output"></block>
+    <block type="preview_data"></block>
+    <block type="show_structure"></block>
+    <block type="histogram_block"></block>
+    <block type="boxplot_block"></block>
+    <block type="barplot_block"></block>
+    <block type="piechart_block"></block>
+    <block type="scatterplot_block"></block>
+  </category>
+
+  <category name="Export" colour="#FFB74D">
+    <block type="export_plot_png"></block>
+    <block type="export_data_csv"></block>
+    <block type="save_workspace"></block>
+  </category>
+
   <category name="Modeling" colour="#A1887F">
     <block type="linear_regression"></block>
     <block type="semivariogram"></block>
     <block type="kriging_interpolation"></block>
+    <block type="idw_interpolation"></block>
+    <block type="nn_interpolation"></block>
   </category>
 
   <category name="Geometry" colour="#4DD0E1">
     <block type="st_centroid"></block>
     <block type="st_transform"></block>
     <block type="st_buffer"></block>
+    <block type="st_coords"></block>
+    <block type="st_point"></block>
+    <block type="st_linestring"></block>
+    <block type="st_polygon"></block>
+    <block type="st_multipolygon"></block>
+    <block type="st_distance"></block>
+    <block type="st_area"></block>
+    <block type="st_length"></block>
+    <block type="st_bbox"></block>
+    <block type="st_crs"></block>
+    <block type="st_geometry_type"></block>
   </category>
 
   <category name="Raster" colour="#64B5F6">
     <block type="read_stars"></block>
     <block type="crop_raster"></block>
     <block type="aggregate_raster"></block>
-  </category>
-
-  <category name="Maps" colour="#81C784">
-    <block type="plot_map"></block>
-    <block type="set_map_title"></block>
-    <block type="color_by_attribute"></block>
-  </category>
-
-  <category name="Visualization" colour="#90A4AE">
-    <block type="print_output"></block>
-    <block type="preview_data"></block>
-    <block type="show_structure"></block>
   </category>
 </xml>
 `;

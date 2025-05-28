@@ -1,4 +1,5 @@
 import "./blocks/examples";
+import "./blocks/loadDataBlocks";
 import "./blocks/dataBlocks";
 import "./blocks/transformBlocks";
 import "./blocks/mathBlocks";
@@ -9,4 +10,5 @@ import "./blocks/geometryBlocks";
 import "./blocks/rasterBlocks";
 import "./blocks/mapsBlocks";
 import "./blocks/visualizationBlocks";
+import "./blocks/exportBlocks";
 import "./blocks/generatorHelpers";
