@@ -2078,3 +2078,62 @@ pythonGenerator.forBlock['bar_chart'] = function(block, generator) {
   `plt.ylabel(${labels[1]})\n` +
   `plt.show()`
 }
+
+//Distance Vincenty
+Blockly.Blocks['distance_vinc'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Vincenty’s distance');
+    this.appendValueInput('point1')
+        .appendField('Point 1')
+        .setCheck(['Coords']);
+    this.appendValueInput('point2')
+        .appendField('Point 2')
+        .setCheck(['Coords']);
+    this.setOutput(true, 'Number');
+    this.setTooltip('Find the Vincenty distance');
+    this.setHelpUrl('');
+    this.setColour(60);
+  }
+};
+pythonGenerator.forBlock['distance_vinc'] = function(block, generator) {
+  const coord1 = generator.valueToCode(block, 'point1', pythonGenerator.ORDER_ATOMIC);
+  const coord2 = generator.valueToCode(block, 'point2', pythonGenerator.ORDER_ATOMIC);
+  return [`from geopy.distance import geodesic\n`+
+          `geodesic(${coord1}, ${coord2}).meters`, pythonGenerator.ORDER_ATOMIC];
+}
+
+//Distance on a sphere
+Blockly.Blocks['distance_sph'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Distance on a sphere');
+    this.appendDummyInput()
+        .appendField('Point 1: (')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat1')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon1')
+        .appendField(')');
+    this.appendDummyInput()
+        .appendField('Point 2: (')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat2')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon2')
+        .appendField(')');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Find the distance on a sphere with lat and lon');
+    this.setHelpUrl('');
+    this.setColour(60);
+  }
+};
+pythonGenerator.forBlock['distance_sph'] = function(block, generator) {
+  const lat1 = block.getFieldValue('Lat1') || '0';
+  const lat2 = block.getFieldValue('Lat2') || '0';
+  const lon1 = block.getFieldValue('Lon1') || '0';
+  const lon2 = block.getFieldValue('Lon2') || '0';
+  return [`R = 6371e3\n`+
+    `phi1 = np.radians(${lat1})\n`+
+    `phi2 = np.radians(${lat2})\n`+
+    `delta_lambda = np.radians(${lon2} - ${lon1})\n`+
+    `np.acos(np.sin(phi1) * np.sin(phi2) + np.cos(phi1) * np.cos(phi2) * np.cos(delta_lambda)) * R`, pythonGenerator.ORDER_ATOMIC];
+}

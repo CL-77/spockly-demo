@@ -184,6 +184,8 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
             <block type="polygon"></block>
             <block type="multipolygon"></block>
             <block type="distance_calc"></block>
+            <block type="distance_vinc"></block>
+            <block type="distance_sph"></block>
             <block type="centroid"></block>
             <block type="polygon_area"></block>
             <block type="polygon_perimeter"></block>
