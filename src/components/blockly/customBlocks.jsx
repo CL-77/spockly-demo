@@ -835,7 +835,7 @@ Blockly.Blocks['lambda'] = {
         .appendField('lambda')
         .appendField(new Blockly.FieldTextInput('x', (txt) => txt.match(/^[A-Za-z_][A-Za-z0-9_]*$/) ? txt : 'ERROR!'), 'LAMBDA')
         .appendField(':');
-    this.setTooltip('Python lambda function (used for plotting for example). You can use multiple arguments by separating them with a comma.');
+    this.setTooltip('Python lambda function. You can use multiple arguments by separating them with a comma.');
     this.setColour(120);
     this.setHelpUrl('https://www.w3schools.com/python/python_lambda.asp');
     this.setOutput(true);
@@ -1045,6 +1045,40 @@ pythonGenerator.forBlock['chdir'] = function(block) {
   const path = block.getFieldValue('PATH');
   return `\nos.chdir('${path}')`;
 }
+
+// Blockly.Blocks['sampleData'] = {
+//   init: function() {
+//     this.appendDummyInput()
+//         .appendField('Download sample data');
+//     this.setTooltip('Download sample data from the internet');
+//     this.setNextStatement(true);
+//     this.setPreviousStatement(true);
+//     this.setColour(200); 
+//   }
+// }
+// pythonGenerator.forBlock['sampleData'] = function() {
+//   return `files = [
+//   '2020-01-metropolitan-street.csv',
+//   '2020-02-metropolitan-street.csv',
+//   '2020-03-metropolitan-street.csv',
+//   '2020-04-metropolitan-street.csv',
+//   '2020-05-metropolitan-street.csv',
+//   '2020-06-metropolitan-street.csv',
+//   '2020-07-metropolitan-street.csv',
+//   '2020-08-metropolitan-street.csv',
+//   '2020-09-metropolitan-street.csv',
+//   '2020-10-metropolitan-street.csv',
+//   '2020-11-metropolitan-street.csv',
+//   '2020-12-metropolitan-street.csv'
+// ]
+
+// data_url = 'https://github.com/spatialthoughts/python-dataviz-web/releases/' \
+//   'download/police.uk/'
+
+// for f in files:
+//   url = os.path.join(data_url + f)
+//   download(url, 'data')\n`;
+// }
 
 Blockly.Blocks['listdir'] = {
   init: function() {
@@ -1982,16 +2016,17 @@ pythonGenerator.forBlock['JSON_on_map'] = function(block, generator) {
 Blockly.Blocks['Choropleth_map'] = {
   init: function() {
     this.appendDummyInput('NAME')
-      .appendField('Make a choropleth map');
+        .appendField('Make a choropleth map');
     this.appendValueInput('data')
-      .appendField('with data');
+        .appendField('with data');
     this.appendValueInput('columns_shown')
-      .appendField('of column');
+        .appendField('of column');
     this.appendDummyInput('fill_color')
-      .appendField('fill_color')
-      .appendField(new Blockly.FieldTextInput('green'), 'fill_color');
+        .appendField('fill_color')
+        .appendField(new Blockly.FieldTextInput('green'), 'fill_color');
     this.appendValueInput('bins')
-      .appendField('list of bins');
+        .appendField('list of bins');
+    this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip('');

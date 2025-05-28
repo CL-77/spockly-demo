@@ -69,6 +69,7 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
           </category>
 
           <category name="Visualisation" colour="#90A4AE">
+            <!--<block type="sampleData"></block>-->
             <block type="create_folder"></block>
             <block type="func_download"></block>
             <block type="read_file"></block>
@@ -274,7 +275,8 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
     libs += gpd ? "import geopandas as gpd\n" : "";
     libs += requests ? "import requests\n" : "";
     libs += os ? "import os\n" : "";
-    libs += def_download ?  '' +
+    libs += def_download ?  'import requests\n' +
+                            'import os\n' +
                             'def download(url, folder):\n' +
                             '\tfilename = os.path.join(folder, os.path.basename(url))\n' +
                             '\tif not os.path.exists(filename):\n' + 
@@ -285,7 +287,7 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
                               '\t\tprint("Downloaded ", filename)\n\n'
     : '';
 
-    setCode(libs + '\n' + pythonCode);
+    setCode((libs ? libs + '\n' : '') + pythonCode);
   };
 
   return (

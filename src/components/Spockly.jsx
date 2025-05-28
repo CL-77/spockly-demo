@@ -1,14 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BlocklyComponent from "./BlocklyComponent";
 import CodeDisplay from "./CodeDisplay";
 import {Card, Box, Grid } from "@mui/material";
 import { darkTheme, lightTheme } from "./../appTheme";
-import Pyodide from "./Pyodide";
+import CodeOutput from "./CodeOutput";
+import main from './init.js';
 
 function SPOCKLY({ isDarkMode }) {
   const [code, setCode] = useState("");
   const theme = isDarkMode ? darkTheme : lightTheme;
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [output, setOutput] = useState("Loading Pyodide...");
+  useEffect(() => {
+    const firstRun = async () => {
+        const code =
+        `import pyodide_js
+await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shapely'])
+`;
+        const result = await main(code);
+        setOutput(result);
+        console.info('Pyodide is ready!');
+        setIsLoading(false);
+    }
+    firstRun();
+  }, []);
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Grid
@@ -55,7 +70,7 @@ function SPOCKLY({ isDarkMode }) {
               <CodeDisplay code={ code } isDarkMode={ isDarkMode } />
             </Box>
             <Box sx={{ height: "50%" }}>
-              <Pyodide code={ code } isDarkMode={ isDarkMode } />
+              <CodeOutput code={ code } isDarkMode={ isDarkMode } />
             </Box>
           </Card>
         </Grid>

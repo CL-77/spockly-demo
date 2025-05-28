@@ -13,6 +13,7 @@ import { GlobalStyles, ThemeProvider } from "@mui/material";
 import { darkTheme, lightTheme } from "./appTheme";
 import SPOCKLY from "./components/Spockly";
 import Toast from "./components/Toast";
+import './components/init.js';
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;
