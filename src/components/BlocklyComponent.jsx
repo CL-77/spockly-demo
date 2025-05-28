@@ -22,6 +22,31 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   // Change content later
   const beginnerToolbox = `
 <xml>
+  <category name="Tests" colour="#5C81A6">
+    <block type="controls_if"></block>
+    <block type="logic_compare"></block>
+    <block type="math_number"></block>
+    <block type="exp_of"></block>
+    <block type="log_of"></block>
+    <block type="sin_of"></block>
+    <block type="round_value"></block>
+    <block type="modulo_values"></block>
+    <block type="math_arithmetic"></block>
+    <block type="text"></block>
+    <block type="text_print"></block>
+    <block type="histogram_block"></block>
+    <block type="rnorm_block"></block>
+    <block type="print_files"></block> 
+    <block type="head_print"></block>
+    <block type="print_hello"></block>
+    <block type="math_square"></block>
+    <block type="text_greeting"></block>
+    <block type="repeat_times"></block>
+    <block type="dropdown_color"></block>
+    <block type="create_vector"></block>
+    <block type="plot_vector"></block>
+  </category>
+
   <category name="Data" colour="#FFA726">
     <block type="load_builtin_dataset"></block>
     <block type="get_dataset"></block>
