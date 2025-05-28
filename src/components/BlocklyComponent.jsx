@@ -292,15 +292,14 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
               },
               borderRadius: 2,
               textTransform: "none",
-              fontWeight: "bold",
-              px: 3,
+              px: 2,
               display: "flex",
               alignItems: "center",
-              gap: 1.5,
+              gap: 1,
             }}
           >
             <Upload fontSize="medium" />
-            Upload Data File
+            UPLOAD DATA FILE
           </Button>
         </Box>
         <Box display="flex" alignItems="center" gap={2} flex={1} justifyContent="flex-end" minWidth={0}>
