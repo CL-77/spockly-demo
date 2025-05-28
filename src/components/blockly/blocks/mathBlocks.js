@@ -47,5 +47,49 @@ Blockly.defineBlocksWithJsonArray([
     colour: "#FF8A65",
     tooltip: "Divide one value by another",
     helpUrl: ""
+  },
+  // --- Additional math blocks ---
+  {
+    type: "exp_of",
+    message0: "exp of %1",
+    args0: [{ type: "input_value", name: "VALUE" }],
+    output: null,
+    colour: "#FF8A65",
+    tooltip: "Exponential of a value",
+  },
+  {
+    type: "log_of",
+    message0: "log of %1",
+    args0: [{ type: "input_value", name: "VALUE" }],
+    output: null,
+    colour: "#FF8A65",
+    tooltip: "Natural logarithm of a value",
+  },
+  {
+    type: "sin_of",
+    message0: "sin of %1",
+    args0: [{ type: "input_value", name: "ANGLE" }],
+    output: null,
+    colour: "#FF8A65",
+    tooltip: "Sine of an angle (in radians)",
+  },
+  {
+    type: "round_value",
+    message0: "round %1",
+    args0: [{ type: "input_value", name: "VALUE" }],
+    output: null,
+    colour: "#FF8A65",
+    tooltip: "Round a number to the nearest integer",
+  },
+  {
+    type: "modulo_values",
+    message0: "%1 modulo %2",
+    args0: [
+      { type: "input_value", name: "DIVIDEND" },
+      { type: "input_value", name: "DIVISOR" }
+    ],
+    output: null,
+    colour: "#FF8A65",
+    tooltip: "Modulo operation (x %% y)",
   }
 ]);
