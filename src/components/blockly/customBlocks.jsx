@@ -2137,3 +2137,109 @@ pythonGenerator.forBlock['distance_sph'] = function(block, generator) {
     `delta_lambda = np.radians(${lon2} - ${lon1})\n`+
     `np.acos(np.sin(phi1) * np.sin(phi2) + np.cos(phi1) * np.cos(phi2) * np.cos(delta_lambda)) * R`, pythonGenerator.ORDER_ATOMIC];
 }
+
+//Distance with rectangular approximation
+Blockly.Blocks['distance_rect'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Distance with rectangular approximation');
+    this.appendDummyInput()
+        .appendField('Point 1: (')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat1')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon1')
+        .appendField(')');
+    this.appendDummyInput()
+        .appendField('Point 2: (')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat2')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon2')
+        .appendField(')');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Find the distance with rectangular approximation with lat and lon');
+    this.setHelpUrl('');
+    this.setColour(60);
+  }
+};
+pythonGenerator.forBlock['distance_rect'] = function(block, generator) {
+  const lat1 = block.getFieldValue('Lat1') || '0';
+  const lat2 = block.getFieldValue('Lat2') || '0';
+  const lon1 = block.getFieldValue('Lon1') || '0';
+  const lon2 = block.getFieldValue('Lon2') || '0';
+  return [`R = 6371e3\n`+
+    `x = np.radians(${lon2} - ${lon1}) * np.cos(np.radians((${lat1} + ${lat2}) / 2))\n`+
+    `y = np.radians(${lat2} - ${lat1})\n`+
+    `R * np.sqrt(x*x + y*y)`, pythonGenerator.ORDER_ATOMIC];
+}
+
+
+Blockly.Blocks['distance_manhattan'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Manhattan distance');
+    this.appendDummyInput()
+        .appendField('Point 1: (')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat1')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon1')
+        .appendField(')');
+    this.appendDummyInput()
+        .appendField('Point 2: (')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat2')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon2')
+        .appendField(')');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Find the manhattan distance with lat and lon');
+    this.setHelpUrl('');
+    this.setColour(60);
+  }
+};
+pythonGenerator.forBlock['distance_manhattan'] = function(block, generator) {
+  const lat1 = block.getFieldValue('Lat1') || '0';
+  const lat2 = block.getFieldValue('Lat2') || '0';
+  const lon1 = block.getFieldValue('Lon1') || '0';
+  const lon2 = block.getFieldValue('Lon2') || '0';
+  return [`lat_dist = abs(${lat2} - ${lat1}) * 111320\n`+
+    `lon_dist = abs(${lon2} - ${lon1}) * 40075000 * np.cos(np.radians((${lat2} + ${lat1}) / 2)) / 360\n`+
+    `lat_dist + lon_dist`, pythonGenerator.ORDER_ATOMIC];
+}
+
+
+//Distance haversine
+Blockly.Blocks['distance_haversine'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Distance haversine');
+    this.appendDummyInput()
+        .appendField('Point 1: (')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat1')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon1')
+        .appendField(')');
+    this.appendDummyInput()
+        .appendField('Point 2: (')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat2')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon2')
+        .appendField(')');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Find the distance haversine with lat and lon');
+    this.setHelpUrl('');
+    this.setColour(60);
+  }
+};
+pythonGenerator.forBlock['distance_haversine'] = function(block, generator) {
+  const lat1 = block.getFieldValue('Lat1') || '0';
+  const lat2 = block.getFieldValue('Lat2') || '0';
+  const lon1 = block.getFieldValue('Lon1') || '0';
+  const lon2 = block.getFieldValue('Lon2') || '0';
+  return [`R = 6371e3\n`+
+    `phi1 = np.radians(${lat1})\n`+
+    `phi2 = np.radians(${lat2})\n`+
+    `delta_lambda = np.radians(${lon2} - ${lon1})\n`+
+    `delta_phi = np.radians(${lat2} - ${lat1})\n`+
+    `a = np.sin(delta_phi / 2) ** 2 + np.cos(phi1) * np.cos(phi2) * np.sin(delta_lambda / 2) ** 2\n`+
+    `c = 2 * np.atan2(np.sqrt(a), np.sqrt(1 - a))\n`+
+    `R * c`, pythonGenerator.ORDER_ATOMIC];
+}

@@ -186,6 +186,9 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
             <block type="distance_calc"></block>
             <block type="distance_vinc"></block>
             <block type="distance_sph"></block>
+            <block type="distance_rect"></block>
+            <block type="distance_manhattan"></block>
+            <block type="distance_haversine"></block>
             <block type="centroid"></block>
             <block type="polygon_area"></block>
             <block type="polygon_perimeter"></block>
