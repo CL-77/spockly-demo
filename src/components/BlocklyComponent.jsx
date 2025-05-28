@@ -51,7 +51,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 // Change content later
   const advancedToolbox = `
 <xml>
-  <category name="Examples" colour="#5C81A6">
+  <category name="Tests" colour="#5C81A6">
     <block type="controls_if"></block>
     <block type="logic_compare"></block>
     <block type="math_number"></block>
@@ -60,22 +60,18 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="text_print"></block>
     <block type="histogram_block"></block>
     <block type="rnorm_block"></block>
-<block type="print_files"></block>
-<block type="head_print"></block>
-  </category>
-  <category name="Custom Blocks" colour="#5C81A6">
+    <block type="print_files"></block> 
+    <block type="head_print"></block>
     <block type="print_hello"></block>
     <block type="math_square"></block>
     <block type="text_greeting"></block>
     <block type="repeat_times"></block>
     <block type="dropdown_color"></block>
-  </category>
-  <category name="R-Example" colour="#5CA65C">
     <block type="create_vector"></block>
     <block type="plot_vector"></block>
   </category>
 
-  <category name="Load Data" colour="#FFA726">
+  <category name="Data" colour="#FFA726">
     <block type="load_csv"></block>
     <block type="load_shapefile"></block>
     <block type="load_raster"></block>
