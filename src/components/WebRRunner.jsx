@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { WebR } from "@r-wasm/webr";
-import { Box, Fab, Stack, Typography } from "@mui/material";
-import { PlayArrow } from "@mui/icons-material";
+import { Box, Fab, Stack, Typography, Divider, CircularProgress } from "@mui/material";
+import { PlayArrow, Clear } from "@mui/icons-material";
 import { darkTheme, lightTheme } from "./../appTheme";
 
 const webR = new WebR();
@@ -9,83 +9,126 @@ const webR = new WebR();
 const WebRRunner = ({ code, isDarkMode, webRRef }) => {
   const canvasRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
+  const [textOutput, setTextOutput] = useState("");
+  const [hasCanvas, setHasCanvas] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Initialize WebR only once when the component mounts
+  // Init WebR and set up canvas device
   useEffect(() => {
+    let isMounted = true;
     const initWebR = async () => {
       try {
-        // Initialize WebR environment
         await webR.init();
-        console.log("WebR initialized");
-        
-        // Make WebR instance available to parent components
-        if (webRRef) {
-          webRRef.current = webR;
-        }
+        await webR.evalRVoid('options(device=webr::canvas)');
+        if (webRRef) webRRef.current = webR;
+        handleCanvasOutput();
       } catch (err) {
-        console.error("WebR initialization failed:", err);
+        setTextOutput(`Error initializing WebR: ${err.message}`);
       }
     };
     initWebR();
-  }, []); // Empty dependency array means this runs once on mount
+    return () => { isMounted = false; };
+    // eslint-disable-next-line
+  }, []);
 
-  // Function to run R code
-  const runCode = async () => {
-    try {
-      // Set the default graphics device to webr::canvas
-      await webR.evalRVoid('options(device=webr::canvas)');
-
-      // Handle webR output messages in an async loop
-      (async () => {
-        for (;;) {
-          const output = await webR.read();
-          switch (output.type) {
-            case 'canvas':
-              if (output.data.event === 'canvasImage') {
-                // Add plot image data to the current canvas element
-                const canvas = canvasRef.current;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(output.data.image, 0, 0);
-              } else if (output.data.event === 'canvasNewPage') {
-                // Clear the canvas for a new plot
-                const canvas = canvasRef.current;
-                const ctx = canvas.getContext('2d');
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-              }
-              break;
-            default:
-              console.log(output);
+  // Canvas output handler
+  const handleCanvasOutput = async () => {
+    while (true) {
+      try {
+        const output = await webR.read();
+        if (output.type === 'canvas') {
+          if (output.data.event === 'canvasImage') {
+            const canvas = canvasRef.current;
+            if (canvas && output.data.image) {
+              const ctx = canvas.getContext('2d');
+              // Optional: Clear before drawing
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(output.data.image, 0, 0, canvas.width, canvas.height);
+              setHasCanvas(true);
+            }
+          } else if (output.data.event === 'canvasNewPage') {
+            const canvas = canvasRef.current;
+            if (canvas) {
+              const ctx = canvas.getContext('2d');
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
           }
         }
-      })();
+      } catch (err) {
+        // Restart handler on error
+        setTimeout(handleCanvasOutput, 1000);
+        break;
+      }
+    }
+  };
 
-      // Evaluate the R code
-      await webR.evalRVoid(code);
+  // Output reset
+  const clearOutput = () => {
+    setTextOutput("");
+    setHasCanvas(false);
+    if (canvasRef.current) {
+      const ctx = canvasRef.current.getContext('2d');
+      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    }
+  };
+
+  // R code execution
+  const runCode = async () => {
+    if (!code.trim()) {
+      setTextOutput("No code to execute");
+      return;
+    }
+    setIsLoading(true);
+    setTextOutput("");
+    // Optional: Clear graphics before each run
+    if (canvasRef.current) {
+      const ctx = canvasRef.current.getContext('2d');
+      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    }
+    try {
+      // Always set device before running code
+      await webR.evalRVoid('options(device=webr::canvas)');
+      // Try text output first
+      let result;
+      try {
+        result = await webR.evalR(code);
+        const values = await result.toArray();
+        const filtered = values.filter(val =>
+          val && val.toString().trim() !== '' &&
+          !val.toString().includes('R is a collaborative project') &&
+          !val.toString().includes('Type ') &&
+          !val.toString().includes('Copyright') &&
+          !val.toString().includes('R version') &&
+          val.toString() !== 'NULL'
+        );
+        if (filtered.length > 0) setTextOutput(filtered.join("\n"));
+      } catch (err) {
+        // If error, try as graphics-only command
+        try {
+          await webR.evalRVoid(code);
+        } catch (voidErr) {
+          setTextOutput(`Error: ${voidErr.message}`);
+        }
+      }
     } catch (err) {
-      // Handle errors gracefully
-      console.error("WebR Error:", err);
+      setTextOutput(`Error: ${err.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <Box
-      sx={{
-        top: 20,
-        left: 20,
-        right: 20,
-        height: "100%",
-        borderRadius: "5px",
-        zIndex: 1,
-      }}
-    >
-      <Stack direction="row">
+    <Box sx={{
+      height: "500px", // Setze eine feste Höhe für den Container
+      overflowY: "auto", // Ermögliche vertikales Scrollen
+      borderRadius: "5px",
+      zIndex: 1
+    }}>
+      <Stack direction="row" spacing={1}>
         <Typography
           variant="h6"
           fontWeight="bold"
-          sx={{
-            color: theme.palette.primary.contrastText,
-            paddingBottom: "15px",
-          }}
+          sx={{ color: theme.palette.primary.contrastText, pb: "15px" }}
         >
           Output
         </Typography>
@@ -93,13 +136,13 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
         <Fab
           size="small"
           variant="extended"
+          disabled={isLoading}
           sx={{
-            left: 20,
             width: "140px",
-            bgcolor: "#33bfff",
+            bgcolor: isLoading ? "#666" : "#33bfff",
             color: theme.palette.primary.contrastText,
             "&:hover": {
-              bgcolor: "#00b0ff",
+              bgcolor: isLoading ? "#666" : "#00b0ff",
             },
             boxShadow: "none",
           }}
@@ -107,27 +150,39 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
         >
           <Box display="flex" alignItems="center" gap={0.5}>
             <PlayArrow fontSize="small" />
-            <Typography fontWeight="bold">Run R Code</Typography>
+            <Typography fontWeight="bold">
+              {isLoading ? "Running..." : "Run R Code"}
+            </Typography>
+          </Box>
+        </Fab>
+
+        <Fab
+          size="small"
+          variant="extended"
+          sx={{
+            width: "100px",
+            bgcolor: "#ff6b6b",
+            color: "white",
+            "&:hover": {
+              bgcolor: "#ff5252",
+            },
+            boxShadow: "none",
+          }}
+          onClick={clearOutput}
+        >
+          <Box display="flex" alignItems="center" gap={0.5}>
+            <Clear fontSize="small" />
+            <Typography fontWeight="bold">Clear</Typography>
           </Box>
         </Fab>
       </Stack>
-
-      <Box
-        sx={{
-          position: "relative",
-          borderRadius: "5px",
-          width: "100%",
-          height: "75%",
-          bgcolor: theme.palette.background.paper,
-          zIndex: 1,
-        }}
-      >
-        <canvas
-          ref={canvasRef}
-          width="1008"
-          height="1008"
-          style={{ width: "450px", height: "450px", display: "inline-block" }}
-        />
+      <Divider sx={{ mb: 2 }} />
+      <Box sx={{ mb: 2, minHeight: 60, color: theme.palette.text.primary, background: theme.palette.background.paper, p: 1, borderRadius: 1, fontFamily: "monospace", fontSize: 16 }}>
+        {textOutput}
+      </Box>
+      <Box sx={{ mt: 2, display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <canvas ref={canvasRef} width={400} height={300} style={{ border: "1px solid #888", background: "#fff", display: hasCanvas ? "block" : "none" }} />
+        {!hasCanvas && <Typography variant="body2" sx={{ color: "#aaa" }}></Typography>}
       </Box>
     </Box>
   );
