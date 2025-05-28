@@ -26,21 +26,48 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="load_builtin_dataset"></block>
     <block type="get_dataset"></block>
   </category>
+
+  <category name="Variables" colour="#A65E2E" custom="VARIABLE"></category>
+  
+  <category name="Booleans" colour="#D32F2F">
+    <block type="convert_to_bool"></block>
+    <block type="boolean_true"></block>
+    <block type="boolean_false"></block>
+  </category>
+
+  <category name="Maths" colour="#FF8A65">
+    <block type="sum_vector"></block>
+    <block type="vector_minus_scalar"></block>
+    <block type="square_vector"></block>
+    <block type="sqrt_vector"></block>
+    <block type="divide_values"></block>
+    <block type="math_number"></block>
+    <block type="exp_of"></block>
+    <block type="log_of"></block>
+    <block type="sin_of"></block>
+    <block type="round_value"></block>
+    <block type="modulo_values"></block>
+    <block type="math_arithmetic"></block>
+  </category>
+
+  <category name="Statistics" colour="#BA68C8">
+    <block type="calculate_mean"></block>
+    <block type="calculate_sd"></block>
+    <block type="calculate_median"></block>
+    <block type="calculate_mse"></block>
+    <block type="calculate_max"></block>
+    <block type="calculate_min"></block>
+    <block type="calculate_sum"></block>
+  </category>  
+
   <category name="Transform" colour="#FFD54F">
     <block type="filter_rows"></block>
     <block type="select_columns"></block>
     <block type="subset_rows"></block>
     <block type="subset_column_range"></block>
   </category>
-  <category name="Math" colour="#FF8A65">
-    <block type="sum_vector"></block>
-    <block type="math_number"></block>
-  </category>
-  <category name="Statistics" colour="#BA68C8">
-    <block type="calculate_mean"></block>
-    <block type="calculate_sd"></block>
-  </category>
-  <category name="Output" colour="#90A4AE">
+
+  <category name="Visualization" colour="#90A4AE">
     <block type="text_print"></block>
     <block type="histogram_block"></block>
   </category>
@@ -55,6 +82,11 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="controls_if"></block>
     <block type="logic_compare"></block>
     <block type="math_number"></block>
+    <block type="exp_of"></block>
+    <block type="log_of"></block>
+    <block type="sin_of"></block>
+    <block type="round_value"></block>
+    <block type="modulo_values"></block>
     <block type="math_arithmetic"></block>
     <block type="text"></block>
     <block type="text_print"></block>
@@ -80,13 +112,25 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   </category>
 
   <category name="Variables" colour="#A65E2E" custom="VARIABLE"></category>
-  <category name="Math" colour="#FF8A65">
+  
+  <category name="Booleans" colour="#D32F2F">
+    <block type="convert_to_bool"></block>
+    <block type="boolean_true"></block>
+    <block type="boolean_false"></block>
+  </category>
+
+  <category name="Maths" colour="#FF8A65">
     <block type="sum_vector"></block>
     <block type="vector_minus_scalar"></block>
     <block type="square_vector"></block>
     <block type="sqrt_vector"></block>
     <block type="divide_values"></block>
     <block type="math_number"></block>
+    <block type="exp_of"></block>
+    <block type="log_of"></block>
+    <block type="sin_of"></block>
+    <block type="round_value"></block>
+    <block type="modulo_values"></block>
     <block type="math_arithmetic"></block>
   </category>
 
@@ -104,6 +148,11 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="summary_statistics"></block>
     <block type="quantile_column"></block>
     <block type="sorted_element_at"></block>
+    <block type="calculate_median"></block>
+    <block type="calculate_mse"></block>
+    <block type="calculate_max"></block>
+    <block type="calculate_min"></block>
+    <block type="calculate_sum"></block>
   </category>
 
   <category name="Modeling" colour="#A1887F">

@@ -2,6 +2,7 @@ import "./blocks/examples";
 import "./blocks/dataBlocks";
 import "./blocks/transformBlocks";
 import "./blocks/mathBlocks";
+import "./blocks/booleansBlocks";
 import "./blocks/statisticsBlocks";
 import "./blocks/modelingBlocks";
 import "./blocks/geometryBlocks";
