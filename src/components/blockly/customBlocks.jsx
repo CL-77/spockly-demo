@@ -2264,4 +2264,3 @@ pythonGenerator.forBlock['while_loop'] = function(block, generator) {
   const statements = generator.statementToCode(block, 'DO');
   return `while ${condition}:\n${statements}`;
 };
-
