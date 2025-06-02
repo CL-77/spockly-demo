@@ -37,7 +37,6 @@ const CodeDisplay = ({ code, isDarkMode }) => {
       sx={{
         top: 20,
         left: 20,
-        right: 20,
         height: "100%",
         borderRadius: "5px",
         zIndex: 1,
@@ -124,11 +123,12 @@ const CodeDisplay = ({ code, isDarkMode }) => {
             color: theme.palette.primary.contrastText,
             paddingBottom: "10px",
             paddingTop: "5px",
+            paddingRight: "10px",
             padding: "20px",
             whiteSpace: 'pre',
           }}
         >
-        { code || "Generated Python code will appear here..."}
+          { code || "Generated Python code will appear here..." }
         </Typography>
       </Box>
     </Box>

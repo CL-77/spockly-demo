@@ -5,7 +5,6 @@
   font-weight: 400;
 }
 
-
 body {
   margin: 0;
   place-items: center;
@@ -66,4 +65,17 @@ button {
     to {
         transform: translateX(150%);
     }
+}
+
+footer {
+    height: 50px;
+    width: 100%;
+    background-image: none;
+    background-repeat: repeat;
+    background-attachment: scroll;
+    background-position: 0% 0%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 10000;
 }

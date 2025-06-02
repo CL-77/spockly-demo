@@ -267,11 +267,23 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
     if(~pythonCode.indexOf('gpd.')) gpd = true;
     if(~pythonCode.indexOf('requests.')) requests = true;
     if(~pythonCode.indexOf('os.')) os = true;
-    if(~pythonCode.indexOf('download(')) def_download = true;	
+    if(~pythonCode.indexOf('download(')) def_download = true;
     libs += np ? "import numpy as np\n" : "";
     libs += pd ? "import pandas as pd\n" : "";
     libs += sns ? "import seaborn as sns\n" : ""; 
-    libs += plt ? "import matplotlib.pyplot as plt\n" : "";
+    libs += plt ? `import matplotlib.pyplot as plt
+import io
+import base64
+import js
+
+class Dud:
+    def __init__(self, *args, **kwargs) -> None:
+        return
+    
+    def __getattr__(self, __name: str):
+        return Dud
+
+js.document = Dud()` : "";
     libs += gpd ? "import geopandas as gpd\n" : "";
     libs += requests ? "import requests\n" : "";
     libs += os ? "import os\n" : "";
@@ -286,7 +298,11 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
                                           '\t\t\t\t\tf.write(chunk)\n' + 
                               '\t\tprint("Downloaded ", filename)\n\n'
     : '';
-
+    if(plt) pythonCode += `bytes_io = io.BytesIO()
+plt.savefig(bytes_io, format='jpg')
+bytes_io.seek(0)
+base64_encoded_spectrogram = base64.b64encode(bytes_io.read())
+print(base64_encoded_spectrogram.decode('utf-8'))`;
     setCode((libs ? libs + '\n' : '') + pythonCode);
   };
 

@@ -7,7 +7,6 @@ import io
 _stdout = io.StringIO()
 sys.stdout = _stdout
 
-# import matplotlib.pyplot as plt
 `;
 
   const captureOutput = `

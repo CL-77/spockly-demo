@@ -1165,8 +1165,7 @@ pythonGenerator.forBlock['plot'] = function(block, generator) {
   `plt.xlabel(${labels[0]})\n` + 
   `plt.ylabel(${labels[1]})\n` +
   `plt.grid(${grid})\n` +
-  `plt.legend(${legend})\n` +
-  `plt.show()\n`
+  `plt.legend(${legend})\n`
 }
 
 /** Show scattered data */

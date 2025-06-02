@@ -6,7 +6,7 @@ import { ContentPaste } from '@mui/icons-material';
 import main from './init.js';
 import { pyodideWorker } from "./workerApi.mjs";
 
-const CodeOutput = ({ code, isDarkMode }) => {
+const CodeOutput = ({ code, isDarkMode, setPlot }) => {
     const [output, setOutput] = useState("Loading Pyodide...");
     const [isLoading, setIsLoading] = useState(true);
     const theme = isDarkMode ? darkTheme : lightTheme;
@@ -17,6 +17,13 @@ const CodeOutput = ({ code, isDarkMode }) => {
       setOutput("Running...");
       const result = await main(code);
       setOutput(result);
+      console.log(typeof result, result.length, /^[A-Za-z0-9+/=\s]+$/.test(result));
+      if (typeof result === "string" && result.length > 100 && /^[A-Za-z0-9+/=\s]+$/.test(result)) {
+        console.info('%cRESULT IS A PLOT', 'color: #089d08; font-weight: bold; background-color: #FFF; font-size: 1.5em;');
+        setPlot(result);
+      } else {
+        setPlot("");
+      }
     }
     useEffect(() => {
         pyodideWorker.addEventListener("message", (event) => {
