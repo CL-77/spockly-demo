@@ -2267,10 +2267,11 @@ pythonGenerator.forBlock['while_loop'] = function(block, generator) {
 
 
 // Plotly Scatter Mapbox Block
+// Plotly Scatter Mapbox Block with fig.show()
 Blockly.Blocks['plotly_scatter_mapbox'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("Create Scatter Mapbox");
+        .appendField("Create and Show Scatter Mapbox");
     this.appendValueInput("DATAFRAME")
         .setCheck(null)
         .appendField("DataFrame");
@@ -2298,9 +2299,10 @@ Blockly.Blocks['plotly_scatter_mapbox'] = {
         .appendField(new Blockly.FieldNumber(0), "CENTER_LAT")
         .appendField("Lon")
         .appendField(new Blockly.FieldNumber(0), "CENTER_LON");
-    this.setOutput(true, null);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
     this.setColour(200);
-    this.setTooltip("Creates a Plotly scatter mapbox plot.");
+    this.setTooltip("Creates and shows a Plotly scatter mapbox plot.");
     this.setHelpUrl("");
   }
 };
@@ -2316,7 +2318,7 @@ pythonGenerator.forBlock['plotly_scatter_mapbox'] = function(block, generator) {
   const centerLon = block.getFieldValue('CENTER_LON');
 
   const code =
-`px.scatter_mapbox(
+`fig = px.scatter_mapbox(
   ${df},
   lat="${lat}",
   lon="${lon}",
@@ -2324,9 +2326,7 @@ pythonGenerator.forBlock['plotly_scatter_mapbox'] = function(block, generator) {
   mapbox_style="${style}",
   center={"lat": ${centerLat}, "lon": ${centerLon}},
   zoom=${zoom}
-)`;
-  return [code, pythonGenerator.ORDER_FUNCTION_CALL];
+)\nfig.show()\n`;
+  return code;
 };
-
-
 
