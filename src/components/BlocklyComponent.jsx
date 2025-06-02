@@ -69,6 +69,7 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
           </category>
 
           <category name="Visualisation" colour="#90A4AE">
+            <block type ="plotly_scatter_mapbox"></block>
             <block type="create_folder"></block>
             <block type="func_download"></block>
             <block type="read_file"></block>

@@ -2264,3 +2264,69 @@ pythonGenerator.forBlock['while_loop'] = function(block, generator) {
   const statements = generator.statementToCode(block, 'DO');
   return `while ${condition}:\n${statements}`;
 };
+
+
+// Plotly Scatter Mapbox Block
+Blockly.Blocks['plotly_scatter_mapbox'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Create Scatter Mapbox");
+    this.appendValueInput("DATAFRAME")
+        .setCheck(null)
+        .appendField("DataFrame");
+    this.appendDummyInput()
+        .appendField("Latitude column")
+        .appendField(new Blockly.FieldTextInput("lat"), "LAT_COL");
+    this.appendDummyInput()
+        .appendField("Longitude column")
+        .appendField(new Blockly.FieldTextInput("lon"), "LON_COL");
+    this.appendDummyInput()
+        .appendField("Hover column")
+        .appendField(new Blockly.FieldTextInput("name"), "HOVER_COL");
+    this.appendDummyInput()
+        .appendField("Map style")
+        .appendField(new Blockly.FieldDropdown([
+          ["carto-positron", "carto-positron"],
+          ["open-street-map", "open-street-map"],
+          ["stamen-terrain", "stamen-terrain"]
+        ]), "STYLE");
+    this.appendDummyInput()
+        .appendField("Zoom")
+        .appendField(new Blockly.FieldNumber(1, 0, 20), "ZOOM");
+    this.appendDummyInput()
+        .appendField("Center Lat")
+        .appendField(new Blockly.FieldNumber(0), "CENTER_LAT")
+        .appendField("Lon")
+        .appendField(new Blockly.FieldNumber(0), "CENTER_LON");
+    this.setOutput(true, null);
+    this.setColour(200);
+    this.setTooltip("Creates a Plotly scatter mapbox plot.");
+    this.setHelpUrl("");
+  }
+};
+
+pythonGenerator.forBlock['plotly_scatter_mapbox'] = function(block, generator) {
+  const df = generator.valueToCode(block, 'DATAFRAME', pythonGenerator.ORDER_NONE) || 'gdf';
+  const lat = block.getFieldValue('LAT_COL');
+  const lon = block.getFieldValue('LON_COL');
+  const hover = block.getFieldValue('HOVER_COL');
+  const style = block.getFieldValue('STYLE');
+  const zoom = block.getFieldValue('ZOOM');
+  const centerLat = block.getFieldValue('CENTER_LAT');
+  const centerLon = block.getFieldValue('CENTER_LON');
+
+  const code =
+`px.scatter_mapbox(
+  ${df},
+  lat="${lat}",
+  lon="${lon}",
+  hover_name="${hover}",
+  mapbox_style="${style}",
+  center={"lat": ${centerLat}, "lon": ${centerLon}},
+  zoom=${zoom}
+)`;
+  return [code, pythonGenerator.ORDER_FUNCTION_CALL];
+};
+
+
+
