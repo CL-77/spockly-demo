@@ -2256,7 +2256,7 @@ Blockly.Blocks['while_loop'] = {
     this.setNextStatement(true, null);
     this.setColour(210); // You can change the color
     this.setTooltip("Repeat while the condition is true");
-    this.setHelpUrl("");
+    this.setHelpUrl("www.google.com");
   }
 };
 pythonGenerator.forBlock['while_loop'] = function(block, generator) {
