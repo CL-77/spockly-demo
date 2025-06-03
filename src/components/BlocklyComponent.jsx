@@ -82,6 +82,7 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
 
           <category name="Visualisation" colour="#90A4AE">
             <!--<block type="sampleData"></block>-->
+            <block type ="plotly_scatter_mapbox"></block>
             <block type="create_folder"></block>
             <block type="func_download"></block>
             <block type="read_file"></block>
@@ -132,6 +133,30 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
                 </shadow>
               </value>
             </block>
+            <block type="pie_chart">
+              <value name="title">
+                <shadow type="text">
+                  <field name="TEXT">Title</field>
+                </shadow>
+              </value>
+            </block>
+            <block type="bar_chart">
+              <value name="title">
+                <shadow type="text">
+                  <field name="TEXT">Title</field>
+                </shadow>
+              </value>
+              <value name="XLabel">
+                <shadow type="text">
+                  <field name="TEXT">X-axis</field>
+                </shadow>
+              </value>
+              <value name="YLabel">
+                <shadow type="text">
+                  <field name="TEXT">Y-axis</field>
+                </shadow>
+              </value>
+            </block>
           </category>
 
           <category name="Statistics" colour="#BA68C8">
@@ -173,6 +198,11 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
             <block type="polygon"></block>
             <block type="multipolygon"></block>
             <block type="distance_calc"></block>
+            <block type="distance_vinc"></block>
+            <block type="distance_sph"></block>
+            <block type="distance_rect"></block>
+            <block type="distance_manhattan"></block>
+            <block type="distance_haversine"></block>
             <block type="centroid"></block>
             <block type="polygon_area"></block>
             <block type="polygon_perimeter"></block>
@@ -191,6 +221,7 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
           </category>
 
           <category name="Other" colour="#5C81A6">
+            <block type="while_loop"></block>
             <block type="controls_if"></block>
             <block type="operators"></block>
             <block type="repeat_times"></block>

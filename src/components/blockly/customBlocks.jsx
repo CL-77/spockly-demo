@@ -2073,3 +2073,322 @@ pythonGenerator.forBlock['Choropleth_map'] = function(block, generator) {
     fill_color=${fill_color}
 ).add_to(m)\n`;
 }
+
+Blockly.Blocks['pie_chart'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Pie chart');
+    this.appendValueInput('sizes')
+        .appendField('Sizes');
+    this.appendValueInput('labels')
+        .appendField('Labels');
+    this.appendValueInput('title')
+        .appendField('Title');
+    this.setInputsInline(false);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('Plot a pie chart');
+    this.setHelpUrl('https://matplotlib.org/stable/gallery/pie_and_polar_charts/pie_features.html');
+    this.setColour(325);
+  }
+}
+pythonGenerator.forBlock['pie_chart'] = function(block, generator) {
+  const sizes = generator.valueToCode(block, 'sizes', pythonGenerator.ORDER_NONE) || "0";
+  const labels = generator.valueToCode(block, 'labels', pythonGenerator.ORDER_NONE) || "";
+  const title = generator.valueToCode(block, 'title', pythonGenerator.ORDER_NONE) || "";
+  return '' +
+  `sizes = ${sizes}\n` +
+  `labels = ${labels}\n` +
+  `fig, ax = plt.subplots()\n` +
+  `ax.pie(sizes, labels=labels, autopct='%1.1f%%')\n` + 
+  `ax.set.title(${title})\n`
+}
+
+Blockly.Blocks['bar_chart'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Bar chart');
+    this.appendValueInput('sizes')
+        .appendField('Sizes');
+    this.appendValueInput('label_bar')
+        .appendField('Labels');
+    this.appendValueInput('title')
+        .appendField('Title');
+    this.appendValueInput('XLabel')
+        .appendField('X-axis label');
+    this.appendValueInput('YLabel')
+        .appendField('Y-axis label');
+    this.setInputsInline(false);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('Plot a bar chart');
+    this.setHelpUrl('https://matplotlib.org/stable/gallery/pie_and_polar_charts/pie_features.html');
+    this.setColour(325);
+  }
+}
+pythonGenerator.forBlock['bar_chart'] = function(block, generator) {
+  const sizes = generator.valueToCode(block, 'sizes', pythonGenerator.ORDER_NONE) || "0";
+  const label_bar = generator.valueToCode(block, 'label_bar', pythonGenerator.ORDER_NONE) || "";
+  const labels = [generator.valueToCode(block, 'XLabel', pythonGenerator.ORDER_NONE) || "0", generator.valueToCode(block, 'YLabel', pythonGenerator.ORDER_NONE) || "0"];
+  const title = generator.valueToCode(block, 'title', pythonGenerator.ORDER_NONE) || "";
+  return '' +
+  `sizes = ${sizes}\n` +
+  `labels = ${label_bar}\n` +
+  `plt.bar(labels,sizes)\n` +
+  `plt.title(${title})\n` +
+  `plt.xlabel(${labels[0]})\n` + 
+  `plt.ylabel(${labels[1]})\n` +
+  `plt.show()`
+}
+
+//Distance Vincenty
+Blockly.Blocks['distance_vinc'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Vincenty’s distance');
+    this.appendValueInput('point1')
+        .appendField('Point 1')
+        .setCheck(['Coords']);
+    this.appendValueInput('point2')
+        .appendField('Point 2')
+        .setCheck(['Coords']);
+    this.setOutput(true, 'Number');
+    this.setTooltip('Find the Vincenty distance');
+    this.setHelpUrl('');
+    this.setColour(60);
+  }
+};
+pythonGenerator.forBlock['distance_vinc'] = function(block, generator) {
+  const coord1 = generator.valueToCode(block, 'point1', pythonGenerator.ORDER_ATOMIC);
+  const coord2 = generator.valueToCode(block, 'point2', pythonGenerator.ORDER_ATOMIC);
+  return [`from geopy.distance import geodesic\n`+
+          `geodesic(${coord1}, ${coord2}).meters`, pythonGenerator.ORDER_ATOMIC];
+}
+
+//Distance on a sphere
+Blockly.Blocks['distance_sph'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Distance on a sphere');
+    this.appendDummyInput()
+        .appendField('Point 1: (')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat1')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon1')
+        .appendField(')');
+    this.appendDummyInput()
+        .appendField('Point 2: (')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat2')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon2')
+        .appendField(')');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Find the distance on a sphere with lat and lon');
+    this.setHelpUrl('');
+    this.setColour(60);
+  }
+};
+pythonGenerator.forBlock['distance_sph'] = function(block, generator) {
+  const lat1 = block.getFieldValue('Lat1') || '0';
+  const lat2 = block.getFieldValue('Lat2') || '0';
+  const lon1 = block.getFieldValue('Lon1') || '0';
+  const lon2 = block.getFieldValue('Lon2') || '0';
+  return [`R = 6371e3\n`+
+    `phi1 = np.radians(${lat1})\n`+
+    `phi2 = np.radians(${lat2})\n`+
+    `delta_lambda = np.radians(${lon2} - ${lon1})\n`+
+    `np.acos(np.sin(phi1) * np.sin(phi2) + np.cos(phi1) * np.cos(phi2) * np.cos(delta_lambda)) * R`, pythonGenerator.ORDER_ATOMIC];
+}
+
+//Distance with rectangular approximation
+Blockly.Blocks['distance_rect'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Distance with rectangular approximation');
+    this.appendDummyInput()
+        .appendField('Point 1: (')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat1')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon1')
+        .appendField(')');
+    this.appendDummyInput()
+        .appendField('Point 2: (')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat2')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon2')
+        .appendField(')');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Find the distance with rectangular approximation with lat and lon');
+    this.setHelpUrl('');
+    this.setColour(60);
+  }
+};
+pythonGenerator.forBlock['distance_rect'] = function(block, generator) {
+  const lat1 = block.getFieldValue('Lat1') || '0';
+  const lat2 = block.getFieldValue('Lat2') || '0';
+  const lon1 = block.getFieldValue('Lon1') || '0';
+  const lon2 = block.getFieldValue('Lon2') || '0';
+  return [`R = 6371e3\n`+
+    `x = np.radians(${lon2} - ${lon1}) * np.cos(np.radians((${lat1} + ${lat2}) / 2))\n`+
+    `y = np.radians(${lat2} - ${lat1})\n`+
+    `R * np.sqrt(x*x + y*y)`, pythonGenerator.ORDER_ATOMIC];
+}
+
+
+Blockly.Blocks['distance_manhattan'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Manhattan distance');
+    this.appendDummyInput()
+        .appendField('Point 1: (')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat1')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon1')
+        .appendField(')');
+    this.appendDummyInput()
+        .appendField('Point 2: (')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat2')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon2')
+        .appendField(')');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Find the manhattan distance with lat and lon');
+    this.setHelpUrl('');
+    this.setColour(60);
+  }
+};
+pythonGenerator.forBlock['distance_manhattan'] = function(block, generator) {
+  const lat1 = block.getFieldValue('Lat1') || '0';
+  const lat2 = block.getFieldValue('Lat2') || '0';
+  const lon1 = block.getFieldValue('Lon1') || '0';
+  const lon2 = block.getFieldValue('Lon2') || '0';
+  return [`lat_dist = abs(${lat2} - ${lat1}) * 111320\n`+
+    `lon_dist = abs(${lon2} - ${lon1}) * 40075000 * np.cos(np.radians((${lat2} + ${lat1}) / 2)) / 360\n`+
+    `lat_dist + lon_dist`, pythonGenerator.ORDER_ATOMIC];
+}
+
+
+//Distance haversine
+Blockly.Blocks['distance_haversine'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Distance haversine');
+    this.appendDummyInput()
+        .appendField('Point 1: (')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat1')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon1')
+        .appendField(')');
+    this.appendDummyInput()
+        .appendField('Point 2: (')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat2')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon2')
+        .appendField(')');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Find the distance haversine with lat and lon');
+    this.setHelpUrl('');
+    this.setColour(60);
+  }
+};
+pythonGenerator.forBlock['distance_haversine'] = function(block, generator) {
+  const lat1 = block.getFieldValue('Lat1') || '0';
+  const lat2 = block.getFieldValue('Lat2') || '0';
+  const lon1 = block.getFieldValue('Lon1') || '0';
+  const lon2 = block.getFieldValue('Lon2') || '0';
+  return [`R = 6371e3\n`+
+    `phi1 = np.radians(${lat1})\n`+
+    `phi2 = np.radians(${lat2})\n`+
+    `delta_lambda = np.radians(${lon2} - ${lon1})\n`+
+    `delta_phi = np.radians(${lat2} - ${lat1})\n`+
+    `a = np.sin(delta_phi / 2) ** 2 + np.cos(phi1) * np.cos(phi2) * np.sin(delta_lambda / 2) ** 2\n`+
+    `c = 2 * np.atan2(np.sqrt(a), np.sqrt(1 - a))\n`+
+    `R * c`, pythonGenerator.ORDER_ATOMIC];
+}
+
+Blockly.Blocks['while_loop'] = {
+  init: function() {
+    this.appendValueInput("CONDITION")
+        .setCheck("Boolean")
+        .appendField("while");
+    this.appendStatementInput("DO")
+        .setCheck(null)
+        .appendField("do");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(210); // You can change the color
+    this.setTooltip("Repeat while the condition is true");
+    this.setHelpUrl("");
+  }
+};
+pythonGenerator.forBlock['while_loop'] = function(block, generator) {
+  const condition = generator.valueToCode(block, 'CONDITION', pythonGenerator.ORDER_NONE) || 'False';
+  const statements = generator.statementToCode(block, 'DO');
+  return `while ${condition}:\n${statements}`;
+};
+
+
+// Plotly Scatter Mapbox Block
+// Plotly Scatter Mapbox Block with fig.show()
+Blockly.Blocks['plotly_scatter_mapbox'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Create and Show Scatter Mapbox");
+    this.appendValueInput("DATAFRAME")
+        .setCheck(null)
+        .appendField("DataFrame");
+    this.appendDummyInput()
+        .appendField("Latitude column")
+        .appendField(new Blockly.FieldTextInput("lat"), "LAT_COL");
+    this.appendDummyInput()
+        .appendField("Longitude column")
+        .appendField(new Blockly.FieldTextInput("lon"), "LON_COL");
+    this.appendDummyInput()
+        .appendField("Hover column")
+        .appendField(new Blockly.FieldTextInput("name"), "HOVER_COL");
+    this.appendDummyInput()
+        .appendField("Map style")
+        .appendField(new Blockly.FieldDropdown([
+          ["carto-positron", "carto-positron"],
+          ["open-street-map", "open-street-map"],
+          ["stamen-terrain", "stamen-terrain"]
+        ]), "STYLE");
+    this.appendDummyInput()
+        .appendField("Zoom")
+        .appendField(new Blockly.FieldNumber(1, 0, 20), "ZOOM");
+    this.appendDummyInput()
+        .appendField("Center Lat")
+        .appendField(new Blockly.FieldNumber(0), "CENTER_LAT")
+        .appendField("Lon")
+        .appendField(new Blockly.FieldNumber(0), "CENTER_LON");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(200);
+    this.setTooltip("Creates and shows a Plotly scatter mapbox plot.");
+    this.setHelpUrl("");
+  }
+};
+
+pythonGenerator.forBlock['plotly_scatter_mapbox'] = function(block, generator) {
+  const df = generator.valueToCode(block, 'DATAFRAME', pythonGenerator.ORDER_NONE) || 'gdf';
+  const lat = block.getFieldValue('LAT_COL');
+  const lon = block.getFieldValue('LON_COL');
+  const hover = block.getFieldValue('HOVER_COL');
+  const style = block.getFieldValue('STYLE');
+  const zoom = block.getFieldValue('ZOOM');
+  const centerLat = block.getFieldValue('CENTER_LAT');
+  const centerLon = block.getFieldValue('CENTER_LON');
+
+  const code =
+`fig = px.scatter_mapbox(
+  ${df},
+  lat="${lat}",
+  lon="${lon}",
+  hover_name="${hover}",
+  mapbox_style="${style}",
+  center={"lat": ${centerLat}, "lon": ${centerLon}},
+  zoom=${zoom}
+)\nfig.show()\n`;
+  return code;
+};
+
