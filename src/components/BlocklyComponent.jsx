@@ -66,6 +66,18 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
             <block type="sort"></block>
             <block type="reshape"></block>
             <block type="slice_file"></block>
+            <block type="delete_axes">
+              <value name="ColArr">
+                <block type="list_create">
+                  <field name=""></field>
+                </block>
+              </value>
+              <value name="IndArr">
+                <block type="list_create">
+                  <field name=""></field>
+                </block>
+              </value>
+            </block>
           </category>
 
           <category name="Visualisation" colour="#90A4AE">

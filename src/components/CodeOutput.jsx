@@ -137,6 +137,8 @@ document.addEventListener(
         <Box display="flex" alignItems="center" gap={ 0.5 }>
           <Typography sx={{ fontSize: "0.9em", marginLeft: "30px", color: "#BBB" }}>Ctrl + Alt + Enter</Typography>  
         </Box>
+        { ~document.location.href.indexOf('https') || ~document.location.href.indexOf('localhost') ? (
+          <>
         <Box display="flex" marginLeft="auto" alignItems="center" gap={ 0.5 }>
           <Typography sx={{ fontSize: "0.9em", marginRight: "10px", color: "#BBB" }}>Ctrl + Alt + C</Typography>  
         </Box>
@@ -154,10 +156,9 @@ document.addEventListener(
           }}
           onClick={
             () => navigator.clipboard.writeText(output)
-              .then(input.select())
+              .catch((e) => console.error('The output could not be copied. ' + e))
               .then(refCode.current.innerText = 'Output Copied!')
               .then(setTimeout(() => refCode.current.innerText = 'Copy Output', 1500))
-              .catch((e) => console.error('The output could not be copied. ' + e))
           }
           >
           <Box display="flex" alignItems="center" gap={ 0.5 }>
@@ -165,6 +166,8 @@ document.addEventListener(
             <Typography ref={ refCode } fontWeight="bold">Copy Output</Typography>
           </Box>
         </Fab>
+        </>
+        ) : null }
       </Stack>
 
       <Box

@@ -675,6 +675,34 @@ pythonGenerator.forBlock['create_array'] = function(block,generator) {
   return [`np.array(${array})`, pythonGenerator.ORDER_COLLECTION];
 }             
 
+Blockly.Blocks['delete_axes'] = {
+  init: function() {
+    this.appendValueInput('ColArr')
+        .setCheck(['List', 'String', 'Number'])
+        .appendField((new Blockly.FieldLabel('ColArr'), 'Delete columns'));
+    this.appendValueInput('IndArr')
+        .setCheck(['List', 'String', 'Number'])
+        .appendField((new Blockly.FieldLabel('IndArr'), 'and/or rows'));
+    this.appendDummyInput()
+        .appendField('from dataframe')
+        .appendField(new Blockly.FieldVariable('df'), 'DATAFRAME');
+    this.setInputsInline(false);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('Deletes given rows and columns from a dataframe');
+    this.setColour(195);
+  }
+};
+pythonGenerator.forBlock['delete_axes'] = function(block,generator) {
+  const delCols = generator.valueToCode(block, 'ColArr', pythonGenerator.ORDER_ATOMIC) || '';
+  const delInds = generator.valueToCode(block, 'IndArr', pythonGenerator.ORDER_COLLECTION) || '';
+  const varID = block.getFieldValue('DATAFRAME') || '0';
+  const getVar = block.workspace.getVariableById(varID);
+  const df = getVar ? getVar.name : 'df';
+  return `${df}.drop(index=${delInds}, columns=${delCols}, inplace=True)\n`;
+}
+
+
 //**Delete in an array */
 Blockly.Blocks['delete_object'] = {
   init: function() {
@@ -685,7 +713,7 @@ Blockly.Blocks['delete_object'] = {
     this.appendValueInput('array')
     .setCheck('Array')
       .appendField(new Blockly.FieldLabelSerializable('in'), 'IN');
-    this.setInputsInline(true)
+    this.setInputsInline(true);
     this.setOutput(true, 'Array');
     this.setTooltip('Delete an object in an array');
     this.setColour(195);
@@ -1003,7 +1031,7 @@ Blockly.Blocks['read_file'] = {
 pythonGenerator.forBlock['read_file'] = function(block) {
   const fileName = block.getFieldValue('NAME');
   const dataFolder = block.getFieldValue('FOLDER') || 'data';
-  return `gpd.read_file(os.path.join(${dataFolder}, ${fileName}))\n`
+  return `gpd.read_file(os.path.join('${dataFolder}', '${fileName}'))\n`
 }
 
 Blockly.Blocks['write_file'] = {
@@ -1091,8 +1119,8 @@ Blockly.Blocks['listdir'] = {
   }
 }
 pythonGenerator.forBlock['listdir'] = function(block) {
-  const path = block.getFieldValue('PATH');
-  return [`os.listdir('${path}')`, pythonGenerator.ORDER_ATOMIC];
+  const path = block.getFieldValue('PATH') || '';
+  return [`os.listdir(${path ? '"' + path + '"' : ''})`, pythonGenerator.ORDER_ATOMIC];
 }
 
 Blockly.Blocks['type'] = {

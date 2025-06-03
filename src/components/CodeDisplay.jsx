@@ -77,6 +77,8 @@ const CodeDisplay = ({ code, isDarkMode }) => {
         <Box display="flex" alignItems="center" gap={ 0.5 }>
           <Typography sx={{ fontSize: "0.9em", marginLeft: "30px", color: "#BBB" }}>Ctrl + Enter</Typography>
         </Box>
+        { ~document.location.href.indexOf('https') || ~document.location.href.indexOf('localhost') ? (
+          <>
         <Box display="flex" marginLeft="auto" alignItems="center" gap={ 0.5 }>
           <Typography sx={{ fontSize: "0.9em", marginRight: "10px", color: "#BBB" }}>Ctrl + C</Typography>  
         </Box>
@@ -104,6 +106,8 @@ const CodeDisplay = ({ code, isDarkMode }) => {
             <Typography ref={ codeRef } fontWeight="bold">Copy Code</Typography>
           </Box>
         </Fab>
+        </>
+        ) : null }
       </Stack>
 
       <Box
