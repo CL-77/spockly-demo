@@ -675,6 +675,34 @@ pythonGenerator.forBlock['create_array'] = function(block,generator) {
   return [`np.array(${array})`, pythonGenerator.ORDER_COLLECTION];
 }             
 
+Blockly.Blocks['delete_axes'] = {
+  init: function() {
+    this.appendValueInput('ColArr')
+        .setCheck(['List', 'String', 'Number'])
+        .appendField((new Blockly.FieldLabel('ColArr'), 'Delete columns'));
+    this.appendValueInput('IndArr')
+        .setCheck(['List', 'String', 'Number'])
+        .appendField((new Blockly.FieldLabel('IndArr'), 'and/or rows'));
+    this.appendDummyInput()
+        .appendField('from dataframe')
+        .appendField(new Blockly.FieldVariable('df'), 'DATAFRAME');
+    this.setInputsInline(false);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('Deletes given rows and columns from a dataframe');
+    this.setColour(195);
+  }
+};
+pythonGenerator.forBlock['delete_axes'] = function(block,generator) {
+  const delCols = generator.valueToCode(block, 'ColArr', pythonGenerator.ORDER_ATOMIC) || '';
+  const delInds = generator.valueToCode(block, 'IndArr', pythonGenerator.ORDER_COLLECTION) || '';
+  const varID = block.getFieldValue('DATAFRAME') || '0';
+  const getVar = block.workspace.getVariableById(varID);
+  const df = getVar ? getVar.name : 'df';
+  return `${df}.drop(index=${delInds}, columns=${delCols}, inplace=True)\n`;
+}
+
+
 //**Delete in an array */
 Blockly.Blocks['delete_object'] = {
   init: function() {
@@ -685,7 +713,7 @@ Blockly.Blocks['delete_object'] = {
     this.appendValueInput('array')
     .setCheck('Array')
       .appendField(new Blockly.FieldLabelSerializable('in'), 'IN');
-    this.setInputsInline(true)
+    this.setInputsInline(true);
     this.setOutput(true, 'Array');
     this.setTooltip('Delete an object in an array');
     this.setColour(195);
@@ -1003,7 +1031,7 @@ Blockly.Blocks['read_file'] = {
 pythonGenerator.forBlock['read_file'] = function(block) {
   const fileName = block.getFieldValue('NAME');
   const dataFolder = block.getFieldValue('FOLDER') || 'data';
-  return `gpd.read_file(os.path.join(${dataFolder}, ${fileName}))\n`
+  return `gpd.read_file(os.path.join('${dataFolder}', '${fileName}'))\n`
 }
 
 Blockly.Blocks['write_file'] = {
@@ -1046,6 +1074,40 @@ pythonGenerator.forBlock['chdir'] = function(block) {
   return `\nos.chdir('${path}')`;
 }
 
+// Blockly.Blocks['sampleData'] = {
+//   init: function() {
+//     this.appendDummyInput()
+//         .appendField('Download sample data');
+//     this.setTooltip('Download sample data from the internet');
+//     this.setNextStatement(true);
+//     this.setPreviousStatement(true);
+//     this.setColour(200); 
+//   }
+// }
+// pythonGenerator.forBlock['sampleData'] = function() {
+//   return `files = [
+//   '2020-01-metropolitan-street.csv',
+//   '2020-02-metropolitan-street.csv',
+//   '2020-03-metropolitan-street.csv',
+//   '2020-04-metropolitan-street.csv',
+//   '2020-05-metropolitan-street.csv',
+//   '2020-06-metropolitan-street.csv',
+//   '2020-07-metropolitan-street.csv',
+//   '2020-08-metropolitan-street.csv',
+//   '2020-09-metropolitan-street.csv',
+//   '2020-10-metropolitan-street.csv',
+//   '2020-11-metropolitan-street.csv',
+//   '2020-12-metropolitan-street.csv'
+// ]
+
+// data_url = 'https://github.com/spatialthoughts/python-dataviz-web/releases/' \
+//   'download/police.uk/'
+
+// for f in files:
+//   url = os.path.join(data_url + f)
+//   download(url, 'data')\n`;
+// }
+
 Blockly.Blocks['listdir'] = {
   init: function() {
     this.appendDummyInput()
@@ -1057,8 +1119,8 @@ Blockly.Blocks['listdir'] = {
   }
 }
 pythonGenerator.forBlock['listdir'] = function(block) {
-  const path = block.getFieldValue('PATH');
-  return [`os.listdir('${path}')`, pythonGenerator.ORDER_ATOMIC];
+  const path = block.getFieldValue('PATH') || '';
+  return [`os.listdir(${path ? '"' + path + '"' : ''})`, pythonGenerator.ORDER_ATOMIC];
 }
 
 Blockly.Blocks['type'] = {
@@ -1131,8 +1193,7 @@ pythonGenerator.forBlock['plot'] = function(block, generator) {
   `plt.xlabel(${labels[0]})\n` + 
   `plt.ylabel(${labels[1]})\n` +
   `plt.grid(${grid})\n` +
-  `plt.legend(${legend})\n` +
-  `plt.show()\n`
+  `plt.legend(${legend})\n`
 }
 
 /** Show scattered data */
@@ -1982,16 +2043,17 @@ pythonGenerator.forBlock['JSON_on_map'] = function(block, generator) {
 Blockly.Blocks['Choropleth_map'] = {
   init: function() {
     this.appendDummyInput('NAME')
-      .appendField('Make a choropleth map');
+        .appendField('Make a choropleth map');
     this.appendValueInput('data')
-      .appendField('with data');
+        .appendField('with data');
     this.appendValueInput('columns_shown')
-      .appendField('of column');
+        .appendField('of column');
     this.appendDummyInput('fill_color')
-      .appendField('fill_color')
-      .appendField(new Blockly.FieldTextInput('green'), 'fill_color');
+        .appendField('fill_color')
+        .appendField(new Blockly.FieldTextInput('green'), 'fill_color');
     this.appendValueInput('bins')
-      .appendField('list of bins');
+        .appendField('list of bins');
+    this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip('');

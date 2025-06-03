@@ -66,9 +66,22 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
             <block type="sort"></block>
             <block type="reshape"></block>
             <block type="slice_file"></block>
+            <block type="delete_axes">
+              <value name="ColArr">
+                <block type="list_create">
+                  <field name=""></field>
+                </block>
+              </value>
+              <value name="IndArr">
+                <block type="list_create">
+                  <field name=""></field>
+                </block>
+              </value>
+            </block>
           </category>
 
           <category name="Visualisation" colour="#90A4AE">
+            <!--<block type="sampleData"></block>-->
             <block type ="plotly_scatter_mapbox"></block>
             <block type="create_folder"></block>
             <block type="func_download"></block>
@@ -297,15 +310,28 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
     if(~pythonCode.indexOf('gpd.')) gpd = true;
     if(~pythonCode.indexOf('requests.')) requests = true;
     if(~pythonCode.indexOf('os.')) os = true;
-    if(~pythonCode.indexOf('download(')) def_download = true;	
+    if(~pythonCode.indexOf('download(')) def_download = true;
     libs += np ? "import numpy as np\n" : "";
     libs += pd ? "import pandas as pd\n" : "";
     libs += sns ? "import seaborn as sns\n" : ""; 
-    libs += plt ? "import matplotlib.pyplot as plt\n" : "";
+    libs += plt ? `import matplotlib.pyplot as plt
+import io
+import base64
+import js
+
+class Dud:
+    def __init__(self, *args, **kwargs) -> None:
+        return
+    
+    def __getattr__(self, __name: str):
+        return Dud
+
+js.document = Dud()` : "";
     libs += gpd ? "import geopandas as gpd\n" : "";
     libs += requests ? "import requests\n" : "";
     libs += os ? "import os\n" : "";
-    libs += def_download ?  '' +
+    libs += def_download ?  'import requests\n' +
+                            'import os\n' +
                             'def download(url, folder):\n' +
                             '\tfilename = os.path.join(folder, os.path.basename(url))\n' +
                             '\tif not os.path.exists(filename):\n' + 
@@ -315,8 +341,12 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
                                           '\t\t\t\t\tf.write(chunk)\n' + 
                               '\t\tprint("Downloaded ", filename)\n\n'
     : '';
-
-    setCode(libs + '\n' + pythonCode);
+    if(plt) pythonCode += `bytes_io = io.BytesIO()
+plt.savefig(bytes_io, format='jpg')
+bytes_io.seek(0)
+base64_encoded_spectrogram = base64.b64encode(bytes_io.read())
+print(base64_encoded_spectrogram.decode('utf-8'))`;
+    setCode((libs ? libs + '\n' : '') + pythonCode);
   };
 
   return (

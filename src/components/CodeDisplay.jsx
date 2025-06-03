@@ -37,7 +37,6 @@ const CodeDisplay = ({ code, isDarkMode }) => {
       sx={{
         top: 20,
         left: 20,
-        right: 20,
         height: "100%",
         borderRadius: "5px",
         zIndex: 1,
@@ -78,6 +77,8 @@ const CodeDisplay = ({ code, isDarkMode }) => {
         <Box display="flex" alignItems="center" gap={ 0.5 }>
           <Typography sx={{ fontSize: "0.9em", marginLeft: "30px", color: "#BBB" }}>Ctrl + Enter</Typography>
         </Box>
+        { ~document.location.href.indexOf('https') || ~document.location.href.indexOf('localhost') ? (
+          <>
         <Box display="flex" marginLeft="auto" alignItems="center" gap={ 0.5 }>
           <Typography sx={{ fontSize: "0.9em", marginRight: "10px", color: "#BBB" }}>Ctrl + C</Typography>  
         </Box>
@@ -105,6 +106,8 @@ const CodeDisplay = ({ code, isDarkMode }) => {
             <Typography ref={ codeRef } fontWeight="bold">Copy Code</Typography>
           </Box>
         </Fab>
+        </>
+        ) : null }
       </Stack>
 
       <Box
@@ -124,11 +127,12 @@ const CodeDisplay = ({ code, isDarkMode }) => {
             color: theme.palette.primary.contrastText,
             paddingBottom: "10px",
             paddingTop: "5px",
+            paddingRight: "10px",
             padding: "20px",
             whiteSpace: 'pre',
           }}
         >
-        { code || "Generated Python code will appear here..."}
+          { code || "Generated Python code will appear here..." }
         </Typography>
       </Box>
     </Box>
