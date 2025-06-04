@@ -12,7 +12,6 @@ function SPOCKLY({ isDarkMode }) {
   const [code, setCode] = useState("Generated R code will appear here...");
   const [plot, setPlot] = useState("");
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
-  // const webRRef = useRef(null);
   const workspaceRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
   const [isLoading, setIsLoading] = useState(true);
@@ -131,10 +130,10 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
       </Grid>
 
       <FileUploadManager
-        webRInstance={webRRef.current}
-        isDarkMode={isDarkMode}
-        open={uploadDialogOpen}
-        onClose={handleUploadClose}
+        webRInstance={ workspaceRef.current }
+        isDarkMode={ isDarkMode }
+        open={ uploadDialogOpen }
+        onClose={ handleUploadClose }
       />
     </Box>
   );

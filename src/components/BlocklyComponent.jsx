@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useMemo, useState } from "react";
 import * as Blockly from "blockly";
-import "./blockly/customBlocks"; // Import custom blocks
-import "./blockly/customGenerator"; // Import custom generator
-import "./blockly/rBlocks"; // Import R blocks
+import "./blockly/customBlocks";
 import { Box, Fab, Typography, useTheme, Button } from "@mui/material";
 import { lightTheme, darkTheme } from "./blockly/blocklyThemes";
 import { Upload, UploadFile } from "@mui/icons-material";
@@ -14,12 +12,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   const theme = useTheme();
   const blocklyDiv = useRef(null);
   const linkRef = useRef(null);
-
-  // useEffect(() => {
-    if (!blocklyDiv.current) {
-      console.error("blocklyDiv is not available.");
-      return;
-    }
 
      // State to toggle between beginner and advanced block toolboxes
   const [level, setLevel] = useState("level1");
@@ -275,6 +267,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           </category>
         </xml>
       `
+      const advancedToolbox = beginnerToolbox; //Temporary
       const toolboxXml = useMemo(() => {
     return level === "level1" ? beginnerToolbox : advancedToolbox;
   }, [level]);

@@ -2,8 +2,8 @@ import * as Blockly from "blockly";
 import { pythonGenerator } from "blockly/python";
 import english from "../../locales/english"
 import german from "../../locales/german"
-g = german;
-e = english;
+const g = german;
+const e = english;
 console.log(g, e);
 
 /**
