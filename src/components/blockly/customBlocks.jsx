@@ -1082,39 +1082,42 @@ pythonGenerator.forBlock['chdir'] = function(block) {
   return `\nos.chdir('${path}')`;
 }
 
-// Blockly.Blocks['sampleData'] = {
-//   init: function() {
-//     this.appendDummyInput()
-//         .appendField('Download sample data');
-//     this.setTooltip('Download sample data from the internet');
-//     this.setNextStatement(true);
-//     this.setPreviousStatement(true);
-//     this.setColour(200); 
-//   }
-// }
-// pythonGenerator.forBlock['sampleData'] = function() {
-//   return `files = [
-//   '2020-01-metropolitan-street.csv',
-//   '2020-02-metropolitan-street.csv',
-//   '2020-03-metropolitan-street.csv',
-//   '2020-04-metropolitan-street.csv',
-//   '2020-05-metropolitan-street.csv',
-//   '2020-06-metropolitan-street.csv',
-//   '2020-07-metropolitan-street.csv',
-//   '2020-08-metropolitan-street.csv',
-//   '2020-09-metropolitan-street.csv',
-//   '2020-10-metropolitan-street.csv',
-//   '2020-11-metropolitan-street.csv',
-//   '2020-12-metropolitan-street.csv'
-// ]
+Blockly.Blocks['sampleData'] = {
+  init: function() {
+    this.appendValueInput('FOLDER')
+        .setCheck('String')
+        .appendField('Download sample data into folder')
+        .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER');
+    this.setTooltip('Download sample data from the internet into given folder');
+    this.setNextStatement(true);
+    this.setPreviousStatement(true);
+    this.setColour(200); 
+  }
+}
+pythonGenerator.forBlock['sampleData'] = function(block, generator) {
+  const folder = generator.valueToCode(block, 'FOLDER', pythonGenerator.ORDER_ATOMIC) || 'data';
+  return `files = [
+  '2020-01-metropolitan-street.csv',
+  '2020-02-metropolitan-street.csv',
+  '2020-03-metropolitan-street.csv',
+  '2020-04-metropolitan-street.csv',
+  '2020-05-metropolitan-street.csv',
+  '2020-06-metropolitan-street.csv',
+  '2020-07-metropolitan-street.csv',
+  '2020-08-metropolitan-street.csv',
+  '2020-09-metropolitan-street.csv',
+  '2020-10-metropolitan-street.csv',
+  '2020-11-metropolitan-street.csv',
+  '2020-12-metropolitan-street.csv'
+]
 
-// data_url = 'https://github.com/spatialthoughts/python-dataviz-web/releases/' \
-//   'download/police.uk/'
+data_url = 'https://github.com/spatialthoughts/python-dataviz-web/releases/' \
+  'download/police.uk/'
 
-// for f in files:
-//   url = os.path.join(data_url + f)
-//   download(url, 'data')\n`;
-// }
+for f in files:
+  url = os.path.join(data_url + f)
+  download(url, '${folder}')\n`;
+}
 
 Blockly.Blocks['listdir'] = {
   init: function() {

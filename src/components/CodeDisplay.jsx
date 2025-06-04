@@ -37,20 +37,7 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
   const handleOpenDownloadDialog = () => setOpenDownloadDialog(true);
   const handleCloseDownloadDialog = () => setOpenDownloadDialog(false);
 
-  const handleGenerateCode = () => {
-    if (!workspaceRef.current) {
-      console.error("Blockly workspace is not initialised.");
-      return;
-    }
-
-    let pyCode = pythonGenerator.workspaceToCode(workspaceRef.current);
-    if (pyCode && pyCode.trim() !== "") {
-      // const formattedRCode = pythonGenerator.formatCode(pyCode);
-      setCode(pyCode.trim());
-    } else {
-      setCode("No Python code could be generated from the current workspace.");
-    }
-  };
+  const handleGenerateCode = () => globalThis.generateCode();
 
   const handleResetCode = () => {
     setCode("Generated Python code will appear here...");
@@ -114,7 +101,7 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
           variant="h6"
           fontWeight="bold"
           sx={{
-            color: theme.palette.primary.contrastText,
+            color: theme.palette.primary.light,
             paddingBottom: "15px",
           }}
         >
@@ -197,7 +184,7 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
               paddingTop: "5px",
               paddingRight: "10px",
               padding: "20px",
-              whiteSpace: "pre-wrap",
+              whiteSpace: "pre",
               fontFamily: "monospace",
             }}
           >
@@ -245,17 +232,17 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
         </Stack>
       </Box>
       <FullCodeViewDialog
-        code={code}
-        openFullCodeViewDialog={openFullCodeViewDialog}
-        handleOpenDownloadDialog={handleOpenDownloadDialog}
-        handleCopyCode={handleCopyCode}
-        handleCloseFullCodeView={handleCloseFullCodeView}
-        isDarkMode={isDarkMode}
+        code={ code }
+        openFullCodeViewDialog={ openFullCodeViewDialog }
+        handleOpenDownloadDialog={ handleOpenDownloadDialog }
+        handleCopyCode={ handleCopyCode }
+        handleCloseFullCodeView={handleCloseFullCodeView }
+        isDarkMode={ isDarkMode }
       />
       <DownloadCodeDialog
-        code={code}
-        openDownloadDialog={openDownloadDialog}
-        handleCloseDownloadDialog={handleCloseDownloadDialog}
+        code={ code }
+        openDownloadDialog={ openDownloadDialog }
+        handleCloseDownloadDialog={ handleCloseDownloadDialog }
       />
     </Box>
   );

@@ -20,7 +20,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   // Blockly toolbox definition for Level 1 (Beginner)
   // Change content later
   const beginnerToolbox = `
-
         <xml>
           <category name="Math" colour="#FF8A65">
             <block type="math_number"></block>
@@ -55,6 +54,153 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           </category>
 
           <category name="Data" colour="#FA2">
+            <block type="sampleData"></block>
+            <block type="read_file"></block>
+            <block type="data_shape"></block>
+            <block type="add_object"></block>
+            <block type="delete_object"></block>
+            <block type="sort"></block>
+            <block type="delete_axes">
+              <value name="ColArr">
+                <block type="list_create">
+                  <field name=""></field>
+                </block>
+              </value>
+              <value name="IndArr">
+                <block type="list_create">
+                  <field name=""></field>
+                </block>
+              </value>
+            </block>
+          </category>
+
+          <category name="Visualisation" colour="#90A4AE">
+            <block type="plot">
+              <value name="title">
+                <shadow type="text">
+                  <field name="TEXT">Title</field>
+                </shadow>
+              </value>
+              <value name="XLabel">
+                <shadow type="text">
+                  <field name="TEXT">X-axis</field>
+                </shadow>
+              </value>
+              <value name="YLabel">
+                <shadow type="text">
+                  <field name="TEXT">Y-axis</field>
+                </shadow>
+              </value>
+              <value name="Legend">
+                <shadow type="text">
+                  <field name="TEXT">Legend</field>
+                </shadow>
+              </value>
+            </block>
+          </category>
+
+          <category name="Statistics" colour="#BA68C8">
+            <block type="mean"></block>
+            <block type="median"></block>
+            <block type="std"></block>
+            <block type="mean_squared"></block>
+            <block type="max"></block>
+            <block type="min"></block>
+            <block type="sum"></block>
+          </category>
+
+          <category name="Variables" custom="VARIABLE" colour="#A65E2E"></category>
+
+          <category name="Basic functions" colour="#123456">
+            <block type="input"></block>
+            <block type="slice"></block>
+            <block type="text_print"></block>
+            <block type="length_of_str"></block>
+            <block type="list_access"></block>
+            <block type="type"></block>
+          </category>
+
+          <category name="Geometry" colour="#4DD0E1">
+            <block type="coords"></block>
+            <block type="create_point"></block>
+            <block type="buffer"></block>
+            <block type="line_segment"></block>
+            <block type="polygon"></block>
+            <block type="distance_calc"></block>
+            <block type="centroid"></block>
+            <block type="polygon_area"></block>
+            <block type="polygon_perimeter"></block>
+          </category>
+
+          <category name="Other" colour="#5C81A6">
+            <block type="controls_if"></block>
+            <block type="operators"></block>
+            <block type="repeat_times"></block>
+            <block type="text"></block>
+            <block type="line_break"></block>
+            <block type="list_create"></block>
+            <block type="arange">
+              <value name="start">
+                <shadow type="math_number">
+                  <field name="NUM">0</field>
+                </shadow>
+              </value>
+              <value name="stop">
+                <shadow type="math_number">
+                  <field name="NUM">100</field>
+                </shadow>
+              </value>
+              <value name="step">
+                <shadow type="math_number">
+                  <field name="NUM">1</field>
+                </shadow>
+              </value>
+            </block>
+        </xml>
+      `;
+      const advancedToolbox = `
+        <xml>
+          <category name="Math" colour="#FF8A65">
+            <block type="math_number"></block>
+            <block type="consts"></block>
+            <block type="math_arithmetic">
+              <field name="OP">ADD</field>
+              <value name="A">
+                <shadow type="math_number">
+                  <field name="NUM">1</field>
+                </shadow>
+              </value>
+              <value name="B">
+                <shadow type="math_number">
+                  <field name="NUM">1</field>
+                </shadow>
+              </value>
+            </block>
+            <block type="logic_compare"></block>
+            <block type="math_square"></block>
+            <block type="sqrt_of"></block>
+            <block type="exp_of"></block>
+            <block type="log_of"></block>
+            <block type="trigo"></block>
+            <block type="round"></block>
+            <block type="modulo"></block>
+          </category>
+
+          <category name="Booleans" colour="#1d8425">
+            <block type="to_bool"></block>
+            <block type="bool1"></block>
+            <block type="bool2"></block>
+          </category>
+
+          <category name="Data" colour="#FA2">
+            <block type="sampleData"></block>
+            <block type ="plotly_scatter_mapbox"></block>
+            <block type="create_folder"></block>
+            <block type="func_download"></block>
+            <block type="read_file"></block>
+            <block type="write_file"></block>
+            <block type="listdir"></block>
+            <block type="chdir"></block>
             <block type="load_csv"></block>
             <block type="load_csv_from_url"></block>
             <block type="load_txt"></block>
@@ -83,14 +229,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           </category>
 
           <category name="Visualisation" colour="#90A4AE">
-            <!--<block type="sampleData"></block>-->
-            <block type ="plotly_scatter_mapbox"></block>
-            <block type="create_folder"></block>
-            <block type="func_download"></block>
-            <block type="read_file"></block>
-            <block type="write_file"></block>
-            <block type="listdir"></block>
-            <block type="chdir"></block>
             <block type="plot">
               <value name="title">
                 <shadow type="text">
@@ -267,8 +405,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             </block>
           </category>
         </xml>
-      `
-      const advancedToolbox = beginnerToolbox; //Temporary
+      `;
       const toolboxXml = useMemo(() => {
     return level === "level1" ? beginnerToolbox : advancedToolbox;
   }, [level, beginnerToolbox, advancedToolbox]);
@@ -316,7 +453,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     }
     var libs = "", np, pd, gpd, sns, plt, requests, os, def_download;
     var pythonCode = pythonGenerator.workspaceToCode(workspaceRef.current);
-    console.error("Generated Python code:", pythonCode);
     if(~pythonCode.indexOf('np.')) np = true;
     if(~pythonCode.indexOf('pd.')) pd = true;
     if(~pythonCode.indexOf('sns.')) sns = true;

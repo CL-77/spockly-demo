@@ -17,7 +17,6 @@ const CodeOutput = ({ code, isDarkMode, setPlot }) => {
       setOutput("Running...");
       const result = await main(code);
       setOutput(result);
-      console.log(typeof result, result.length, /^[A-Za-z0-9+/=\s]+$/.test(result));
       if (typeof result === "string" && result.length > 100 && /^[A-Za-z0-9+/=\s]+$/.test(result)) {
         console.info('%cRESULT IS A PLOT', 'color: #089d08; font-weight: bold; background-color: #FFF; font-size: 1.5em;');
         setPlot(result);
@@ -184,10 +183,10 @@ const CodeOutput = ({ code, isDarkMode, setPlot }) => {
         <Typography
           fontWeight="bold"
           sx={{
-            color: theme.palette.primary.contrastText,
+            color: isDarkMode ? "#FFFFFA" : "#000000",
             paddingBottom: "10px",
             padding: "20px",
-            whiteSpace: "pre-wrap",
+            whiteSpace: "pre",
           }}
         >
           { output || 'No output' }
