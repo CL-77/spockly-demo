@@ -68,7 +68,7 @@ function SPOCKLY({isDarkMode}) {
               position: "relative",
             }}
           >
-            <Box sx={{ height: "50%", p: 2 }}>
+            <Box sx={{ height: "48%", p: 2 }}>
               <CodeDisplay 
                 code={code} 
                 setCode={setCode}
@@ -76,7 +76,7 @@ function SPOCKLY({isDarkMode}) {
                 workspaceRef={workspaceRef}
               />
             </Box>
-            <Box sx={{ height: "50%", p: 2 }}>
+            <Box sx={{ height: "48%", p: 2 }}>
               <WebRRunner 
                 code={code} 
                 isDarkMode={isDarkMode} 

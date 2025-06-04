@@ -75,6 +75,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
         right: 20,
         height: "100%",
         borderRadius: "5px",
+        overflowY:"auto",
         zIndex: 1,
       }}
     >
@@ -118,6 +119,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
           borderRadius: "5px",
           width: "100%",
           height: "75%",
+          overflowY: "auto",
           bgcolor: theme.palette.background.paper,
           zIndex: 1,
         }}

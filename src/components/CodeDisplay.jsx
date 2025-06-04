@@ -143,10 +143,9 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
           <Box
             sx={{
               position: "relative",
-              width: "20%",
+              width: "22%",
               height: "75%",
               zIndex: 1,
-              overflowY: "auto",
               padding: "20px",
             }}
           >
