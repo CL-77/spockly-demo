@@ -3,7 +3,8 @@ import {
   Tab,
   Tabs,
   Typography,
-  useTheme
+  useTheme,
+  Button
 } from "@mui/material";
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -13,6 +14,7 @@ import tutorialData from "../../data/tutorialData.json";
 
 const Tutorials = ({ isDarkMode }) => {
   const [value, setValue] = useState(0);
+  const [isGerman, setIsGerman] = useState(false);
   const location = useLocation();
   const theme = useTheme();
 
@@ -21,7 +23,7 @@ const Tutorials = ({ isDarkMode }) => {
   };
 
   return (
-    <Box sx={{ display: "flex", minHeight: "calc(100vh - 64px)" }}>
+    <Box sx={{ display: "flex", minHeight: "calc(100vh - 64px)", position: "relative" }}>
       {/* Sidebar */}
       <Box
         sx={{
@@ -43,6 +45,22 @@ const Tutorials = ({ isDarkMode }) => {
         >
           Tutorials
         </Typography>
+        <Button
+          variant="outlined"
+          sx={{
+            mb: 2,
+            mr: 1,
+            color: isDarkMode ? "#B58FFF" : theme.palette.primary.main,
+            borderColor: isDarkMode ? "#B58FFF" : theme.palette.primary.main,
+            "&:hover": {
+              borderColor: isDarkMode ? "#D0A8FF" : theme.palette.primary.dark,
+              backgroundColor: isDarkMode ? "rgba(181, 143, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
+            },
+          }}
+          onClick={() => setIsGerman((prev) => !prev)}
+        >
+          {isGerman ? "Switch to English" : "Zur deutschen Version"}
+        </Button>
         <Tabs
           orientation="vertical"
           variant="scrollable"
@@ -76,7 +94,7 @@ const Tutorials = ({ isDarkMode }) => {
           }}
         >
           {tutorialData.map((tut, index) => (
-            <Tab key={index} label={tut.headline} />
+            <Tab key={index} label={isGerman ? tut.headline_de : tut.headline} />
           ))}
         </Tabs>
       </Box>
@@ -92,9 +110,9 @@ const Tutorials = ({ isDarkMode }) => {
         {tutorialData.map((tut, index) => (
           <TabPanel key={index} value={value} index={index}>
             <Typography variant="h4" fontWeight="bold" gutterBottom>
-              {tut.headline}
+              {isGerman ? tut.headline_de : tut.headline}
             </Typography>
-            <ReactMarkdown>{tut.description}</ReactMarkdown>
+            <ReactMarkdown>{isGerman ? tut.description_de : tut.description}</ReactMarkdown>
           </TabPanel>
         ))}
       </Box>

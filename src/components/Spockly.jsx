@@ -6,8 +6,8 @@ import { darkTheme, lightTheme } from "./../appTheme";
 import WebRRunner from "./WebRRunner";
 import FileUploadManager from "./FileUploadManager";
 
-function SPOCKLY({ isDarkMode }) {
-  const [code, setCode] = useState("");
+function SPOCKLY({isDarkMode}) {
+  const [code, setCode] = useState("Generated R code will appear here...");
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const webRRef = useRef(null);
   const workspaceRef = useRef(null);
