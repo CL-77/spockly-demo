@@ -6,10 +6,10 @@ import { darkTheme, lightTheme } from "./../appTheme";
 import CodeOutput from "./CodeOutput";
 import main from './init.js';
 import PlottingOutput from "./PlottingDisplay.jsx";
-import FileUploadManager from "./FileUploadManager";
+// import FileUploadManager from "./FileUploadManager";
 
 function SPOCKLY({ isDarkMode }) {
-  const [code, setCode] = useState("Generated R code will appear here...");
+  const [code, setCode] = useState("Generated Python code will appear here...");
   const [plot, setPlot] = useState("");
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const workspaceRef = useRef(null);
@@ -18,8 +18,8 @@ function SPOCKLY({ isDarkMode }) {
   const [output, setOutput] = useState("Loading Pyodide...");
   useEffect(() => {
     const firstRun = async () => {
-        const code =
-        `import pyodide_js
+        const code = `
+import pyodide_js
 await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shapely'])
 `;
         const result = await main(code);
@@ -129,12 +129,12 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
         </Grid>
       </Grid>
 
-      <FileUploadManager
+      {/* <FileUploadManager
         webRInstance={ workspaceRef.current }
         isDarkMode={ isDarkMode }
         open={ uploadDialogOpen }
         onClose={ handleUploadClose }
-      />
+      /> */}
     </Box>
   );
 }

@@ -1,10 +1,18 @@
 import * as Blockly from "blockly";
 import { pythonGenerator } from "blockly/python";
-import english from "../../locales/english"
-import german from "../../locales/german"
-const g = german;
-const e = english;
-console.log(g, e);
+import { english } from "../../locales/english"
+import { german } from "../../locales/german"
+import * as De from "blockly/msg/de";
+import * as En from "blockly/msg/en"
+
+const lang = navigator.languages;
+// if(lang.some((l) => l.startsWith('de'))) { //Reactivate after testing
+    Blockly.setLocale(De);
+    Blockly.setLocale(german);
+// } else {
+  // Blockly.setLocale(En);
+  // Blockly.setLocale(english);
+// }
 
 /**
  * Value Input Block (returns value)
@@ -14,10 +22,10 @@ Blockly.Blocks["math_square"] = {
   init: function () {
     this.appendValueInput("NUM")
         .setCheck("Number")
-        .appendField("square of");
+        .appendField(Blockly.Msg.Blocks.MATH_SQUARE_Field);
     this.setOutput(true, "Number");
     this.setColour(230);
-    this.setTooltip(e.math_square.tooltip);
+    this.setTooltip(Blockly.Msg.Blocks.MATH_SQUARE_Tooltip);
   },
 };
 pythonGenerator.forBlock["math_square"] = function (block, generator) {
@@ -31,8 +39,11 @@ pythonGenerator.forBlock["math_square"] = function (block, generator) {
  */
 Blockly.Blocks["repeat_times"] = {
   init: function () {
-    this.appendValueInput("TIMES").setCheck("Number").appendField("repeat");
-    this.appendStatementInput("DO").appendField("do");
+    this.appendValueInput("TIMES")
+        .setCheck("Number")
+        .appendField("repeat");
+    this.appendStatementInput("DO")
+        .appendField("do");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(120);
@@ -1692,7 +1703,7 @@ pythonGenerator.forBlock['multipolygon'] = function(block, generator) {
 }
 
 //**Bounding box */
-const bounding_box = {
+Blockly.Blocks['bounding_box'] = {
   init: function() {
     this.appendDummyInput('NAME')
       .appendField('Bounding box');
@@ -1711,8 +1722,7 @@ const bounding_box = {
     this.setHelpUrl('https://shapely.readthedocs.io/en/stable/reference/shapely.box.html');
     this.setColour(150);
   }
-};
-Blockly.common.defineBlocks({bounding_box: bounding_box});             
+};        
 pythonGenerator.forBlock['bounding_box'] = function(block) {
   const min_x = block.getFieldValue('min_x') || '0';
   const min_y = block.getFieldValue('min_y') || '0';

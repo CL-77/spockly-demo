@@ -8,6 +8,19 @@ import { Tooltip } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup, IconButton } from "@mui/material";
 import { FaBookOpen, FaMapMarkedAlt, FaQuestionCircle } from "react-icons/fa";
 import { pythonGenerator } from "blockly/python";
+import { english } from "../locales/english"
+import { german } from "../locales/german"
+import * as De from "blockly/msg/de";
+import * as En from "blockly/msg/en"
+
+const lang = navigator.languages;
+// if(lang.some((l) => l.startsWith('de'))) { //Reactivate after testing
+    Blockly.setLocale(De);
+    Blockly.setLocale(german);
+// } else {
+  // Blockly.setLocale(En);
+  // Blockly.setLocale(english);
+// }
 
 const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) => {
   const theme = useTheme();
@@ -21,7 +34,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   // Change content later
   const beginnerToolbox = `
         <xml>
-          <category name="Math" colour="#FF8A65">
+          <category name="${Blockly.Msg.Categories["MATH"]}" colour="#FF8A65">
             <block type="math_number"></block>
             <block type="consts"></block>
             <block type="math_arithmetic">
@@ -47,13 +60,13 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="modulo"></block>
           </category>
 
-          <category name="Booleans" colour="#1d8425">
+          <category name="${Blockly.Msg.Categories["BOOLEANS"]}" colour="#1d8425">
             <block type="to_bool"></block>
             <block type="bool1"></block>
             <block type="bool2"></block>
           </category>
 
-          <category name="Data" colour="#FA2">
+          <category name="${Blockly.Msg.Categories["DATA"]}" colour="#FA2">
             <block type="sampleData"></block>
             <block type="read_file"></block>
             <block type="data_shape"></block>
@@ -74,7 +87,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             </block>
           </category>
 
-          <category name="Visualisation" colour="#90A4AE">
+          <category name="${Blockly.Msg.Categories["VISUALISATION"]}" colour="#90A4AE">
             <block type="plot">
               <value name="title">
                 <shadow type="text">
@@ -99,7 +112,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             </block>
           </category>
 
-          <category name="Statistics" colour="#BA68C8">
+          <category name="${Blockly.Msg.Categories["STATISTICS"]}" colour="#BA68C8">
             <block type="mean"></block>
             <block type="median"></block>
             <block type="std"></block>
@@ -109,9 +122,9 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="sum"></block>
           </category>
 
-          <category name="Variables" custom="VARIABLE" colour="#A65E2E"></category>
+          <category name="${Blockly.Msg.Categories["VARIABLES"]}" custom="VARIABLE" colour="#A65E2E"></category>
 
-          <category name="Basic functions" colour="#123456">
+          <category name="${Blockly.Msg.Categories["BASIC_FUNCTIONS"]}" colour="#123456">
             <block type="input"></block>
             <block type="slice"></block>
             <block type="text_print"></block>
@@ -120,7 +133,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="type"></block>
           </category>
 
-          <category name="Geometry" colour="#4DD0E1">
+          <category name="${Blockly.Msg.Categories["GEOMETRY"]}" colour="#4DD0E1">
             <block type="coords"></block>
             <block type="create_point"></block>
             <block type="buffer"></block>
@@ -132,10 +145,11 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="polygon_perimeter"></block>
           </category>
 
-          <category name="Other" colour="#5C81A6">
+          <category name="${Blockly.Msg.Categories["OTHER"]}" colour="#5C81A6">
             <block type="controls_if"></block>
             <block type="operators"></block>
             <block type="repeat_times"></block>
+            <block type="temp_var"></block>
             <block type="text"></block>
             <block type="line_break"></block>
             <block type="list_create"></block>
@@ -156,11 +170,12 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                 </shadow>
               </value>
             </block>
+          </category>
         </xml>
       `;
       const advancedToolbox = `
         <xml>
-          <category name="Math" colour="#FF8A65">
+          <category name="${Blockly.Msg.Categories["MATH"]}" colour="#FF8A65">
             <block type="math_number"></block>
             <block type="consts"></block>
             <block type="math_arithmetic">
@@ -186,13 +201,13 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="modulo"></block>
           </category>
 
-          <category name="Booleans" colour="#1d8425">
+          <category name="${Blockly.Msg.Categories["BOOLEANS"]}" colour="#1d8425">
             <block type="to_bool"></block>
             <block type="bool1"></block>
             <block type="bool2"></block>
           </category>
 
-          <category name="Data" colour="#FA2">
+          <category name="${Blockly.Msg.Categories["DATA"]}" colour="#FA2">
             <block type="sampleData"></block>
             <block type ="plotly_scatter_mapbox"></block>
             <block type="create_folder"></block>
@@ -228,7 +243,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             </block>
           </category>
 
-          <category name="Visualisation" colour="#90A4AE">
+          <category name="${Blockly.Msg.Categories["VISUALISATION"]}" colour="#90A4AE">
             <block type="plot">
               <value name="title">
                 <shadow type="text">
@@ -299,7 +314,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             </block>
           </category>
 
-          <category name="Statistics" colour="#BA68C8">
+          <category name="${Blockly.Msg.Categories["STATISTICS"]}" colour="#BA68C8">
             <block type="mean"></block>
             <block type="median"></block>
             <block type="std"></block>
@@ -309,16 +324,16 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="sum"></block>
           </category>
 
-          <category name="Variables" custom="VARIABLE" colour="#A65E2E"></category>
+          <category name="${Blockly.Msg.Categories["VARIABLES"]}" custom="VARIABLE" colour="#A65E2E"></category>
 
-          <category name="Imports" colour="#888">
+          <category name="${Blockly.Msg.Categories["IMPORTS"]}" colour="#888">
             <block type="import0"></block>
             <block type="import1"></block>
             <block type="import2"></block>
             <block type="import3"></block>
           </category>
 
-          <category name="Basic functions" colour="#123456">
+          <category name="${Blockly.Msg.Categories["BASIC_FUNCTIONS"]}" colour="#123456">
             <block type="input"></block>
             <block type="slice"></block>
             <block type="lambda"></block>
@@ -328,9 +343,9 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="type"></block>
           </category>
 
-          <category name="Functions" custom="PROCEDURE" colour="#05a219"></category>
+          <category name="${Blockly.Msg.Categories["PROCEDURES"]}" custom="PROCEDURE" colour="#05a219"></category>
 
-          <category name="Geometry" colour="#4DD0E1">
+          <category name="${Blockly.Msg.Categories["GEOMETRY"]}" colour="#4DD0E1">
             <block type="coords"></block>
             <block type="create_point"></block>
             <block type="buffer"></block>
@@ -349,7 +364,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="bounding_box"></block>
           </category>
 
-          <category name="Map" colour="#3E65F8">
+          <category name="${Blockly.Msg.Categories["MAPS"]}" colour="#3E65F8">
             <block type="create_map"></block>
             <block type="create_marker"></block>
             <block type="create_polygon"></block>
@@ -360,7 +375,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="JSON_on_map"></block>
           </category>
 
-          <category name="Other" colour="#5C81A6">
+          <category name="${Blockly.Msg.Categories["OTHER"]}" colour="#5C81A6">
             <block type="while_loop"></block>
             <block type="controls_if"></block>
             <block type="operators"></block>
@@ -464,19 +479,19 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     libs += np ? "import numpy as np\n" : "";
     libs += pd ? "import pandas as pd\n" : "";
     libs += sns ? "import seaborn as sns\n" : ""; 
-    libs += plt ? `import matplotlib.pyplot as plt
-import io
-import base64
-import js
-
-class Dud:
-    def __init__(self, *args, **kwargs) -> None:
-        return
-    
-    def __getattr__(self, __name: str):
-        return Dud
-
-js.document = Dud()` : "";
+    libs += plt ? 'import matplotlib.pyplot as plt' : "";
+// import io
+// import base64
+// import js
+// 
+// class Dud:
+    // def __init__(self, *args, **kwargs) -> None:
+        // return
+    // 
+    // def __getattr__(self, __name: str):
+        // return Dud
+// 
+// js.document = Dud()` : "";
     libs += gpd ? "import geopandas as gpd\n" : "";
     libs += requests ? "import requests\n" : "";
     libs += os ? "import os\n" : "";
@@ -491,11 +506,12 @@ js.document = Dud()` : "";
                                           '\t\t\t\t\tf.write(chunk)\n' + 
                               '\t\tprint("Downloaded ", filename)\n\n'
     : '';
-    if(plt) pythonCode += `bytes_io = io.BytesIO()
-plt.savefig(bytes_io, format='jpg')
-bytes_io.seek(0)
-base64_encoded_spectrogram = base64.b64encode(bytes_io.read())
-print(base64_encoded_spectrogram.decode('utf-8'))`;
+    // if(plt) pythonCode += `
+// bytes_io = io.BytesIO()
+// plt.savefig(bytes_io, format='jpg')
+// bytes_io.seek(0)
+// base64_encoded_spectrogram = base64.b64encode(bytes_io.read())
+// print(base64_encoded_spectrogram.decode('utf-8'))`;
     setCode((libs ? libs + '\n' : '') + pythonCode);
   };
 
@@ -524,7 +540,7 @@ print(base64_encoded_spectrogram.decode('utf-8'))`;
           borderColor: isDarkMode ? "#4e5d6c" : "#ccd6df",
         }}
       >
-        <Box display="flex" alignItems="center" gap={ 2 } flex={ 1 } minWidth={ 0 }>
+        {/* <Box display="flex" alignItems="center" gap={ 2 } flex={ 1 } minWidth={ 0 }>
           <Button
             variant="contained"
             onClick={ onUploadClick }
@@ -546,7 +562,7 @@ print(base64_encoded_spectrogram.decode('utf-8'))`;
             <Upload fontSize="medium" />
             UPLOAD DATA FILE
           </Button>
-        </Box>
+        </Box> */}
         <Box display="flex" alignItems="center" gap={ 2 } flex={ 1 } justifyContent="flex-end" minWidth={ 0 }>
           <ToggleButtonGroup
             exclusive

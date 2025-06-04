@@ -38,13 +38,13 @@ const PlottingDisplay = ({ plot, isDarkMode }) => {
     return (
         <Box
             sx={{
-                bottom: 20,
+                // bottom: 20,
                 right: 20,
                 left: 20,
                 height: "200px",
                 borderRadius: "5px",
                 zIndex: 1,
-                overflow: "visible",
+                // overflow: "visible",
             }}
             >
                 {/* <Stack direction="row">
@@ -110,7 +110,7 @@ const PlottingDisplay = ({ plot, isDarkMode }) => {
                     <Typography
                         sx={{
                             fontWeight: "bold",
-                            color: theme.palette.primary.contrastText,
+                            color: isDarkMode ? "#FFFFFA" : "#000000",
                             padding: "20px",
                             whiteSpace: 'pre',
                         }}

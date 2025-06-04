@@ -15,10 +15,32 @@ const CodeOutput = ({ code, isDarkMode, setPlot }) => {
     const runCode = async () => {
       console.log('Running code...');
       setOutput("Running...");
+      if(~code.indexOf('plt.')) {
+        code = `
+import io
+import base64
+import js
+
+class Dud:
+    def __init__(self, *args, **kwargs) -> None:
+        return
+    
+    def __getattr__(self, __name: str):
+        return Dud
+
+js.document = Dud()
+
+${code}
+
+bytes_io = io.BytesIO()
+plt.savefig(bytes_io, format='jpg')
+bytes_io.seek(0)
+base64_encoded_spectrogram = base64.b64encode(bytes_io.read())
+print(base64_encoded_spectrogram.decode('utf-8'))`
+      }
       const result = await main(code);
       setOutput(result);
       if (typeof result === "string" && result.length > 100 && /^[A-Za-z0-9+/=\s]+$/.test(result)) {
-        console.info('%cRESULT IS A PLOT', 'color: #089d08; font-weight: bold; background-color: #FFF; font-size: 1.5em;');
         setPlot(result);
       } else {
         setPlot("");
@@ -94,7 +116,6 @@ const CodeOutput = ({ code, isDarkMode, setPlot }) => {
       sx={{
         top: 20,
         left: 20,
-        right: 20,
         height: "100%",
         borderRadius: "5px",
         zIndex: 1,
@@ -174,7 +195,7 @@ const CodeOutput = ({ code, isDarkMode, setPlot }) => {
           position: "relative",
           borderRadius: "5px",
           width: "100%",
-          height: "75%",
+          height: "70%",
           bgcolor: theme.palette.background.paper,
           zIndex: 1,
           overflow: "auto",
@@ -186,7 +207,7 @@ const CodeOutput = ({ code, isDarkMode, setPlot }) => {
             color: isDarkMode ? "#FFFFFA" : "#000000",
             paddingBottom: "10px",
             padding: "20px",
-            whiteSpace: "pre",
+            whiteSpace: "pre-wrap",
           }}
         >
           { output || 'No output' }
