@@ -4,9 +4,12 @@ import { pythonGenerator } from "blockly/python";
 /**
  * Value Input Block (returns value)
  */
+
 Blockly.Blocks["math_square"] = {
   init: function () {
-    this.appendValueInput("NUM").setCheck("Number").appendField("square of");
+    this.appendValueInput("NUM")
+        .setCheck("Number")
+        .appendField("square of");
     this.setOutput(true, "Number");
     this.setColour(230);
     this.setTooltip("Returns the square of a number");

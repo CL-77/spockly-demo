@@ -1,12 +1,69 @@
 import { useRef } from "react";
-import { Box, Fab, Stack, Typography } from "@mui/material";
-import { darkTheme, lightTheme } from "./../appTheme";
-import { PlayArrow } from "@mui/icons-material";
-import { ContentPaste } from '@mui/icons-material';
+import {
+  Alert,
+  Box,
+  Fab,
+  IconButton,
+  Snackbar,
+  Stack,
+  Tooltip,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import {
+  ContentCopyRounded,
+  Download,
+  Fullscreen,
+  PlayArrow,
+  RestartAlt,
+  ContentPaste
+} from "@mui/icons-material";
+import * as Blockly from "blockly/core";
+import { useState } from "react";
+import FullCodeViewDialog from "./FullCodeViewDialog";
+import DownloadCodeDialog from "./DownloadCodeDialog";
 import { m } from "framer-motion";
+import { pythonGenerator } from "blockly/python";
 
-const CodeDisplay = ({ code, isDarkMode }) => {
-  const theme = isDarkMode ? darkTheme : lightTheme;
+const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
+  const theme = useTheme();
+  const [openFullCodeViewDialog, setOpenFullCodeViewDialog] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
+  const [openDownloadDialog, setOpenDownloadDialog] = useState(false);
+
+  const handleOpenFullCodeView = () => setOpenFullCodeViewDialog(true);
+  const handleCloseFullCodeView = () => setOpenFullCodeViewDialog(false);
+
+  const handleOpenDownloadDialog = () => setOpenDownloadDialog(true);
+  const handleCloseDownloadDialog = () => setOpenDownloadDialog(false);
+
+  const handleGenerateCode = () => {
+    if (!workspaceRef.current) {
+      console.error("Blockly workspace is not initialized.");
+      return;
+    }
+
+    let rCode = pythonGenerator.workspaceToCode(workspaceRef.current);
+    if (rCode && rCode.trim() !== "") {
+      const formattedRCode = pythonGenerator.formatCode(rCode);
+      setCode(formattedRCode);
+    } else {
+      setCode("No Python code could be generated from the current workspace.");
+    }
+  };
+
+  const handleResetCode = () => {
+    setCode("Generated Python code will appear here...");
+  };
+
+  const handleCopyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopySuccess(true);
+    } catch (err) {
+      console.error("Copy failed:", err);
+    }
+  };
   const codeRef = useRef(null);
   document.addEventListener(
   "keydown",
@@ -42,12 +99,22 @@ const CodeDisplay = ({ code, isDarkMode }) => {
         zIndex: 1,
       }}
     >
+      <Snackbar
+        open={ copySuccess }
+        autoHideDuration={2000}
+        onClose={ () => setCopySuccess(false) }
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert severity="success" sx={{ width: "100%" }}>
+          Code copied to clipboard!
+        </Alert>
+      </Snackbar>
       <Stack direction="row">
         <Typography
           variant="h6"
           fontWeight="bold"
           sx={{
-            color: theme.palette.primary.light,
+            color: theme.palette.primary.contrastText,
             paddingBottom: "15px",
           }}
         >
@@ -57,17 +124,17 @@ const CodeDisplay = ({ code, isDarkMode }) => {
         <Fab
           size="small"
           variant="extended"
+          onClick={ handleGenerateCode }
           sx={{
             left: 20,
             width: "120px",
             bgcolor: "#00c853",
-            color: theme.palette.primary.light,
+            color: theme.palette.primary.contrastText,
             "&:hover": {
               bgcolor: "#05A255",
             },
             boxShadow: "none",
           }}
-          onClick={ window.generateCode }
         >
           <Box display="flex" alignItems="center" gap={ 0.5 }>
             <PlayArrow fontSize="small" />
@@ -118,23 +185,78 @@ const CodeDisplay = ({ code, isDarkMode }) => {
           height: "75%",
           bgcolor: theme.palette.background.paper,
           zIndex: 1,
-          overflow: "auto",
+          overflowY: "auto",
         }}
       >
-        <Typography
-          fontWeight="bold"
-          sx={{
-            color: theme.palette.primary.contrastText,
-            paddingBottom: "10px",
-            paddingTop: "5px",
-            paddingRight: "10px",
-            padding: "20px",
-            whiteSpace: 'pre',
-          }}
-        >
-          { code || "Generated Python code will appear here..." }
-        </Typography>
+        <Stack direction="row" justifyContent="space-between">
+          <Typography
+            fontWeight="bold"
+            sx={{
+              color: isDarkMode ? "#FFFFFA" : "#000000",
+              paddingBottom: "10px",
+              paddingTop: "5px",
+              paddingRight: "10px",
+              padding: "20px",
+              whiteSpace: "pre-wrap",
+              fontFamily: "monospace",
+            }}
+          >
+            { code || "Generated Python code will appear here..." }
+          </Typography>
+          <Box
+            sx={{
+              position: "relative",
+              width: "20%",
+              height: "75%",
+              zIndex: 1,
+              overflowY: "auto",
+              padding: "20px",
+            }}
+          >
+            <Stack
+              direction="row"
+              sx={{
+                justifyContent: "flex-end",
+                alignItems: "center",
+              }}
+            >
+              <Tooltip title="Download Code as R file">
+                <IconButton onClick={handleOpenDownloadDialog}>
+                  <Download />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Copy Code">
+                <IconButton onClick={handleCopyCode}>
+                  <ContentCopyRounded />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Reset Code">
+                <IconButton onClick={handleResetCode}>
+                  <RestartAlt />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Full Code View">
+                <IconButton onClick={handleOpenFullCodeView}>
+                  <Fullscreen />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          </Box>
+        </Stack>
       </Box>
+      <FullCodeViewDialog
+        code={code}
+        openFullCodeViewDialog={openFullCodeViewDialog}
+        handleOpenDownloadDialog={handleOpenDownloadDialog}
+        handleCopyCode={handleCopyCode}
+        handleCloseFullCodeView={handleCloseFullCodeView}
+        isDarkMode={isDarkMode}
+      />
+      <DownloadCodeDialog
+        code={code}
+        openDownloadDialog={openDownloadDialog}
+        handleCloseDownloadDialog={handleCloseDownloadDialog}
+      />
     </Box>
   );
 };

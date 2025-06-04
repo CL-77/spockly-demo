@@ -1,18 +1,17 @@
-// src/theme.js
-import { blue, lightBlue } from "@mui/material/colors";
 import { createTheme } from "@mui/material/styles";
 
 export const lightTheme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: lightBlue[700],
-      contrastText: "#000000",
-      light: "#fff",
+      main: "#44A1A0",
+      dark: "#0D5C63",
+      contrastText: "#FFFFFA",
+      light: "#FFD966",
     },
     secondary: {
-      main: lightBlue[900],
-      contrastText: "#fff",
+      main: "#78CDD7",
+      contrastText: "#FFFFFA",
     },
     background: {
       default: "#f5f5f5",
@@ -34,19 +33,18 @@ export const darkTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#15134C",
-      contrastText: "#fff",
+      main: "#1f1547",
+      contrastText: "#FFFFFA",
       dark: "#15134C",
-      light: "#fff",
+      light: "#B58FFF",
     },
     secondary: {
-      dark:lightBlue[900],
-      main: lightBlue[800],
-      contrastText: "#fff",
+      main: "#3f395b",
+      contrastText: "#FFFFFA",
     },
     background: {
-      default: "#202A7C",
-      paper: "#262626",
+      default: "#150e31",
+      paper: "#3f395b",
     },
   },
   components: {
@@ -60,7 +58,7 @@ export const darkTheme = createTheme({
     MuiTabs: {
       styleOverrides: {
         indicator: {
-          backgroundColor: lightBlue[700],
+          backgroundColor: "#B58FFF",
         },
       },
     },
@@ -69,8 +67,8 @@ export const darkTheme = createTheme({
         root: {
           textTransform: "none",
           "&.Mui-selected": {
-            color: lightBlue[700], 
-            fontWeight: "bold", 
+            color: "#B58FFF",
+            fontWeight: "bold",
           },
         },
       },

@@ -30,7 +30,7 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
         boxShadow: "none",
         height: "60px",
         bgcolor: theme.palette.primary.main,
-        color: theme.palette.primary.light,
+        color: theme.palette.primary.contrastText,
       }}
     >
       <Toolbar
@@ -67,8 +67,8 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
             style={({ isActive }) => ({
               textDecoration: "none",
               color: isActive
-                ? theme.palette.secondary.main
-                : theme.palette.primary.light,
+                ? theme.palette.primary.light
+                : theme.palette.primary.contrastText,
               fontWeight: "bold",
             })}
           >
@@ -80,8 +80,8 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
             style={({ isActive }) => ({
               textDecoration: "none",
               color: isActive
-                ? theme.palette.secondary.main
-                : theme.palette.primary.light,
+                ? theme.palette.primary.light
+                : theme.palette.primary.contrastText,
               fontWeight: "bold",
             })}
           >
@@ -94,7 +94,7 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
             onClick={ toggleTheme }
             sx={{
               width: "90px",
-              bgcolor: theme.palette.primary.light,
+              bgcolor: theme.palette.primary.contrastText,
               color: theme.palette.primary.main,
               "&:hover": {
                 bgcolor: theme.palette.secondary.main,

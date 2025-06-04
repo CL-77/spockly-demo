@@ -1,24 +1,33 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useMemo, useState } from "react";
 import * as Blockly from "blockly";
-import { pythonGenerator } from "blockly/python";
 import "./blockly/customBlocks"; // Import custom blocks
-import { Box } from "@mui/material";
+import "./blockly/customGenerator"; // Import custom generator
+import "./blockly/rBlocks"; // Import R blocks
+import { Box, Fab, Typography, useTheme, Button } from "@mui/material";
 import { lightTheme, darkTheme } from "./blockly/blocklyThemes";
+import { Upload, UploadFile } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
+import { ToggleButton, ToggleButtonGroup, IconButton } from "@mui/material";
+import { FaBookOpen, FaMapMarkedAlt, FaQuestionCircle } from "react-icons/fa";
 
-const BlocklyComponent = ({ setCode, isDarkMode }) => {
+const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) => {
+  const theme = useTheme();
   const blocklyDiv = useRef(null);
-  const workspaceRef = useRef(null);
   const linkRef = useRef(null);
 
-  useEffect(() => {
+  // useEffect(() => {
     if (!blocklyDiv.current) {
       console.error("blocklyDiv is not available.");
       return;
     }
 
-    workspaceRef.current = Blockly.inject(blocklyDiv.current, {
-      // renderer: "zelos",
-      toolbox: `
+     // State to toggle between beginner and advanced block toolboxes
+  const [level, setLevel] = useState("level1");
+
+  // Blockly toolbox definition for Level 1 (Beginner)
+  // Change content later
+  const beginnerToolbox = `
+
         <xml>
           <category name="Math" colour="#FF8A65">
             <block type="math_number"></block>
@@ -265,11 +274,24 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
             </block>
           </category>
         </xml>
-      `,
+      `
+      const toolboxXml = useMemo(() => {
+    return level === "level1" ? beginnerToolbox : advancedToolbox;
+  }, [level]);
+
+  // Initialize Blockly with the selected theme and toolbox whenever the theme or level changes
+  useEffect(() => {
+    if (!blocklyDiv.current) {
+      console.error("blocklyDiv is not available.");
+      return;
+    }
+      workspaceRef.current = Blockly.inject(blocklyDiv.current, {
+      toolbox: toolboxXml,
+      // renderer: "zelos",
       theme: isDarkMode ? darkTheme : lightTheme,
       grid: {
         spacing: 40,
-        length:4,
+        length: 4,
         colour: "#fff",
         snap: true,
       },
@@ -278,13 +300,10 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
         wheel: true,
       },
       move: {
-        scrollbars: true,
         drag: true,
         wheel: true,
       },
-      trashcan: {
-
-      }
+      trashcan: {},
     });
     
     return () => {
@@ -294,7 +313,7 @@ const BlocklyComponent = ({ setCode, isDarkMode }) => {
       }
       workspaceRef.current?.dispose();
     };
-  }, [isDarkMode]);
+  }, [isDarkMode, toolboxXml]);
 
   globalThis.generateCode = () => {
     if (!workspaceRef.current) {
@@ -358,7 +377,98 @@ print(base64_encoded_spectrogram.decode('utf-8'))`;
         margin: 0,
         padding: 0,
       }}
-    />
+    >
+      {/* Top bar with Upload button and Level toggle */}
+      <Box
+        display="flex"
+        alignItems="stretch"
+        justifyContent="space-between"
+        px={ 3 }
+        py={ 1.5 }
+        mb={ 2 }
+        sx={{
+          bgcolor: isDarkMode ? "#2b2d42" : "#e7ebf0",
+          borderRadius: 2,
+          boxShadow: 3,
+          border: "1px solid",
+          borderColor: isDarkMode ? "#4e5d6c" : "#ccd6df",
+        }}
+      >
+        <Box display="flex" alignItems="center" gap={ 2 } flex={ 1 } minWidth={ 0 }>
+          <Button
+            variant="contained"
+            onClick={onUploadClick}
+            sx={{
+              bgcolor: theme.palette.secondary.main,
+              color: isDarkMode ? "#FFFFFA" : "#000000",
+              "&:hover": {
+                bgcolor: theme.palette.secondary.dark,
+                color: "#fff",
+              },
+              borderRadius: 2,
+              textTransform: "none",
+              px: 2,
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <Upload fontSize="medium" />
+            UPLOAD DATA FILE
+          </Button>
+        </Box>
+        <Box display="flex" alignItems="center" gap={ 2 } flex={ 1 } justifyContent="flex-end" minWidth={ 0 }>
+          <ToggleButtonGroup
+            exclusive
+            value={ level }
+            onChange={ (e, newLevel) => newLevel && setLevel(newLevel) }
+            sx={{
+              bgcolor: "background.paper",
+              borderRadius: 2,
+              boxShadow: 1,
+            }}
+          >
+            <ToggleButton value="level1" sx={{ px: 2, py: 1, gap: 1 }}>
+              <FaBookOpen /> Beginner
+            </ToggleButton>
+            <ToggleButton value="level2" sx={{ px: 2, py: 1, gap: 1 }}>
+              <FaMapMarkedAlt /> Advanced
+            </ToggleButton>
+          </ToggleButtonGroup>
+          <Tooltip
+            title={
+              <Box>
+                Beginner: built-in datasets & simple blocks.<br />
+                Advanced: load files, model, visualise spatial data.<br />
+                Click to see tutorials for more.
+              </Box>
+            }
+            arrow
+            enterDelay={0}
+          >
+            <IconButton
+              component="a"
+              href="/tutorials"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{ color: "inherit" }}
+            >
+              <FaQuestionCircle />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      </Box>
+      {/* Blockly rendering area */}
+      <Box
+        ref={blocklyDiv}
+        sx={{
+          height: "90%",
+          width: "100%",
+          margin: 0,
+          padding: 0,
+        }}
+      />
+    </Box>
   );
 };
 

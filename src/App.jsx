@@ -2,12 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import Tutorials from "./pages/Tutorials";
-import TutorialIntroduction from "./pages/tutorials/TutorialIntroduction";
-import TutorialWhy from "./pages/tutorials/TutorialWhy";
-import TutorialWho from "./pages/tutorials/TutorialWho";
-import TutorialHow from "./pages/tutorials/TutorialHow";
-import TutorialExample from "./pages/tutorials/TutorialExample";
+import Tutorials from "./pages/tutorials/Tutorials";
 import Impressum from "./pages/Impressum";
 import { GlobalStyles, ThemeProvider } from "@mui/material";
 import { darkTheme, lightTheme } from "./appTheme";
@@ -81,14 +76,7 @@ function App() {
               path="spockly"
               element={ <SPOCKLY isDarkMode={ isDarkMode } /> }
             />
-            <Route path="/tutorials/*" element={ <Tutorials /> }>
-              <Route index element={ <TutorialIntroduction /> } />
-              <Route path="introduction" element={ <TutorialIntroduction /> } />
-              <Route path="why" element={ <TutorialWhy /> } />
-              <Route path="who" element={ <TutorialWho /> } />
-              <Route path="how" element={ <TutorialHow /> } />
-              <Route path="example" element={ <TutorialExample /> } />
-            </Route>
+            <Route path="tutorials" element={ <Tutorials isDarkMode={ isDarkMode } /> } />
             <Route path="impressum" element={ <Impressum /> } />
           </Route>
         </Routes>

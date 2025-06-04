@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import BlocklyComponent from "./BlocklyComponent";
 import CodeDisplay from "./CodeDisplay";
 import { Card, Box, Grid } from "@mui/material";
@@ -6,18 +6,22 @@ import { darkTheme, lightTheme } from "./../appTheme";
 import CodeOutput from "./CodeOutput";
 import main from './init.js';
 import PlottingOutput from "./PlottingDisplay.jsx";
+import FileUploadManager from "./FileUploadManager";
 
 function SPOCKLY({ isDarkMode }) {
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState("Generated R code will appear here...");
   const [plot, setPlot] = useState("");
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  // const webRRef = useRef(null);
+  const workspaceRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
   const [isLoading, setIsLoading] = useState(true);
   const [output, setOutput] = useState("Loading Pyodide...");
   useEffect(() => {
     const firstRun = async () => {
         const code =
-        `#import pyodide_js
-#await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shapely'])
+        `import pyodide_js
+await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shapely'])
 `;
         const result = await main(code);
         setOutput(result);
@@ -29,6 +33,14 @@ function SPOCKLY({ isDarkMode }) {
   }, []);
 
   
+
+  const handleUploadClick = () => {
+    setUploadDialogOpen(true);
+  };
+
+  const handleUploadClose = () => {
+    setUploadDialogOpen(false);
+  };
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -50,7 +62,12 @@ function SPOCKLY({ isDarkMode }) {
               boxShadow: 3,
             }}
           >
-            <BlocklyComponent setCode={ setCode } isDarkMode={ isDarkMode } />
+            <BlocklyComponent 
+              setCode={ setCode } 
+              isDarkMode={ isDarkMode } 
+              onUploadClick={ handleUploadClick }
+              workspaceRef={ workspaceRef }
+            />
           </Card>
         </Grid>
 
@@ -72,11 +89,20 @@ function SPOCKLY({ isDarkMode }) {
               position: "relative",
             }}
           >
-            <Box sx={{ height: "50%" }}>
-              <CodeDisplay code={ code } isDarkMode={ isDarkMode } />
+            <Box sx={{ height: "50%", p: 2 }}>
+              <CodeDisplay 
+                code={ code } 
+                setCode={ setCode }
+                isDarkMode={ isDarkMode } 
+                workspaceRef={ workspaceRef }
+              />
             </Box>
-            <Box sx={{ height: "50%" }}>
-              <CodeOutput code={ code } isDarkMode={ isDarkMode } setPlot={setPlot} />
+            <Box sx={{ height: "50%", p: 2 }}>
+              <CodeOutput 
+                setPlot={ setPlot } 
+                code={ code } 
+                isDarkMode={ isDarkMode }
+              />
             </Box>
           </Card>
         </Grid>
@@ -103,6 +129,13 @@ function SPOCKLY({ isDarkMode }) {
           </Card>
         </Grid>
       </Grid>
+
+      <FileUploadManager
+        webRInstance={webRRef.current}
+        isDarkMode={isDarkMode}
+        open={uploadDialogOpen}
+        onClose={handleUploadClose}
+      />
     </Box>
   );
 }
