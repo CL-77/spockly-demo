@@ -26,7 +26,7 @@ const DownloadCodeDialog = ({
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${fileName}.R`;
+    a.download = `${fileName}.py`;
     a.click();
 
     URL.revokeObjectURL(url);
@@ -35,7 +35,7 @@ const DownloadCodeDialog = ({
   };
 
   return (
-    <Dialog open={openDownloadDialog} onClose={handleCloseDownloadDialog}>
+    <Dialog open={ openDownloadDialog } onClose={ handleCloseDownloadDialog }>
       <DialogTitle
         fontWeight="bold"
         sx={{
@@ -56,9 +56,9 @@ const DownloadCodeDialog = ({
           bgcolor: theme.palette.background.default,
         }}
       >
-        <Stack spacing={4} sx={{ paddingY: 2 }}>
+        <Stack spacing={ 4 } sx={{ paddingY: 2 }}>
           <Typography fontWeight="bold" gutterBottom>
-            Please name your R File
+            Please name your Python File
           </Typography>
           <TextField
             id="fileNameInput"
@@ -66,11 +66,11 @@ const DownloadCodeDialog = ({
             defaultValue="MyNewSpocklyProject"
             onChange={(e) => setFileName(e.target.value)}
           />
-          <Stack direction="row" justifyContent="flex-end" spacing={2} mt={2}>
+          <Stack direction="row" justifyContent="flex-end" spacing={ 2 } mt={ 2 }>
             <Fab
               size="small"
               variant="extended"
-              onClick={handleCloseDownloadDialog}
+              onClick={ handleCloseDownloadDialog }
               sx={{
                 boxShadow: "none",
                 background: theme.palette.primary.main,
@@ -86,7 +86,7 @@ const DownloadCodeDialog = ({
             <Fab
               size="small"
               variant="extended"
-              onClick={handleDownloadCode}
+              onClick={ handleDownloadCode }
               sx={{
                 boxShadow: "none",
                 background: theme.palette.primary.main,
@@ -97,7 +97,7 @@ const DownloadCodeDialog = ({
                 },
               }}
             >
-              <Box display="flex" alignItems="center" gap={0.5}>
+              <Box display="flex" alignItems="center" gap={ 0.5 }>
                 <Download fontSize="small" />
                 <Typography fontWeight="bold">Download</Typography>
               </Box>

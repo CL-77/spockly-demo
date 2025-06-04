@@ -7,6 +7,7 @@ import { Upload, UploadFile } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup, IconButton } from "@mui/material";
 import { FaBookOpen, FaMapMarkedAlt, FaQuestionCircle } from "react-icons/fa";
+import { pythonGenerator } from "blockly/python";
 
 const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) => {
   const theme = useTheme();
@@ -270,7 +271,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
       const advancedToolbox = beginnerToolbox; //Temporary
       const toolboxXml = useMemo(() => {
     return level === "level1" ? beginnerToolbox : advancedToolbox;
-  }, [level]);
+  }, [level, beginnerToolbox, advancedToolbox]);
 
   // Initialize Blockly with the selected theme and toolbox whenever the theme or level changes
   useEffect(() => {
@@ -306,7 +307,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
       }
       workspaceRef.current?.dispose();
     };
-  }, [isDarkMode, toolboxXml]);
+  }, [isDarkMode, toolboxXml, workspaceRef]);
 
   globalThis.generateCode = () => {
     if (!workspaceRef.current) {
@@ -315,6 +316,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     }
     var libs = "", np, pd, gpd, sns, plt, requests, os, def_download;
     var pythonCode = pythonGenerator.workspaceToCode(workspaceRef.current);
+    console.error("Generated Python code:", pythonCode);
     if(~pythonCode.indexOf('np.')) np = true;
     if(~pythonCode.indexOf('pd.')) pd = true;
     if(~pythonCode.indexOf('sns.')) sns = true;
@@ -363,7 +365,6 @@ print(base64_encoded_spectrogram.decode('utf-8'))`;
 
   return (
     <Box
-      ref={ blocklyDiv }
       sx={{
         height: "100%",
         width: "100%",
@@ -390,7 +391,7 @@ print(base64_encoded_spectrogram.decode('utf-8'))`;
         <Box display="flex" alignItems="center" gap={ 2 } flex={ 1 } minWidth={ 0 }>
           <Button
             variant="contained"
-            onClick={onUploadClick}
+            onClick={ onUploadClick }
             sx={{
               bgcolor: theme.palette.secondary.main,
               color: isDarkMode ? "#FFFFFA" : "#000000",
@@ -437,7 +438,7 @@ print(base64_encoded_spectrogram.decode('utf-8'))`;
               </Box>
             }
             arrow
-            enterDelay={0}
+            enterDelay={ 0 }
           >
             <IconButton
               component="a"
@@ -453,7 +454,7 @@ print(base64_encoded_spectrogram.decode('utf-8'))`;
       </Box>
       {/* Blockly rendering area */}
       <Box
-        ref={blocklyDiv}
+        ref={ blocklyDiv }
         sx={{
           height: "90%",
           width: "100%",

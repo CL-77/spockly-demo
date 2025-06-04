@@ -107,7 +107,7 @@ Blockly.Blocks['operators'] = {
     this.setColour(0);
   }
 };
-pythonGenerator.forBlock['operators'] = function(block,generator) {
+pythonGenerator.forBlock['operators'] = function(block, generator) {
   
   const dropdown_name = block.getFieldValue('NAME');
   const valu = generator.valueToCode(block, 'VALUE', pythonGenerator.ORDER_ATOMIC);
@@ -632,7 +632,7 @@ Blockly.Blocks['data_shape'] = {
     this.setColour(200);
   }
 };
-pythonGenerator.forBlock['data_shape'] = function(block,generator) {
+pythonGenerator.forBlock['data_shape'] = function(block, generator) {
   const data = generator.valueToCode(block, 'data', pythonGenerator.ORDER_ATOMIC);
   return [`np.shape(${data})`, pythonGenerator.ORDER_COLLECTION];
 }
@@ -678,7 +678,7 @@ Blockly.Blocks['create_array'] = {
     this.setColour(200);
   }
 };
-pythonGenerator.forBlock['create_array'] = function(block,generator) {
+pythonGenerator.forBlock['create_array'] = function(block, generator) {
   const array = generator.valueToCode(block, 'array', pythonGenerator.ORDER_ATOMIC);
   return [`np.array(${array})`, pythonGenerator.ORDER_COLLECTION];
 }             
@@ -701,7 +701,7 @@ Blockly.Blocks['delete_axes'] = {
     this.setColour(195);
   }
 };
-pythonGenerator.forBlock['delete_axes'] = function(block,generator) {
+pythonGenerator.forBlock['delete_axes'] = function(block, generator) {
   const delCols = generator.valueToCode(block, 'ColArr', pythonGenerator.ORDER_ATOMIC) || '';
   const delInds = generator.valueToCode(block, 'IndArr', pythonGenerator.ORDER_COLLECTION) || '';
   const varID = block.getFieldValue('DATAFRAME') || '0';
@@ -727,7 +727,7 @@ Blockly.Blocks['delete_object'] = {
     this.setColour(195);
   }
 };
-pythonGenerator.forBlock['delete_object'] = function(block,generator) {
+pythonGenerator.forBlock['delete_object'] = function(block, generator) {
   const value_object = generator.valueToCode(block, 'object', pythonGenerator.ORDER_ATOMIC);
   const value_array = generator.valueToCode(block, 'array', pythonGenerator.ORDER_COLLECTION);
   return [`np.delete(${value_array}, ${value_object})`, pythonGenerator.ORDER_COLLECTION];
@@ -749,7 +749,7 @@ Blockly.Blocks['add_object'] = {
     this.setColour(200);
   }
 };
-pythonGenerator.forBlock['add_object'] = function(block,generator) {
+pythonGenerator.forBlock['add_object'] = function(block, generator) {
   const value_object = generator.valueToCode(block, 'object', pythonGenerator.ORDER_ATOMIC);
   const value_array = generator.valueToCode(block, 'array', pythonGenerator.ORDER_COLLECTION);
   return [`np.append(${value_array}, ${value_object})`, pythonGenerator.ORDER_COLLECTION];
@@ -2196,7 +2196,7 @@ Blockly.Blocks['distance_sph'] = {
     this.setColour(60);
   }
 };
-pythonGenerator.forBlock['distance_sph'] = function(block, generator) {
+pythonGenerator.forBlock['distance_sph'] = function(block) {
   const lat1 = block.getFieldValue('Lat1') || '0';
   const lat2 = block.getFieldValue('Lat2') || '0';
   const lon1 = block.getFieldValue('Lon1') || '0';
@@ -2231,7 +2231,7 @@ Blockly.Blocks['distance_rect'] = {
     this.setColour(60);
   }
 };
-pythonGenerator.forBlock['distance_rect'] = function(block, generator) {
+pythonGenerator.forBlock['distance_rect'] = function(block) {
   const lat1 = block.getFieldValue('Lat1') || '0';
   const lat2 = block.getFieldValue('Lat2') || '0';
   const lon1 = block.getFieldValue('Lon1') || '0';
@@ -2265,7 +2265,7 @@ Blockly.Blocks['distance_manhattan'] = {
     this.setColour(60);
   }
 };
-pythonGenerator.forBlock['distance_manhattan'] = function(block, generator) {
+pythonGenerator.forBlock['distance_manhattan'] = function(block) {
   const lat1 = block.getFieldValue('Lat1') || '0';
   const lat2 = block.getFieldValue('Lat2') || '0';
   const lon1 = block.getFieldValue('Lon1') || '0';
@@ -2299,7 +2299,7 @@ Blockly.Blocks['distance_haversine'] = {
     this.setColour(60);
   }
 };
-pythonGenerator.forBlock['distance_haversine'] = function(block, generator) {
+pythonGenerator.forBlock['distance_haversine'] = function(block) {
   const lat1 = block.getFieldValue('Lat1') || '0';
   const lat2 = block.getFieldValue('Lat2') || '0';
   const lon1 = block.getFieldValue('Lon1') || '0';

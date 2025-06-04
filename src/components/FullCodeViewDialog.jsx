@@ -22,8 +22,8 @@ const FullCodeViewDialog = ({
 
   return (
     <Dialog
-      open={openFullCodeViewDialog}
-      onClose={handleCloseFullCodeView}
+      open={ openFullCodeViewDialog }
+      onClose={ handleCloseFullCodeView }
       fullWidth
       maxWidth="md"
     >
@@ -35,17 +35,17 @@ const FullCodeViewDialog = ({
         >
           <Typography fontWeight="bold">Full Code View</Typography>
           <Stack direction="row">
-            <Tooltip title="Download Code as R file">
-              <IconButton onClick={handleOpenDownloadDialog}>
+            <Tooltip title="Download Code as Python file">
+              <IconButton onClick={ handleOpenDownloadDialog }>
                 <Download />
               </IconButton>
             </Tooltip>
             <Tooltip title="Copy Code">
-              <IconButton onClick={handleCopyCode}>
+              <IconButton onClick={ handleCopyCode }>
                 <ContentCopyRounded />
               </IconButton>
             </Tooltip>
-            <IconButton onClick={handleCloseFullCodeView}>
+            <IconButton onClick={ handleCloseFullCodeView }>
               <Clear />
             </IconButton>
           </Stack>
@@ -68,7 +68,7 @@ const FullCodeViewDialog = ({
             fontFamily: "monospace",
           }}
         >
-          {code}
+          { code }
         </Typography>
       </DialogContent>
     </Dialog>

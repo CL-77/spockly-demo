@@ -39,14 +39,14 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
 
   const handleGenerateCode = () => {
     if (!workspaceRef.current) {
-      console.error("Blockly workspace is not initialized.");
+      console.error("Blockly workspace is not initialised.");
       return;
     }
 
-    let rCode = pythonGenerator.workspaceToCode(workspaceRef.current);
-    if (rCode && rCode.trim() !== "") {
-      const formattedRCode = pythonGenerator.formatCode(rCode);
-      setCode(formattedRCode);
+    let pyCode = pythonGenerator.workspaceToCode(workspaceRef.current);
+    if (pyCode && pyCode.trim() !== "") {
+      // const formattedRCode = pythonGenerator.formatCode(pyCode);
+      setCode(pyCode.trim());
     } else {
       setCode("No Python code could be generated from the current workspace.");
     }
@@ -64,30 +64,30 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
       console.error("Copy failed:", err);
     }
   };
-  const codeRef = useRef(null);
-  document.addEventListener(
-  "keydown",
-  (ev) => {
-    const keyName = ev.key;
-    if (keyName === "Control") {
-      return;
-    }
-    if ((ev.ctrlKey || ev.metaKey) && !ev.altKey && keyName === 'c' && !window.getSelection().toString()) {
-        ev.preventDefault();
-        navigator.clipboard.writeText(code)
-          .then(() => {
-            codeRef.current.innerText = 'Code Copied!';
-            setTimeout(() => codeRef.current.innerText = 'Copy Code', 1500);
-          })
-          .catch((e) => console.error('The code could not be copied. ' + e));
-      }
-      if ((ev.ctrlKey || ev.metaKey) && !ev.altKey && keyName === 'Enter') {
-        ev.preventDefault();
-        window.generateCode();
-      }
-    },
-    false,
-  );
+  // const codeRef = useRef(null);
+  // document.addEventListener(
+  // "keydown",
+  // (ev) => {
+  //   const keyName = ev.key;
+  //   if (keyName === "Control") {
+  //     return;
+  //   }
+  //   if ((ev.ctrlKey || ev.metaKey) && !ev.altKey && keyName === 'c' && !window.getSelection().toString()) {
+  //       ev.preventDefault();
+  //       navigator.clipboard.writeText(code)
+  //         .then(() => {
+  //           codeRef.current.innerText = 'Code Copied!';
+  //           setTimeout(() => codeRef.current.innerText = 'Copy Code', 1500);
+  //         })
+  //         .catch((e) => console.error('The code could not be copied. ' + e));
+  //     }
+  //     if ((ev.ctrlKey || ev.metaKey) && !ev.altKey && keyName === 'Enter') {
+  //       ev.preventDefault();
+  //       window.generateCode();
+  //     }
+  //   },
+  //   false,
+  // );
 
   return (
     <Box
@@ -144,7 +144,7 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
         <Box display="flex" alignItems="center" gap={ 0.5 }>
           <Typography sx={{ fontSize: "0.9em", marginLeft: "30px", color: "#BBB" }}>Ctrl + Enter</Typography>
         </Box>
-        { ~document.location.href.indexOf('https') || ~document.location.href.indexOf('localhost') ? (
+        {/* { ~document.location.href.indexOf('https') || ~document.location.href.indexOf('localhost') ? (
           <>
         <Box display="flex" marginLeft="auto" alignItems="center" gap={ 0.5 }>
           <Typography sx={{ fontSize: "0.9em", marginRight: "10px", color: "#BBB" }}>Ctrl + C</Typography>  
@@ -174,7 +174,7 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
           </Box>
         </Fab>
         </>
-        ) : null }
+        ) : null } */}
       </Stack>
 
       <Box
@@ -220,23 +220,23 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
                 alignItems: "center",
               }}
             >
-              <Tooltip title="Download Code as R file">
-                <IconButton onClick={handleOpenDownloadDialog}>
+              <Tooltip title="Download Code as Python file">
+                <IconButton onClick={ handleOpenDownloadDialog }>
                   <Download />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Copy Code">
-                <IconButton onClick={handleCopyCode}>
+                <IconButton onClick={ handleCopyCode }>
                   <ContentCopyRounded />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Reset Code">
-                <IconButton onClick={handleResetCode}>
+                <IconButton onClick={ handleResetCode }>
                   <RestartAlt />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Full Code View">
-                <IconButton onClick={handleOpenFullCodeView}>
+                <IconButton onClick={ handleOpenFullCodeView }>
                   <Fullscreen />
                 </IconButton>
               </Tooltip>

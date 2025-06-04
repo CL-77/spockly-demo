@@ -10,7 +10,7 @@ const CodeOutput = ({ code, isDarkMode, setPlot }) => {
     const [output, setOutput] = useState("Loading Pyodide...");
     const [isLoading, setIsLoading] = useState(true);
     const theme = isDarkMode ? darkTheme : lightTheme;
-    const refCode = useRef(null);
+    // const refCode = useRef(null);
 
     const runCode = async () => {
       console.log('Running code...');
@@ -70,25 +70,25 @@ const CodeOutput = ({ code, isDarkMode, setPlot }) => {
         findInfo();
     });
 
-document.addEventListener(
-  "keydown",
-  (ev) => {
-    const keyName = ev.key;
-    if (keyName === "Control") {
-        return;
-    }
-    if ((ev.ctrlKey || ev.metaKey) && ev.altKey && keyName === 'c') {
-        ev.preventDefault();
-        navigator.clipboard.writeText(output)
-            .then(() => {
-                refCode.current.innerText = 'Output Copied!';
-                setTimeout(() => refCode.current.innerText = 'Copy Output', 1500);
-            })
-            .catch((e) => console.error('The output could not be copied. ' + e));
-    }
-  },
-  false,
-);
+// document.addEventListener(
+//   "keydown",
+//   (ev) => {
+//     const keyName = ev.key;
+//     if (keyName === "Control") {
+//         return;
+//     }
+//     if ((ev.ctrlKey || ev.metaKey) && ev.altKey && keyName === 'c') {
+//         ev.preventDefault();
+//         navigator.clipboard.writeText(output)
+//             .then(() => {
+//                 refCode.current.innerText = 'Output Copied!';
+//                 setTimeout(() => refCode.current.innerText = 'Copy Output', 1500);
+//             })
+//             .catch((e) => console.error('The output could not be copied. ' + e));
+//     }
+//   },
+//   false,
+// );
 
     return (
         <Box
@@ -120,7 +120,7 @@ document.addEventListener(
             left: 20,
             width: "200px",
             bgcolor: "#33bfff",
-            color: theme.palette.primary.light,
+            color: theme.palette.primary.contrastText,
             "&:hover": {
               bgcolor: "#00b0ff",
             },
@@ -137,7 +137,7 @@ document.addEventListener(
         <Box display="flex" alignItems="center" gap={ 0.5 }>
           <Typography sx={{ fontSize: "0.9em", marginLeft: "30px", color: "#BBB" }}>Ctrl + Alt + Enter</Typography>  
         </Box>
-        { ~document.location.href.indexOf('https') || ~document.location.href.indexOf('localhost') ? (
+        {/* { ~document.location.href.indexOf('https') || ~document.location.href.indexOf('localhost') ? (
           <>
         <Box display="flex" marginLeft="auto" alignItems="center" gap={ 0.5 }>
           <Typography sx={{ fontSize: "0.9em", marginRight: "10px", color: "#BBB" }}>Ctrl + Alt + C</Typography>  
@@ -167,7 +167,7 @@ document.addEventListener(
           </Box>
         </Fab>
         </>
-        ) : null }
+        ) : null } */}
       </Stack>
 
       <Box
@@ -187,7 +187,7 @@ document.addEventListener(
             color: theme.palette.primary.contrastText,
             paddingBottom: "10px",
             padding: "20px",
-            whiteSpace: 'pre-line',
+            whiteSpace: "pre-wrap",
           }}
         >
           { output || 'No output' }
