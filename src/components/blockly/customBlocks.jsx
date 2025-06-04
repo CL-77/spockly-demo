@@ -160,15 +160,20 @@ Blockly.Blocks['load_csv'] = {
         .appendField('Load data from CSV:')
         .appendField(new Blockly.FieldTextInput('file'), 'CSV')
         .appendField('.csv');
+    this.appendDummyInput()
+        .appendField('with separator')
+        .appendField(new Blockly.FieldTextInput(','), 'sep');
     this.setTooltip('Loads a given CSV dataset');
     this.appendEndRowInput();
     this.setOutput(true, 'Array');
+    this.setHelpUrl('https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html')
     this.setColour(200);
   },
 };
 pythonGenerator.forBlock['load_csv'] = function(block) {
   const dataset = block.getFieldValue('CSV') || '0';
-  return [`pd.read_csv('${dataset}.csv')`, pythonGenerator.ORDER_ATOMIC];
+  const separator = block.getFieldValue('sep') || ',';
+  return [`pd.read_csv('${dataset}.csv', sep = '${separator}')`, pythonGenerator.ORDER_ATOMIC];
 };
 
 /**
@@ -177,8 +182,11 @@ pythonGenerator.forBlock['load_csv'] = function(block) {
 Blockly.Blocks['load_csv_from_url'] = {
   init: function(){
     this.appendDummyInput()
-    .appendField('Load CSV file from URL')
-    .appendField(new Blockly.FieldTextInput('http://example.com/file.csv', (url) => url.match(/^[a-z]{4,5}:\/\/[A-Za-zÀ-ÖØ-öø-ÿ0-9./:_-]*?\.[a-z]{2,6}/) ? url : 'ERROR!'), 'CSV');
+      .appendField('Load CSV file from URL')
+      .appendField(new Blockly.FieldTextInput('http://example.com/file.csv', (url) => url.match(/^[a-z]{4,5}:\/\/[A-Za-zÀ-ÖØ-öø-ÿ0-9./:_-]*?\.[a-z]{2,6}/) ? url : 'ERROR!'), 'CSV');
+    this.appendDummyInput()
+      .appendField('with separator')
+      .appendField(new Blockly.FieldTextInput(','), 'sep');
     this.setTooltip('Loads a given CSV dataset from an URL. Local files can be used by prepending "file://".');
     this.appendEndRowInput();
     this.setOutput(true, 'Array');
@@ -188,7 +196,8 @@ Blockly.Blocks['load_csv_from_url'] = {
 };
 pythonGenerator.forBlock['load_csv_from_url'] = function(block) {
   const dataset = block.getFieldValue('CSV') || '0';
-  return [`pd.read_csv('${dataset}')\n`, pythonGenerator.ORDER_ATOMIC];
+  const separator = block.getFieldValue('sep') || ',';
+  return [`pd.read_csv('${dataset}', sep = '${separator}')\n`, pythonGenerator.ORDER_ATOMIC];
 };
       
 /** sqrt block**/
@@ -401,8 +410,7 @@ Blockly.Blocks["mean_squared"] = {
 pythonGenerator.forBlock["mean_squared"] = function(block, generator) {
   const msq =
     generator.valueToCode(block, "NUM", pythonGenerator.ORDER_NONE) || "0";
-  return [`(quad_err = 0\nfor i in range(${msq}.shape[0]) :\n  quad_err += (${msq}[i,0] - np.mean(${msq}))**2\n
-quad_err /= ${msq}.shape[0])\n`, pythonGenerator.ORDER_ATOMIC];
+  return [`np.mean((${msq} - np.mean(${msq})) ** 2)\n`, pythonGenerator.ORDER_ATOMIC];
 };
 
 /** 
