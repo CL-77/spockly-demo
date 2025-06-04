@@ -1,5 +1,10 @@
 import * as Blockly from "blockly";
 import { pythonGenerator } from "blockly/python";
+import english from "../../locales/english"
+import german from "../../locales/german"
+g = german;
+e = english;
+console.log(g, e);
 
 /**
  * Value Input Block (returns value)
@@ -12,7 +17,7 @@ Blockly.Blocks["math_square"] = {
         .appendField("square of");
     this.setOutput(true, "Number");
     this.setColour(230);
-    this.setTooltip("Returns the square of a number");
+    this.setTooltip(e.math_square.tooltip);
   },
 };
 pythonGenerator.forBlock["math_square"] = function (block, generator) {
