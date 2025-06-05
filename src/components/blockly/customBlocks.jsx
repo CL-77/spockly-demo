@@ -1741,7 +1741,7 @@ Blockly.Blocks['bounding_box'] = {
     this.setHelpUrl('https://shapely.readthedocs.io/en/stable/reference/shapely.box.html');
     this.setColour(150);
   }
-};        
+};
 pythonGenerator.forBlock['bounding_box'] = function(block) {
   const min_x = block.getFieldValue('min_x') || '0';
   const min_y = block.getFieldValue('min_y') || '0';
@@ -2470,3 +2470,202 @@ zoom=${zoom}
   return code;
 };
 
+Blockly.Blocks['interpolation_setup'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Interpolation Setup");
+    this.appendValueInput("DATASET")
+        .setCheck(null)
+        .appendField("Dataset variable");
+    this.appendDummyInput()
+        .appendField("Target column")
+        .appendField(new Blockly.FieldTextInput("pop_density"), "COLUMN");
+    this.appendDummyInput()
+        .appendField("Number of missing values")
+        .appendField(new Blockly.FieldNumber(4, 1, 100), "NUM_MISSING");
+    this.setOutput(true, null);
+    this.setColour(230);
+    this.setInputsInline(false);
+    this.setTooltip("Prepare dataset by simulating missing values in a selected column");
+    this.setHelpUrl("");
+  }
+};
+
+pythonGenerator.forBlock['interpolation_setup'] = function(block, generator) {
+  const datasetVar = generator.valueToCode(block, 'DATASET', pythonGenerator.ORDER_NONE) || 'data';
+  const column = block.getFieldValue('COLUMN') || 'pop_density';
+  const numMissing = Number(block.getFieldValue('NUM_MISSING')) || 4;
+
+  const code = `
+df_copy = ${datasetVar}.copy()
+df_copy['area'] = df_copy.geometry.area if 'geometry' in df_copy else 1
+df_copy['${column}'] = df_copy['pop_est'] / df_copy['area']
+
+# Simulate missing data
+np.random.seed(42)
+indices_to_replace = np.random.choice(df_copy.index, size=${numMissing}, replace=False)
+df_copy.loc[indices_to_replace, '${column}'] = np.nan
+
+# Visualization
+vmin = df_copy['${column}'].min()
+vmax = df_copy['${column}'].max()
+fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+${datasetVar}.plot(column='${column}', ax=ax[0], cmap='pink', edgecolor='k', vmin=vmin, vmax=vmax, legend=True)
+df_copy.plot(color='none', ax=ax[1], edgecolor='k')
+df_copy.plot(column='${column}', ax=ax[1], cmap='pink', edgecolor='k', vmin=vmin, vmax=vmax, legend=True)
+ax[0].set_title("Original", fontsize=12, pad=12)
+ax[1].set_title("Missing values simulated", fontsize=12, pad=12)
+for a in ax: a.axis('off')
+
+df_copy
+`;
+  return [code, pythonGenerator.ORDER_ATOMIC];
+};
+
+
+Blockly.Blocks['idw_interpolation'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("IDW Interpolation");
+    this.appendValueInput("DATASET")
+        .setCheck(null)
+        .appendField("Dataset with missing values");
+    this.appendDummyInput()
+        .appendField("Column")
+        .appendField(new Blockly.FieldTextInput("pop_density"), "COLUMN");
+    this.appendDummyInput()
+        .appendField("Power")
+        .appendField(new Blockly.FieldNumber(2, 0.1, 10), "POWER");
+    this.setOutput(true, null);
+    this.setColour(230);
+    this.setInputsInline(false);
+    this.setTooltip("Perform IDW interpolation on missing values in a dataset");
+    this.setHelpUrl("");
+  }
+};
+
+pythonGenerator.forBlock['idw_interpolation'] = function(block, generator) {
+  const datasetVar = generator.valueToCode(block, 'DATASET', pythonGenerator.ORDER_NONE) || 'df_copy';
+  const column = block.getFieldValue('COLUMN') || 'pop_density';
+  const power = block.getFieldValue('POWER') || 2;
+
+  const code = `
+from scipy.spatial import cKDTree
+def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=${power}):
+    tree = cKDTree(np.c_[xi, yi])
+    distances, idx = tree.query(np.c_[xi_interp, yi_interp], k=8)
+    weights = 1 / distances**power
+    weights /= weights.sum(axis=1)[:, None]
+    zi_interp = np.sum(weights * zi[idx], axis=1)
+    return zi_interp
+df_interp = ${datasetVar}.copy()
+known = df_interp[df_interp['${column}'].notna()]
+unknown = df_interp[df_interp['${column}'].isna()]
+xi = known.geometry.centroid.x.values
+yi = known.geometry.centroid.y.values
+zi = known['${column}'].values
+xi_interp = unknown.geometry.centroid.x.values
+yi_interp = unknown.geometry.centroid.y.values
+zi_interp = idw_interpolation(xi, yi, zi, xi_interp, yi_interp)
+df_interp.loc[df_interp['${column}'].isna(), '${column}'] = zi_interp
+df_interp
+`;
+  return [code, pythonGenerator.ORDER_ATOMIC];
+};
+
+
+Blockly.Blocks['plot_interpolation_comparison'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Plot Interpolation Comparison");
+    this.appendValueInput("ORIGINAL")
+        .setCheck(null)
+        .appendField("Original dataset");
+    this.appendValueInput("INTERPOLATED")
+        .setCheck(null)
+        .appendField("Interpolated dataset");
+    this.appendDummyInput()
+        .appendField("Column")
+        .appendField(new Blockly.FieldTextInput("pop_density"), "COLUMN");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(160);
+    this.setInputsInline(false);
+    this.setTooltip("Visualize original vs. interpolated values on a map");
+    this.setHelpUrl("");
+  }
+};
+
+
+pythonGenerator.forBlock['plot_interpolation_comparison'] = function(block, generator) {
+  const original = generator.valueToCode(block, 'ORIGINAL', pythonGenerator.ORDER_NONE) || 'gdf_original';
+  const interpolated = generator.valueToCode(block, 'INTERPOLATED', pythonGenerator.ORDER_NONE) || 'gdf_interpol';
+  const column = block.getFieldValue('COLUMN') || 'pop_density';
+
+  const code = `
+vmin = min(${original}['${column}'].min(), ${interpolated}['${column}'].min())
+vmax = max(${original}['${column}'].max(), ${interpolated}['${column}'].max())
+fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+${original}.plot(column='${column}', ax=ax[0], cmap='pink', edgecolor='k', vmin=vmin, vmax=vmax, legend=True)
+${interpolated}.plot(color='none', ax=ax[1], edgecolor='k')
+${interpolated}.plot(column='${column}', ax=ax[1], cmap='pink', edgecolor='k', vmin=vmin, vmax=vmax, legend=True)
+ax[0].set_title("Original", fontsize=12, pad=12)
+ax[1].set_title("Interpolated", fontsize=12, pad=12)
+for a in ax: a.axis('off')
+`;
+  return code;
+};
+
+
+
+Blockly.Blocks['compare_interpolated_accuracy'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Compare Interpolation Accuracy");
+    this.appendValueInput("ORIGINAL")
+        .setCheck(null)
+        .appendField("Original dataset");
+    this.appendValueInput("MISSING")
+        .setCheck(null)
+        .appendField("Dataset with missing values");
+    this.appendValueInput("INTERPOLATED")
+        .setCheck(null)
+        .appendField("Interpolated dataset");
+    this.appendDummyInput()
+        .appendField("Column")
+        .appendField(new Blockly.FieldTextInput("pop_density"), "COLUMN");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(160);
+    this.setInputsInline(false);
+    this.setTooltip("Compare original vs. interpolated values for missing countries and plot correlation");
+    this.setHelpUrl("");
+  }
+};
+
+pythonGenerator.forBlock['compare_interpolated_accuracy'] = function(block, generator) {
+  const original = generator.valueToCode(block, 'ORIGINAL', pythonGenerator.ORDER_NONE) || 'gdf_original';
+  const missing = generator.valueToCode(block, 'MISSING', pythonGenerator.ORDER_NONE) || 'gdf_missing';
+  const interpolated = generator.valueToCode(block, 'INTERPOLATED', pythonGenerator.ORDER_NONE) || 'gdf_interpol';
+  const column = block.getFieldValue('COLUMN') || 'pop_density';
+
+  const code = `
+# Compare original and interpolated values
+missing_countries = set(${missing}[${missing}['${column}'].isna()].name)
+missing_original = ${original}[${original}.name.isin(missing_countries)][['name', '${column}']].set_index('name')
+missing_interpol = ${interpolated}[${interpolated}.name.isin(missing_countries)][['name', '${column}']]\
+.rename(columns={'${column}': '${column}_interpol'}).set_index('name')
+
+interpol_comparison = missing_original.merge(missing_interpol, left_index=True, right_index=True)
+print(interpol_comparison.corr())
+
+plt.figure(figsize=(6,6))
+plt.plot(interpol_comparison['${column}'], interpol_comparison['${column}_interpol'], 'o')
+plt.xlabel("Original ${column}")
+plt.ylabel("Interpolated ${column}")
+plt.title("Comparison of Original and Interpolated Values")
+plt.grid(True)
+plt.show()
+`;
+  return code;
+};

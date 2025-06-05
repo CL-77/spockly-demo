@@ -387,6 +387,15 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="geometry_type"></block>
           </category>
 
+          <category name="${Blockly.Msg.Categories["INTERPOLATION"]}" colour="#BA68C8">
+            <block type="interpolation_setup"></block>
+            <block type="idw_interpolation"></block>
+            <block type="plot_interpolation_comparison"></block>
+            <block type="compare_interpolated_accuracy"></block>
+          </category>
+
+
+
           <category name="${Blockly.Msg.Categories["MAPS"]}" colour="#3E65F8">
             <block type="create_map"></block>
             <block type="create_marker"></block>
