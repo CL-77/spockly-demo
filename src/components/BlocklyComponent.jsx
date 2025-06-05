@@ -143,6 +143,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="centroid"></block>
             <block type="polygon_area"></block>
             <block type="polygon_perimeter"></block>
+            <block type="geometry_type"></block>
           </category>
 
           <category name="${Blockly.Msg.Categories["OTHER"]}" colour="#5C81A6">
@@ -220,6 +221,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="load_csv_from_url"></block>
             <block type="load_txt"></block>
             <block type="load_json"></block>
+            <block type="load_shapefile"></block>
             <block type="data_shape"></block>
             <block type="stacking"></block>
             <block type="add_object"></block>
@@ -312,6 +314,23 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                 </shadow>
               </value>
             </block>
+            <block type="boxplot">
+              <value name="title">
+                <shadow type="text">
+                  <field name="TEXT">Title</field>
+                </shadow>
+              </value>
+              <value name="XLabel">
+                <shadow type="text">
+                  <field name="TEXT">X-axis</field>
+                </shadow>
+              </value>
+              <value name="YLabel">
+                <shadow type="text">
+                  <field name="TEXT">Y-axis</field>
+                </shadow>
+              </value>
+            </block>
           </category>
 
           <category name="${Blockly.Msg.Categories["STATISTICS"]}" colour="#BA68C8">
@@ -362,6 +381,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="polygon_area"></block>
             <block type="polygon_perimeter"></block>
             <block type="bounding_box"></block>
+            <block type="geometry_type"></block>
           </category>
 
           <category name="${Blockly.Msg.Categories["MAPS"]}" colour="#3E65F8">

@@ -1347,6 +1347,24 @@ pythonGenerator.forBlock['load_json'] = function(block) {
   return [`pd.read_json('${dataset}.json')`, pythonGenerator.ORDER_ATOMIC];
 };
 
+//**load from a shapefile */
+Blockly.Blocks['load_shapefile'] = {
+  init: function(){
+    this.appendDummyInput()
+        .appendField('Load data from shapefile:')
+        .appendField(new Blockly.FieldTextInput(''), 'shp')
+        .appendField('.shp');
+    this.setTooltip('Loads a given shapefile');
+    this.appendEndRowInput();
+    this.setOutput(true, 'Array');
+    this.setColour(200);
+  },
+};
+pythonGenerator.forBlock['load_shapefile'] = function(block) {
+  const dataset = block.getFieldValue('shp') || '0';
+  return [`gpd.read_file('${dataset}.shp')`, pythonGenerator.ORDER_ATOMIC];
+};
+
 Blockly.Blocks['arange'] = {
   init: function(){
     this.appendValueInput('start')
@@ -1654,6 +1672,21 @@ Blockly.Blocks['polygon_perimeter'] = {
 pythonGenerator.forBlock['polygon_perimeter'] = function(block, generator) {
   const polygon = generator.valueToCode(block, 'polygon', pythonGenerator.ORDER_ATOMIC);
   return `${polygon}.length`;
+}
+
+Blockly.Blocks['geometry_type'] = {
+  init: function() {
+    this.appendValueInput('geom')
+        .appendField(new Blockly.FieldLabelSerializable('Geometry type'), 'NAME');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Give the type of a geometry');
+    this.setHelpUrl('https://autogis-site.readthedocs.io/en/latest/lessons/lesson-1/geometry-objects.html');
+    this.setColour(150);
+  }
+};
+pythonGenerator.forBlock['geometry_type'] = function(block, generator) {
+  const geome = generator.valueToCode(block, 'geom', pythonGenerator.ORDER_ATOMIC);
+  return `${geome}.geom_type`;
 }
 
 Blockly.Blocks['distance_calc'] = {
@@ -2164,6 +2197,43 @@ pythonGenerator.forBlock['bar_chart'] = function(block, generator) {
   `sizes = ${sizes}\n` +
   `labels = ${label_bar}\n` +
   `plt.bar(labels,sizes)\n` +
+  `plt.title(${title})\n` +
+  `plt.xlabel(${labels[0]})\n` + 
+  `plt.ylabel(${labels[1]})\n` +
+  `plt.show()`
+}
+
+Blockly.Blocks['boxplot'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Boxplot');
+    this.appendValueInput('datas')
+        .appendField('Datas');
+    this.appendValueInput('label_group')
+        .appendField('Labels');
+    this.appendValueInput('title')
+        .appendField('Title');
+    this.appendValueInput('XLabel')
+        .appendField('X-axis label');
+    this.appendValueInput('YLabel')
+        .appendField('Y-axis label');
+    this.setInputsInline(false);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('Plot a boxplot');
+    this.setHelpUrl('https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.boxplot.html');
+    this.setColour(325);
+  }
+}
+pythonGenerator.forBlock['boxplot'] = function(block, generator) {
+  const datas = generator.valueToCode(block, 'datas', pythonGenerator.ORDER_NONE) || "0";
+  const label_group = generator.valueToCode(block, 'label_group', pythonGenerator.ORDER_NONE) || "";
+  const labels = [generator.valueToCode(block, 'XLabel', pythonGenerator.ORDER_NONE) || "0", generator.valueToCode(block, 'YLabel', pythonGenerator.ORDER_NONE) || "0"];
+  const title = generator.valueToCode(block, 'title', pythonGenerator.ORDER_NONE) || "";
+  return '' +
+  `data = ${datas}\n` +
+  `labels = ${label_group}\n` +
+  'plt.boxplot(data, labels = labels)\n' +
   `plt.title(${title})\n` +
   `plt.xlabel(${labels[0]})\n` + 
   `plt.ylabel(${labels[1]})\n` +
