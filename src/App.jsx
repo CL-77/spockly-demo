@@ -23,8 +23,8 @@ function App() {
   const theme = isDarkMode ? darkTheme : lightTheme;
 
   useEffect(() => {
-  document.cookie = `isDarkMode=${isDarkMode}; path=/; max-age=31536000`; //1 year
-}, [isDarkMode]);
+    document.cookie = `isDarkMode=${isDarkMode}; path=/; max-age=31536000`; //1 year
+  }, [isDarkMode]);
 
   useEffect(() => {
     if (~window.location.href.indexOf('SPOCKLY')) {

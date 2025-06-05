@@ -31,8 +31,6 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
     firstRun();
   }, []);
 
-  
-
   const handleUploadClick = () => {
     setUploadDialogOpen(true);
   };
@@ -64,7 +62,7 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
             <BlocklyComponent 
               setCode={ setCode } 
               isDarkMode={ isDarkMode } 
-              onUploadClick={ handleUploadClick }
+              // onUploadClick={ handleUploadClick }
               workspaceRef={ workspaceRef }
             />
           </Card>
@@ -88,7 +86,7 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
               position: "relative",
             }}
           >
-            <Box sx={{ height: "50%", p: 2 }}>
+            <Box sx={{ height: "45%", p: 2 }}>
               <CodeDisplay 
                 code={ code } 
                 setCode={ setCode }
@@ -96,7 +94,7 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
                 workspaceRef={ workspaceRef }
               />
             </Box>
-            <Box sx={{ height: "50%", p: 2 }}>
+            <Box sx={{ height: "45%", p: 2 }}>
               <CodeOutput 
                 setPlot={ setPlot } 
                 code={ code } 

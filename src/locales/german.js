@@ -16,5 +16,6 @@ export const german = {
         "GEOMETRY": "Geometrie",
         "MAPS": "Karten",
         "OTHER": "Andere",
+        "DOWNLOAD_DATA": "Daten herunterladen",
     },
 }

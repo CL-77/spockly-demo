@@ -195,7 +195,7 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
           position: "relative",
           borderRadius: "5px",
           width: "100%",
-          height: "70%",
+          height: "80%",
           bgcolor: theme.palette.background.paper,
           zIndex: 1,
           overflow: "auto",

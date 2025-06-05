@@ -6,13 +6,13 @@ import * as De from "blockly/msg/de";
 import * as En from "blockly/msg/en"
 
 const lang = navigator.languages;
-// if(lang.some((l) => l.startsWith('de'))) { //Reactivate after testing
+if(lang.some((l) => l.startsWith('de'))) { //Reactivate after testing
     Blockly.setLocale(De);
     Blockly.setLocale(german);
-// } else {
-  // Blockly.setLocale(En);
-  // Blockly.setLocale(english);
-// }
+} else {
+  Blockly.setLocale(En);
+  Blockly.setLocale(english);
+}
 
 /**
  * Value Input Block (returns value)
@@ -726,7 +726,7 @@ pythonGenerator.forBlock['delete_axes'] = function(block, generator) {
   const varID = block.getFieldValue('DATAFRAME') || '0';
   const getVar = block.workspace.getVariableById(varID);
   const df = getVar ? getVar.name : 'df';
-  return `${df}.drop(index=${delInds}, columns=${delCols}, inplace=True)\n`;
+  return `${df}.drop(index=${delInds || ''}, columns=${delCols || ''}, inplace=True)\n`;
 }
 
 
@@ -1049,16 +1049,15 @@ Blockly.Blocks['read_file'] = {
         .appendField(new Blockly.FieldTextInput('file.zip'), 'NAME')
         .appendField('from folder')
         .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER');
-    this.setTooltip('Use function to read file with given folder name.');
-    this.setNextStatement(true);
-    this.setPreviousStatement(true);
+    this.setTooltip('Use function to read file in given folder name.');
+    this.setOutput(true)
     this.setColour(200);
   }
 };
 pythonGenerator.forBlock['read_file'] = function(block) {
   const fileName = block.getFieldValue('NAME');
-  const dataFolder = block.getFieldValue('FOLDER') || 'data';
-  return `gpd.read_file(os.path.join('${dataFolder}', '${fileName}'))\n`
+  const dataFolder = block.getFieldValue('FOLDER') || '';
+  return [`gpd.read_file(os.path.join('${dataFolder}', '${fileName}'))\n`, pythonGenerator.ORDER_ATOMIC];
 }
 
 Blockly.Blocks['write_file'] = {
@@ -1103,8 +1102,7 @@ pythonGenerator.forBlock['chdir'] = function(block) {
 
 Blockly.Blocks['sampleData'] = {
   init: function() {
-    this.appendValueInput('FOLDER')
-        .setCheck('String')
+    this.appendDummyInput()
         .appendField('Download sample data into folder')
         .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER');
     this.setTooltip('Download sample data from the internet into given folder');
@@ -1113,29 +1111,10 @@ Blockly.Blocks['sampleData'] = {
     this.setColour(200); 
   }
 }
-pythonGenerator.forBlock['sampleData'] = function(block, generator) {
-  const folder = generator.valueToCode(block, 'FOLDER', pythonGenerator.ORDER_ATOMIC) || 'data';
-  return `files = [
-  '2020-01-metropolitan-street.csv',
-  '2020-02-metropolitan-street.csv',
-  '2020-03-metropolitan-street.csv',
-  '2020-04-metropolitan-street.csv',
-  '2020-05-metropolitan-street.csv',
-  '2020-06-metropolitan-street.csv',
-  '2020-07-metropolitan-street.csv',
-  '2020-08-metropolitan-street.csv',
-  '2020-09-metropolitan-street.csv',
-  '2020-10-metropolitan-street.csv',
-  '2020-11-metropolitan-street.csv',
-  '2020-12-metropolitan-street.csv'
-]
-
-data_url = 'https://github.com/spatialthoughts/python-dataviz-web/releases/' \
-  'download/police.uk/'
-
-for f in files:
-  url = os.path.join(data_url + f)
-  download(url, '${folder}')\n`;
+pythonGenerator.forBlock['sampleData'] = function(block) {
+  const folder = block.getFieldValue('FOLDER') || 'data';
+  return `url = 'https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv'
+download(url, '${folder}')\n`;
 }
 
 Blockly.Blocks['listdir'] = {
@@ -1282,8 +1261,7 @@ pythonGenerator.forBlock['scatter'] = function(block, generator) {
   `plt.xlabel(${labels[0]})\n` + 
   `plt.ylabel(${labels[1]})\n` +
   `plt.grid(${grid})\n` +
-  `plt.legend(${legend})\n` +
-  `plt.show()\n`
+  `plt.legend(${legend})\n`
 }
 
 //**reshape an array */
@@ -2478,15 +2456,16 @@ pythonGenerator.forBlock['plotly_scatter_mapbox'] = function(block, generator) {
   const centerLat = block.getFieldValue('CENTER_LAT');
   const centerLon = block.getFieldValue('CENTER_LON');
 
-  const code =
-`fig = px.scatter_mapbox(
-  ${df},
-  lat="${lat}",
-  lon="${lon}",
-  hover_name="${hover}",
-  mapbox_style="${style}",
-  center={"lat": ${centerLat}, "lon": ${centerLon}},
-  zoom=${zoom}
+  const code = `
+import plotly.express as px
+fig = px.scatter_mapbox(
+${df},
+lat="${lat}",
+lon="${lon}",
+hover_name="${hover}",
+mapbox_style="${style}",
+center={"lat": ${centerLat}, "lon": ${centerLon}},
+zoom=${zoom}
 )\nfig.show()\n`;
   return code;
 };

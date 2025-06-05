@@ -12,9 +12,10 @@ export const english = {
         "VARIABLES": "Variables",
         "IMPORTS": "Imports",
         "BASIC_FUNCTIONS": "Basic Functions",
-        "PROCEDURES": "FUNCTIONS",
+        "PROCEDURES": "Functions",
         "GEOMETRY": "Geometry",
         "MAPS": "Maps",
-        "OTEHR": "Other",
+        "OTHER": "Other",
+        "DOWNLOAD_DATA": "Download Data",
     },
 }

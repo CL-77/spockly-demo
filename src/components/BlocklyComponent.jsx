@@ -14,13 +14,13 @@ import * as De from "blockly/msg/de";
 import * as En from "blockly/msg/en"
 
 const lang = navigator.languages;
-// if(lang.some((l) => l.startsWith('de'))) { //Reactivate after testing
+if(lang.some((l) => l.startsWith('de'))) { //Reactivate after testing
     Blockly.setLocale(De);
     Blockly.setLocale(german);
-// } else {
-  // Blockly.setLocale(En);
-  // Blockly.setLocale(english);
-// }
+} else {
+  Blockly.setLocale(En);
+  Blockly.setLocale(english);
+}
 
 const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) => {
   const theme = useTheme();
@@ -67,7 +67,10 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           </category>
 
           <category name="${Blockly.Msg.Categories["DATA"]}" colour="#FA2">
-            <block type="sampleData"></block>
+            <category name="${Blockly.Msg.Categories["DOWNLOAD_DATA"]}">
+                <block type="create_folder"></block>
+                <block type="sampleData"></block>
+            </category>
             <block type="read_file"></block>
             <block type="data_shape"></block>
             <block type="add_object"></block>
@@ -486,7 +489,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
       console.error("Blockly workspace is not initialised.");
       return;
     }
-    var libs = "", np, pd, gpd, sns, plt, requests, os, def_download;
+    var libs = "", np, pd, gpd, sns, plt, requests, os, def_download, px;
     var pythonCode = pythonGenerator.workspaceToCode(workspaceRef.current);
     if(~pythonCode.indexOf('np.')) np = true;
     if(~pythonCode.indexOf('pd.')) pd = true;
@@ -496,22 +499,11 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     if(~pythonCode.indexOf('requests.')) requests = true;
     if(~pythonCode.indexOf('os.')) os = true;
     if(~pythonCode.indexOf('download(')) def_download = true;
+    if(~pythonCode.indexOf('px.')) px = true;
     libs += np ? "import numpy as np\n" : "";
     libs += pd ? "import pandas as pd\n" : "";
     libs += sns ? "import seaborn as sns\n" : ""; 
-    libs += plt ? 'import matplotlib.pyplot as plt' : "";
-// import io
-// import base64
-// import js
-// 
-// class Dud:
-    // def __init__(self, *args, **kwargs) -> None:
-        // return
-    // 
-    // def __getattr__(self, __name: str):
-        // return Dud
-// 
-// js.document = Dud()` : "";
+    libs += plt ? 'import matplotlib.pyplot as plt\n' : "";
     libs += gpd ? "import geopandas as gpd\n" : "";
     libs += requests ? "import requests\n" : "";
     libs += os ? "import os\n" : "";
@@ -526,19 +518,17 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                                           '\t\t\t\t\tf.write(chunk)\n' + 
                               '\t\tprint("Downloaded ", filename)\n\n'
     : '';
-    // if(plt) pythonCode += `
-// bytes_io = io.BytesIO()
-// plt.savefig(bytes_io, format='jpg')
-// bytes_io.seek(0)
-// base64_encoded_spectrogram = base64.b64encode(bytes_io.read())
-// print(base64_encoded_spectrogram.decode('utf-8'))`;
+
+    libs += px ?  'import plotly.express as px\n' + 
+                  'fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])\n' +
+                  'fig.show()' : '';
     setCode((libs ? libs + '\n' : '') + pythonCode);
   };
 
   return (
     <Box
       sx={{
-        height: "100%",
+        height: "90%",
         width: "100%",
         margin: 0,
         padding: 0,
