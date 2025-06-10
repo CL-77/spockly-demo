@@ -9,6 +9,10 @@ self.onmessage = async (event) => {
   const pyodide = await pyodideReadyPromise;
   const { id, python, context } = event.data;
   await pyodide.loadPackagesFromImports(python);
+  await pyodide.loadPackage("micropip");
+  const micropip = pyodide.pyimport("micropip");
+  await micropip.install('plotly.express');
+  await micropip.install('folium');
   const dict = pyodide.globals.get("dict");
   const globals = dict(Object.entries(context));
   try {

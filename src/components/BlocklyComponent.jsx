@@ -3,13 +3,13 @@ import * as Blockly from "blockly";
 import "./blockly/customBlocks";
 import { Box, Fab, Typography, useTheme, Button } from "@mui/material";
 import { lightTheme, darkTheme } from "./blockly/blocklyThemes";
-import { Upload, UploadFile } from "@mui/icons-material";
+import { FormatListNumbered, Upload, UploadFile } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup, IconButton } from "@mui/material";
 import { FaBookOpen, FaMapMarkedAlt, FaQuestionCircle } from "react-icons/fa";
 import { pythonGenerator } from "blockly/python";
-import { english } from "../locales/english"
-import { german } from "../locales/german"
+import { english } from "../locales/english";
+import { german } from "../locales/german";
 import * as De from "blockly/msg/de";
 import * as En from "blockly/msg/en"
 
@@ -79,12 +79,12 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="delete_axes">
               <value name="ColArr">
                 <block type="list_create">
-                  <field name=""></field>
+                  <field name="test"></field>
                 </block>
               </value>
               <value name="IndArr">
                 <block type="list_create">
-                  <field name=""></field>
+                  <field name="test2"></field>
                 </block>
               </value>
             </block>
@@ -219,6 +219,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="read_file"></block>
             <block type="write_file"></block>
             <block type="listdir"></block>
+            <block type="getDir"></block>
             <block type="chdir"></block>
             <block type="load_csv"></block>
             <block type="load_csv_from_url"></block>
@@ -394,17 +395,82 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="compare_interpolated_accuracy"></block>
           </category>
 
-
-
           <category name="${Blockly.Msg.Categories["MAPS"]}" colour="#3E65F8">
-            <block type="create_map"></block>
-            <block type="create_marker"></block>
-            <block type="create_polygon"></block>
-            <block type="create_circle"></block>
-            <block type="create_rectangle"></block>
-            <block type="create_polyline"></block>
+            <block type="GeoCoords"></block>
+            <block type="folium_map">
+              <value name="center">
+                <shadow type="GeoCoords">
+                  <field name="XCoord">0</field>
+                  <field name="YCoord">0</field>
+                </shadow>
+              </value>
+            </block>
+            <block type="folium_icon"></block>
+            <block type="folium_marker">
+              <value name="icon">
+                <shadow type="folium_icon">
+                  <field name="icon">info-sign</field>
+                  <field name="color">blue</field>
+                  <field name="IcColor">white</field>
+                  <field name="angle">0</field>
+                </shadow>
+              </value>
+              <value name="position">
+                <shadow type="GeoCoords">
+                  <field name="XCoord">0</field>
+                  <field name="YCoord">0</field>
+                </shadow>
+              </value>
+            </block>
+            <block type="folium_polygon">
+              <value name="position">
+                <shadow type="list_create">
+                  <value name="element_0">
+                    <shadow type="GeoCoords">
+                      <field name="XCoord">0</field>
+                      <field name="YCoord">0</field>
+                    </shadow>
+                  </value>
+                </shadow>
+              </value>
+            </block>
+            <block type="create_circle">
+              <value name="position">
+                <shadow type="GeoCoords">
+                  <field name="XCoord">0</field>
+                  <field name="YCoord">0</field>
+                </shadow>
+              </value>
+            </block>
+            <block type="folium_rectangle">
+              <value name="firstCoord">
+                <shadow type="GeoCoords">
+                  <field name="XCoord">0</field>
+                  <field name="YCoord">0</field>
+                </shadow>
+              </value>
+              <value name="secondCoord">
+                <shadow type="GeoCoords">
+                  <field name="XCoord">0</field>
+                  <field name="YCoord">0</field>
+                </shadow>
+              </value>
+            </block>
+            <block type="folium_polyline">
+              <value name="position">
+                <shadow type="list_create">
+                  <value name="element_0">
+                    <shadow type="GeoCoords">
+                      <field name="XCoord">0</field>
+                      <field name="YCoord">0</field>
+                    </shadow>
+                  </value>
+                </shadow>
+              </value>
+            </block>
             <block type="Choropleth_map"></block>
             <block type="JSON_on_map"></block>
+            <block type="saveAndDisplayMap"></block>
           </category>
 
           <category name="${Blockly.Msg.Categories["OTHER"]}" colour="#5C81A6">
@@ -413,6 +479,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="operators"></block>
             <block type="repeat_times"></block>
             <block type="temp_var"></block>
+            <block type="var_to_func"></block>
             <block type="text"></block>
             <block type="line_break"></block>
             <block type="list_create"></block>
@@ -498,7 +565,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
       console.error("Blockly workspace is not initialised.");
       return;
     }
-    var libs = "", np, pd, gpd, sns, plt, requests, os, def_download, px;
+    var libs = "", np, pd, gpd, sns, plt, requests, os, def_download, px, folium;
     var pythonCode = pythonGenerator.workspaceToCode(workspaceRef.current);
     if(~pythonCode.indexOf('np.')) np = true;
     if(~pythonCode.indexOf('pd.')) pd = true;
@@ -509,6 +576,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     if(~pythonCode.indexOf('os.')) os = true;
     if(~pythonCode.indexOf('download(')) def_download = true;
     if(~pythonCode.indexOf('px.')) px = true;
+    if(~pythonCode.indexOf('folium.')) folium = true;
     libs += np ? "import numpy as np\n" : "";
     libs += pd ? "import pandas as pd\n" : "";
     libs += sns ? "import seaborn as sns\n" : ""; 
@@ -531,6 +599,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     libs += px ?  'import plotly.express as px\n' + 
                   'fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])\n' +
                   'fig.show()' : '';
+    libs += folium ? 'import folium\n' : '';
     setCode((libs ? libs + '\n' : '') + pythonCode);
   };
 

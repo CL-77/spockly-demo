@@ -5,12 +5,12 @@ import { darkTheme, lightTheme } from "./../appTheme";
 import { ContentPaste } from '@mui/icons-material';
 import main from './init.js';
 import { pyodideWorker } from "./workerApi.mjs";
+import { asyncRun } from "./workerApi.mjs";
 
 const CodeOutput = ({ code, isDarkMode, setPlot }) => {
     const [output, setOutput] = useState("Loading Pyodide...");
     const [isLoading, setIsLoading] = useState(true);
     const theme = isDarkMode ? darkTheme : lightTheme;
-    // const refCode = useRef(null);
 
     const runCode = async () => {
       console.log('Running code...');
@@ -39,9 +39,35 @@ base64_encoded_spectrogram = base64.b64encode(bytes_io.read())
 print(base64_encoded_spectrogram.decode('utf-8'))`
       }
       const result = await main(code);
+      const saveMap = !~code.indexOf('###DISPLAYONLY###');
+      const fileName = code.split("m.save('")[1].split(".html')")[0];
+      const foliumHandler = async (code, fileName) => {
+        if(~code.indexOf("m.save('")) {
+          let txt = await asyncRun(`
+            with open('${fileName}.html', 'rt') as fh:
+                txt = fh.read()
+            txt
+`, {});
+          const blob = new Blob([txt.result], {type : 'text/html'});
+          let url = window.URL.createObjectURL(blob);
+          window.open(url);
+          if (saveMap) {
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = fileName;
+            a.click();
+          }
+          window.URL.revokeObjectURL(url); // Preventing memory leaks
+        }
+      }
+      foliumHandler(code, fileName);
       setOutput(result);
       if (typeof result === "string" && result.length > 100 && /^[A-Za-z0-9+/=\s]+$/.test(result)) {
-        setPlot(result);
+        try {
+          setPlot(result);
+        } catch {
+          setPlot("");
+        }
       } else {
         setPlot("");
       }
