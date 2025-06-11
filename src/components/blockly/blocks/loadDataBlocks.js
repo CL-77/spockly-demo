@@ -302,3 +302,53 @@ Blockly.defineBlocksWithJsonArray([
     helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/data"
   }
 ]);
+
+Blockly.defineBlocksWithJsonArray([
+	{
+	  type: "load_geojson",
+	  message0: "load GeoJSON file %1",
+	  args0: [
+		{
+		  type: "field_input",
+		  name: "FILENAME",
+		  text: "data.geojson",
+		},
+	  ],
+	  previousStatement: null,
+	  nextStatement: null,
+	  output: null,
+	  colour: "#FFA726",
+	  tooltip: "Load a GeoJSON file",
+	},
+  ]);
+  
+  Blockly.Generator.R.forBlock["load_geojson"] = function (block, generator) {
+	generator.requirePackage("sf");
+	const filename = block.getFieldValue("FILENAME");
+	return [`sf::st_read("${filename}")`, Blockly.Generator.R.ORDER_NONE];
+  };
+
+  Blockly.defineBlocksWithJsonArray([
+	{
+	  type: "load_tif",
+	  message0: "load GeoTIF file %1",
+	  args0: [
+		{
+		  type: "field_input",
+		  name: "FILENAME",
+		  text: "data.tif",
+		},
+	  ],
+	  previousStatement: null,
+	  nextStatement: null,
+	  output: null,
+	  colour: "#FFA726",
+	  tooltip: "Load a tif file",
+	},
+  ]);
+  
+  Blockly.Generator.R.forBlock["load_tif"] = function (block, generator) {
+	generator.requirePackage("terra");
+	const filename = block.getFieldValue("FILENAME");
+	return [`terra::rast("${filename}")`, Blockly.Generator.R.ORDER_NONE];
+  };
