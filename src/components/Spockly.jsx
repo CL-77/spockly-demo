@@ -1,17 +1,37 @@
 import { useState, useRef } from "react";
 import BlocklyComponent from "./BlocklyComponent";
 import CodeDisplay from "./CodeDisplay";
-import {Card, Box, Grid } from "@mui/material";
+import { Card, Box, Grid, Tab, Tabs } from "@mui/material";
 import { darkTheme, lightTheme } from "./../appTheme";
 import WebRRunner from "./WebRRunner";
 import FileUploadManager from "./FileUploadManager";
 
-function SPOCKLY({isDarkMode}) {
+function TabPanel({ children, value, index }) {
+  return (
+    <div
+      hidden={value !== index}
+      role="tabpanel"
+      style={{ height: '100%', display: value === index ? 'flex' : 'none', flexDirection: 'column' }}
+    >
+      <Box sx={{ flex: 1, height: '100%' }}>
+        {children}
+      </Box>
+    </div>
+  );
+}
+
+
+export default function SPOCKLY({ isDarkMode }) {
   const [code, setCode] = useState("Generated R code will appear here...");
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [value, setValue] = useState(0);
   const webRRef = useRef(null);
   const workspaceRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
+
+  const handleChange = (_event, newValue) => {
+    setValue(newValue);
+  };
 
   const handleUploadClick = () => {
     setUploadDialogOpen(true);
@@ -41,9 +61,9 @@ function SPOCKLY({isDarkMode}) {
               boxShadow: 3,
             }}
           >
-            <BlocklyComponent 
-              setCode={setCode} 
-              isDarkMode={isDarkMode} 
+            <BlocklyComponent
+              setCode={setCode}
+              isDarkMode={isDarkMode}
               onUploadClick={handleUploadClick}
               workspaceRef={workspaceRef}
             />
@@ -68,21 +88,48 @@ function SPOCKLY({isDarkMode}) {
               position: "relative",
             }}
           >
-            <Box sx={{ height: "48%", p: 2 }}>
-              <CodeDisplay 
-                code={code} 
-                setCode={setCode}
-                isDarkMode={isDarkMode} 
-                workspaceRef={workspaceRef}
-              />
-            </Box>
-            <Box sx={{ height: "48%", p: 2 }}>
-              <WebRRunner 
-                code={code} 
-                isDarkMode={isDarkMode} 
-                webRRef={webRRef}
-              />
-            </Box>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              TabIndicatorProps={{
+                style: {
+                  backgroundColor: theme.palette.primary.light,
+                },
+              }}
+              sx={{
+                padding:2,
+                "& .MuiTab-root": {
+                  fontWeight:"bold",
+                  color: theme.palette.primary.contrastText,
+                },
+                "& .Mui-selected": {
+                  color: theme.palette.primary.light,
+                  fontWeight: "bold",
+                },
+              }}
+            >
+              <Tab label="Code"></Tab>
+              <Tab label="Output"></Tab>
+            </Tabs>
+            <TabPanel value={value} index={0}>
+              <Box sx={{ height: "60%", p: 1 }}>
+                <CodeDisplay
+                  code={code}
+                  setCode={setCode}
+                  isDarkMode={isDarkMode}
+                  workspaceRef={workspaceRef}
+                />
+              </Box>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <Box sx={{ height: "60%", p: 1 }}>
+                <WebRRunner
+                  code={code}
+                  isDarkMode={isDarkMode}
+                  webRRef={webRRef}
+                />
+              </Box>
+            </TabPanel>
           </Card>
         </Grid>
       </Grid>
@@ -96,5 +143,3 @@ function SPOCKLY({isDarkMode}) {
     </Box>
   );
 }
-
-export default SPOCKLY;

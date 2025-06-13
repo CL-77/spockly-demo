@@ -4,98 +4,116 @@ import { Box, Fab, Stack, Typography } from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
 import { darkTheme, lightTheme } from "./../appTheme";
 
-const webR = new WebR();
+const webR = new WebR({});
+const CANVAS_SIZE = 450;
 
 const WebRRunner = ({ code, isDarkMode, webRRef }) => {
   const canvasRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
 
-  // Initialize WebR only once when the component mounts
   useEffect(() => {
-    const initWebR = async () => {
-      try {
-        // Initialize WebR environment
-        await webR.init();
-        console.log("WebR initialized");
-        
-        // Make WebR instance available to parent components
-        if (webRRef) {
-          webRRef.current = webR;
-        }
-      } catch (err) {
-        console.error("WebR initialization failed:", err);
-      }
-    };
-    initWebR();
-  }, []); // Empty dependency array means this runs once on mount
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/webr/webr-serviceworker.js")
+        .then(() => {
+          console.log("WebR Service Worker registered");
+        })
+        .catch(console.error);
+    }
+  }, []);
 
-  // Function to run R code
+  useEffect(() => {
+    const startWebR = async () => {
+      await webR.init();
+      if (webRRef) webRRef.current = webR;
+    };
+
+    startWebR();
+  }, []);
+
   const runCode = async () => {
     try {
-      // Set the default graphics device to webr::canvas
-      await webR.evalRVoid('options(device=webr::canvas)');
-
-      // Handle webR output messages in an async loop
-      (async () => {
-        for (;;) {
-          const output = await webR.read();
-          switch (output.type) {
-            case 'canvas':
-              if (output.data.event === 'canvasImage') {
-                // Add plot image data to the current canvas element
-                const canvas = canvasRef.current;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(output.data.image, 0, 0);
-              } else if (output.data.event === 'canvasNewPage') {
-                // Clear the canvas for a new plot
-                const canvas = canvasRef.current;
-                const ctx = canvas.getContext('2d');
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-              }
-              break;
-            default:
-              console.log(output);
-          }
-        }
-      })();
-
-      // Evaluate the R code
-      await webR.evalRVoid(code);
+      const testCode =
+        'plot(1:3, type = "b", col = "darkgreen", pch = 16, main = "Ein Testplot")';
+      console.log(testCode);
+      await webR.evalRVoid("options(device=webr::canvas)");
+      await webR.evalRVoid(testCode);
+      await readCanvasEvents();
     } catch (err) {
-      // Handle errors gracefully
       console.error("WebR Error:", err);
     }
+  };
+
+  const readCanvasEvents = async () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    const dpr = window.devicePixelRatio || 2;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    let awaitingImage = false;
+
+    let done = false;
+
+    const readLoop = async () => {
+      while (!done) {
+        const output = await webR.read();
+        if (output.type !== "canvas") continue;
+
+        switch (output.data.event) {
+          case "canvasNewPage":
+            awaitingImage = true;
+            break;
+          case "canvasImage":
+            const img = output.data.image;
+
+            if (awaitingImage) {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              awaitingImage = false;
+            }
+
+            ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+            resetTimer();
+            break;
+        }
+      }
+    };
+
+    let timeoutId;
+    const resetTimer = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        done = true;
+        console.log("Canvas-Event-Timeout erreicht");
+      }, 500);
+    };
+
+    resetTimer();
+    await readLoop();
+    clearTimeout(timeoutId);
   };
 
   return (
     <Box
       sx={{
-        top: 20,
-        left: 20,
-        right: 20,
         height: "100%",
         borderRadius: "5px",
-        overflowY:"auto",
         zIndex: 1,
       }}
     >
-      <Stack direction="row">
-        <Typography
-          variant="h6"
-          fontWeight="bold"
-          sx={{
-            color: theme.palette.primary.contrastText,
-            paddingBottom: "15px",
-          }}
-        >
-          Output
-        </Typography>
-
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "flex-start",
+          paddingBottom: 2,
+        }}
+      >
         <Fab
           size="small"
           variant="extended"
           sx={{
-            left: 20,
             width: "140px",
             bgcolor: "#33bfff",
             color: theme.palette.primary.contrastText,
@@ -111,24 +129,26 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
             <Typography fontWeight="bold">Run R Code</Typography>
           </Box>
         </Fab>
-      </Stack>
-
+      </Box>
       <Box
         sx={{
           position: "relative",
           borderRadius: "5px",
           width: "100%",
-          height: "75%",
-          overflowY: "auto",
+          height: "100%",
           bgcolor: theme.palette.background.paper,
           zIndex: 1,
         }}
       >
         <canvas
           ref={canvasRef}
-          width="1008"
-          height="1008"
-          style={{ width: "450px", height: "450px", display: "inline-block" }}
+          width={CANVAS_SIZE * window.devicePixelRatio}
+          height={CANVAS_SIZE * window.devicePixelRatio}
+          style={{
+            width: CANVAS_SIZE + "px",
+            height: CANVAS_SIZE + "px",
+            display: "block",
+          }}
         />
       </Box>
     </Box>

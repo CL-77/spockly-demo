@@ -64,9 +64,7 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
   return (
     <Box
       sx={{
-        top: 20,
-        left: 20,
-        right: 20,
+
         height: "100%",
         borderRadius: "5px",
         zIndex: 1,
@@ -82,39 +80,36 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
           Code copied to clipboard!
         </Alert>
       </Snackbar>
-      <Stack direction="row">
-        <Typography
-          variant="h6"
-          fontWeight="bold"
-          sx={{
-            color: theme.palette.primary.contrastText,
-            paddingBottom: "15px",
-          }}
-        >
-          Code
-        </Typography>
 
-        <Fab
-          size="small"
-          variant="extended"
-          onClick={handleGenerateCode}
-          sx={{
-            left: 20,
-            width: "120px",
-            bgcolor: "#00c853",
-            color: theme.palette.primary.contrastText,
-            "&:hover": {
-              bgcolor: "#05A255",
-            },
-            boxShadow: "none",
-          }}
-        >
-          <Box display="flex" alignItems="center" gap={0.5}>
-            <PlayArrow fontSize="small" />
-            <Typography fontWeight="bold">Generate</Typography>
-          </Box>
-        </Fab>
-      </Stack>
+<Box
+  sx={{
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-start",
+    paddingBottom:2
+  }}
+>
+  <Fab
+    size="small"
+    variant="extended"
+    onClick={handleGenerateCode}
+    sx={{
+      width: "120px",
+      bgcolor: "#00c853",
+      color: theme.palette.primary.contrastText,
+      "&:hover": {
+        bgcolor: "#05A255",
+      },
+      boxShadow: "none",
+    }}
+  >
+    <Box display="flex" alignItems="center" gap={0.5}>
+      <PlayArrow fontSize="small" />
+      <Typography fontWeight="bold">Generate</Typography>
+    </Box>
+  </Fab>
+</Box>
+
 
       <Box
         sx={{
@@ -144,7 +139,7 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
             sx={{
               position: "relative",
               width: "22%",
-              height: "75%",
+              height: "100%",
               zIndex: 1,
               padding: "20px",
             }}
