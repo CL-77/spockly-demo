@@ -94,6 +94,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="select_columns"></block>
     <block type="subset_rows"></block>
     <block type="subset_column_range"></block>
+	<block type="convert_to_sf"></block>
   </category>
 
   <category name="Maps" colour="#81C784">
