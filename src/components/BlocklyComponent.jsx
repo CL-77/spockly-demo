@@ -45,7 +45,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="dropdown_color"></block>
     <block type="create_vector"></block>
     <block type="plot_vector"></block>
-	<block type="data_summary"></block>
   </category>
 
   <category name="Load Data" colour="#FFA726">
@@ -59,6 +58,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   <category name="Data" colour="#FF7043">
     <block type="preview_head_n"></block>
     <block type="structure_overview"></block>
+	<block type="data_summary"></block>
   </category>
 
   <category name="Variables" colour="#A65E2E" custom="VARIABLE"></category>

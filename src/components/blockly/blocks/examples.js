@@ -194,28 +194,3 @@ Blockly.Generator.R.forBlock["head_print"] = function (block, generator) {
         '""';
     return `print(names(${text}))\n`;
 };
-
-Blockly.defineBlocksWithJsonArray([
-	{
-		type: "data_summary",
-		message0: "summary of %1",
-		args0: [
-			{
-				type: "input_value",
-				name: "DATA",
-			},
-		],
-		previousStatement: null,
-		nextStatement: null,
-		colour: 230,
-		tooltip: "Get summary statistics of a dataset.",
-		helpUrl: "",
-	},
-]);
-
-Blockly.Generator.R.forBlock["data_summary"] = function (block, generator) {
-	const data =
-		generator.valueToCode(block, "DATA", Blockly.Generator.R.ORDER_NONE) ||
-		'""';
-	return `summary(${data})\n`;
-};
