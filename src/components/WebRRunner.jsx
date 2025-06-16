@@ -1,26 +1,15 @@
 import React, { useEffect, useRef } from "react";
-import { WebR } from "@r-wasm/webr";
 import { Box, Fab, Stack, Typography } from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
 import { darkTheme, lightTheme } from "./../appTheme";
+import { WebR } from "@r-wasm/webr";
+const webR = new WebR();
 
-const webR = new WebR({});
 const CANVAS_SIZE = 450;
 
 const WebRRunner = ({ code, isDarkMode, webRRef }) => {
   const canvasRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
-
-  useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/webr/webr-serviceworker.js")
-        .then(() => {
-          console.log("WebR Service Worker registered");
-        })
-        .catch(console.error);
-    }
-  }, []);
 
   useEffect(() => {
     const startWebR = async () => {
@@ -32,66 +21,18 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
   }, []);
 
   const runCode = async () => {
-    try {
-      const testCode =
-        'plot(1:3, type = "b", col = "darkgreen", pch = 16, main = "Ein Testplot")';
-      console.log(testCode);
-      await webR.evalRVoid("options(device=webr::canvas)");
-      await webR.evalRVoid(testCode);
-      await readCanvasEvents();
-    } catch (err) {
-      console.error("WebR Error:", err);
-    }
-  };
-
-  const readCanvasEvents = async () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    const dpr = window.devicePixelRatio || 2;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    let awaitingImage = false;
-
-    let done = false;
-
-    const readLoop = async () => {
-      while (!done) {
-        const output = await webR.read();
-        if (output.type !== "canvas") continue;
-
-        switch (output.data.event) {
-          case "canvasNewPage":
-            awaitingImage = true;
-            break;
-          case "canvasImage":
-            const img = output.data.image;
-
-            if (awaitingImage) {
-              ctx.clearRect(0, 0, canvas.width, canvas.height);
-              awaitingImage = false;
-            }
-
-            ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
-            resetTimer();
-            break;
-        }
-      }
-    };
-
-    let timeoutId;
-    const resetTimer = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        done = true;
-        console.log("Canvas-Event-Timeout erreicht");
-      }, 500);
-    };
-
-    resetTimer();
-    await readLoop();
-    clearTimeout(timeoutId);
+    const shelter = await new webR.Shelter();
+    const capture = await shelter.captureR(
+      'plot(1:3, type = "b", col = "darkgreen", pch = 16, main = "Ein Testplot")'
+    );
+    capture.images.forEach((img) => {
+      const canvas = canvasRef.current;
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, img.width, img.height);
+      canvas.appendChild(canvas);
+    });
   };
 
   return (
