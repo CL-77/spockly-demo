@@ -1,10 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import { WebR } from "@r-wasm/webr";
-import { Box, Fab, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Fab,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
 import { darkTheme, lightTheme } from "./../appTheme";
-
 const webR = new WebR();
+
+const CANVAS_SIZE = 650;
 
 const WebRRunner = ({ code, isDarkMode, webRRef }) => {
   const canvasRef = useRef(null);
@@ -104,19 +112,26 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
 
   // Run code with sf workaround
   const runCodeWithSfWorkaround = async (code) => {
-    if (code.includes('library("sf")') || code.includes('library(sf)') || code.includes('sf::')) {
-      const lines = code.split('\n');
-      let modifiedCode = '';
-      let sfInstallLine = '';
-      let sfLibraryLine = '';
+    if (
+      code.includes('library("sf")') ||
+      code.includes("library(sf)") ||
+      code.includes("sf::")
+    ) {
+      const lines = code.split("\n");
+      let modifiedCode = "";
+      let sfInstallLine = "";
+      let sfLibraryLine = "";
 
       for (const line of lines) {
         if (line.includes('webr::install("sf")')) {
           sfInstallLine = line;
-        } else if (line.includes('library("sf")') || line.includes('library(sf)')) {
+        } else if (
+          line.includes('library("sf")') ||
+          line.includes("library(sf)")
+        ) {
           sfLibraryLine = line;
         } else {
-          modifiedCode += line + '\n';
+          modifiedCode += line + "\n";
         }
       }
 
@@ -166,9 +181,9 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
         // Initialize WebR environment
         await webR.init();
         console.log("WebR initialized");
-        
+
         setWebRReady(true);
-        
+
         // Make WebR instance available to parent components
         if (webRRef) {
           webRRef.current = webR;
@@ -192,37 +207,48 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
   const runCode = async () => {
     // Clear previous text output
     setTextOutput("");
-    
+
     try {
       // Setup sf package if needed
       await setupSfPackage();
-      
+
       // Set the default graphics device to webr::canvas
-      await webR.evalRVoid('options(device=webr::canvas)');
+      await webR.evalRVoid("options(device=webr::canvas)");
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Handle webR output messages in an async loop
       (async () => {
         for (;;) {
           const output = await webR.read();
           switch (output.type) {
-            case 'canvas':
-              if (output.data.event === 'canvasImage') {
+            case "canvas":
+              if (output.data.event === "canvasImage") {
                 // Add plot image data to the current canvas element
                 const canvas = canvasRef.current;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(output.data.image, 0, 0);
-              } else if (output.data.event === 'canvasNewPage') {
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(
+                  output.data.image,
+                  0,
+                  0,
+                  canvas.width - 10,
+                  canvas.height - 10
+                );
+              } else if (output.data.event === "canvasNewPage") {
                 // Clear the canvas for a new plot
                 const canvas = canvasRef.current;
-                const ctx = canvas.getContext('2d');
+                const ctx = canvas.getContext("2d");
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
               }
               break;
-            case 'stdout':
-            case 'stderr':
+            case "stdout":
+            case "stderr":
               // Capture text output
               if (output.data) {
-                setTextOutput(prev => prev + output.data);
+                setTextOutput((prev) => prev + output.data);
               }
               break;
             default:
@@ -234,7 +260,11 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
       // Evaluate the R code with text output capture
       let result;
       try {
-        if (code.includes('sf::') || code.includes('library("sf")') || code.includes('library(sf)')) {
+        if (
+          code.includes("sf::") ||
+          code.includes('library("sf")') ||
+          code.includes("library(sf)")
+        ) {
           result = await runCodeWithSfWorkaround(code);
         } else {
           result = await webR.evalR(code);
@@ -243,16 +273,20 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
         // If we have a result, display it as text output
         if (result) {
           const values = await result.toArray();
-          const filtered = values.filter(val =>
-            val && val.toString().trim() !== '' &&
-            !val.toString().includes('R is a collaborative project') &&
-            !val.toString().includes('Type ') &&
-            !val.toString().includes('Copyright') &&
-            !val.toString().includes('R version') &&
-            val.toString() !== 'NULL'
+          const filtered = values.filter(
+            (val) =>
+              val &&
+              val.toString().trim() !== "" &&
+              !val.toString().includes("R is a collaborative project") &&
+              !val.toString().includes("Type ") &&
+              !val.toString().includes("Copyright") &&
+              !val.toString().includes("R version") &&
+              val.toString() !== "NULL"
           );
           if (filtered.length > 0) {
-            setTextOutput(prev => prev + (prev ? '\n' : '') + filtered.join("\n"));
+            setTextOutput(
+              (prev) => prev + (prev ? "\n" : "") + filtered.join("\n")
+            );
           }
         }
       } catch (err) {
@@ -273,58 +307,35 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
   return (
     <Box
       sx={{
-        top: 20,
-        left: 20,
-        right: 20,
         height: "100%",
         borderRadius: "5px",
         zIndex: 1,
       }}
     >
-      <Stack direction="row">
-        <Typography
-          variant="h6"
-          fontWeight="bold"
-          sx={{
-            color: theme.palette.primary.contrastText,
-            paddingBottom: "15px",
-          }}
-        >
-          Output
-        </Typography>
-
-        <Fab
-          size="small"
-          variant="extended"
-          sx={{
-            left: 20,
-            width: "140px",
-            bgcolor: "#33bfff",
-            color: theme.palette.primary.contrastText,
-            "&:hover": {
-              bgcolor: "#00b0ff",
-            },
-            boxShadow: "none",
-          }}
-          onClick={runCode}
-        >
-          <Box display="flex" alignItems="center" gap={0.5}>
-            <PlayArrow fontSize="small" />
-            <Typography fontWeight="bold">Run R Code</Typography>
-          </Box>
-        </Fab>
+      <Stack direction="row-reverse" sx={{ paddingY: 1 }}>
+        <Tooltip title="Run R Code">
+          <IconButton
+            onClick={runCode}
+            sx={{
+              bgcolor: "#33bfff",
+              color: theme.palette.primary.contrastText,
+              "&:hover": {
+                bgcolor: "#00b0ff",
+              },
+            }}
+          >
+            <PlayArrow />
+          </IconButton>
+        </Tooltip>
       </Stack>
-
       <Box
         sx={{
           position: "relative",
           borderRadius: "5px",
-          width: "100%",
-          height: "75%",
+          height: CANVAS_SIZE,
           bgcolor: theme.palette.background.paper,
           zIndex: 1,
           overflow: "auto",
-          padding: "10px",
         }}
       >
         {/* Text output */}
@@ -334,20 +345,26 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
               fontFamily: "monospace",
               fontSize: "14px",
               whiteSpace: "pre-wrap",
-              marginBottom: "10px",
+              margin: 4,
             }}
           >
             {textOutput}
           </Box>
         )}
-        
-        {/* Canvas for plots */}
-        <canvas
-          ref={canvasRef}
-          width="1008"
-          height="1008"
-          style={{ width: "450px", height: "450px", display: "inline-block" }}
-        />
+
+        <Box sx={{ margin: 4 }}>
+          {/* Canvas for plots */}
+          <canvas
+            ref={canvasRef}
+            width={CANVAS_SIZE * window.devicePixelRatio}
+            height={CANVAS_SIZE * window.devicePixelRatio}
+            style={{
+              width: CANVAS_SIZE + "px",
+              height: CANVAS_SIZE + "px",
+              display: "block",
+            }}
+          />
+        </Box>
       </Box>
     </Box>
   );
