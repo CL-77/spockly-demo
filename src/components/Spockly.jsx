@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import BlocklyComponent from "./BlocklyComponent";
 import CodeDisplay from "./CodeDisplay";
-import { Card, Box, Grid } from "@mui/material";
+import {Card, Box, Grid } from "@mui/material";
 import { darkTheme, lightTheme } from "./../appTheme";
 import WebRRunner from "./WebRRunner";
 import FileUploadManager from "./FileUploadManager";
@@ -22,7 +22,7 @@ function SPOCKLY({isDarkMode}) {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Grid
         container
         sx={{
@@ -41,9 +41,9 @@ function SPOCKLY({isDarkMode}) {
               boxShadow: 3,
             }}
           >
-            <BlocklyComponent
-              setCode={setCode}
-              isDarkMode={isDarkMode}
+            <BlocklyComponent 
+              setCode={setCode} 
+              isDarkMode={isDarkMode} 
               onUploadClick={handleUploadClick}
               workspaceRef={workspaceRef}
             />
@@ -54,6 +54,7 @@ function SPOCKLY({isDarkMode}) {
           size={6}
           sx={{
             height: "100%",
+            overflowY: "auto",
           }}
         >
           <Card
@@ -65,31 +66,22 @@ function SPOCKLY({isDarkMode}) {
               height: "85%",
               boxShadow: 3,
               position: "relative",
-              display: "flex",
-              flexDirection: "column",
-              overflow: "auto",
-              minHeight: 0,
             }}
           >
-            <Box sx={{ height: "50%", p: 2, minHeight: 0 }}>
-              <CodeDisplay
-                code={code}
+            <Box sx={{ height: "50%", p: 2 }}>
+              <CodeDisplay 
+                code={code} 
                 setCode={setCode}
-                isDarkMode={isDarkMode}
+                isDarkMode={isDarkMode} 
                 workspaceRef={workspaceRef}
               />
             </Box>
-            <Box
-              sx={{
-                height: "50%",
-                p: 2,
-                minHeight: 0,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-start",
-              }}
-            >
-              <WebRRunner code={code} isDarkMode={isDarkMode} webRRef={webRRef} />
+            <Box sx={{ height: "50%", p: 2 }}>
+              <WebRRunner 
+                code={code} 
+                isDarkMode={isDarkMode} 
+                webRRef={webRRef}
+              />
             </Box>
           </Card>
         </Grid>

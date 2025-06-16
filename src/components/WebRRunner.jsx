@@ -1,71 +1,70 @@
 import React, { useEffect, useRef, useState } from "react";
 import { WebR } from "@r-wasm/webr";
-import { Box, Fab, Stack, Typography, Divider } from "@mui/material";
-import { PlayArrow, Clear } from "@mui/icons-material";
+import { Box, Fab, Stack, Typography } from "@mui/material";
+import { PlayArrow } from "@mui/icons-material";
 import { darkTheme, lightTheme } from "./../appTheme";
 
 const webR = new WebR();
-
-const CANVAS_WIDTH = 1008;
-const CANVAS_HEIGHT = 504;
-const VISUAL_CANVAS_WIDTH = 504;
-const VISUAL_CANVAS_HEIGHT = 252;
 
 const WebRRunner = ({ code, isDarkMode, webRRef }) => {
   const canvasRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
   const [textOutput, setTextOutput] = useState("");
-  const [hasCanvas, setHasCanvas] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [sfPackageReady, setSfPackageReady] = useState(false);
   const [webRReady, setWebRReady] = useState(false);
 
+  // Setup sf package with minimal units database
   const setupSfPackage = async () => {
     if (sfPackageReady || !webRReady) return;
 
     try {
       console.log("Setting up minimal units database...");
 
+      // Create minimal XML avoiding React's auto-shorting of tags
+      // Using the exact structure from r-backend but with properly escaped XML
       await webR.evalRVoid(`
-        minimal_xml <- '<?xml version="1.0" encoding="UTF-8"?>
-<unit-system>
-  <unit>
-    <def>1</def>
-    <name><singular>meter</singular><plural>meters</plural></name>
-    <symbol>m</symbol>
-  </unit>
-  <unit>
-    <def>1</def>
-    <name><singular>kilogram</singular><plural>kilograms</plural></name>
-    <symbol>kg</symbol>
-  </unit>
-  <unit>
-    <def>1</def>
-    <name><singular>second</singular><plural>seconds</plural></name>
-    <symbol>s</symbol>
-  </unit>
-  <unit>
-    <def>1</def>
-    <name><singular>degree</singular><plural>degrees</plural></name>
-    <symbol>deg</symbol>
-  </unit>
-  <unit>
-    <def>1</def>
-    <name><singular>radian</singular><plural>radians</plural></name>
-    <symbol>rad</symbol>
-  </unit>
-  <unit>
-    <def>m^2</def>
-    <name><singular>square meter</singular><plural>square meters</plural></name>
-    <symbol>m2</symbol>
-  </unit>
-  <unit>
-    <def>1000 m</def>
-    <name><singular>kilometer</singular><plural>kilometers</plural></name>
-    <symbol>km</symbol>
-  </unit>
-</unit-system>'
-
+        minimal_xml_lines <- c(
+          '<?xml version="1.0" encoding="UTF-8"?>',
+          '<unit-system>',
+          '  <unit>',
+          '    <def>1</def>',
+          '    <name><singular>meter</singular><plural>meters</plural></name>',
+          '    <symbol>m</symbol>',
+          '  </unit>',
+          '  <unit>',
+          '    <def>1</def>',
+          '    <name><singular>kilogram</singular><plural>kilograms</plural></name>',
+          '    <symbol>kg</symbol>',
+          '  </unit>',
+          '  <unit>',
+          '    <def>1</def>',
+          '    <name><singular>second</singular><plural>seconds</plural></name>',
+          '    <symbol>s</symbol>',
+          '  </unit>',
+          '  <unit>',
+          '    <def>1</def>',
+          '    <name><singular>degree</singular><plural>degrees</plural></name>',
+          '    <symbol>deg</symbol>',
+          '  </unit>',
+          '  <unit>',
+          '    <def>1</def>',
+          '    <name><singular>radian</singular><plural>radians</plural></name>',
+          '    <symbol>rad</symbol>',
+          '  </unit>',
+          '  <unit>',
+          '    <def>m^2</def>',
+          '    <name><singular>square meter</singular><plural>square meters</plural></name>',
+          '    <symbol>m2</symbol>',
+          '  </unit>',
+          '  <unit>',
+          '    <def>1000 m</def>',
+          '    <name><singular>kilometer</singular><plural>kilometers</plural></name>',
+          '    <symbol>km</symbol>',
+          '  </unit>',
+          '</unit-system>'
+        )
+        
+        minimal_xml <- paste(minimal_xml_lines, collapse = "\\n")
         writeLines(minimal_xml, "/home/web_user/minimal_udunits.xml")
         Sys.setenv(UDUNITS2_XML_PATH = "/home/web_user/minimal_udunits.xml")
       `);
@@ -103,6 +102,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
     }
   };
 
+  // Run code with sf workaround
   const runCodeWithSfWorkaround = async (code) => {
     if (code.includes('library("sf")') || code.includes('library(sf)') || code.includes('sf::')) {
       const lines = code.split('\n');
@@ -159,87 +159,79 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
     }
   };
 
+  // Initialize WebR only once when the component mounts
   useEffect(() => {
-    let isMounted = true;
     const initWebR = async () => {
       try {
-        console.log("Initializing WebR...");
+        // Initialize WebR environment
         await webR.init();
-        console.log("WebR initialized successfully");
-
+        console.log("WebR initialized");
+        
         setWebRReady(true);
-
-        await webR.evalRVoid(`options(device=webr::canvas(${VISUAL_CANVAS_WIDTH}, ${VISUAL_CANVAS_HEIGHT}))`);
-
-        if (webRRef) webRRef.current = webR;
-        handleCanvasOutput();
+        
+        // Make WebR instance available to parent components
+        if (webRRef) {
+          webRRef.current = webR;
+        }
       } catch (err) {
+        console.error("WebR initialization failed:", err);
         setTextOutput(`Error initializing WebR: ${err.message}`);
-        console.error("WebR initialization error:", err);
       }
     };
     initWebR();
-    return () => { isMounted = false; };
-  }, []);
+  }, []); // Empty dependency array means this runs once on mount
 
+  // Setup sf package when WebR is ready
   useEffect(() => {
     if (webRReady && !sfPackageReady) {
       setupSfPackage();
     }
   }, [webRReady, sfPackageReady]);
 
-  const handleCanvasOutput = async () => {
-    while (true) {
-      try {
-        const output = await webR.read();
-        if (output.type === 'canvas') {
-          if (output.data.event === 'canvasImage') {
-            const canvas = canvasRef.current;
-            if (canvas && output.data.image) {
-              const ctx = canvas.getContext('2d');
-              ctx.clearRect(0, 0, canvas.width, canvas.height);
-              ctx.drawImage(output.data.image, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-              setHasCanvas(true);
-            }
-          } else if (output.data.event === 'canvasNewPage') {
-            const canvas = canvasRef.current;
-            if (canvas) {
-              const ctx = canvas.getContext('2d');
-              ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
+  // Function to run R code
+  const runCode = async () => {
+    // Clear previous text output
+    setTextOutput("");
+    
+    try {
+      // Setup sf package if needed
+      await setupSfPackage();
+      
+      // Set the default graphics device to webr::canvas
+      await webR.evalRVoid('options(device=webr::canvas)');
+
+      // Handle webR output messages in an async loop
+      (async () => {
+        for (;;) {
+          const output = await webR.read();
+          switch (output.type) {
+            case 'canvas':
+              if (output.data.event === 'canvasImage') {
+                // Add plot image data to the current canvas element
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(output.data.image, 0, 0);
+              } else if (output.data.event === 'canvasNewPage') {
+                // Clear the canvas for a new plot
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+              }
+              break;
+            case 'stdout':
+            case 'stderr':
+              // Capture text output
+              if (output.data) {
+                setTextOutput(prev => prev + output.data);
+              }
+              break;
+            default:
+              console.log(output);
           }
         }
-      } catch (err) {
-        setTimeout(handleCanvasOutput, 1000);
-        break;
-      }
-    }
-  };
+      })();
 
-  const clearOutput = () => {
-    setTextOutput("");
-    setHasCanvas(false);
-    if (canvasRef.current) {
-      const ctx = canvasRef.current.getContext('2d');
-      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-    }
-  };
-
-  const runCode = async () => {
-    if (!code.trim()) {
-      setTextOutput("No code to execute");
-      return;
-    }
-    setIsLoading(true);
-    setTextOutput("");
-    if (canvasRef.current) {
-      const ctx = canvasRef.current.getContext('2d');
-      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-    }
-    try {
-      await setupSfPackage();
-      await webR.evalRVoid(`options(device=webr::canvas(${VISUAL_CANVAS_WIDTH}, ${VISUAL_CANVAS_HEIGHT}))`);
-
+      // Evaluate the R code with text output capture
       let result;
       try {
         if (code.includes('sf::') || code.includes('library("sf")') || code.includes('library(sf)')) {
@@ -248,6 +240,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
           result = await webR.evalR(code);
         }
 
+        // If we have a result, display it as text output
         if (result) {
           const values = await result.toArray();
           const filtered = values.filter(val =>
@@ -258,9 +251,12 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
             !val.toString().includes('R version') &&
             val.toString() !== 'NULL'
           );
-          if (filtered.length > 0) setTextOutput(filtered.join("\n"));
+          if (filtered.length > 0) {
+            setTextOutput(prev => prev + (prev ? '\n' : '') + filtered.join("\n"));
+          }
         }
       } catch (err) {
+        // If evalR fails, try evalRVoid
         try {
           await webR.evalRVoid(code);
         } catch (voidErr) {
@@ -268,41 +264,45 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
         }
       }
     } catch (err) {
+      // Handle errors gracefully
+      console.error("WebR Error:", err);
       setTextOutput(`Error: ${err.message}`);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
     <Box
       sx={{
+        top: 20,
+        left: 20,
+        right: 20,
         height: "100%",
         borderRadius: "5px",
         zIndex: 1,
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
       }}
     >
-      <Stack direction="row" spacing={1}>
+      <Stack direction="row">
         <Typography
           variant="h6"
           fontWeight="bold"
-          sx={{ color: theme.palette.primary.contrastText, pb: "15px" }}
+          sx={{
+            color: theme.palette.primary.contrastText,
+            paddingBottom: "15px",
+          }}
         >
           Output
         </Typography>
+
         <Fab
           size="small"
           variant="extended"
-          disabled={isLoading}
           sx={{
+            left: 20,
             width: "140px",
-            bgcolor: isLoading ? "#666" : "#33bfff",
+            bgcolor: "#33bfff",
             color: theme.palette.primary.contrastText,
             "&:hover": {
-              bgcolor: isLoading ? "#666" : "#00b0ff",
+              bgcolor: "#00b0ff",
             },
             boxShadow: "none",
           }}
@@ -310,93 +310,44 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
         >
           <Box display="flex" alignItems="center" gap={0.5}>
             <PlayArrow fontSize="small" />
-            <Typography fontWeight="bold">
-              {isLoading ? "Running..." : "Run R Code"}
-            </Typography>
-          </Box>
-        </Fab>
-        <Fab
-          size="small"
-          variant="extended"
-          sx={{
-            width: "100px",
-            bgcolor: "#ff6b6b",
-            color: "white",
-            "&:hover": {
-              bgcolor: "#ff5252",
-            },
-            boxShadow: "none",
-          }}
-          onClick={clearOutput}
-        >
-          <Box display="flex" alignItems="center" gap={0.5}>
-            <Clear fontSize="small" />
-            <Typography fontWeight="bold">Clear</Typography>
+            <Typography fontWeight="bold">Run R Code</Typography>
           </Box>
         </Fab>
       </Stack>
-      <Divider sx={{ mb: 1 }} />
 
       <Box
         sx={{
-          mb: 1,
-          minHeight: 60,
-          maxHeight: 150,
-          color: theme.palette.text.primary,
-          background: theme.palette.background.paper,
-          p: 1,
-          borderRadius: 1,
-          fontFamily: "monospace",
-          fontSize: 16,
-          border: `1px solid ${theme.palette.divider}`,
-          overflowY: "auto",
-        }}
-      >
-        {textOutput}
-      </Box>
-
-      <Box
-        sx={{
-          minHeight: VISUAL_CANVAS_HEIGHT + 16,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          background: theme.palette.background.paper,
-          borderRadius: 1,
-          border: `1px solid ${theme.palette.divider}`,
-          p: 1,
-          fontFamily: "monospace",
-          fontSize: 16,
-          boxSizing: "border-box",
+          position: "relative",
+          borderRadius: "5px",
           width: "100%",
+          height: "75%",
+          bgcolor: theme.palette.background.paper,
+          zIndex: 1,
+          overflow: "auto",
+          padding: "10px",
         }}
       >
+        {/* Text output */}
+        {textOutput && (
+          <Box
+            sx={{
+              fontFamily: "monospace",
+              fontSize: "14px",
+              whiteSpace: "pre-wrap",
+              marginBottom: "10px",
+            }}
+          >
+            {textOutput}
+          </Box>
+        )}
+        
+        {/* Canvas for plots */}
         <canvas
           ref={canvasRef}
-          width={CANVAS_WIDTH}
-          height={CANVAS_HEIGHT}
-          style={{
-            width: `${VISUAL_CANVAS_WIDTH}px`,
-            height: `${VISUAL_CANVAS_HEIGHT}px`,
-            border: "none",
-            background: "#fff",
-            display: hasCanvas ? "block" : "none",
-          }}
+          width="1008"
+          height="1008"
+          style={{ width: "450px", height: "450px", display: "inline-block" }}
         />
-        {!hasCanvas && (
-          <Typography
-            variant="body2"
-            sx={{
-              color: "#aaa",
-              textAlign: "center",
-              width: "100%",
-              minHeight: `${VISUAL_CANVAS_HEIGHT}px`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          ></Typography>
-        )}
       </Box>
     </Box>
   );
