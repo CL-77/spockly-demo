@@ -352,7 +352,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
           </Box>
         )}
 
-        <Box sx={{ margin: 4 }}>
+        <Box sx={{ marginX: 4 }}>
           {/* Canvas for plots */}
           <canvas
             ref={canvasRef}
