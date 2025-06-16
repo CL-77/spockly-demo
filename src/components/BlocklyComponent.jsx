@@ -61,7 +61,11 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 	<block type="data_summary"></block>
   </category>
 
-  <category name="Variables" colour="#A65E2E" custom="VARIABLE"></category>
+  <category name="Variables" colour="#A65E2E" custom="VARIABLE">
+    <block type="variables_set"></block>
+	<block type="variables_change"></block>
+	<block type="variables_get"></block> 
+  </category>
   
   <category name="Booleans" colour="#D32F2F">
     <block type="convert_to_bool"></block>
@@ -168,6 +172,9 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="load_json"></block>
     <block type="load_csv_url"></block>
     <block type="load_api_data"></block>
+	<block type="load_csv"></block>
+	<block type="load_geojson"></block>
+	<block type="load_tif"></block>
   </category>
 
   <category name="Data" colour="#FF7043">
@@ -179,6 +186,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="append_array"></block>
     <block type="create_array"></block>
     <block type="slice_file"></block>
+	<block type="structure_overview"></block>
+	<block type="data_summary"></block>
   </category>
 
   <category name="Variables" colour="#A65E2E" custom="VARIABLE"></category>
@@ -223,6 +232,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="group_by_summarise"></block>
     <block type="subset_rows"></block>
     <block type="subset_column_range"></block>
+	<block type="convert_to_sf"></block>
   </category>
 
     <category name="Maps" colour="#81C784">
@@ -261,6 +271,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="kriging_interpolation"></block>
     <block type="idw_interpolation"></block>
     <block type="nn_interpolation"></block>
+	<block type="linear_model_block"></block>
   </category>
 
   <category name="Geometry" colour="#4DD0E1">

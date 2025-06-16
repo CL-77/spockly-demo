@@ -12,3 +12,4 @@ import "./blocks/mapsBlocks";
 import "./blocks/visualizationBlocks";
 import "./blocks/exportBlocks";
 import "./blocks/generatorHelpers";
+import "./blocks/variables"
