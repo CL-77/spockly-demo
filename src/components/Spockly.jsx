@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import BlocklyComponent from "./BlocklyComponent";
 import CodeDisplay from "./CodeDisplay";
-import { Card, Box, Grid, Tab, Tabs } from "@mui/material";
+import { Card, Box, Grid, Tab, Tabs, Typography } from "@mui/material";
 import { darkTheme, lightTheme } from "./../appTheme";
 import WebRRunner from "./WebRRunner";
 import FileUploadManager from "./FileUploadManager";
@@ -11,15 +11,16 @@ function TabPanel({ children, value, index }) {
     <div
       hidden={value !== index}
       role="tabpanel"
-      style={{ height: '100%', display: value === index ? 'flex' : 'none', flexDirection: 'column' }}
+      style={{
+        height: "100%",
+        display: value === index ? "flex" : "none",
+        flexDirection: "column",
+      }}
     >
-      <Box sx={{ flex: 1, height: '100%' }}>
-        {children}
-      </Box>
+      <Box sx={{ flex: 1, height: "100%" }}>{children}</Box>
     </div>
   );
 }
-
 
 export default function SPOCKLY({ isDarkMode }) {
   const [code, setCode] = useState("Generated R code will appear here...");
@@ -55,7 +56,7 @@ export default function SPOCKLY({ isDarkMode }) {
             sx={{
               m: 2,
               p: 2,
-              borderRadius: "16px",
+              borderRadius: 4,
               backgroundColor: theme.palette.primary.main,
               height: "85%",
               boxShadow: 3,
@@ -84,32 +85,32 @@ export default function SPOCKLY({ isDarkMode }) {
               borderRadius: "16px",
               backgroundColor: theme.palette.primary.main,
               height: "85%",
-              boxShadow: 3,
               position: "relative",
             }}
           >
             <Tabs
               value={value}
               onChange={handleChange}
-              TabIndicatorProps={{
-                style: {
-                  backgroundColor: theme.palette.primary.light,
-                },
-              }}
               sx={{
-                padding:2,
-                "& .MuiTab-root": {
-                  fontWeight:"bold",
-                  color: theme.palette.primary.contrastText,
-                },
-                "& .Mui-selected": {
-                  color: theme.palette.primary.light,
-                  fontWeight: "bold",
-                },
+                padding: 1,
+                backgroundColor: theme.palette.background.default,
+                borderRadius: 4,
               }}
             >
-              <Tab label="Code"></Tab>
-              <Tab label="Output"></Tab>
+              <Tab
+                label="Code"
+                sx={{
+                  fontWeight: "bold",
+                  color: isDarkMode ? "lightgrey" : "darkgrey",
+                }}
+              />
+              <Tab
+                label="Output"
+                sx={{
+                  fontWeight: "bold",
+                  color: isDarkMode ? "lightgrey" : "darkgrey",
+                }}
+              />
             </Tabs>
             <TabPanel value={value} index={0}>
               <Box sx={{ height: "60%", p: 1 }}>
