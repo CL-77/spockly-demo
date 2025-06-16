@@ -9,15 +9,17 @@ import {
   AlertTitle, 
   Typography,
   Box,
-  CircularProgress
+  CircularProgress,
+  Chip
 } from '@mui/material';
-import { CheckCircle, Error } from '@mui/icons-material';
+import { CheckCircle, Error, InsertDriveFile, Map } from '@mui/icons-material';
 
 const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
   const [uploadStatus, setUploadStatus] = useState(null);
   const [fileName, setFileName] = useState('');
   const [filePath, setFilePath] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [fileType, setFileType] = useState('');
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
@@ -25,6 +27,10 @@ const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
 
     setIsUploading(true);
     setFileName(file.name);
+    
+    // Determine file type
+    const extension = file.name.toLowerCase().split('.').pop();
+    setFileType(extension);
     
     try {
       // Convert file to ArrayBuffer
@@ -52,11 +58,40 @@ const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
     setFileName('');
     setFilePath('');
     setIsUploading(false);
+    setFileType('');
     onClose();
   };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(fileName);
+  };
+
+  const getFileIcon = () => {
+    return fileType === 'geojson' ? <Map /> : <InsertDriveFile />;
+  };
+
+  const getFileTypeChip = () => {
+    if (fileType === 'csv') {
+      return <Chip label="CSV" size="small" color="primary" />;
+    } else if (fileType === 'geojson') {
+      return <Chip label="GeoJSON" size="small" color="secondary" />;
+    }
+	else if (fileType === 'tif'){
+	  return <Chip label="Raster" size="small" color="secondary" />;
+	}
+    return null;
+  };
+
+  const getUsageInstructions = () => {
+    if (fileType === 'csv') {
+      return "Use this filename in your load_csv block:";
+    } else if (fileType === 'geojson') {
+      return "Use this filename in your load_geojson block:";
+    }
+	else if (fileType === 'tif') {
+	  return "Use this filename in your load_raster block:";
+	}
+    return "Use this filename in your blocks:";
   };
 
   return (
@@ -73,17 +108,17 @@ const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
       }}
     >
       <DialogTitle sx={{ color: isDarkMode ? '#ffffff' : '#000000' }}>
-        Upload CSV File
+        Upload Data File
       </DialogTitle>
       
       <DialogContent>
         {!uploadStatus && !isUploading && (
           <Box>
             <Typography variant="body1" sx={{ mb: 2, color: isDarkMode ? '#ffffff' : '#000000' }}>
-              Select a CSV file to upload to WebR:
+              Select a CSV, TIF or GeoJSON file to upload to WebR:
             </Typography>
             <input
-              accept=".csv"
+              accept=".csv, .geojson, .tif"
               style={{ display: 'none' }}
               id="file-upload"
               type="file"
@@ -99,7 +134,7 @@ const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
                   fontWeight: 'bold'
                 }}
               >
-                Choose CSV File
+                Choose Data File
               </Button>
             </label>
           </Box>
@@ -121,11 +156,15 @@ const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
             sx={{ mb: 2 }}
           >
             <AlertTitle>Upload Successful!</AlertTitle>
-            <Typography variant="body2" sx={{ mt: 1, mb: 2 }}>
-              File uploaded successfully to WebR filesystem.
-            </Typography>
+            <Box display="flex" alignItems="center" gap={1} sx={{ mt: 1, mb: 2 }}>
+              {getFileIcon()}
+              <Typography variant="body2">
+                File uploaded successfully to WebR filesystem.
+              </Typography>
+              {getFileTypeChip()}
+            </Box>
             <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>
-              Use this filename in your load_csv block:
+              {getUsageInstructions()}
             </Typography>
             <Box 
               sx={{ 
