@@ -2227,9 +2227,7 @@ Blockly.Blocks['JSON_on_map'] = {
 };
 pythonGenerator.forBlock['JSON_on_map'] = function(block, generator) {
   const value_json = generator.valueToCode(block, 'json', pythonGenerator.ORDER_ATOMIC);
-  return `\nimport requests\n
-          geojson_data = requests.get(${value_json}).json()\n
-          folium.GeoJson(geojson_data).add_to(m)\n`;
+  return `folium.GeoJson(${value_json}).add_to(m)\n`;
 }
 
 Blockly.Blocks['Choropleth_map'] = {
