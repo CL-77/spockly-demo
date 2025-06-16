@@ -323,7 +323,7 @@ Blockly.defineBlocksWithJsonArray([
   ]);
   
   Blockly.Generator.R.forBlock["load_geojson"] = function (block, generator) {
-	generator.requirePackage("sf");
+	generator.requirePackage("sf", 'Sys.setenv(UDUNITS2_XML_PATH=system.file("share/udunits/udunits2.xml", package="units"))');
 	const filename = block.getFieldValue("FILENAME");
 	return [`sf::st_read("${filename}")`, Blockly.Generator.R.ORDER_NONE];
   };
