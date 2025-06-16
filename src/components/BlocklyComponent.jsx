@@ -45,11 +45,15 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="dropdown_color"></block>
     <block type="create_vector"></block>
     <block type="plot_vector"></block>
+	<block type="data_summary"></block>
   </category>
 
   <category name="Load Data" colour="#FFA726">
     <block type="load_builtin_dataset"></block>
     <block type="get_dataset"></block>
+	<block type="load_csv"></block>
+	<block type="load_geojson"></block>
+	<block type="load_tif"></block>
   </category>
 
   <category name="Data" colour="#FF7043">

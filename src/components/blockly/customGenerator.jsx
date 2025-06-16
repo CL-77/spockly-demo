@@ -22,6 +22,7 @@ Blockly.Generator.R.ORDER_NONE = 99;
  */
 Blockly.Generator.R.init = function (workspace) {
   Blockly.Generator.R.definitions_ = Object.create(null);
+  Blockly.Generator.R.packages_ = Object.create(null);
 
   if (!Blockly.Generator.R.nameDB_) {
     Blockly.Generator.R.nameDB_ = new Blockly.Names(
@@ -35,11 +36,46 @@ Blockly.Generator.R.init = function (workspace) {
 };
 
 /**
+ * Add a package requirement
+ */
+Blockly.Generator.R.requirePackage = function(packageName, extraCode = '') {
+  if (!Blockly.Generator.R.packages_[packageName]) {
+    Blockly.Generator.R.packages_[packageName] = {
+      install: `webr::install("${packageName}")`,
+      library: `library(${packageName})`,
+      extra: extraCode
+    };
+  }
+};
+
+/**
  * Complete the R code.
  */
 Blockly.Generator.R.finish = function (code) {
   let commentCode = "";
+  let packagesCode = "";
   let definitionsCode = "";
+
+  const packageOrder = {
+    'sf': 1,
+    'terra': 2,
+    'units': 0
+  };
+
+  const sortedPackages = Object.keys(Blockly.Generator.R.packages_).sort((a, b) => {
+    const orderA = packageOrder[a] !== undefined ? packageOrder[a] : 999;
+    const orderB = packageOrder[b] !== undefined ? packageOrder[b] : 999;
+    return orderA - orderB;
+  });
+
+  for (const packageName of sortedPackages) {
+    const pkg = Blockly.Generator.R.packages_[packageName];
+    packagesCode += pkg.install + "\n";
+    packagesCode += pkg.library + "\n";
+    if (pkg.extra) {
+      packagesCode += pkg.extra + "\n";
+    }
+  }
 
   for (const name in Blockly.Generator.R.definitions_) {
     definitionsCode += Blockly.Generator.R.definitions_[name] + "\n";
@@ -47,8 +83,9 @@ Blockly.Generator.R.finish = function (code) {
 
   Blockly.Generator.R.nameDB_.reset();
   delete Blockly.Generator.R.definitions_;
+  delete Blockly.Generator.R.packages_;
 
-  return commentCode + "\n" + definitionsCode + "\n" + code;
+  return commentCode + packagesCode + (packagesCode ? "\n" : "") + definitionsCode + (definitionsCode ? "\n" : "") + code;
 };
 
 /**
