@@ -1937,12 +1937,11 @@ Blockly.Blocks['folium_map'] = {
     this.appendDummyInput()
         .appendField('with zoom level')
         .appendField(new Blockly.FieldNumber(6), 'zoom');
-    this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setInputsInline(false);
     this.setTooltip('');
     this.setHelpUrl('https://python-visualization.github.io/folium/latest/getting_started.html');
-    this.setColour(270);
+    this.setColour(230);
   }
 };
 pythonGenerator.forBlock['folium_map'] = function(block, generator) {
@@ -2152,7 +2151,7 @@ pythonGenerator.forBlock['folium_rectangle'] = function(block, generator) {
 ).add_to(m)\n`;
 }
 
-Blockly.Blocks['create_circle'] = {
+Blockly.Blocks['folium_circle'] = {
   init: function() {
     this.appendDummyInput()
         .appendField('Create Circle on map');
@@ -2160,7 +2159,8 @@ Blockly.Blocks['create_circle'] = {
         .appendField('Centre');
     this.appendDummyInput()
         .appendField('Radius')
-        .appendField(new Blockly.FieldNumber(10), 'radius');
+        .appendField(new Blockly.FieldNumber(100), 'radius')
+        .appendField('m');
     this.appendDummyInput()
         .appendField('Popup')
         .appendField(new Blockly.FieldTextInput('Circle'), 'popup');
@@ -2177,9 +2177,9 @@ Blockly.Blocks['create_circle'] = {
     this.setColour(270);
   }
 };
-pythonGenerator.forBlock['create_circle'] = function(block, generator) {
+pythonGenerator.forBlock['folium_circle'] = function(block, generator) {
   const polygon_shown = generator.valueToCode(block, 'position', pythonGenerator.ORDER_ATOMIC);
-  const radius = block.getFieldValue('radius') || '1';
+  const radius = block.getFieldValue('radius') || '0';
   const text_popup = block.getFieldValue('popup');
   const color = block.getFieldValue('color');
   const fill_color = block.getFieldValue('fill_color');
@@ -2227,43 +2227,99 @@ Blockly.Blocks['JSON_on_map'] = {
 };
 pythonGenerator.forBlock['JSON_on_map'] = function(block, generator) {
   const value_json = generator.valueToCode(block, 'json', pythonGenerator.ORDER_ATOMIC);
-  return `\nimport requests\n
+  return `\n
           geojson_data = requests.get(${value_json}).json()\n
           folium.GeoJson(geojson_data).add_to(m)\n`;
 }
 
 Blockly.Blocks['Choropleth_map'] = {
   init: function() {
-    this.appendDummyInput('NAME')
-        .appendField('Make a choropleth map');
+    this.appendDummyInput()
+        .appendField('Create choropleth map');
+    this.appendValueInput('geo_data')
+        .appendField('with geo data');
     this.appendValueInput('data')
-        .appendField('with data');
+        .appendField('and data');
     this.appendValueInput('columns_shown')
-        .appendField('of column');
+        .appendField('of columns')
+        // .setCheck('Array');
     this.appendDummyInput('fill_color')
         .appendField('fill_color')
-        .appendField(new Blockly.FieldTextInput('green'), 'fill_color');
-    this.appendValueInput('bins')
-        .appendField('list of bins');
+        .appendField(new Blockly.FieldTextInput('YlGn'), 'fill_color');
+    this.appendDummyInput()
+        .appendField('Legend')
+        .appendField(new Blockly.FieldTextInput('Legend'), 'legend_name');
+    this.appendDummyInput()
+        .appendField('Match Df with GeoJSON')
+        .appendField(new Blockly.FieldTextInput('properties.name'), 'key_on');
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setTooltip('');
+    this.setTooltip('Create a Folium choropleth map. This is a map that uses color to represent data values in different regions.');
     this.setHelpUrl('https://python-visualization.github.io/folium/latest/user_guide/geojson/choropleth.html');
     this.setColour(270);
   }
 };
 pythonGenerator.forBlock['Choropleth_map'] = function(block, generator) {
   const value_data = generator.valueToCode(block, 'data', pythonGenerator.ORDER_ATOMIC);
+  const geo_data = generator.valueToCode(block, 'geo_data', pythonGenerator.ORDER_ATOMIC);
+  const legend_name = block.getFieldValue('legend_name') || 'Legend';
+  const key_on = block.getFieldValue('key_on') || 'properties.name';
   const columns_shown = generator.valueToCode(block, 'columns_shown', pythonGenerator.ORDER_ATOMIC);
   const fill_color = block.getFieldValue('fill_color');
-  const value_bins = generator.valueToCode(block, 'bins', pythonGenerator.ORDER_ATOMIC);
   return `folium.Choropleth(
+    geo_data=${geo_data},
     data=${value_data},
-    columns=${columns_shown}
-    bins=${value_bins},
-    fill_color=${fill_color}
+    columns=${columns_shown},
+    fill_color='${fill_color}',
+    fill_opacity=0.7,
+    line_opacity=0.2,
+    legend_name='${legend_name}',
+    key_on='feature.${key_on}'
 ).add_to(m)\n`;
+}
+
+Blockly.Blocks['request_json_data'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Request JSON data')
+        .appendField(new Blockly.FieldTextInput('http://example.com/file.json', (url) => url.match(/^[a-z]{4,5}:\/\/[A-Za-zÀ-ÖØ-öø-ÿ0-9./:_-]*?\.[a-z]{2,6}/) ? url : 'ERROR!'), 'url');
+    this.setOutput(true, '');
+    this.setHelpUrl('https://python-visualization.github.io/folium/latest/user_guide/geojson/choropleth.html');
+    this.setTooltip('Request JSON data from a given URL');
+    this.setColour(270);
+  }
+}
+pythonGenerator.forBlock['request_json_data'] = function(block) {
+  const url = block.getFieldValue('url') || '';
+  return [`requests.get('${url}').json()\n`, pythonGenerator.ORDER_ATOMIC];
+};
+
+Blockly.Blocks['convert_column'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Convert column')
+        .appendField(new Blockly.FieldTextInput('column_name'), 'column_name');
+    this.appendDummyInput()
+        .appendField('of DataFrame')
+        .appendField(new Blockly.FieldVariable('df'), 'df_name');
+    this.appendDummyInput()
+        .appendField('to type')
+        .appendField(new Blockly.FieldDropdown([['String', 'str'], ['Integer', 'int'], ['Float', 'float'], ['Boolean', 'bool']]), 'type');
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Convert a column of a DataFrame to a different type. Use this block in case of unforseen errors e.g. in maps.');
+    this.setColour(270);
+  }
+}
+pythonGenerator.forBlock['convert_column'] = function(block) {
+  const column_name = block.getFieldValue('column_name') || 'column_name';
+  const df_name = block.getFieldValue('df_name') || 'df';
+  const type = block.getFieldValue('type') || 'float';
+  const getVar = block.workspace.getVariableById(df_name);
+  const Var = getVar ? getVar.name : 'undefined';  
+  return `${Var}['${column_name}'] = ${Var}['${column_name}'].astype(${type})\n`;
 }
 
 Blockly.Blocks['pie_chart'] = {

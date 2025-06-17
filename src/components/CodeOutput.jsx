@@ -40,7 +40,12 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
       }
       const result = await main(code);
       const saveMap = !~code.indexOf('###DISPLAYONLY###');
-      const fileName = code.split("m.save('")[1].split(".html')")[0];
+      var fileName;
+      try {
+        fileName = code.split("m.save('")[1].split(".html')")[0];
+      } catch {
+        fileName = 'map';
+      }
       const foliumHandler = async (code, fileName) => {
         if(~code.indexOf("m.save('")) {
           let txt = await asyncRun(`

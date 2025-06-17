@@ -3,7 +3,7 @@ import * as Blockly from "blockly";
 import "./blockly/customBlocks";
 import { Box, Fab, Typography, useTheme, Button } from "@mui/material";
 import { lightTheme, darkTheme } from "./blockly/blocklyThemes";
-import { FormatListNumbered, Upload, UploadFile } from "@mui/icons-material";
+import { Upload, UploadFile } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup, IconButton } from "@mui/material";
 import { FaBookOpen, FaMapMarkedAlt, FaQuestionCircle } from "react-icons/fa";
@@ -177,6 +177,14 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           </category>
         </xml>
       `;
+
+
+      /*******
+       * Level 2 Toolbox
+       * This toolbox includes more advanced blocks for data handling, visualisation, and spatial analysis.
+       */
+
+
       const advancedToolbox = `
         <xml>
           <category name="${Blockly.Msg.Categories["MATH"]}" colour="#FF8A65">
@@ -225,6 +233,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="load_csv_from_url"></block>
             <block type="load_txt"></block>
             <block type="load_json"></block>
+            <block type="request_json_data"></block>
+            <block type="convert_column"></block>
             <block type="load_shapefile"></block>
             <block type="data_shape"></block>
             <block type="stacking"></block>
@@ -434,7 +444,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                 </shadow>
               </value>
             </block>
-            <block type="create_circle">
+            <block type="folium_circle">
               <value name="position">
                 <shadow type="GeoCoords">
                   <field name="XCoord">0</field>
@@ -468,7 +478,11 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                 </shadow>
               </value>
             </block>
-            <block type="Choropleth_map"></block>
+            <block type="Choropleth_map">
+              <value name="columns_shown">
+                <block type="list_create"></block>
+              </value>
+            </block>
             <block type="JSON_on_map"></block>
             <block type="saveAndDisplayMap"></block>
           </category>
