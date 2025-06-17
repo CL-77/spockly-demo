@@ -389,10 +389,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           </category>
 
           <category name="${Blockly.Msg.Categories["INTERPOLATION"]}" colour="#BA68C8">
-            <block type="interpolation_setup"></block>
             <block type="idw_interpolation"></block>
-            <block type="plot_interpolation_comparison"></block>
-            <block type="compare_interpolated_accuracy"></block>
           </category>
 
           <category name="${Blockly.Msg.Categories["MAPS"]}" colour="#3E65F8">
@@ -565,7 +562,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
       console.error("Blockly workspace is not initialised.");
       return;
     }
-    var libs = "", np, pd, gpd, sns, plt, requests, os, def_download, px, folium;
+    var libs = "", np, pd, gpd, sns, plt, requests, os, def_download, px, folium, interpol;
     var pythonCode = pythonGenerator.workspaceToCode(workspaceRef.current);
     if(~pythonCode.indexOf('np.')) np = true;
     if(~pythonCode.indexOf('pd.')) pd = true;
@@ -577,6 +574,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     if(~pythonCode.indexOf('download(')) def_download = true;
     if(~pythonCode.indexOf('px.')) px = true;
     if(~pythonCode.indexOf('folium.')) folium = true;
+    if(~pythonCode.indexOf('idw_interpolation(')) interpol = true;
     libs += np ? "import numpy as np\n" : "";
     libs += pd ? "import pandas as pd\n" : "";
     libs += sns ? "import seaborn as sns\n" : ""; 
@@ -595,11 +593,19 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                                           '\t\t\t\t\tf.write(chunk)\n' + 
                               '\t\tprint("Downloaded ", filename)\n\n'
     : '';
-
     libs += px ?  'import plotly.express as px\n' + 
                   'fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])\n' +
                   'fig.show()' : '';
     libs += folium ? 'import folium\n' : '';
+    libs += interpol ? `
+from scipy.spatial import cKDTree
+def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
+    tree = cKDTree(np.c_[xi, yi])
+    distances, idx = tree.query(np.c_[xi_interp, yi_interp], k=8)
+    weights = 1 / distances**power
+    weights /= weights.sum(axis=1)[:, None]
+    zi_interp = np.sum(weights * zi[idx-1], axis=1)
+    return zi_interp` : '';
     setCode((libs ? libs + '\n' : '') + pythonCode);
   };
 
