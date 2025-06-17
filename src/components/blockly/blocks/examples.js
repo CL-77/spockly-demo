@@ -194,3 +194,21 @@ Blockly.Generator.R.forBlock["head_print"] = function (block, generator) {
         '""';
     return `print(names(${text}))\n`;
 };
+
+Blockly.Generator.R.forBlock["controls_if"] = function (block, generator) {
+    let n = 0;
+    let code = '';
+  
+    const condition = generator.valueToCode(block, 'IF0', Blockly.Generator.R.ORDER_NONE) || 'FALSE';
+    const branch = generator.statementToCode(block, 'DO0');
+    code += `if (${condition}) {\n${branch}}\n`;
+  
+    // Optional: else block
+    if (block.getInput('ELSE')) {
+      const elseBranch = generator.statementToCode(block, 'ELSE');
+      code += `else {\n${elseBranch}}\n`;
+    }
+  
+    return code;
+  };
+  
