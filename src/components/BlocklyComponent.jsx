@@ -170,11 +170,10 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="load_raster"></block>
     <block type="load_txt"></block>
     <block type="load_json"></block>
+    <block type="load_geojson"></block>
+	  <block type="load_tif"></block>
     <block type="load_csv_url"></block>
     <block type="load_api_data"></block>
-	<block type="load_csv"></block>
-	<block type="load_geojson"></block>
-	<block type="load_tif"></block>
   </category>
 
   <category name="Data" colour="#FF7043">
