@@ -15,6 +15,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useLocation } from "react-router-dom";
 import TabPanel from "../../components/TabPanel";
 import tutorialData from "../../data/tutorialData.json";
@@ -184,9 +185,32 @@ const Tutorials = ({ isDarkMode }) => {
             <Typography variant="h4" fontWeight="bold" gutterBottom>
               {isGerman ? tut.headline_de : tut.headline}
             </Typography>
-            <ReactMarkdown>
-              {isGerman ? tut.description_de : tut.description}
-            </ReactMarkdown>
+            <Box
+              sx={{
+                '& table': {
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                  marginTop: 2,
+                },
+                '& th, & td': {
+                  border: '1px solid #ccc',
+                  padding: '8px 12px',
+                  textAlign: 'left',
+                  fontFamily: 'monospace',
+                },
+                '& th': {
+                  backgroundColor: isDarkMode ? '#333' : '#f0f0f0',
+                  fontWeight: 'bold',
+                },
+                '& td': {
+                  backgroundColor: isDarkMode ? '#1e1e1e' : '#fff',
+                },
+              }}
+              >
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {isGerman ? tut.description_de : tut.description}
+              </ReactMarkdown>
+            </Box>
           </TabPanel>
         ))}
       </Box>
