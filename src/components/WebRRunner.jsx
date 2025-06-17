@@ -28,8 +28,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
     try {
       console.log("Setting up minimal units database...");
 
-      // Create minimal XML avoiding React's auto-shorting of tags
-      // Using the exact structure from r-backend but with properly escaped XML
+      // Create minimal XML database as a replacement for udunits2
       await webR.evalRVoid(`
         minimal_xml_lines <- c(
           '<?xml version="1.0" encoding="UTF-8"?>',
