@@ -366,29 +366,31 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           borderColor: isDarkMode ? "#4e5d6c" : "#ccd6df",
         }}
       >
-        <Box display="flex" alignItems="center" gap={2} flex={1} minWidth={0}>
+        <Tooltip title="Upload your CSV, GeoJSON or TIF data." arrow>
           <Button
             variant="contained"
             onClick={onUploadClick}
             sx={{
+              width: 48,
+              height: 48,
+              minWidth: 0,
+              borderRadius: "50%",
               bgcolor: theme.palette.secondary.main,
               color: isDarkMode ? "#FFFFFA" : "#000000",
               "&:hover": {
                 bgcolor: theme.palette.secondary.dark,
                 color: "#fff",
               },
-              borderRadius: 2,
-              textTransform: "none",
-              px: 2,
               display: "flex",
               alignItems: "center",
-              gap: 1,
+              justifyContent: "center",
+              p: 0,
             }}
           >
             <Upload fontSize="medium" />
-            UPLOAD DATA FILE
           </Button>
-        </Box>
+        </Tooltip>
+
         <Box display="flex" alignItems="center" gap={2} flex={1} justifyContent="flex-end" minWidth={0}>
           <ToggleButtonGroup
             exclusive

@@ -5,6 +5,8 @@ import { Card, Box, Grid, Tab, Tabs, Typography } from "@mui/material";
 import { darkTheme, lightTheme } from "./../appTheme";
 import WebRRunner from "./WebRRunner";
 import FileUploadManager from "./FileUploadManager";
+import { MdOutlineOutput } from "react-icons/md";
+import { FaCode } from "react-icons/fa6";
 
 function TabPanel({ children, value, index }) {
   return (
@@ -88,30 +90,40 @@ export default function SPOCKLY({ isDarkMode }) {
               position: "relative",
             }}
           >
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              sx={{
-                padding: 1,
-                backgroundColor: theme.palette.background.default,
-                borderRadius: 4,
-              }}
-            >
-              <Tab
-                label="Code"
-                sx={{
-                  fontWeight: "bold",
-                  color: isDarkMode ? "lightgrey" : "darkgrey",
-                }}
-              />
-              <Tab
-                label="Output"
-                sx={{
-                  fontWeight: "bold",
-                  color: isDarkMode ? "lightgrey" : "darkgrey",
-                }}
-              />
-            </Tabs>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          sx={{
+            padding: 1,
+            backgroundColor: theme.palette.background.default,
+            borderRadius: 4,
+          }}
+        >
+          <Tab
+            label={
+              <Box display="flex" alignItems="center" gap={1}>
+                <FaCode /> Code
+              </Box>
+            }
+            sx={{
+              fontWeight: "bold",
+              color: isDarkMode ? "lightgrey" : "darkgrey",
+              textTransform: "none"
+            }}
+          />
+          <Tab
+            label={
+              <Box display="flex" alignItems="center" gap={1}>
+                <MdOutlineOutput /> Output
+              </Box>
+            }
+            sx={{
+              fontWeight: "bold",
+              color: isDarkMode ? "lightgrey" : "darkgrey",
+              textTransform: "none"
+            }}
+          />
+        </Tabs>
             <TabPanel value={value} index={0}>
               <Box sx={{ height: "60%", p: 1 }}>
                 <CodeDisplay
