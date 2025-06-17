@@ -360,7 +360,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
         mb={2}
         sx={{
           bgcolor: isDarkMode ? "#2b2d42" : "#e7ebf0",
-          borderRadius: 2,
+          borderRadius: 4,
           boxShadow: 3,
           border: "1px solid",
           borderColor: isDarkMode ? "#4e5d6c" : "#ccd6df",
