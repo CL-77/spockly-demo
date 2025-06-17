@@ -4,8 +4,15 @@ import {
   Tabs,
   Typography,
   useTheme,
-  Button
+  Button,
+  InputAdornment,
+  TextField,
+  List,
+  ListItemButton,
+  ListItemText,
+  Divider
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useLocation } from "react-router-dom";
@@ -15,11 +22,41 @@ import tutorialData from "../../data/tutorialData.json";
 const Tutorials = ({ isDarkMode }) => {
   const [value, setValue] = useState(0);
   const [isGerman, setIsGerman] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const location = useLocation();
   const theme = useTheme();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  // Handle content search
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    if (value.trim().length > 1) {
+      const results = tutorialData
+        .map((tut, index) => ({
+          index,
+          headline: isGerman ? tut.headline_de : tut.headline,
+          description: isGerman ? tut.description_de : tut.description,
+        }))
+        .filter((tut) =>
+          (tut.headline + tut.description).toLowerCase().includes(value.toLowerCase())
+        );
+
+      setSearchResults(results);
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const jumpToTutorial = (index) => {
+    setValue(index);       // Switch to the selected tab
+    setSearchResults([]);  // Hide results
+    setSearchTerm("");     // Clear search bar
   };
 
   return (
@@ -107,12 +144,49 @@ const Tutorials = ({ isDarkMode }) => {
           padding: 4,
         }}
       >
+        {/* Search Field */}
+        <Box sx={{ marginBottom: 3 }}>
+          <TextField
+            placeholder="Search tutorial content..."
+            value={searchTerm}
+            onChange={handleSearch}
+            fullWidth
+            variant="outlined"
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          {searchResults.length > 0 && (
+            <List dense sx={{ backgroundColor: isDarkMode ? "#1e1e1e" : "#f9f9f9", borderRadius: 1, mt: 1 }}>
+              {searchResults.map((res, idx) => (
+                <React.Fragment key={idx}>
+                  <ListItemButton onClick={() => jumpToTutorial(res.index)}>
+                    <ListItemText
+                      primary={res.headline}
+                      secondary={res.description.substring(0, 80) + "..."}
+                    />
+                  </ListItemButton>
+                  {idx < searchResults.length - 1 && <Divider />}
+                </React.Fragment>
+              ))}
+            </List>
+          )}
+        </Box>
+
+        {/* Tab Content */}
         {tutorialData.map((tut, index) => (
           <TabPanel key={index} value={value} index={index}>
             <Typography variant="h4" fontWeight="bold" gutterBottom>
               {isGerman ? tut.headline_de : tut.headline}
             </Typography>
-            <ReactMarkdown>{isGerman ? tut.description_de : tut.description}</ReactMarkdown>
+            <ReactMarkdown>
+              {isGerman ? tut.description_de : tut.description}
+            </ReactMarkdown>
           </TabPanel>
         ))}
       </Box>
