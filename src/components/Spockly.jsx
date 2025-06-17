@@ -1,19 +1,40 @@
 import { useEffect, useState, useRef } from "react";
 import BlocklyComponent from "./BlocklyComponent";
 import CodeDisplay from "./CodeDisplay";
-import { Card, Box, Grid } from "@mui/material";
+import { Card, Box, Grid, Tab, Tabs, Typography } from "@mui/material";
 import { darkTheme, lightTheme } from "./../appTheme";
-import CodeOutput from "./CodeOutput";
-import main from './init.js';
-import PlottingOutput from "./PlottingDisplay.jsx";
-// import FileUploadManager from "./FileUploadManager";
+import WebRRunner from "./WebRRunner";
+import FileUploadManager from "./FileUploadManager";
+import { MdOutlineOutput } from "react-icons/md";
+import { FaCode } from "react-icons/fa6";
 
-function SPOCKLY({ isDarkMode }) {
-  const [code, setCode] = useState("Generated Python code will appear here...");
-  const [plot, setPlot] = useState("");
+function TabPanel({ children, value, index }) {
+  return (
+    <div
+      hidden={value !== index}
+      role="tabpanel"
+      style={{
+        height: "100%",
+        display: value === index ? "flex" : "none",
+        flexDirection: "column",
+      }}
+    >
+      <Box sx={{ flex: 1, height: "100%" }}>{children}</Box>
+    </div>
+  );
+}
+
+export default function SPOCKLY({ isDarkMode }) {
+  const [code, setCode] = useState("Generated R code will appear here...");
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [value, setValue] = useState(0);
+  const webRRef = useRef(null);
   const workspaceRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
+
+  const handleChange = (_event, newValue) => {
+    setValue(newValue);
+  };
   const [isLoading, setIsLoading] = useState(true);
   const [output, setOutput] = useState("Loading Pyodide...");
   useEffect(() => {
@@ -53,16 +74,16 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
             sx={{
               m: 2,
               p: 2,
-              borderRadius: "16px",
+              borderRadius: 4,
               backgroundColor: theme.palette.primary.main,
               height: "85%",
               boxShadow: 3,
             }}
           >
-            <BlocklyComponent 
-              setCode={ setCode } 
-              isDarkMode={ isDarkMode } 
-              // onUploadClick={ handleUploadClick }
+            <BlocklyComponent
+              setCode={ setCode }
+              isDarkMode={ isDarkMode }
+              onUploadClick={ handleUploadClick }
               workspaceRef={ workspaceRef }
             />
           </Card>
@@ -82,25 +103,62 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
               borderRadius: "16px",
               backgroundColor: theme.palette.primary.main,
               height: "85%",
-              boxShadow: 3,
               position: "relative",
             }}
           >
-            <Box sx={{ height: "45%", p: 2 }}>
-              <CodeDisplay 
-                code={ code } 
-                setCode={ setCode }
-                isDarkMode={ isDarkMode } 
-                workspaceRef={ workspaceRef }
-              />
-            </Box>
-            <Box sx={{ height: "45%", p: 2 }}>
-              <CodeOutput 
+        <Tabs
+          value={ value }
+          onChange={ handleChange }
+          sx={{
+            padding: 1,
+            backgroundColor: theme.palette.background.default,
+            borderRadius: 4,
+          }}
+        >
+          <Tab
+            label={
+              <Box display="flex" alignItems="center" gap={1}>
+                <FaCode /> Code
+              </Box>
+            }
+            sx={{
+              fontWeight: "bold",
+              color: isDarkMode ? "lightgrey" : "darkgrey",
+              textTransform: "none"
+            }}
+          />
+          <Tab
+            label={
+              <Box display="flex" alignItems="center" gap={ 1 }>
+                <MdOutlineOutput /> Output
+              </Box>
+            }
+            sx={{
+              fontWeight: "bold",
+              color: isDarkMode ? "lightgrey" : "darkgrey",
+              textTransform: "none"
+            }}
+          />
+        </Tabs>
+            <TabPanel value={ value } index={ 0 }>
+              <Box sx={{ height: "60%", p: 1 }}>
+                <CodeDisplay
+                  code={ code }
+                  setCode={ setCode }
+                  isDarkMode={ isDarkMode }
+                  workspaceRef={ workspaceRef }
+                />
+              </Box>
+            </TabPanel>
+            <TabPanel value={ value } index={ 1 }>
+              <Box sx={{ height: "60%", p: 1 }}>
+                <CodeOutput 
                 setPlot={ setPlot } 
                 code={ code } 
                 isDarkMode={ isDarkMode }
-              />
-            </Box>
+                />
+              </Box>
+            </TabPanel>
           </Card>
         </Grid>
         
@@ -136,5 +194,3 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
     </Box>
   );
 }
-
-export default SPOCKLY;

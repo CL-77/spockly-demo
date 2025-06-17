@@ -21,6 +21,8 @@ import { useState } from "react";
 import FullCodeViewDialog from "./FullCodeViewDialog";
 import DownloadCodeDialog from "./DownloadCodeDialog";
 
+const CODE_DISPLAY_SIZE = 650;
+
 const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
   const theme = useTheme();
   const [openFullCodeViewDialog, setOpenFullCodeViewDialog] = useState(false);
@@ -51,11 +53,8 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
   return (
     <Box
       sx={{
-        top: 20,
-        left: 20,
-        right: 20,
         height: "100%",
-        borderRadius: "5px",
+        borderRadius: 4,
         zIndex: 1,
       }}
     >
@@ -69,109 +68,115 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
           Code copied to clipboard!
         </Alert>
       </Snackbar>
-      <Stack direction="row">
-        <Typography
-          variant="h6"
-          fontWeight="bold"
+      <Stack direction="row-reverse" sx={{ paddingY: 1 }}>
+        <Box
           sx={{
+            height: "100%",
+            zIndex: 1,
             color: theme.palette.primary.light,
             paddingBottom: "15px",
           }}
         >
-          Code
-        </Typography>
-
-        <Fab
-          size="small"
-          variant="extended"
-          onClick={ handleGenerateCode }
-          sx={{
-            left: 20,
-            width: "120px",
-            bgcolor: "#00c853",
-            color: theme.palette.primary.contrastText,
-            "&:hover": {
-              bgcolor: "#05A255",
-            },
-            boxShadow: "none",
-          }}
-        >
-          <Box display="flex" alignItems="center" gap={ 0.5 }>
-            <PlayArrow fontSize="small" />
-            <Typography fontWeight="bold">Generate</Typography>
-          </Box>
-        </Fab>
-        <Box display="flex" alignItems="center" gap={ 0.5 }>
-          <Typography sx={{ fontSize: "0.9em", marginLeft: "30px", color: "#BBB" }}>Ctrl + Enter</Typography>
+          <Stack direction="row" gap={ 1 }>
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "flex-start",
+              }}
+            >
+              <Tooltip title="Generate Python Code">
+                <IconButton
+                  onClick={ handleGenerateCode }
+                  sx={{
+                    bgcolor: "#00c853",
+                    color: theme.palette.primary.contrastText,
+                    "&:hover": {
+                      bgcolor: "#009B3A",
+                    },
+                  }}
+                >
+                  <PlayArrow />
+                </IconButton>
+              </Tooltip>
+            </Box>
+            <Tooltip title="Download Code as Python file">
+              <IconButton
+                onClick={ handleOpenDownloadDialog }
+                sx={{
+                  backgroundColor: theme.palette.primary.light,
+                  "&:hover": {
+                    bgcolor: isDarkMode ? "#835ACC" : "#CCAD33",
+                  },
+                }}
+              >
+                <Download />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Copy Code">
+              <IconButton
+                onClick={ handleCopyCode }
+                sx={{
+                  backgroundColor: theme.palette.primary.light,
+                  "&:hover": {
+                    bgcolor: isDarkMode ? "#835ACC" : "#CCAD33",
+                  },
+                }}
+              >
+                <ContentCopyRounded />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Reset Code">
+              <IconButton
+                onClick={ handleResetCode }
+                sx={{
+                  backgroundColor: theme.palette.primary.light,
+                  "&:hover": {
+                    bgcolor: isDarkMode ? "#835ACC" : "#CCAD33",
+                  },
+                }}
+              >
+                <RestartAlt />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Full Code View">
+              <IconButton
+                onClick={ handleOpenFullCodeView }
+                sx={{
+                  backgroundColor: theme.palette.primary.light,
+                  "&:hover": {
+                    bgcolor: isDarkMode ? "#835ACC" : "#CCAD33",
+                  },
+                }}
+              >
+                <Fullscreen />
+              </IconButton>
+            </Tooltip>
+          </Stack>
         </Box>
       </Stack>
-
       <Box
         sx={{
           position: "relative",
           borderRadius: "5px",
-          width: "100%",
-          height: "80%",
+          height: CODE_DISPLAY_SIZE,
           bgcolor: theme.palette.background.paper,
           zIndex: 1,
           overflowY: "auto",
         }}
       >
-        <Stack direction="row" justifyContent="space-between">
-          <Typography
-            fontWeight="bold"
-            sx={{
-              color: isDarkMode ? "#FFFFFA" : "#000000",
-              paddingBottom: "10px",
-              paddingTop: "5px",
-              paddingRight: "10px",
-              padding: "20px",
-              whiteSpace: "pre",
-              fontFamily: "monospace",
-            }}
-          >
-            { code || "Generated Python code will appear here..." }
-          </Typography>
-          <Box
-            sx={{
-              position: "relative",
-              width: "30%",
-              height: "75%",
-              zIndex: 1,
-              overflowY: "auto",
-              padding: "20px",
-            }}
-          >
-            <Stack
-              direction="row"
-              sx={{
-                justifyContent: "flex-end",
-                alignItems: "center",
-              }}
-            >
-              <Tooltip title="Download Code as Python file">
-                <IconButton onClick={ handleOpenDownloadDialog }>
-                  <Download />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Copy Code">
-                <IconButton onClick={ handleCopyCode }>
-                  <ContentCopyRounded />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Reset Code">
-                <IconButton onClick={ handleResetCode }>
-                  <RestartAlt />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Full Code View">
-                <IconButton onClick={ handleOpenFullCodeView }>
-                  <Fullscreen />
-                </IconButton>
-              </Tooltip>
-            </Stack>
-          </Box>
-        </Stack>
+        <Typography
+          fontWeight="bold"
+          sx={{
+            color: isDarkMode ? "#FFFFFA" : "#000000",
+            padding: 3,
+            fontSize: '0.8rem',
+            whiteSpace: "pre-wrap",
+            fontFamily: "monospace",
+          }}
+        >
+          { code || "Generated Python code will appear here..." }
+        </Typography>
       </Box>
       <FullCodeViewDialog
         code={ code }

@@ -48,8 +48,8 @@ const DownloadCodeDialog = ({
       <DialogContent
         dividers
         sx={{
-          height: "24vh",
-          width: "50vh",
+          height: "30vh",
+          width: "55vh",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",

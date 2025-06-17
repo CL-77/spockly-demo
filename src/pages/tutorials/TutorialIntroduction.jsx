@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import tutorialData from "../../data/tutorialData.json";
 
 const TutorialIntroduction = () => {
@@ -27,7 +28,8 @@ const TutorialIntroduction = () => {
       {/* Content */}
       <div className="prose max-w-3xl w-full">
         <h1>{tutorialData[selected].headline}</h1>
-        <ReactMarkdown>{tutorialData[selected].description}</ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {tutorialData[selected].description}</ReactMarkdown>
       </div>
     </div>
   );
