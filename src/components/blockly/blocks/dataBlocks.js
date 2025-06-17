@@ -1,121 +1,94 @@
 import * as Blockly from "blockly";
 
-// --- Data Inspection Blocks ---
-// Blocks for inspecting and previewing dataframes
+//
+// ─── DATA INSPECTION BLOCKS ─────────────────────────────────────────────────────
+//
 
 Blockly.defineBlocksWithJsonArray([
-    {
-      type: "preview_head_n",
-      message0: "preview first %1 rows of %2",
-      args0: [
-        {
-          type: "field_number",
-          name: "N",
-          value: 5,
-          min: 1
-        },
-        {
-          type: "input_value",
-          name: "DATA",
-          check: "DataFrame"
-        }
-      ],
-      output: "DataFrame",
-      colour: "#FFA726",
-      tooltip: "Preview the first N rows of a dataframe",
-      helpUrl: "https://www.rdocumentation.org/packages/SparkR/versions/3.1.2/topics/head"
-    }
+  {
+    type: "preview_head_n",
+    message0: "preview first %1 rows of %2",
+    args0: [
+      { type: "field_number", name: "N", value: 5, min: 1 },
+      { type: "input_value", name: "DATA", check: "DataFrame" }
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    output: "DataFrame",
+    colour: "#FF7043",
+    tooltip: "Preview the first N rows of a dataframe",
+    helpUrl: "https://www.rdocumentation.org/packages/SparkR/versions/3.1.2/topics/head"
+  },
+  {
+    type: "structure_overview",
+    message0: "get structure of %1",
+    args0: [
+      { type: "input_value", name: "DATA", check: "DataFrame" }
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    output: "String",
+    colour: "#FF7043",
+    tooltip: "Get the structure of a dataframe",
+    helpUrl: "https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/str"
+  },
+  {
+    type: "data_summary",
+    message0: "summary of %1",
+    args0: [
+      { type: "input_value", name: "DATA" }
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#FF7043",
+    tooltip: "Get summary statistics of a dataset.",
+    helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/summary"
+  }
 ]);
 
-Blockly.defineBlocksWithJsonArray([
-    {
-      type: "structure_overview",
-      message0: "get structure of %1",
-      args0: [
-        {
-          type: "input_value",
-          name: "DATA",
-          check: "DataFrame"
-        }
-      ],
-	  previousStatement: null,
-	  nextStatement: null,
-      output: "String",
-      colour: "#FFA726",
-      tooltip: "Get the structure of a dataframe",
-      helpUrl: "https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/str"
-    }
-  ]);
-
-Blockly.Generator.R.forBlock["structure_overview"] = function (block, generator) {
-	const data =
-	generator.valueToCode(block, "DATA", Blockly.Generator.R.ORDER_NONE) ||
-	'""';
-	return `str(${data})\n`;
-  };
-
-
-  Blockly.defineBlocksWithJsonArray([
-	{
-		type: "data_summary",
-		message0: "summary of %1",
-		args0: [
-			{
-				type: "input_value",
-				name: "DATA",
-			},
-		],
-		previousStatement: null,
-		nextStatement: null,
-		colour: "#FFA726",
-		tooltip: "Get summary statistics of a dataset.",
-		helpUrl: "",
-	},
-]);
-
-Blockly.Generator.R.forBlock["data_summary"] = function (block, generator) {
-	const data =
-		generator.valueToCode(block, "DATA", Blockly.Generator.R.ORDER_NONE) ||
-		'""';
-	return `summary(${data})\n`;
-};
-
-// --- Data Transformation Blocks ---
-// Blocks to manipulate and transform dataframes
+//
+// ─── DATA TRANSFORMATION BLOCKS ─────────────────────────────────────────────────
+//
 
 Blockly.defineBlocksWithJsonArray([
   {
     type: "data_shape",
     message0: "get shape of %1",
     args0: [
-      {
-        type: "input_value",
-        name: "DATA",
-        check: "DataFrame"
-      }
+      { type: "input_value", name: "DATA", check: "DataFrame" }
     ],
     previousStatement: null,
     nextStatement: null,
     output: "Vector",
-    colour: "#FFA726",
+    colour: "#FF7043",
     tooltip: "Get the shape of a dataframe",
     helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/dim"
   },
   {
     type: "filter_rows",
     message0: "filter rows with condition %1",
-    args0: [{ type: "field_input", name: "CONDITION", text: "value > 10" }],
+    args0: [
+      { type: "field_input", name: "CONDITION", text: "value > 10" }
+    ],
+    previousStatement: null,
+    nextStatement: null,
     output: null,
-    colour: "#FFA726",
+    colour: "#FF7043",
     tooltip: "Filter rows from a dataframe",
+    helpUrl: "https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/filter"
   },
   {
     type: "select_columns",
     message0: "select columns %1",
-    args0: [{ type: "field_input", name: "COLUMNS", text: "col1, col2" }],
+    args0: [
+      { type: "field_input", name: "COLUMNS", text: "col1, col2" }
+    ],
+    previousStatement: null,
+    nextStatement: null,
     output: null,
-    colour: "#FFA726",
+    colour: "#FF7043",
     tooltip: "Select specific columns from a dataframe",
+    helpUrl: "https://www.rdocumentation.org/packages/sparklyr/versions/1.8.2/topics/select"
   },
   {
     type: "group_by_summarise",
@@ -124,23 +97,27 @@ Blockly.defineBlocksWithJsonArray([
       { type: "field_input", name: "GROUP_COL", text: "group" },
       { type: "field_input", name: "SUMMARISE", text: "mean(value)" }
     ],
+    previousStatement: null,
+    nextStatement: null,
     output: null,
-    colour: "#FFA726",
-    tooltip: "Group and summarise a dataset",
-  },
+    colour: "#FF7043",
+    tooltip: "Group by a column and summarise with an expression (e.g. mean, sum)",
+    helpUrl: "https://www.rdocumentation.org/packages/dplyr/topics/summarise"
+  },  
   {
     type: "subset_rows",
     message0: "subset %1 from row %2 to %3",
     args0: [
       { type: "input_value", name: "DATA", check: "DataFrame" },
       { type: "field_number", name: "START", value: 1 },
-      { type: "field_number", name: "END", value: 10 },
+      { type: "field_number", name: "END", value: 10 }
     ],
-    output: "DataFrame",
     previousStatement: null,
     nextStatement: null,
-    colour: "#FFA726",
-    tooltip: "Subset rows of a dataset",
+    output: "DataFrame",
+    colour: "#FF7043",
+    tooltip: "Subset rows of a dataset from START to END",
+    helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/subset"
   },
   {
     type: "subset_column_range",
@@ -151,87 +128,25 @@ Blockly.defineBlocksWithJsonArray([
       { type: "field_number", name: "START", value: 40 },
       { type: "field_number", name: "END", value: 60 }
     ],
+    previousStatement: null,
+    nextStatement: null,
     output: "Vector",
-    colour: "#FFA726",
-    tooltip: "Access a column range from a dataframe"
+    colour: "#FF7043",
+    tooltip: "Access a column range from a dataframe",
+    helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/subset"
   }
 ]);
 
-// --- Utility and Array Operation Blocks ---
-// Blocks for array manipulation and other utility functions
+//
+// ─── GENERATOR FUNCTIONS ────────────────────────────────────────────────────────
+//
 
-Blockly.defineBlocksWithJsonArray([
-  {
-    type: "stack_data",
-    message0: "stack data %1 and %2 using %3",
-    args0: [
-      { type: "input_value", name: "DATA1" },
-      { type: "input_value", name: "DATA2" },
-      {
-        type: "field_dropdown",
-        name: "METHOD",
-        options: [
-          ["rbind", "rbind"],
-          ["cbind", "cbind"]
-        ]
-      }
-    ],
-    output: "DataFrame",
-    colour: "#FFA726",
-    tooltip: "Stack two data objects using rbind() or cbind()",
-    helpUrl: "https://www.rdocumentation.org/packages/R6Frame/versions/0.1.0/topics/rbind"
-  },
-  {
-    type: "append_array",
-    message0: "append value %1 to %2",
-    args0: [
-      { type: "input_value", name: "VALUE" },
-      { type: "input_value", name: "ARRAY" }
-    ],
-    output: null,
-    colour: "#FFA726",
-    tooltip: "Append a value to a vector using append()",
-    helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/append"
-  },
-  {
-    type: "create_array",
-    message0: "create array from %1 with dimension %2",
-    args0: [
-      { type: "input_value", name: "DATA" },
-      { type: "input_value", name: "DIM" }
-    ],
-    output: "Array",
-    colour: "#FFA726",
-    tooltip: "Create an array from a dataset and a dimension vector",
-    helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/array"
-  },
-  {
-    type: "sort_array",
-    message0: "sort array %1 by %2 in %3 order",
-    args0: [
-      { type: "input_value", name: "ARRAY" },
-      { type: "field_input", name: "COLUMN", text: "1" },
-      {
-        type: "field_dropdown",
-        name: "ORDER",
-        options: [["ascending", "TRUE"], ["descending", "FALSE"]]
-      }
-    ],
-    output: "Array",
-    colour: "#FFA726",
-    tooltip: "Sort an array by a specific column in ascending or descending order",
-    helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/sort"
-  },
-  {
-    type: "slice_file",
-    message0: "subset %1 with condition %2",
-    args0: [
-      { type: "input_value", name: "DATA" },
-      { type: "field_input", name: "CONDITION", text: "value > 10" }
-    ],
-    output: "DataFrame",
-    colour: "#FFA726",
-    tooltip: "Subset data by condition, like data[condition, ]",
-    helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/data"
-  }
-]);
+Blockly.Generator.R.forBlock["structure_overview"] = function (block, generator) {
+  const data = generator.valueToCode(block, "DATA", Blockly.Generator.R.ORDER_NONE) || '""';
+  return `str(${data})\n`;
+};
+
+Blockly.Generator.R.forBlock["data_summary"] = function (block, generator) {
+  const data = generator.valueToCode(block, "DATA", Blockly.Generator.R.ORDER_NONE) || '""';
+  return `summary(${data})\n`;
+};

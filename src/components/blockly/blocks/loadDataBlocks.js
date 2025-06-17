@@ -158,6 +158,10 @@ Blockly.defineBlocksWithJsonArray([
   }
 ]);
 
+//
+// ─── GENERATOR FUNCTIONS ────────────────────────────────────────────────────────
+//
+
 // Generator for load_csv
 Blockly.Generator.R.forBlock["load_csv"] = function (block, generator) {
   const filename = block.getFieldValue("FILENAME");
