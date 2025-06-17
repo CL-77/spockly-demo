@@ -2581,7 +2581,7 @@ Blockly.Blocks['plotly_scatter_mapbox'] = {
         ]), "STYLE");
     this.appendDummyInput()
         .appendField("Zoom")
-        .appendField(new Blockly.FieldNumber(1, 0, 20), "ZOOM");
+        .appendField(new Blockly.FieldNumber(5, 0, 20), "ZOOM");
     this.appendDummyInput()
         .appendField("Center Lat")
         .appendField(new Blockly.FieldNumber(0), "CENTER_LAT")
@@ -2589,9 +2589,9 @@ Blockly.Blocks['plotly_scatter_mapbox'] = {
         .appendField(new Blockly.FieldNumber(0), "CENTER_LON");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(200);
+    this.setColour(270);
     this.setTooltip("Creates and shows a Plotly scatter mapbox plot.");
-    this.setHelpUrl("");
+    this.setHelpUrl("https://plotly.github.io/plotly.py-docs/generated/plotly.express.scatter_mapbox.html");
   }
 };
 
@@ -2606,15 +2606,14 @@ pythonGenerator.forBlock['plotly_scatter_mapbox'] = function(block, generator) {
   const centerLon = block.getFieldValue('CENTER_LON');
 
   const code = `
-import plotly.express as px
 fig = px.scatter_mapbox(
-${df},
-lat="${lat}",
-lon="${lon}",
-hover_name="${hover}",
-mapbox_style="${style}",
-center={"lat": ${centerLat}, "lon": ${centerLon}},
-zoom=${zoom}
+  ${df},
+  lat="${lat}",
+  lon="${lon}",
+  hover_name="${hover}",
+  mapbox_style="${style}",
+  center={"lat": ${centerLat}, "lon": ${centerLon}},
+  zoom=${zoom}
 )\nfig.show()\n`;
   return code;
 };

@@ -213,7 +213,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 
           <category name="${Blockly.Msg.Categories["DATA"]}" colour="#FA2">
             <block type="sampleData"></block>
-            <block type ="plotly_scatter_mapbox"></block>
             <block type="create_folder"></block>
             <block type="func_download"></block>
             <block type="read_file"></block>
@@ -467,6 +466,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             </block>
             <block type="Choropleth_map"></block>
             <block type="JSON_on_map"></block>
+            <block type ="plotly_scatter_mapbox"></block>
             <block type="saveAndDisplayMap"></block>
           </category>
 
