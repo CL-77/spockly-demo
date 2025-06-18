@@ -27,7 +27,7 @@ function TabPanel({ children, value, index }) {
 }
 
 export default function SPOCKLY({ isDarkMode }) {
-  const [code, setCode] = useState("Generated R code will appear here...");
+  const [code, setCode] = useState("Generated Python code will appear here...");
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [value, setValue] = useState(0);
   const [plot, setPlot] = useState("");
@@ -119,7 +119,7 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
         >
           <Tab
             label={
-              <Box display="flex" alignItems="center" gap={1}>
+              <Box display="flex" alignItems="center" gap={ 1 }>
                 <FaCode /> Code
               </Box>
             }
@@ -187,12 +187,12 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
         </Grid>
       </Grid>
 
-      {/* <FileUploadManager
-        webRInstance={ workspaceRef.current }
+      <FileUploadManager
+        workspaceRef={ workspaceRef.current }
         isDarkMode={ isDarkMode }
         open={ uploadDialogOpen }
         onClose={ handleUploadClose }
-      /> */}
+      />
     </Box>
   );
 }

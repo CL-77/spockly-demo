@@ -726,7 +726,7 @@ pythonGenerator.forBlock['delete_axes'] = function(block, generator) {
   const varID = block.getFieldValue('DATAFRAME') || '0';
   const getVar = block.workspace.getVariableById(varID);
   const df = getVar ? getVar.name : 'df';
-  return `${df}.drop(index=${delInds || ''}, columns=${delCols || ''}, inplace=True)\n`;
+  return `${df}.drop(${'index=' + delInds + ', '|| ''}${'columns=' + delCols || ''})\n`;
 }
 
 
@@ -1057,7 +1057,7 @@ Blockly.Blocks['read_file'] = {
 pythonGenerator.forBlock['read_file'] = function(block) {
   const fileName = block.getFieldValue('NAME');
   const dataFolder = block.getFieldValue('FOLDER') || '';
-  return [`gpd.read_file(os.path.join('${dataFolder}', '${fileName}'))\n`, pythonGenerator.ORDER_ATOMIC];
+  return [`gpd.read_file(os.path.join('${dataFolder}', '${fileName}'))`, pythonGenerator.ORDER_ATOMIC];
 }
 
 Blockly.Blocks['write_file'] = {
@@ -2241,7 +2241,7 @@ Blockly.Blocks['Choropleth_map'] = {
         .appendField('of columns')
         // .setCheck('Array');
     this.appendDummyInput('fill_color')
-        .appendField('fill_color')
+        .appendField('Fill colour')
         .appendField(new Blockly.FieldTextInput('YlGn'), 'fill_color');
     this.appendDummyInput()
         .appendField('Legend')

@@ -14,16 +14,16 @@ import {
 } from '@mui/material';
 import { CheckCircle, Error, InsertDriveFile, Map } from '@mui/icons-material';
 
-const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
+const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
   const [uploadStatus, setUploadStatus] = useState(null);
   const [fileName, setFileName] = useState('');
   const [filePath, setFilePath] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [fileType, setFileType] = useState('');
 
-//   const handleFileUpload = async (event) => {
-//     const file = event.target.files[0];
-//     if (!file) return;
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
     setIsUploading(true);
     setFileName(file.name);
@@ -32,26 +32,26 @@ const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
     const extension = file.name.toLowerCase().split('.').pop();
     setFileType(extension);
     
-//     try {
-//       // Convert file to ArrayBuffer
-//       const arrayBuffer = await file.arrayBuffer();
-//       const uint8Array = new Uint8Array(arrayBuffer);
+    try {
+      // Convert file to ArrayBuffer
+      const arrayBuffer = await file.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
       
-//       // Define the path in WebR filesystem
-//       const targetPath = `/home/web_user/${file.name}`;
+      // Define the path in WebR filesystem
+      const targetPath = `/home/web_user/${file.name}`;
       
-//       // Write file to WebR filesystem
-//       await workspaceRef.FS.writeFile(targetPath, uint8Array);
+      // Write file to WebR filesystem
+      await workspaceRef.FS.writeFile(targetPath, uint8Array);
       
-//       setFilePath(targetPath);
-//       setUploadStatus('success');
-//     } catch (error) {
-//       console.error('File upload failed:', error);
-//       setUploadStatus('error');
-//     } finally {
-//       setIsUploading(false);
-//     }
-//   };
+      setFilePath(targetPath);
+      setUploadStatus('success');
+    } catch (error) {
+      console.error('File upload failed:', error);
+      setUploadStatus('error');
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleClose = () => {
     setUploadStatus(null);
@@ -157,7 +157,7 @@ const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
                 style={{ display: 'none' }}
                 id="file-upload"
                 type="file"
-                onChange={handleFileUpload}
+                onChange={ handleFileUpload }
               />
             </Box>
           </Box>
@@ -172,22 +172,22 @@ const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
           </Box>
         ) }
 
-        {uploadStatus === 'success' && (
+        { uploadStatus === 'success' && (
           <Alert 
             severity="success" 
-            icon={<CheckCircle />}
+            icon={ <CheckCircle /> }
             sx={{ mb: 2 }}
           >
             <AlertTitle>Upload Successful!</AlertTitle>
-            <Box display="flex" alignItems="center" gap={1} sx={{ mt: 1, mb: 2 }}>
-              {getFileIcon()}
+            <Box display="flex" alignItems="center" gap={ 1 } sx={{ mt: 1, mb: 2 }}>
+              { getFileIcon() }
               <Typography variant="body2">
                 File uploaded successfully to WebR filesystem.
               </Typography>
-              {getFileTypeChip()}
+              { getFileTypeChip() }
             </Box>
             <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>
-              {getUsageInstructions()}
+              { getUsageInstructions() }
             </Typography>
             <Box 
               sx={{ 
@@ -205,7 +205,7 @@ const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
               </Typography>
               <Button 
                 size="small" 
-                onClick={copyToClipboard}
+                onClick={ copyToClipboard }
                 sx={{ ml: 1 }}
               >
                 Copy
@@ -214,26 +214,26 @@ const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
           </Alert>
         )}
 
-        {uploadStatus === 'invalidtype' && (
-          <Alert severity="warning" icon={<Error />}>
+        { uploadStatus === 'invalidtype' && (
+          <Alert severity="warning" icon={ <Error /> }>
             <AlertTitle>Unsupported File Format</AlertTitle>
             <Typography variant="body2">
-              The file <strong>{fileName}</strong> is not supported.<br />
+              The file <strong>{ fileName }</strong> is not supported.<br />
               Please upload a CSV, GeoJSON or TIF file.
             </Typography>
           </Alert>
-)}
-        {uploadStatus === 'error' && (
+) }
+        { uploadStatus === 'error' && (
           <Alert 
             severity="error" 
-            icon={<Error />}
+            icon={ <Error /> }
           >
             <AlertTitle>Upload Failed!</AlertTitle>
             <Typography variant="body2">
               There was an error uploading the file. Please try again.
             </Typography>
           </Alert>
-        )}
+        ) }
       </DialogContent>
 
        <DialogActions>
