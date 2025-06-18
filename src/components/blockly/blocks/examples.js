@@ -194,3 +194,86 @@ Blockly.Generator.R.forBlock["head_print"] = function (block, generator) {
         '""';
     return `print(names(${text}))\n`;
 };
+
+
+// x to y mapping block
+Blockly.defineBlocksWithJsonArray([
+	{
+		type: "x_to_y_mapping",
+		message0: "map %1 to %2",
+		args0: [
+			{
+				type: "input_value",
+				name: "X",
+				check: "Number",
+			},
+			{
+				type: "input_value",
+				name: "Y",
+				check: "Number",
+			},
+		],
+		output: null,
+		colour: 160,
+		tooltip: "Map x to y values.",
+		helpUrl: "",
+	},
+]);
+
+Blockly.Generator.R.forBlock["x_to_y_mapping"] = function (block, generator) {
+	const x = generator.valueToCode(block, "X", Blockly.Generator.R.ORDER_ATOMIC);
+	const y = generator.valueToCode(block, "Y", Blockly.Generator.R.ORDER_ATOMIC);
+	return [`(${x}:${y})`, Blockly.Generator.R.ORDER_ATOMIC];
+};
+
+
+Blockly.defineBlocksWithJsonArray([
+	{
+	  type: "ggplot_test",
+	  message0: "create ggplot",
+	  previousStatement: null,
+	  nextStatement: null,
+	  colour: 160,
+	  tooltip: "Create a ggplot test plot.",
+	  helpUrl: "",
+	},
+  ]);
+  
+  Blockly.Generator.R.forBlock["ggplot_test"] = function (block, generator) {
+	generator.requirePackage('ggplot2');
+	return `test_data <- data.frame(\n` +
+	  `  x = 1:10,\n` +
+	  `  y = c(2, 5, 3, 8, 6, 9, 7, 10, 12, 11)\n` +
+	  `)\n` +
+	  `print(ggplot(test_data, aes(x = x, y = y)) + \n` +
+	  `  geom_point() + \n` +
+	  `  ggtitle("Einfacher Testplot mit ggplot2") + \n` +
+	  `  theme_minimal())\n`;
+  };
+
+  // debug packages
+Blockly.defineBlocksWithJsonArray([
+	{
+		type: "debug_packages",
+		message0: "require package",
+		previousStatement: null,
+		nextStatement: null,
+		colour: 160,
+		tooltip: "Require a package in R.",
+		helpUrl: "",
+	},
+]);
+
+Blockly.Generator.R.forBlock["debug_packages"] = function (block, generator) {
+	return `# Debug: Zeige geladene Pakete\n` +
+	  `print("Loaded packages:")\n` +
+	  `print(loadedNamespaces())\n` +
+	  `\n` +
+	  `# Versuche ggplot2 zu laden\n` +
+	  `tryCatch({\n` +
+	  `  library(ggplot2)\n` +
+	  `  print("ggplot2 loaded successfully")\n` +
+	  `}, error = function(e) {\n` +
+	  `  print(paste("Error loading ggplot2:", e$message))\n` +
+	  `})\n`;
+  };

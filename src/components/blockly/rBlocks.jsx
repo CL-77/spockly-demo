@@ -13,3 +13,4 @@ import "./blocks/visualizationBlocks";
 import "./blocks/exportBlocks";
 import "./blocks/generatorHelpers";
 import "./blocks/variables"
+import "./blocks/ggplotBlocks";

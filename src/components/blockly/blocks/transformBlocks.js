@@ -46,3 +46,59 @@ Blockly.Generator.R.forBlock["convert_to_sf"] = function (block, generator) {
 		Blockly.Generator.R.ORDER_ATOMIC,
 	];
 };
+
+
+// Convert to Data Frame
+Blockly.defineBlocksWithJsonArray([
+    {
+        type: "convert_to_dataframe",
+        message0: "convert to DataFrame %1",
+        args0: [
+            {
+                type: "input_statement",
+                name: "OBJECTS",
+            },
+        ],
+        output: "DataFrame",
+        colour: "#FFA726",
+        tooltip: "Convert objects to a DataFrame",
+        helpUrl: "",
+    },
+]);
+
+Blockly.Generator.R.forBlock["convert_to_dataframe"] = function (block, generator) {
+    let objectsCode = [];
+    let seenCode = new Set(); // Use a Set to keep track of unique code snippets
+    let objectBlock = block.getInputTargetBlock('OBJECTS');
+
+    while (objectBlock) {
+        const objectCode = generateSingleBlockCode(objectBlock, generator);
+        if (objectCode && !seenCode.has(objectCode)) {
+            seenCode.add(objectCode);
+            objectsCode.push(objectCode);
+        }
+        objectBlock = objectBlock.getNextBlock();
+    }
+
+    // Join all the objects with commas and create a data frame
+    return [`data.frame(${objectsCode.join(', ')})`, Blockly.Generator.R.ORDER_ATOMIC];
+};
+
+// Helper function to generate code for a single block
+function generateSingleBlockCode(block, generator) {
+    // Temporarily remove the next block
+    const nextBlock = block.nextConnection ? block.nextConnection.targetBlock() : null;
+    if (nextBlock) {
+        block.nextConnection.disconnect();
+    }
+
+    // Generate code for only this block
+    const code = generator.blockToCode(block);
+
+    // Reconnect the next block
+    if (nextBlock) {
+        block.nextConnection.connect(nextBlock.previousConnection);
+    }
+
+    return code;
+}

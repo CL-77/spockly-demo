@@ -45,6 +45,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="dropdown_color"></block>
     <block type="create_vector"></block>
     <block type="plot_vector"></block>
+	<block type="x_to_y_mapping"></block>
   </category>
 
   <category name="Load Data" colour="#FFA726">
@@ -99,6 +100,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="subset_rows"></block>
     <block type="subset_column_range"></block>
 	<block type="convert_to_sf"></block>
+	<block type="convert_to_dataframe"></block>
   </category>
 
   <category name="Maps" colour="#81C784">
@@ -133,6 +135,9 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 </xml>
 `;
 
+
+
+
 // Blockly toolbox definition for Level 2 (Advanced)
 // Change content later
   const advancedToolbox = `
@@ -160,6 +165,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="dropdown_color"></block>
     <block type="create_vector"></block>
     <block type="plot_vector"></block>
+	<block type="ggplot_test"></block>
+	<block type="debug_packages"></block>
   </category>
 
   <category name="Load Data" colour="#FFA726">
@@ -188,6 +195,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="slice_file"></block>
 	<block type="structure_overview"></block>
 	<block type="data_summary"></block>
+	<block type="data_table"></block>
   </category>
 
   <category name="Variables" colour="#A65E2E" custom="VARIABLE"></category>
@@ -257,6 +265,44 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="barplot_block"></block>
     <block type="piechart_block"></block>
     <block type="scatterplot_block"></block>
+  </category>
+
+<category name="ggplot" colour="#FF6B6B">
+  <block type="ggplot_create">
+    <value name="DATA">
+      <block type="variables_get">
+        <field name="VAR">data</field>
+      </block>
+    </value>
+  </block>
+  
+  <label text="Aesthetics" web-class="toolboxLabel"></label>
+  <block type="aes_xy"></block>
+  <block type="aes_color"></block>
+  <block type="aes_size"></block>
+  <block type="aes_fill"></block>
+  <block type="aes_alpha"></block>
+  
+  <label text="Geometries" web-class="toolboxLabel"></label>
+  <block type="geom_point"></block>
+  <block type="geom_bar"></block>
+  <block type="geom_histogram"></block>
+  <block type="geom_line"></block>
+  <block type="geom_smooth"></block>
+  <block type="geom_sf"></block>
+  
+  <label text="Geometry Options" web-class="toolboxLabel"></label>
+  <block type="geom_color"></block>
+  <block type="geom_fill"></block>
+  <block type="geom_alpha"></block>
+  <block type="geom_size"></block>
+  
+  <label text="Themes & Styling" web-class="toolboxLabel"></label>
+  <block type="theme_preset"></block>
+  <block type="labs"></block>
+  <block type="scale_color_viridis"></block>
+  <block type="facet_grid"></block>
+  <block type="coord_fixed"></block>
   </category>
 
   <category name="Export" colour="#FFB74D">

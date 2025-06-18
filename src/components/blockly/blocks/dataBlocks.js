@@ -79,3 +79,29 @@ Blockly.Generator.R.forBlock["data_summary"] = function (block, generator) {
 		'""';
 	return `summary(${data})\n`;
 };
+
+// Block to implement the "table" function in R
+Blockly.defineBlocksWithJsonArray([
+	{
+		type: "data_table",
+		message0: "table of %1",
+		args0: [
+			{
+				type: "input_value",
+				name: "DATA",
+			},
+		],
+		previousStatement: null,
+		nextStatement: null,
+		output: "String",
+		colour: "#FFA726",
+		tooltip: "Create a frequency table of a dataset.",
+		helpUrl: "",
+	},
+]);
+
+Blockly.Generator.R.forBlock["data_table"] = function (block, generator) {
+	const data =
+		generator.valueToCode(block, "DATA", Blockly.Generator.R.ORDER_NONE)
+	return [`table(${data})`];
+};
