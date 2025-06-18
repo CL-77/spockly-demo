@@ -15,7 +15,7 @@ const CodeOutput = ({ code, isDarkMode, setPlot }) => {
     const runCode = async () => {
       console.log('Running code...');
       setOutput("Running...");
-      if(~code.indexOf('plt.')) {
+      if(~code.indexOf('plt.') || ~code.indexOf('df_interp.plot')) {
         code = `
 import io
 import base64
@@ -122,26 +122,6 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
         findInfo();
     });
 
-// document.addEventListener(
-//   "keydown",
-//   (ev) => {
-//     const keyName = ev.key;
-//     if (keyName === "Control") {
-//         return;
-//     }
-//     if ((ev.ctrlKey || ev.metaKey) && ev.altKey && keyName === 'c') {
-//         ev.preventDefault();
-//         navigator.clipboard.writeText(output)
-//             .then(() => {
-//                 refCode.current.innerText = 'Output Copied!';
-//                 setTimeout(() => refCode.current.innerText = 'Copy Output', 1500);
-//             })
-//             .catch((e) => console.error('The output could not be copied. ' + e));
-//     }
-//   },
-//   false,
-// );
-
     return (
         <Box
       sx={{
@@ -188,37 +168,6 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
         <Box display="flex" alignItems="center" gap={ 0.5 }>
           <Typography sx={{ fontSize: "0.9em", marginLeft: "30px", color: "#BBB" }}>Ctrl + Alt + Enter</Typography>  
         </Box>
-        {/* { ~document.location.href.indexOf('https') || ~document.location.href.indexOf('localhost') ? (
-          <>
-        <Box display="flex" marginLeft="auto" alignItems="center" gap={ 0.5 }>
-          <Typography sx={{ fontSize: "0.9em", marginRight: "10px", color: "#BBB" }}>Ctrl + Alt + C</Typography>  
-        </Box>
-        <Fab 
-          size="small"
-          variant="extended"
-          sx={{
-            width: "160px",
-            bgcolor: "#f58a42",
-            color: theme.palette.primary.light,
-            "&:hover": {
-              bgcolor: "#d77a3c",
-            },
-            boxShadow: "none",
-          }}
-          onClick={
-            () => navigator.clipboard.writeText(output)
-              .catch((e) => console.error('The output could not be copied. ' + e))
-              .then(refCode.current.innerText = 'Output Copied!')
-              .then(setTimeout(() => refCode.current.innerText = 'Copy Output', 1500))
-          }
-          >
-          <Box display="flex" alignItems="center" gap={ 0.5 }>
-            <ContentPaste fontSize="small" />
-            <Typography ref={ refCode } fontWeight="bold">Copy Output</Typography>
-          </Box>
-        </Fab>
-        </>
-        ) : null } */}
       </Stack>
 
       <Box

@@ -2721,11 +2721,11 @@ df_copy.loc[indices_to_replace, '${column}'] = np.nan
 df_interp = df_copy
 known = df_interp[df_interp['${column}'].notna()]
 unknown = df_interp[df_interp['${column}'].isna()]
-xi = known[${x_position}].values
-yi = known[${y_position}].values
+xi = known['${x_position}'].values
+yi = known['${y_position}'].values
 zi = known['${column}'].values
-xi_interp = unknown[${x_position}].values
-yi_interp = unknown[${y_position}].values
+xi_interp = unknown['${x_position}'].values
+yi_interp = unknown['${y_position}'].values
 zi_interp = idw_interpolation(xi, yi, zi, xi_interp, yi_interp, ${power})
 df_interp.loc[df_interp['${column}'].isna(), '${column}'] = zi_interp
 
