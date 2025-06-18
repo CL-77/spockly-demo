@@ -72,6 +72,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                 <block type="func_downloadB"></block>
                 <block type="sampleDataB"></block>
             </category>
+            <block type="convert_column"></block>
             <block type="read_fileB"></block>
             <block type="data_shape"></block>
             <block type="add_object"></block>
