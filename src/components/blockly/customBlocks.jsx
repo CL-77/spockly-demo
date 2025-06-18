@@ -1070,10 +1070,11 @@ Blockly.Blocks['read_file'] = {
     this.setColour(200);
   }
 };
-pythonGenerator.forBlock['read_file'] = function(block) {
+pythonGenerator.forBlock['read_file'] = function(block,generator) {
   const fileName = block.getFieldValue('NAME');
   const dataFolder = block.getFieldValue('FOLDER') || '';
-  return [`gpd.read_file(os.path.join('${dataFolder}', '${fileName}'))`, pythonGenerator.ORDER_ATOMIC];
+  //const columns = generator.valueToCode(block, 'columns', pythonGenerator.ORDER_ATOMIC);
+  return [`gpd.read_file(os.path.join('${dataFolder}', '${fileName}'))\n`, pythonGenerator.ORDER_ATOMIC];
 }
 
 Blockly.Blocks['write_file'] = {
@@ -2779,3 +2780,40 @@ for a in ax:
 `;
   return code;
 };
+
+Blockly.Blocks['del_col'] = {
+  init: function() {
+    this.appendValueInput('array')
+    .setCheck(['Array'])
+      .appendField(new Blockly.FieldLabelSerializable('Delete these columns'), 'COLUMNS');
+    this.appendValueInput('columns')
+      .appendField(new Blockly.FieldLabelSerializable('Name of columns'), 'COLUMNS');
+    this.setOutput(true);
+    this.setTooltip('');
+    this.setColour(200);
+  }
+};
+pythonGenerator.forBlock['del_col'] = function(block, generator) {
+  const array = generator.valueToCode(block, 'array', pythonGenerator.ORDER_ATOMIC);
+  const columns = generator.valueToCode(block, 'columns', pythonGenerator.ORDER_ATOMIC);
+  return [`${array} = ${array}.drop(columns=${columns}, axis = 1)`, pythonGenerator.ORDER_COLLECTION];
+}
+
+//** converte numpy to pandas
+Blockly.Blocks['convert_np_to_pd'] = {
+  init: function() {
+    this.appendValueInput('array')
+    .setCheck(['Array'])
+      .appendField(new Blockly.FieldLabelSerializable('Convert in DataFrame'), 'CONVERT');
+    this.appendValueInput('columns')
+      .appendField(new Blockly.FieldLabelSerializable('Name of columns'), 'COLUMNS');
+    this.setOutput(true);
+    this.setTooltip('Convert in DataFrame');
+    this.setColour(200);
+  }
+};
+pythonGenerator.forBlock['convert_np_to_pd'] = function(block, generator) {
+  const array = generator.valueToCode(block, 'array', pythonGenerator.ORDER_ATOMIC);
+  const columns = generator.valueToCode(block, 'columns', pythonGenerator.ORDER_ATOMIC);
+  return [`pd.DataFrame(${array}, columns=${columns})`, pythonGenerator.ORDER_COLLECTION];
+}
