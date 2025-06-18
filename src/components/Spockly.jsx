@@ -3,10 +3,12 @@ import BlocklyComponent from "./BlocklyComponent";
 import CodeDisplay from "./CodeDisplay";
 import { Card, Box, Grid, Tab, Tabs, Typography } from "@mui/material";
 import { darkTheme, lightTheme } from "./../appTheme";
-import WebRRunner from "./WebRRunner";
 import FileUploadManager from "./FileUploadManager";
+import CodeOutput from "./CodeOutput"
 import { MdOutlineOutput } from "react-icons/md";
 import { FaCode } from "react-icons/fa6";
+import PlottingOutput from "./PlottingDisplay";
+import main from "./init";
 
 function TabPanel({ children, value, index }) {
   return (
@@ -28,7 +30,7 @@ export default function SPOCKLY({ isDarkMode }) {
   const [code, setCode] = useState("Generated R code will appear here...");
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [value, setValue] = useState(0);
-  const webRRef = useRef(null);
+  const [plot, setPlot] = useState("");
   const workspaceRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
 

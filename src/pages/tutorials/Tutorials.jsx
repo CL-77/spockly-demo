@@ -181,7 +181,7 @@ const Tutorials = ({ isDarkMode }) => {
 
         {/* Tab Content */}
         {tutorialData.map((tut, index) => (
-          <TabPanel key={index} value={value} index={index}>
+          <TabPanel key={ index } value={ value } index={ index }>
             <Typography variant="h4" fontWeight="bold" gutterBottom>
               {isGerman ? tut.headline_de : tut.headline}
             </Typography>
@@ -207,7 +207,7 @@ const Tutorials = ({ isDarkMode }) => {
                 },
               }}
               >
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              <ReactMarkdown remarkPlugins={ [remarkGfm] }>
                 {isGerman ? tut.description_de : tut.description}
               </ReactMarkdown>
             </Box>

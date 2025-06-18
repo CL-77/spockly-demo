@@ -16,7 +16,7 @@ import {
   PlayArrow,
   RestartAlt,
 } from "@mui/icons-material";
-import * as Blockly from "blockly/core";
+// import * as Blockly from "blockly/core";
 import { useState } from "react";
 import FullCodeViewDialog from "./FullCodeViewDialog";
 import DownloadCodeDialog from "./DownloadCodeDialog";
