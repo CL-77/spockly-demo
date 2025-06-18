@@ -50,22 +50,18 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   <category name="Load Data" colour="#FFA726">
     <block type="load_builtin_dataset"></block>
     <block type="get_dataset"></block>
-	<block type="load_csv"></block>
-	<block type="load_geojson"></block>
-	<block type="load_tif"></block>
+	  <block type="load_csv"></block>
+	  <block type="load_geojson"></block>
+	  <block type="load_tif"></block>
   </category>
 
-  <category name="Data" colour="#FF7043">
-    <block type="preview_head_n"></block>
+  <category name="Data Inspection" colour="#FF7043">
+  	<block type="data_summary"></block>
     <block type="structure_overview"></block>
-	<block type="data_summary"></block>
+    <block type="preview_head_n"></block>
   </category>
 
-  <category name="Variables" colour="#A65E2E" custom="VARIABLE">
-    <block type="variables_set"></block>
-	<block type="variables_change"></block>
-	<block type="variables_get"></block> 
-  </category>
+  <category name="Variables" colour="#7d4561" custom="VARIABLE"></category>
   
   <category name="Booleans" colour="#D32F2F">
     <block type="convert_to_bool"></block>
@@ -74,12 +70,12 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   </category>
 
   <category name="Maths" colour="#FF8A65">
+    <block type="math_number"></block>
     <block type="sum_vector"></block>
     <block type="vector_minus_scalar"></block>
     <block type="square_vector"></block>
     <block type="sqrt_vector"></block>
     <block type="divide_values"></block>
-    <block type="math_number"></block>
     <block type="exp_of"></block>
     <block type="log_of"></block>
   </category>
@@ -116,8 +112,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   
   <category name="Visualization" colour="#90A4AE">
     <block type="print_output"></block>
-    <block type="preview_data"></block>
-    <block type="show_structure"></block>
     <block type="histogram_block"></block>
     <block type="boxplot_block"></block>
     <block type="barplot_block"></block>
@@ -170,27 +164,25 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="load_raster"></block>
     <block type="load_txt"></block>
     <block type="load_json"></block>
+    <block type="load_geojson"></block>
+	  <block type="load_tif"></block>
     <block type="load_csv_url"></block>
     <block type="load_api_data"></block>
-	<block type="load_csv"></block>
-	<block type="load_geojson"></block>
-	<block type="load_tif"></block>
   </category>
 
-  <category name="Data" colour="#FF7043">
-    <block type="preview_head_n"></block>
+  <category name="Data Inspection" colour="#FF7043">
+  	<block type="data_summary"></block>
     <block type="structure_overview"></block>
+    <block type="preview_head_n"></block>
     <block type="data_shape"></block>
-    <block type="sort_array"></block>
-    <block type="stack_data"></block>
-    <block type="append_array"></block>
-    <block type="create_array"></block>
-    <block type="slice_file"></block>
-	<block type="structure_overview"></block>
-	<block type="data_summary"></block>
+    <block type="filter_rows"></block>
+    <block type="select_columns"></block>
+    <block type="group_by_summarise"></block>
+    <block type="subset_rows"></block>
+    <block type="subset_column_range"></block>
   </category>
 
-  <category name="Variables" colour="#A65E2E" custom="VARIABLE"></category>
+  <category name="Variables" colour="#7d4561" custom="VARIABLE"></category>
   
   <category name="Booleans" colour="#D32F2F">
     <block type="convert_to_bool"></block>
@@ -199,12 +191,12 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   </category>
 
   <category name="Maths" colour="#FF8A65">
+    <block type="math_number"></block>
     <block type="sum_vector"></block>
     <block type="vector_minus_scalar"></block>
     <block type="square_vector"></block>
     <block type="sqrt_vector"></block>
     <block type="divide_values"></block>
-    <block type="math_number"></block>
     <block type="exp_of"></block>
     <block type="log_of"></block>
     <block type="sin_of"></block>
@@ -214,9 +206,9 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   </category>
 
   <category name="Statistics" colour="#BA68C8">
+    <block type="summary_statistics"></block>
     <block type="calculate_mean"></block>
     <block type="calculate_sd"></block>
-    <block type="summary_statistics"></block>
     <block type="quantile_column"></block>
     <block type="sorted_element_at"></block>
     <block type="calculate_median"></block>
@@ -227,12 +219,12 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   </category>
 
   <category name="Transformations" colour="#FFD54F">
-    <block type="filter_rows"></block>
-    <block type="select_columns"></block>
-    <block type="group_by_summarise"></block>
-    <block type="subset_rows"></block>
-    <block type="subset_column_range"></block>
-	<block type="convert_to_sf"></block>
+	  <block type="convert_to_sf"></block>
+    <block type="sort_array"></block>
+    <block type="stack_data"></block>
+    <block type="append_array"></block>
+    <block type="create_array"></block>
+    <block type="slice_file"></block>
   </category>
 
     <category name="Maps" colour="#81C784">
@@ -250,8 +242,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 
   <category name="Visualization" colour="#90A4AE">
     <block type="print_output"></block>
-    <block type="preview_data"></block>
-    <block type="show_structure"></block>
     <block type="histogram_block"></block>
     <block type="boxplot_block"></block>
     <block type="barplot_block"></block>
@@ -266,12 +256,11 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   </category>
 
   <category name="Modeling" colour="#A1887F">
-    <block type="linear_regression"></block>
+    <block type="linear_model_block"></block>
     <block type="semivariogram"></block>
     <block type="kriging_interpolation"></block>
     <block type="idw_interpolation"></block>
     <block type="nn_interpolation"></block>
-	<block type="linear_model_block"></block>
   </category>
 
   <category name="Geometry" colour="#4DD0E1">
@@ -292,7 +281,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   </category>
 
   <category name="Raster" colour="#64B5F6">
-    <block type="read_stars"></block>
     <block type="crop_raster"></block>
     <block type="aggregate_raster"></block>
   </category>
