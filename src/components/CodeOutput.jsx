@@ -165,9 +165,9 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
             <Typography fontWeight="bold">Run Python Code</Typography>
           </Box>
         </Fab>
-        <Box display="flex" alignItems="center" gap={ 0.5 }>
+        {/* <Box display="flex" alignItems="center" gap={ 0.5 }>
           <Typography sx={{ fontSize: "0.9em", marginLeft: "30px", color: "#BBB" }}>Ctrl + Alt + Enter</Typography>  
-        </Box>
+        </Box> */}
       </Stack>
 
       <Box
@@ -175,7 +175,7 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
           position: "relative",
           borderRadius: "5px",
           width: "100%",
-          height: "80%",
+          height: "120%",
           bgcolor: theme.palette.background.paper,
           zIndex: 1,
           overflow: "auto",

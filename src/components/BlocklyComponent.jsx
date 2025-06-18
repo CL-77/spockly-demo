@@ -69,7 +69,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           <category name="${Blockly.Msg.Categories["DATA"]}" colour="#FA2">
             <category name="${Blockly.Msg.Categories["DOWNLOAD_DATA"]}">
                 <block type="create_folder"></block>
-                <block type="sampleData"></block>
+                <block type="func_downloadB"></block>
+                <block type="sampleDataB"></block>
             </category>
             <block type="read_file"></block>
             <block type="data_shape"></block>
@@ -220,9 +221,9 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           </category>
 
           <category name="${Blockly.Msg.Categories["DATA"]}" colour="#FA2">
-            <block type="sampleData"></block>
+            <block type="sampleDataA"></block>
             <block type="create_folder"></block>
-            <block type="func_download"></block>
+            <block type="func_downloadA"></block>
             <block type="read_file"></block>
             <block type="write_file"></block>
             <block type="listdir"></block>
@@ -576,7 +577,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
       console.error("Blockly workspace is not initialised.");
       return;
     }
-    var libs = "", np, pd, gpd, sns, plt, requests, os, def_download, px, folium, interpol;
+    var libs = "", np, pd, gpd, sns, plt, requests, os, def_downloadA, def_downloadB, px, folium, interpol;
     var pythonCode = pythonGenerator.workspaceToCode(workspaceRef.current);
     if(~pythonCode.indexOf('np.')) np = true;
     if(~pythonCode.indexOf('pd.')) pd = true;
@@ -585,7 +586,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     if(~pythonCode.indexOf('gpd.')) gpd = true;
     if(~pythonCode.indexOf('requests.')) requests = true;
     if(~pythonCode.indexOf('os.')) os = true;
-    if(~pythonCode.indexOf('download(')) def_download = true;
+    if(~pythonCode.indexOf('downloadA(')) def_downloadA = true;
+    if(~pythonCode.indexOf('downloadB(')) def_downloadB = true;
     if(~pythonCode.indexOf('px.')) px = true;
     if(~pythonCode.indexOf('folium.')) folium = true;
     if(~pythonCode.indexOf('idw_interpolation(')) interpol = true;
@@ -596,17 +598,27 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     libs += gpd ? "import geopandas as gpd\n" : "";
     libs += requests ? "import requests\n" : "";
     libs += os ? "import os\n" : "";
-    libs += def_download ?  'import requests\n' +
+    libs += def_downloadA ?  'import requests\n' +
                             'import os\n' +
-                            'def download(url, folder):\n' +
-                            '\tfilename = os.path.join(folder, os.path.basename(url))\n' +
-                            '\tif not os.path.exists(filename):\n' + 
-                              '\t\twith requests.get(url, stream=True, allow_redirects=True) as r:\n' +
-                                  '\t\t\twith open(filename, "wb") as f:\n' + 
-                                      '\t\t\t\tfor chunk in r.iter_content(chunk_size=8192):\n' +
-                                          '\t\t\t\t\tf.write(chunk)\n' + 
-                              '\t\tprint("Downloaded ", filename)\n\n'
+                              'def download(url, folder):\n' +
+                              '\tfilename = os.path.join(folder, os.path.basename(url))\n' +
+                              '\tif not os.path.exists(filename):\n' + 
+                                '\t\twith requests.get(url, stream=True, allow_redirects=True) as r:\n' +
+                                    '\t\t\twith open(filename, "wb") as f:\n' + 
+                                        '\t\t\t\tfor chunk in r.iter_content(chunk_size=8192):\n' +
+                                            '\t\t\t\t\tf.write(chunk)\n' + 
+                                '\t\tprint("Downloaded ", filename)\n\n'
     : '';
+    libs += def_downloadB ? 'import requests\n' +
+                            'import os\n' +
+                            'def download(url):\n' +
+                              '\tfilename = os.path.basename(url)\n' +
+                              '\tif not os.path.exists(filename):\n' + 
+                                '\t\twith requests.get(url, stream=True, allow_redirects=True) as r:\n' +
+                                    '\t\t\twith open(filename, "wb") as f:\n' + 
+                                        '\t\t\t\tfor chunk in r.iter_content(chunk_size=8192):\n' +
+                                            '\t\t\t\t\tf.write(chunk)\n' + 
+                                '\t\tprint("Downloaded ", filename)\n\n' : '';
     libs += px ?  'import plotly.express as px\n' + 
                   'fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])\n' +
                   'fig.show()' : '';

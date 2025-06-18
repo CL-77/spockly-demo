@@ -52,12 +52,12 @@
         "url": "/data/advanced_usecase.R"
       },
       {
-        "label": "Download muelltonnen.csv",
-        "url": "/data/muelltonnen.csv"
+        "label": "Download trashCans.csv",
+        "url": "https://gist.githubusercontent.com/MatteoBRGR/d0b377baabc494ab9de1edba2c2dd893/raw/3d5cefe34ff669d399da2f42c8b7e19f501658a3/trashCans.csv"
       },
       {
-        "label": "Download beispiel_abfall.csv",
-        "url": "/data/beispiel_abfall.csv"
+        "label": "Download litter.csv",
+        "url": "https://gist.githubusercontent.com/MatteoBRGR/ef8230eed8a33d6febb5c4399582b161/raw/d2b0164b295e2e8055e449a07109a64c6f5bc877/litter.csv"
       }
     ]
   },

@@ -20,7 +20,7 @@ import { useState } from "react";
 import FullCodeViewDialog from "./FullCodeViewDialog";
 import DownloadCodeDialog from "./DownloadCodeDialog";
 
-const CODE_DISPLAY_SIZE = 650;
+// const CODE_DISPLAY_SIZE = 650;
 
 const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
   const theme = useTheme();
@@ -158,7 +158,7 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
         sx={{
           position: "relative",
           borderRadius: "5px",
-          height: CODE_DISPLAY_SIZE,
+          height: '120%',
           bgcolor: theme.palette.background.paper,
           zIndex: 1,
           overflowY: "auto",

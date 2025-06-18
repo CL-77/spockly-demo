@@ -1023,7 +1023,7 @@ pythonGenerator.forBlock['create_folder'] = function(block) {
         `\tos.mkdir('${folder}')\n`;
 };
 
-Blockly.Blocks['func_download'] = {
+Blockly.Blocks['func_downloadA'] = {
   init: function() {
     this.appendDummyInput()
         .appendField('Download (from URL)')
@@ -1036,10 +1036,26 @@ Blockly.Blocks['func_download'] = {
     this.setColour(200);
   }
 }
-pythonGenerator.forBlock['func_download'] = function(block) {
+pythonGenerator.forBlock['func_downloadA'] = function(block) {
   const url = block.getFieldValue('NAME') || 'http://file.zip';
   const folder = block.getFieldValue('FOLDER') || 'data';
-  return `download('${url}', '${folder}')\n`
+  return `downloadA('${url}', '${folder}')\n`
+}
+
+Blockly.Blocks['func_downloadB'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Download (from URL)')
+        .appendField(new Blockly.FieldTextInput('http://file.zip'), 'NAME');
+    this.setTooltip('Use function to download file from URL.');
+    this.setNextStatement(true);
+    this.setPreviousStatement(true);
+    this.setColour(200);
+  }
+}
+pythonGenerator.forBlock['func_downloadB'] = function(block) {
+  const url = block.getFieldValue('NAME') || 'http://file.zip';
+  return `downloadB('${url}')\n`
 }
 
 Blockly.Blocks['read_file'] = {
@@ -1113,21 +1129,45 @@ pythonGenerator.forBlock['getDir'] = function() {
   return [`os.path.abspath(os.getcwd())`, pythonGenerator.ORDER_ATOMIC];
 }
 
-Blockly.Blocks['sampleData'] = {
+Blockly.Blocks['sampleDataA'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField('Download sample data into folder')
+        .appendField('Download sample data')
+        .appendField(new Blockly.FieldDropdown([
+          ['iris.csv', 'https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv'],
+          ['zinc_dataset.csv', 'https://gist.githubusercontent.com/KSR2001/7c4937e0ec8a7eb6e146d9e8f3e052cd/raw/b9d450220ce0e11b732a99a02a5dc1107583bec9/zinc_dataset.csv'],
+          ['grid.csv', 'https://gist.githubusercontent.com/vivien789/cc1072281ccc542affbc0676cc852615/raw/3559558e3690b1962a83b2191f3943ec18813b79/grid.csv'],
+          ['litter.csv', 'https://gist.githubusercontent.com/MatteoBRGR/ef8230eed8a33d6febb5c4399582b161/raw/d2b0164b295e2e8055e449a07109a64c6f5bc877/litter.csv'],
+          ['trashCans.csv', 'https://gist.githubusercontent.com/MatteoBRGR/d0b377baabc494ab9de1edba2c2dd893/raw/3d5cefe34ff669d399da2f42c8b7e19f501658a3/trashCans.csv']
+        ]), 'NAME')
+        .appendField('into folder')
         .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER');
-    this.setTooltip('Download sample data from the internet into given folder');
+    this.setTooltip('Download sample data from GitHub Gist into given folder.');
     this.setNextStatement(true);
     this.setPreviousStatement(true);
     this.setColour(200); 
   }
 }
-pythonGenerator.forBlock['sampleData'] = function(block) {
+pythonGenerator.forBlock['sampleDataA'] = function(block) {
   const folder = block.getFieldValue('FOLDER') || 'data';
-  return `url = 'https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv'
-download(url, '${folder}')\n`;
+  const dataset = block.getFieldValue('NAME') || 'https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv';
+  return `url = '${dataset}'
+downloadA(url, '${folder}')\n`;
+}
+
+Blockly.Blocks['sampleDataB'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Download sample data (iris.csv)');
+    this.setTooltip('Download Iris sample data from the Internet.');
+    this.setNextStatement(true);
+    this.setPreviousStatement(true);
+    this.setColour(200); 
+  }
+}
+pythonGenerator.forBlock['sampleDataB'] = function(block) {
+  return `\nurl = 'https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv'
+downloadB(url)\n`;
 }
 
 Blockly.Blocks['listdir'] = {
