@@ -602,7 +602,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     libs += os ? "import os\n" : "";
     libs += def_downloadA ?  'import requests\n' +
                             'import os\n' +
-                              'def download(url, folder):\n' +
+                              'def downloadA(url, folder):\n' +
                               '\tfilename = os.path.join(folder, os.path.basename(url))\n' +
                               '\tif not os.path.exists(filename):\n' + 
                                 '\t\twith requests.get(url, stream=True, allow_redirects=True) as r:\n' +
@@ -613,7 +613,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     : '';
     libs += def_downloadB ? 'import requests\n' +
                             'import os\n' +
-                            'def download(url):\n' +
+                            'def downloadB(url):\n' +
                               '\tfilename = os.path.basename(url)\n' +
                               '\tif not os.path.exists(filename):\n' + 
                                 '\t\twith requests.get(url, stream=True, allow_redirects=True) as r:\n' +

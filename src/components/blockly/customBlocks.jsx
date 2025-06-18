@@ -1074,7 +1074,7 @@ pythonGenerator.forBlock['read_file'] = function(block,generator) {
   const fileName = block.getFieldValue('NAME');
   const dataFolder = block.getFieldValue('FOLDER') || '';
   //const columns = generator.valueToCode(block, 'columns', pythonGenerator.ORDER_ATOMIC);
-  return [`gpd.read_file(os.path.join('${dataFolder}', '${fileName}'))\n`, pythonGenerator.ORDER_ATOMIC];
+  return [`gpd.read_file(os.path.join('${dataFolder}', '${fileName}'))`, pythonGenerator.ORDER_ATOMIC];
 }
 
 Blockly.Blocks['write_file'] = {
