@@ -1089,7 +1089,7 @@ Blockly.Blocks['read_fileB'] = {
 };
 pythonGenerator.forBlock['read_fileB'] = function(block,generator) {
   const fileName = block.getFieldValue('NAME');
-  return [`gpd.read_file('${fileName}'))`, pythonGenerator.ORDER_ATOMIC];
+  return [`gpd.read_file('${fileName}')`, pythonGenerator.ORDER_ATOMIC];
 }
 
 Blockly.Blocks['write_file'] = {
