@@ -72,7 +72,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                 <block type="func_downloadB"></block>
                 <block type="sampleDataB"></block>
             </category>
-            <block type="read_file"></block>
+            <block type="read_fileB"></block>
             <block type="data_shape"></block>
             <block type="add_object"></block>
             <block type="delete_object"></block>
@@ -224,7 +224,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="sampleDataA"></block>
             <block type="create_folder"></block>
             <block type="func_downloadA"></block>
-            <block type="read_file"></block>
+            <block type="read_fileA"></block>
             <block type="write_file"></block>
             <block type="listdir"></block>
             <block type="getDir"></block>

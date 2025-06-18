@@ -1058,7 +1058,7 @@ pythonGenerator.forBlock['func_downloadB'] = function(block) {
   return `downloadB('${url}')\n`
 }
 
-Blockly.Blocks['read_file'] = {
+Blockly.Blocks['read_fileA'] = {
   init: function() {
     this.appendDummyInput()
         .appendField('Read file')
@@ -1070,11 +1070,26 @@ Blockly.Blocks['read_file'] = {
     this.setColour(200);
   }
 };
-pythonGenerator.forBlock['read_file'] = function(block,generator) {
+pythonGenerator.forBlock['read_fileA'] = function(block,generator) {
   const fileName = block.getFieldValue('NAME');
   const dataFolder = block.getFieldValue('FOLDER') || '';
   //const columns = generator.valueToCode(block, 'columns', pythonGenerator.ORDER_ATOMIC);
   return [`gpd.read_file(os.path.join('${dataFolder}', '${fileName}'))`, pythonGenerator.ORDER_ATOMIC];
+}
+
+Blockly.Blocks['read_fileB'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Read file')
+        .appendField(new Blockly.FieldTextInput('file.zip'), 'NAME');
+    this.setTooltip('Use function to read file.');
+    this.setOutput(true)
+    this.setColour(200);
+  }
+};
+pythonGenerator.forBlock['read_fileB'] = function(block,generator) {
+  const fileName = block.getFieldValue('NAME');
+  return [`gpd.read_file('${fileName}'))`, pythonGenerator.ORDER_ATOMIC];
 }
 
 Blockly.Blocks['write_file'] = {
