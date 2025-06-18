@@ -117,26 +117,49 @@ const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
             <Typography variant="body1" sx={{ mb: 2, color: isDarkMode ? '#ffffff' : '#000000' }}>
               Select a CSV, TIF or GeoJSON file to upload to WebR:
             </Typography>
-            <input
-              accept=".csv, .geojson, .tif"
-              style={{ display: 'none' }}
-              id="file-upload"
-              type="file"
-              onChange={handleFileUpload}
-            />
-            <label htmlFor="file-upload">
-              <Button
-                variant="contained"
-                component="span"
-                sx={{
-                  borderRadius: '8px',
-                  textTransform: 'none',
-                  fontWeight: 'bold'
-                }}
-              >
-                Choose Data File
-              </Button>
-            </label>
+            <Box
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={async (e) => {
+                e.preventDefault();
+                const file = e.dataTransfer.files[0];
+                if (!file) return;
+              
+                const allowedExtensions = ['csv', 'geojson', 'tif'];
+                const extension = file.name.toLowerCase().split('.').pop();
+              
+                if (!allowedExtensions.includes(extension)) {
+                  setFileName(file.name);
+                  setUploadStatus('invalidtype');
+                  return;
+                }
+              
+                await handleFileUpload({ target: { files: [file] } });
+              }}                           
+              sx={{
+                border: '2px dashed #aaa',
+                borderRadius: 2,
+                p: 2,
+                mb: 2,
+                textAlign: 'center',
+                backgroundColor: isDarkMode ? '#3a3a3a' : '#fafafa',
+                color: isDarkMode ? '#ccc' : '#666',
+                cursor: 'pointer'
+              }}
+            >
+              <Typography variant="body2">
+                Drag & drop your CSV, GeoJSON or TIF file here or{" "}
+                <label htmlFor="file-upload" style={{ color: '#1976d2', cursor: 'pointer', textDecoration: 'underline' }}>
+                  choose a data file
+                </label>.
+              </Typography>
+              <input
+                accept=".csv, .geojson, .tif"
+                style={{ display: 'none' }}
+                id="file-upload"
+                type="file"
+                onChange={handleFileUpload}
+              />
+            </Box>
           </Box>
         )}
 
@@ -191,6 +214,15 @@ const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
           </Alert>
         )}
 
+        {uploadStatus === 'invalidtype' && (
+          <Alert severity="warning" icon={<Error />}>
+            <AlertTitle>Unsupported File Format</AlertTitle>
+            <Typography variant="body2">
+              The file <strong>{fileName}</strong> is not supported.<br />
+              Please upload a CSV, GeoJSON or TIF file.
+            </Typography>
+          </Alert>
+)}
         {uploadStatus === 'error' && (
           <Alert 
             severity="error" 

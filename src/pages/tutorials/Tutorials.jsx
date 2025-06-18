@@ -1,30 +1,79 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Imports
+// ─────────────────────────────────────────────────────────────────────────────
 import {
   Box,
   Tab,
   Tabs,
   Typography,
   useTheme,
-  Button
+  Button,
+  InputAdornment,
+  TextField,
+  List,
+  ListItemButton,
+  ListItemText,
+  Divider
 } from "@mui/material";
+
+import SearchIcon from "@mui/icons-material/Search";
+import DownloadIcon from "@mui/icons-material/Download";
+
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 import { useLocation } from "react-router-dom";
 import TabPanel from "../../components/TabPanel";
 import tutorialData from "../../data/tutorialData.json";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Main Component
+// ─────────────────────────────────────────────────────────────────────────────
 const Tutorials = ({ isDarkMode }) => {
-  const [value, setValue] = useState(0);
-  const [isGerman, setIsGerman] = useState(false);
+  const [value, setValue] = useState(0); // active tab index
+  const [isGerman, setIsGerman] = useState(false); // language toggle
+  const [searchTerm, setSearchTerm] = useState(""); // search bar input
+  const [searchResults, setSearchResults] = useState([]); // search result list
   const location = useLocation();
   const theme = useTheme();
 
+  // Handles tab change
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  // Search filter logic
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    if (value.trim().length > 1) {
+      const results = tutorialData
+        .map((tut, index) => ({
+          index,
+          headline: isGerman ? tut.headline_de : tut.headline,
+          description: isGerman ? tut.description_de : tut.description,
+        }))
+        .filter((tut) =>
+          (tut.headline + tut.description).toLowerCase().includes(value.toLowerCase())
+        );
+      setSearchResults(results);
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  // Jump to selected tutorial when search result is clicked
+  const jumpToTutorial = (index) => {
+    setValue(index);
+    setSearchResults([]);
+    setSearchTerm("");
+  };
+
   return (
     <Box sx={{ display: "flex", minHeight: "calc(100vh - 64px)", position: "relative" }}>
-      {/* Sidebar */}
+      {/* Sidebar with tabs and language toggle */}
       <Box
         sx={{
           width: 250,
@@ -45,6 +94,8 @@ const Tutorials = ({ isDarkMode }) => {
         >
           Tutorials
         </Typography>
+
+        {/* Language Switch Button */}
         <Button
           variant="outlined"
           sx={{
@@ -61,6 +112,8 @@ const Tutorials = ({ isDarkMode }) => {
         >
           {isGerman ? "Switch to English" : "Zur deutschen Version"}
         </Button>
+
+        {/* Tutorial Tab List */}
         <Tabs
           orientation="vertical"
           variant="scrollable"
@@ -68,9 +121,7 @@ const Tutorials = ({ isDarkMode }) => {
           onChange={handleChange}
           TabIndicatorProps={{
             style: {
-              backgroundColor: isDarkMode
-                ? "#B58FFF"
-                : theme.palette.primary.main,
+              backgroundColor: isDarkMode ? "#B58FFF" : theme.palette.primary.main,
               width: "3px",
             },
           }}
@@ -99,7 +150,7 @@ const Tutorials = ({ isDarkMode }) => {
         </Tabs>
       </Box>
 
-      {/* Content */}
+      {/* Main Content Area */}
       <Box
         sx={{
           color: isDarkMode ? "#FFFFFA" : "#000000",
@@ -107,12 +158,109 @@ const Tutorials = ({ isDarkMode }) => {
           padding: 4,
         }}
       >
+        {/* Search Field */}
+        <Box sx={{ marginBottom: 3 }}>
+          <TextField
+            placeholder="Search tutorial content..."
+            value={searchTerm}
+            onChange={handleSearch}
+            fullWidth
+            variant="outlined"
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          {/* Search Results */}
+          {searchResults.length > 0 && (
+            <List dense sx={{ backgroundColor: isDarkMode ? "#1e1e1e" : "#f9f9f9", borderRadius: 1, mt: 1 }}>
+              {searchResults.map((res, idx) => (
+                <React.Fragment key={idx}>
+                  <ListItemButton onClick={() => jumpToTutorial(res.index)}>
+                    <ListItemText
+                      primary={res.headline}
+                      secondary={res.description.substring(0, 80) + "..."}
+                    />
+                  </ListItemButton>
+                  {idx < searchResults.length - 1 && <Divider />}
+                </React.Fragment>
+              ))}
+            </List>
+          )}
+        </Box>
+
+        {/* Individual Tab Panels */}
         {tutorialData.map((tut, index) => (
           <TabPanel key={index} value={value} index={index}>
+            {/* Headline */}
             <Typography variant="h4" fontWeight="bold" gutterBottom>
               {isGerman ? tut.headline_de : tut.headline}
             </Typography>
-            <ReactMarkdown>{isGerman ? tut.description_de : tut.description}</ReactMarkdown>
+
+            {/* Markdown Content (incl. tables) */}
+            <Box
+              sx={{
+                '& table': {
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                  marginTop: 2,
+                },
+                '& th, & td': {
+                  border: '1px solid #ccc',
+                  padding: '8px 12px',
+                  textAlign: 'left',
+                  fontFamily: 'monospace',
+                },
+                '& th': {
+                  backgroundColor: isDarkMode ? '#333' : '#f0f0f0',
+                  fontWeight: 'bold',
+                },
+                '& td': {
+                  backgroundColor: isDarkMode ? '#1e1e1e' : '#fff',
+                },
+              }}
+            >
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {isGerman ? tut.description_de : tut.description}
+              </ReactMarkdown>
+
+              {/* Downloads (if available) */}
+              {tut.downloads && tut.downloads.length > 0 && (
+                <Box mt={3}>
+                  <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+                    {isGerman ? "Beispieldateien herunterladen:" : "Example files to download:"}
+                  </Typography>
+
+                  <Box display="flex" flexDirection="column" gap={1}>
+                    {tut.downloads.map((file, i) => (
+                      <Button
+                        key={i}
+                        variant="outlined"
+                        startIcon={<DownloadIcon />}
+                        href={file.url}
+                        download
+                        sx={{
+                          justifyContent: "flex-start",
+                          textTransform: "none",
+                          color: theme.palette.primary.main,
+                          borderColor: theme.palette.primary.main,
+                          "&:hover": {
+                            bgcolor: isDarkMode ? "#333" : "#f0f0f0"
+                          }
+                        }}
+                      >
+                        {file.label}
+                      </Button>
+                    ))}
+                  </Box>
+                </Box>
+              )}
+            </Box>
           </TabPanel>
         ))}
       </Box>

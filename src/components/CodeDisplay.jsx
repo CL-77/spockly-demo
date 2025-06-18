@@ -181,6 +181,7 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
           sx={{
             color: isDarkMode ? "#FFFFFA" : "#000000",
             padding: 3,
+            fontSize: '0.8rem',
             whiteSpace: "pre-wrap",
             fontFamily: "monospace",
           }}

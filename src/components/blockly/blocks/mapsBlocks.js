@@ -9,6 +9,7 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     colour: "#81C784",
     tooltip: "Plot spatial data",
+    helpUrl: "https://www.rdocumentation.org/packages/ggplot2/versions/3.3.3/topics/ggplot"
   },
   {
     type: "set_map_title",
@@ -18,6 +19,7 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     colour: "#81C784",
     tooltip: "Set the main title of the map",
+    helpUrl: "https://www.rdocumentation.org/packages/ggplot2/versions/3.3.3/topics/ggtitle"
   },
   {
     type: "color_by_attribute",
