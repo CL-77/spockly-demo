@@ -381,6 +381,17 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
         </Tooltip>
 
         <Box display="flex" alignItems="center" gap={2} flex={1} justifyContent="flex-end" minWidth={0}>
+        <Tooltip
+            title={
+              <Box>
+                Beginner: built-in datasets & simple blocks.<br />
+                Advanced: load files, model, visualize spatial data.<br />
+                See tutorials for more information.
+              </Box>
+            }
+            arrow
+            enterDelay={0}
+          >
           <ToggleButtonGroup
             exclusive
             value={level}
@@ -399,27 +410,17 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
               <FaMapMarkedAlt /> Advanced
             </ToggleButton>
           </ToggleButtonGroup>
-          <Tooltip
-            title={
-              <Box>
-                Beginner: built-in datasets & simple blocks.<br />
-                Advanced: load files, model, visualize spatial data.<br />
-                Click to see tutorials for more.
-              </Box>
-            }
-            arrow
-            enterDelay={0}
+        </Tooltip>
+
+         { /* Help button to start Spockly tour */}
+         <Tooltip title="Start Spockly Tour" arrow>
+          <IconButton
+            onClick={() => window?.__startSpocklyTour?.()}
+            sx={{ color: "inherit" }}
           >
-            <IconButton
-              component="a"
-              href="/tutorials"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{ color: "inherit" }}
-            >
-              <FaQuestionCircle />
-            </IconButton>
-          </Tooltip>
+            <FaQuestionCircle />
+          </IconButton>
+        </Tooltip>
         </Box>
       </Box>
       {/* Blockly rendering area */}

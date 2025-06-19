@@ -1,3 +1,4 @@
+// Shepherd Tour Setup in SPOCKLY (React)
 // This hook creates a guided tour using Shepherd.js to introduce the UI components to the user
 
 import React, { useEffect } from 'react';
@@ -6,9 +7,8 @@ import 'shepherd.js/dist/css/shepherd.css';
 
 const useSpocklyTour = () => {
   useEffect(() => {
-    // Prevent the tour from starting more than once (e.g. due to React.StrictMode)
-    if (window.__spocklyTourStarted) return;
-    window.__spocklyTourStarted = true;
+    // Prevent the tour from being redefined more than once
+    if (window.__spocklyTourInstance) return;
 
     // Initialize the tour with default style and overlay
     const tour = new Shepherd.Tour({
@@ -19,6 +19,10 @@ const useSpocklyTour = () => {
       },
       useModalOverlay: true
     });
+
+    // Store tour instance on window for external triggering
+    window.__startSpocklyTour = () => tour.start();
+    window.__spocklyTourInstance = tour;
 
     // Blockly workspace container
     tour.addStep({
@@ -148,9 +152,6 @@ const useSpocklyTour = () => {
         { text: 'Finish', action: tour.complete }
       ]
     });
-
-    // Start the tour
-    tour.start();
   }, []);
 };
 
