@@ -356,6 +356,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
       >
         <Tooltip title="Upload your CSV, GeoJSON or TIF data." arrow>
           <Button
+            id="uploadDataButton"
             variant="contained"
             onClick={onUploadClick}
             sx={{
@@ -389,6 +390,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
               borderRadius: 2,
               boxShadow: 1,
             }}
+            id="switchLevelsButton"
           >
             <ToggleButton value="level1" sx={{ px: 2, py: 1, gap: 1 }}>
               <FaBookOpen /> Beginner
@@ -422,6 +424,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
       </Box>
       {/* Blockly rendering area */}
       <Box
+        id="blocklyWorkspaceContainer"
         ref={blocklyDiv}
         sx={{
           height: "90%",

@@ -1,0 +1,157 @@
+// This hook creates a guided tour using Shepherd.js to introduce the UI components to the user
+
+import React, { useEffect } from 'react';
+import Shepherd from 'shepherd.js';
+import 'shepherd.js/dist/css/shepherd.css';
+
+const useSpocklyTour = () => {
+  useEffect(() => {
+    // Prevent the tour from starting more than once (e.g. due to React.StrictMode)
+    if (window.__spocklyTourStarted) return;
+    window.__spocklyTourStarted = true;
+
+    // Initialize the tour with default style and overlay
+    const tour = new Shepherd.Tour({
+      defaultStepOptions: {
+        classes: 'shadow-md bg-white rounded-xl p-4 text-gray-900',
+        scrollTo: false, // avoid layout shifts
+        cancelIcon: { enabled: true }
+      },
+      useModalOverlay: true
+    });
+
+    // Blockly workspace container
+    tour.addStep({
+      id: 'workspace',
+      title: 'Workspace',
+      text: 'This is your workspace. Use blocks here to build your data analysis workflow.',
+      attachTo: { element: '#blocklyWorkspaceContainer', on: 'bottom' },
+      buttons: [{ text: 'Next', action: tour.next }]
+    });
+
+    // Block category sidebar
+    tour.addStep({
+      id: 'category',
+      title: 'Block Categories',
+      text: 'Choose a category like Statistics, Raster, or Geometry from here.',
+      attachTo: { element: '.blocklyToolboxDiv', on: 'right' },
+      buttons: [
+        { text: 'Back', action: tour.back },
+        { text: 'Next', action: tour.next }
+      ]
+    });
+
+    // Upload data button
+    tour.addStep({
+      id: 'upload-data',
+      title: 'Upload Data',
+      text: 'Click here to upload your data files such as CSV, GeoJSON, or TIF.',
+      attachTo: { element: '#uploadDataButton', on: 'left' },
+      buttons: [
+        { text: 'Back', action: tour.back },
+        { text: 'Next', action: tour.next }
+      ]
+    });
+
+    // Beginner/Advanced mode toggle
+    tour.addStep({
+      id: 'switch-levels',
+      title: 'Switch Levels',
+      text: 'Use this button to switch between beginner and advanced level. Advanced level contains more categories and more complex blocks and is made for students who have a broader knowledge of spatial data. Beginner level is for students with little to no knowledge of spatial data and programming.',
+      attachTo: { element: '#switchLevelsButton', on: 'left' },
+      buttons: [
+        { text: 'Back', action: tour.back },
+        { text: 'Next', action: tour.next }
+      ]
+    });
+
+    // R code tab view
+    tour.addStep({
+      id: 'code-output',
+      title: 'R Code View',
+      text: 'This tab shows the R code automatically generated from your blocks.',
+      attachTo: { element: '#codeTab', on: 'top' },
+      buttons: [
+        { text: 'Back', action: tour.back },
+        { text: 'Next', action: tour.next }
+      ]
+    });
+
+    // Generate code button
+    tour.addStep({
+      id: 'generate-r-code',
+      title: 'Generate R Code',
+      text: 'Click this button to generate the R code based on your blocks.',
+      attachTo: { element: '#generateCodeButton', on: 'left' },
+      buttons: [
+        { text: 'Back', action: tour.back },
+        { text: 'Next', action: tour.next }
+      ]
+    });
+
+    // Download code button
+    tour.addStep({
+      id: 'download-r-code',
+      title: 'Download R Code',
+      text: 'Click here to download the generated R code as R file.',
+      attachTo: { element: '#downloadCodeButton', on: 'left' },
+      buttons: [
+        { text: 'Back', action: tour.back },
+        { text: 'Next', action: tour.next }
+      ]
+    });
+
+    // Copy code button
+    tour.addStep({
+      id: 'copy-code',
+      title: 'Copy R Code',
+      text: 'Click here to copy the generated R code to your clipboard.',
+      attachTo: { element: '#copyCodeButton', on: 'left' },
+      buttons: [
+        { text: 'Back', action: tour.back },
+        { text: 'Next', action: tour.next }
+      ]
+    });
+
+    // Reset code button
+    tour.addStep({
+      id: 'reset-code',
+      title: 'Reset R Code',
+      text: 'Click here to reset the generated R code.',
+      attachTo: { element: '#resetCodeButton', on: 'left' },
+      buttons: [
+        { text: 'Back', action: tour.back },
+        { text: 'Next', action: tour.next }
+      ]
+    });
+
+    // Full code view button
+    tour.addStep({
+      id: 'full-code-view',
+      title: 'Full Code View',
+      text: 'Click here to view the full R code in a separate window.',
+      attachTo: { element: '#fullSizeButton', on: 'left' },
+      buttons: [
+        { text: 'Back', action: tour.back },
+        { text: 'Next', action: tour.next }
+      ]
+    });
+
+    // Output tab view
+    tour.addStep({
+      id: 'output-tab',
+      title: 'Output View',
+      text: 'In this tab, you will see your analysis results such as plots or tables.',
+      attachTo: { element: '#outputTab', on: 'top' },
+      buttons: [
+        { text: 'Back', action: tour.back },
+        { text: 'Finish', action: tour.complete }
+      ]
+    });
+
+    // Start the tour
+    tour.start();
+  }, []);
+};
+
+export default useSpocklyTour;

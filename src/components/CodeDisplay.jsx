@@ -98,6 +98,7 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
             >
               <Tooltip title="Generate R Code">
                 <IconButton
+                  id="generateCodeButton"
                   onClick={handleGenerateCode}
                   sx={{
                     bgcolor: "#00c853",
@@ -113,6 +114,7 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
             </Box>
             <Tooltip title="Download Code as R file">
               <IconButton
+                id="downloadCodeButton"
                 onClick={handleOpenDownloadDialog}
                 sx={{
                   backgroundColor: theme.palette.primary.light,
@@ -126,6 +128,7 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
             </Tooltip>
             <Tooltip title="Copy Code">
               <IconButton
+                id="copyCodeButton"
                 onClick={handleCopyCode}
                 sx={{
                   backgroundColor: theme.palette.primary.light,
@@ -139,6 +142,7 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
             </Tooltip>
             <Tooltip title="Reset Code">
               <IconButton
+                id="resetCodeButton"
                 onClick={handleResetCode}
                 sx={{
                   backgroundColor: theme.palette.primary.light,
@@ -152,6 +156,7 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
             </Tooltip>
             <Tooltip title="Full Code View">
               <IconButton
+                id="fullSizeButton"
                 onClick={handleOpenFullCodeView}
                 sx={{
                   backgroundColor: theme.palette.primary.light,
