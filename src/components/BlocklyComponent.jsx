@@ -11,6 +11,9 @@ import { ToggleButton, ToggleButtonGroup, IconButton } from "@mui/material";
 import { FaBookOpen, FaMapMarkedAlt, FaQuestionCircle } from "react-icons/fa";
 import { Toolbar } from "@mui/material";
 
+import CreateDataDialog from "./CreateDataDialog.jsx";
+
+
 const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) => {
   const theme = useTheme();
   const blocklyDiv = useRef(null);
@@ -18,6 +21,9 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 
   // State to toggle between beginner and advanced block toolboxes
   const [level, setLevel] = useState("level1");
+
+  const [openCreateDataDialog, setOpenCreateDataDialog] = useState(false);
+
 
   // Blockly toolbox definition for Level 1 (Beginner)
   // Change content later
@@ -374,6 +380,21 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <Upload fontSize="medium" />
           </Button>
         </Tooltip>
+
+        <Tooltip title="Create CSV data manually">
+          <Button
+            variant="outlined"
+            onClick={() => setOpenCreateDataDialog(true)}
+            sx={{ ml: 2 }}
+          >
+            Create Data
+          </Button>
+        </Tooltip>
+
+        <CreateDataDialog
+          open={openCreateDataDialog}
+          onClose={() => setOpenCreateDataDialog(false)}
+        />
 
         <Box display="flex" alignItems="center" gap={2} flex={1} justifyContent="flex-end" minWidth={0}>
         <Tooltip
