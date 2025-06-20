@@ -9,6 +9,7 @@ import { Upload, UploadFile } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup, IconButton } from "@mui/material";
 import { FaBookOpen, FaMapMarkedAlt, FaQuestionCircle } from "react-icons/fa";
+import { Toolbar } from "@mui/material";
 
 const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) => {
   const theme = useTheme();
@@ -339,21 +340,15 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
       }}
     >
       {/* Top bar with Upload button and Level toggle */}
-      <Box
-        display="flex"
-        alignItems="stretch"
-        justifyContent="space-between"
-        px={3}
-        py={1.5}
-        mb={2}
+      <Toolbar
         sx={{
-          bgcolor: isDarkMode ? "#2b2d42" : "#e7ebf0",
+          display: "flex",
+          justifyContent: "space-between",
+          bgcolor: isDarkMode ? "#150e31" : "#f5f5f5",
+          mb: 2,
           borderRadius: 4,
-          boxShadow: 3,
-          border: "1px solid",
-          borderColor: isDarkMode ? "#4e5d6c" : "#ccd6df",
         }}
-      >
+        >
         <Tooltip title="Upload your CSV, GeoJSON or TIF data." arrow>
           <Button
             id="uploadDataButton"
@@ -422,7 +417,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           </IconButton>
         </Tooltip>
         </Box>
-      </Box>
+        </Toolbar>
+
       {/* Blockly rendering area */}
       <Box
         id="blocklyWorkspaceContainer"

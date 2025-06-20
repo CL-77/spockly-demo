@@ -182,7 +182,6 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
         }}
       >
         <Typography
-          fontWeight="bold"
           sx={{
             color: isDarkMode ? "#FFFFFA" : "#000000",
             padding: 3,
