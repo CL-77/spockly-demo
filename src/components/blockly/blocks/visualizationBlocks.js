@@ -333,6 +333,7 @@ Blockly.Generator.R.forBlock["piechart_block"] = function(block) {
 };
 
 // scatter-plot generator
+//ggplot option
 /*Blockly.Generator.R.forBlock["plot_scatter"] = function(block) {
   const xVar = block.getFieldValue("XVAR");
   const yVar = block.getFieldValue("YVAR");
@@ -342,10 +343,10 @@ Blockly.Generator.R.forBlock["piechart_block"] = function(block) {
   code += 'library(ggplot2)\n';
   code += 'dataset <- data\n';
   code += `ggplot(dataset, aes(x = ${xVar}, y = ${yVar}, color = ${colorVar})) +\n`;
-  code += '  geom_point(size = 3) +\n';
-  code += '  scale_color_viridis_c() +\n';
-  code += '  theme_minimal() +\n';
-  code += `  labs(title = "Scatter plot of ${yVar} vs ${xVar}", x = "${xVar}", y = "${yVar}", color = "${colorVar}")\n`;
+  code += '  geom_point(size = 2, alpha = 0.8) +\n';
+  code += `  labs(title = "Scatter plot of ${xVar} and ${yVar} colored by ${colorVar}",\n`;
+  code += `       x = "${xVar}", y = "${yVar}") +\n`;
+  code += '  theme_minimal()\n';
 
   return code;
 };*/
@@ -357,29 +358,38 @@ Blockly.Generator.R.forBlock["plot_scatter"] = function(block) {
 
   let code = '';
   code += 'dataset <- data\n';
-  code += 'color_values <- dataset$' + colorVar + '\n';
-  code += 'color_palette <- colorRampPalette(c("blue", "green", "yellow", "red"))\n';
-  code += 'num_colors <- 100\n';
-  code += 'cols <- color_palette(num_colors)\n';
-  code += 'color_index <- as.numeric(cut(color_values, breaks = num_colors))\n';
-  code += 'point_colors <- cols[color_index]\n';
-  code += `plot(dataset$${xVar}, dataset$${yVar}, col = point_colors, pch = 19,\n`;
-  code += `     xlab = "${xVar}", ylab = "${yVar}",\n`;
-  code += `     main = "Scatter plot of ${xVar} and ${yVar} for ${colorVar}")\n`;
-
-  // Legend to the right
-  code += 'par(xpd = TRUE)\n';
-  code += 'usr <- par("usr")\n';
-  code += 'legend_margin <- 0.02 * (usr[2] - usr[1])\n';
-  code += 'legend_x <- seq(usr[2] + legend_margin, usr[2] + legend_margin + 0.5 * legend_margin, length.out = 2)\n';
-  code += 'legend_y <- seq(min(color_values), max(color_values), length.out = num_colors)\n';
-  code += 'legend_z <- matrix(legend_y, nrow = 1)\n';
-  code += 'image(x = legend_x, y = legend_y, z = legend_z, col = cols, add = TRUE)\n';
-  code += 'axis(4, at = pretty(legend_y), labels = round(pretty(legend_y), 1), las = 1)\n';
+  code += `color_values <- dataset$${colorVar}\n`;
+  code += 'if (is.numeric(color_values)) {\n';
+  code += '  color_palette <- colorRampPalette(c("blue", "green", "yellow", "red"))\n';
+  code += '  num_colors <- 100\n';
+  code += '  cols <- color_palette(num_colors)\n';
+  code += '  color_index <- as.numeric(cut(color_values, breaks = num_colors))\n';
+  code += '  point_colors <- cols[color_index]\n';
+  code += `  plot(dataset$${xVar}, dataset$${yVar}, col = point_colors, pch = 19,\n`;
+  code += `       xlab = "${xVar}", ylab = "${yVar}",\n`;
+  code += `       main = "Scatter plot of ${xVar} and ${yVar} colored by ${colorVar}")\n`;
+  code += '  par(xpd = TRUE)\n';
+  code += '  usr <- par("usr")\n';
+  code += '  legend_margin <- 0.02 * (usr[2] - usr[1])\n';
+  code += '  legend_x <- seq(usr[2] + legend_margin, usr[2] + legend_margin + 0.5 * legend_margin, length.out = 2)\n';
+  code += '  legend_y <- seq(min(color_values, na.rm = TRUE), max(color_values, na.rm = TRUE), length.out = num_colors)\n';
+  code += '  legend_z <- matrix(legend_y, nrow = 1)\n';
+  code += '  image(x = legend_x, y = legend_y, z = legend_z, col = cols, add = TRUE)\n';
+  code += '  axis(4, at = pretty(legend_y), labels = round(pretty(legend_y), 1), las = 1)\n';
+  code += '  par(xpd = FALSE)\n';
+  code += '} else {\n';
+  code += '  levels_ <- unique(as.character(color_values))\n';
+  code += '  category_colors <- rainbow(length(levels_))\n';
+  code += '  names(category_colors) <- levels_\n';
+  code += '  point_colors <- category_colors[as.character(color_values)]\n';
+  code += `  plot(dataset$${xVar}, dataset$${yVar}, col = point_colors, pch = 19,\n`;
+  code += `       xlab = "${xVar}", ylab = "${yVar}",\n`;
+  code += `       main = "Spatial plot of ${xVar} and ${yVar} colored by ${colorVar}")\n`;
+  code += '  legend("topright", legend = levels_, col = category_colors, pch = 19)\n';
+  code += '}\n';
 
   return code;
 };
-
 
 // histogram generator
 Blockly.Generator.R.forBlock["plot_histogram"] = function(block) {
