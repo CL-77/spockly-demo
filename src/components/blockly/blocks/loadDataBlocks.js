@@ -1,10 +1,66 @@
 import * as Blockly from "blockly";
+import datasetColumnsMap from "../constants/constants";
 
 // --- Data Loading Blocks ---
 // Blocks to load various types of data sources into the workspace
 
 Blockly.defineBlocksWithJsonArray([
 	{
+	  type: "load_geojson",
+	  message0: "load GeoJSON file %1",
+	  args0: [
+		{
+		  type: "field_input",
+		  name: "FILENAME",
+		  text: "data.geojson",
+		},
+	  ],
+	  previousStatement: null,
+	  nextStatement: null,
+	  output: null,
+	  colour: "#FFA726",
+	  tooltip: "Load a GeoJSON file",
+	},
+  ]);
+  
+  Blockly.Generator.R.forBlock["load_geojson"] = function (block, generator) {
+	generator.requirePackage("sf", 'Sys.setenv(UDUNITS2_XML_PATH=system.file("share/udunits/udunits2.xml", package="units"))');
+	const filename = block.getFieldValue("FILENAME");
+	return [`sf::st_read("${filename}")`, Blockly.Generator.R.ORDER_NONE];
+  };
+
+  Blockly.defineBlocksWithJsonArray([
+	{
+	  type: "load_tif",
+	  message0: "load GeoTIF file %1",
+	  args0: [
+		{
+		  type: "field_input",
+		  name: "FILENAME",
+		  text: "data.tif",
+		},
+	  ],
+	  previousStatement: null,
+	  nextStatement: null,
+	  output: null,
+	  colour: "#FFA726",
+	  tooltip: "Load a tif file",
+	},
+  ]);
+  
+  Blockly.Generator.R.forBlock["load_tif"] = function (block, generator) {
+	generator.requirePackage("terra");
+	const filename = block.getFieldValue("FILENAME");
+	return [`terra::rast("${filename}")`, Blockly.Generator.R.ORDER_NONE];
+  };
+
+
+
+
+// Blocks to load various types of data sources into the workspace
+  
+Blockly.defineBlocksWithJsonArray([
+  {
 	  type: "load_csv",
 	  message0: "load CSV file %1",
 	  args0: [
@@ -19,14 +75,6 @@ Blockly.defineBlocksWithJsonArray([
 	  tooltip: "Load a CSV file from WebR filesystem",
 	  helpUrl: "https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/read.table",
 	},
-  ]);
-  
-  Blockly.Generator.R.forBlock["load_csv"] = function (block, generator) {
-	const filename = block.getFieldValue("FILENAME");
-	return [`read.csv("${filename}")`, Blockly.Generator.R.ORDER_NONE];
-  };
-	  
-Blockly.defineBlocksWithJsonArray([
   {
     type: "load_shapefile",
     message0: "load shapefile %1",
@@ -108,14 +156,14 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "DATASET",
-        options: [["iris", "iris"], ["mtcars", "mtcars"], ["airquality", "airquality"]]
+        options: [["iris", "iris"], ["mtcars", "mtcars"], ["airquality", "airquality"], ["meuse", "meuse"]]
       }
     ],
     previousStatement: null,
     nextStatement: null,
     output: null,
     colour: "#FFA726",
-    tooltip: "Load a built-in dataset like iris",
+    tooltip: "Load a built-in dataset like iris e.t.c ",
     helpUrl: "https://www.rdocumentation.org/packages/datasets/versions/3.6.2/topics/iris"
   },
   {
@@ -125,7 +173,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "DATASET",
-        options: [["iris", "iris"], ["mtcars", "mtcars"], ["airquality", "airquality"]]
+        options: [["iris", "iris"], ["mtcars", "mtcars"], ["airquality", "airquality"], ["meuse", "meuse"]]
       }
     ],
     output: "DataFrame",
@@ -148,6 +196,50 @@ Blockly.defineBlocksWithJsonArray([
     helpUrl: "https://www.rdocumentation.org/packages/httr/versions/1.4.2/topics/GET"
   }
 ]);
+
+// Generator for load_csv block
+Blockly.Generator.R.forBlock['load_csv'] = function(block) {
+  var filename = block.getFieldValue('FILENAME');
+  Blockly.Generator.R.addLibrary('readr');
+  
+  var code = 'read_csv("' + filename + '")';
+  return [code, Blockly.Generator.R.ORDER_FUNCTION_CALL];
+};
+
+// Generator for load_shapefile block
+Blockly.Generator.R.forBlock['load_shapefile'] = function(block) {
+  var filename = block.getFieldValue('FILENAME');
+  Blockly.Generator.R.addLibrary('sf');
+  
+  var code = 'st_read("' + filename + '")';
+  return [code, Blockly.Generator.R.ORDER_FUNCTION_CALL];
+};
+
+// Generator for load_raster block
+Blockly.Generator.R.forBlock['load_raster'] = function(block) {
+  var filename = block.getFieldValue('FILENAME');
+  Blockly.Generator.R.addLibrary('stars');
+  
+  var code = 'read_stars("' + filename + '")';
+  return [code, Blockly.Generator.R.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Generator.R.forBlock["load_builtin_dataset"] = function(block) {
+  const dataset = block.getFieldValue("DATASET");
+  if (dataset === "meuse") {
+    return `library(sp)\ndata(meuse)\ndata <- meuse\n`;
+  } else {
+    return `data <- ${dataset}\n`;
+  }
+};
+
+// Generator for get_dataset block
+Blockly.Generator.R.forBlock['get_dataset'] = function(block) {
+  var dataset = block.getFieldValue('DATASET');
+  var code = dataset;
+  return [code, Blockly.Generator.R.ORDER_ATOMIC];
+};
+
 
 // --- Data Transformation Blocks ---
 // Blocks to manipulate and transform dataframes
@@ -223,6 +315,140 @@ Blockly.defineBlocksWithJsonArray([
     tooltip: "Access a column range from a dataframe"
   }
 ]);
+
+
+// Define the block to select column - inbuilt dataset
+Blockly.Blocks['select_columns'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("select columns")
+        .appendField(new Blockly.FieldDropdown(this.getColumnOptions.bind(this)), "COLUMN1")
+        .appendField(",")
+        .appendField(new Blockly.FieldDropdown(this.getColumnOptions.bind(this)), "COLUMN2");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null); 
+    this.setNextStatement(true, null);     
+    this.setColour("#FFA726"); 
+    this.setTooltip("Select two columns from the loaded dataset");
+    this.setHelpUrl("");
+
+    this.workspace.addChangeListener(this.onWorkspaceChange.bind(this));
+  },
+
+  getColumnOptions: function() {
+    const defaultColumns = [['col1', 'col2']];
+    const loadedDataset = this.getLoadedDatasetColumns();
+    return loadedDataset.length > 0 ? loadedDataset : defaultColumns;
+  },
+  getLoadedDatasetColumns: function() {
+    const blocks = this.workspace.getAllBlocks(false);
+    for (let i = blocks.length - 1; i >= 0; i--) {
+      const block = blocks[i];
+      if (block.type === 'load_builtin_dataset' && block.getFieldValue) {
+        const datasetName = block.getFieldValue('DATASET');
+        if (datasetColumnsMap[datasetName]) {
+          return datasetColumnsMap[datasetName];
+        }
+      }
+    }
+    return [];
+  },
+  onWorkspaceChange: function(event) {
+    if (event.type === Blockly.Events.BLOCK_CHANGE || 
+        event.type === Blockly.Events.BLOCK_CREATE ||
+        event.type === Blockly.Events.BLOCK_DELETE) {
+      this.updateDropdowns();
+    }
+  },
+
+  updateDropdowns: function() {
+    const newOptions = this.getColumnOptions();
+    const dropdown1 = this.getField('COLUMN1');
+    const dropdown2 = this.getField('COLUMN2');
+    
+    if (dropdown1 && dropdown2) {
+      const currentVal1 = dropdown1.getValue();
+      const currentVal2 = dropdown2.getValue();
+
+      dropdown1.menuGenerator_ = newOptions;
+      dropdown2.menuGenerator_ = newOptions;
+
+      const optionValues = newOptions.map(option => option[1]);
+      if (optionValues.includes(currentVal1)) {
+        dropdown1.setValue(currentVal1);
+      }
+      if (optionValues.includes(currentVal2)) {
+        dropdown2.setValue(currentVal2);
+      }
+    }
+  }
+};
+
+Blockly.Generator.R.forBlock["select_columns"] = function(block) {
+  const column1 = block.getFieldValue("COLUMN1");
+  const column2 = block.getFieldValue("COLUMN2");
+  return `selected_data <- data[c("${column1}", "${column2}")]\n`;
+};
+
+
+//group by block
+Blockly.Blocks['group_by'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("group data by")
+        .appendField(new Blockly.FieldDropdown(this.getGroupByOptions.bind(this)), "GROUP_COL");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour("#FFA726");
+    this.setTooltip("Group the dataset by a specific column (e.g., Species or cyl)");
+    this.setHelpUrl("");
+    
+    this.workspace.addChangeListener(this.onWorkspaceChange.bind(this));
+  },
+
+  getGroupByOptions: function() {
+    const defaultColumns = [['Select column', '']];
+    const columns = this.getLoadedDatasetColumns();
+    return columns.length > 0 ? columns : defaultColumns;
+  },
+
+  getLoadedDatasetColumns: function() {
+    const blocks = this.workspace.getAllBlocks(false);
+    for (let i = blocks.length - 1; i >= 0; i--) {
+      const block = blocks[i];
+      if (block.type === 'load_builtin_dataset' && block.getFieldValue) {
+        const dataset = block.getFieldValue("DATASET");
+        return datasetColumnsMap[dataset] || [];
+      }
+    }
+    return [];
+  },
+
+  onWorkspaceChange: function(event) {
+    if (event.type === Blockly.Events.BLOCK_CHANGE || 
+        event.type === Blockly.Events.BLOCK_CREATE ||
+        event.type === Blockly.Events.BLOCK_DELETE) {
+      this.updateDropdown();
+    }
+  },
+
+  updateDropdown: function() {
+    const dropdown = this.getField('GROUP_COL');
+    const currentVal = dropdown.getValue();
+    const newOptions = this.getGroupByOptions();
+    dropdown.menuGenerator_ = newOptions;
+
+    const validOptions = newOptions.map(opt => opt[1]);
+    if (validOptions.includes(currentVal)) {
+      dropdown.setValue(currentVal);
+    }
+  }
+};
+
+Blockly.Generator.R.forBlock["group_by"] = function(block) {
+  const groupColumn = block.getFieldValue("GROUP_COL");
+  return `grouped <- split(data, data$${groupColumn})\n`;
+};
 
 // --- Utility and Array Operation Blocks ---
 // Blocks for array manipulation and other utility functions
@@ -303,52 +529,8 @@ Blockly.defineBlocksWithJsonArray([
   }
 ]);
 
-Blockly.defineBlocksWithJsonArray([
-	{
-	  type: "load_geojson",
-	  message0: "load GeoJSON file %1",
-	  args0: [
-		{
-		  type: "field_input",
-		  name: "FILENAME",
-		  text: "data.geojson",
-		},
-	  ],
-	  previousStatement: null,
-	  nextStatement: null,
-	  output: null,
-	  colour: "#FFA726",
-	  tooltip: "Load a GeoJSON file",
-	},
-  ]);
-  
-  Blockly.Generator.R.forBlock["load_geojson"] = function (block, generator) {
-	generator.requirePackage("sf", 'Sys.setenv(UDUNITS2_XML_PATH=system.file("share/udunits/udunits2.xml", package="units"))');
-	const filename = block.getFieldValue("FILENAME");
-	return [`sf::st_read("${filename}")`, Blockly.Generator.R.ORDER_NONE];
-  };
 
-  Blockly.defineBlocksWithJsonArray([
-	{
-	  type: "load_tif",
-	  message0: "load GeoTIF file %1",
-	  args0: [
-		{
-		  type: "field_input",
-		  name: "FILENAME",
-		  text: "data.tif",
-		},
-	  ],
-	  previousStatement: null,
-	  nextStatement: null,
-	  output: null,
-	  colour: "#FFA726",
-	  tooltip: "Load a tif file",
-	},
-  ]);
-  
-  Blockly.Generator.R.forBlock["load_tif"] = function (block, generator) {
-	generator.requirePackage("terra");
-	const filename = block.getFieldValue("FILENAME");
-	return [`terra::rast("${filename}")`, Blockly.Generator.R.ORDER_NONE];
-  };
+
+
+
+
