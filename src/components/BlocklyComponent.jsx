@@ -49,10 +49,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 
   <category name="Load Data" colour="#FFA726">
     <block type="load_builtin_dataset"></block>
-    <block type="get_dataset"></block>
-	<block type="load_csv"></block>
-	<block type="load_geojson"></block>
-	<block type="load_tif"></block>
+    <block type="get_dataset"></block> 
   </category>
 
   <category name="Data" colour="#FF7043">
@@ -84,9 +81,20 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="log_of"></block>
   </category>
 
+  <!--<category name="Statistics" colour="#BA68C8">
+    <block type="calculate_mean"></block>
+    <block type="calculate_sd"></block>
+    <block type="calculate_median"></block>
+    <block type="calculate_max"></block>
+    <block type="calculate_min"></block>
+    <block type="calculate_sum"></block>
+  </category> -->
   <category name="Statistics" colour="#BA68C8">
     <block type="calculate_mean"></block>
     <block type="calculate_sd"></block>
+    <block type="quantile_column"></block>
+    <block type="sorted_element_at"></block>
+    <block type="summarize_data"></block>
     <block type="calculate_median"></block>
     <block type="calculate_max"></block>
     <block type="calculate_min"></block>
@@ -115,15 +123,19 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   </category>
   
   <category name="Visualization" colour="#90A4AE">
-    <block type="print_output"></block>
+    <block type="print_data"></block>
     <block type="preview_data"></block>
     <block type="show_structure"></block>
-    <block type="histogram_block"></block>
-    <block type="boxplot_block"></block>
+    <block type="show_rows"></block>
+    <block type="show_tail"></block>
+    <block type="plot_scatter"></block>
+    <block type="plot_histogram"></block>
+    <block type="plot_boxplot"></block>
     <block type="barplot_block"></block>
     <block type="piechart_block"></block>
-    <block type="scatterplot_block"></block>
+    <block type="plot_spplot"></block>
   </category>
+
 
   <category name="Export" colour="#FFB74D">
     <block type="export_plot_png"></block>
@@ -172,9 +184,9 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="load_json"></block>
     <block type="load_csv_url"></block>
     <block type="load_api_data"></block>
-	<block type="load_csv"></block>
-	<block type="load_geojson"></block>
-	<block type="load_tif"></block>
+    <block type="load_csv"></block>
+    <block type="load_geojson"></block>
+    <block type="load_tif"></block>
   </category>
 
   <category name="Data" colour="#FF7043">
@@ -269,7 +281,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="linear_regression"></block>
     <block type="semivariogram"></block>
     <block type="kriging_interpolation"></block>
-    <block type="idw_interpolation"></block>
+    <!---<block type="idw_interpolation"></block>-->
     <block type="nn_interpolation"></block>
 	<block type="linear_model_block"></block>
   </category>
