@@ -80,15 +80,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="exp_of"></block>
     <block type="log_of"></block>
   </category>
-
-  <!--<category name="Statistics" colour="#BA68C8">
-    <block type="calculate_mean"></block>
-    <block type="calculate_sd"></block>
-    <block type="calculate_median"></block>
-    <block type="calculate_max"></block>
-    <block type="calculate_min"></block>
-    <block type="calculate_sum"></block>
-  </category> -->
+  
   <category name="Statistics" colour="#BA68C8">
     <block type="calculate_mean"></block>
     <block type="calculate_sd"></block>
