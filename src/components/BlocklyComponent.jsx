@@ -125,7 +125,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="plot_boxplot"></block>
     <block type="barplot_block"></block>
     <block type="piechart_block"></block>
-    <block type="plot_spplot"></block>
   </category>
 
 
