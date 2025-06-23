@@ -311,42 +311,29 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 
   // Initialize Blockly with the selected theme and toolbox whenever the theme or level changes
   useEffect(() => {
-    if (!blocklyDiv.current) {
-      console.error("blocklyDiv is not available.");
-      return;
-    }
+  if (!blocklyDiv.current) return;
 
-    workspaceRef.current = Blockly.inject(blocklyDiv.current, {
-      renderer: "zelos",
-      toolbox: toolboxXml,
-      theme: isDarkMode ? darkTheme : lightTheme,
-      grid: {
-        spacing: 40,
-        length: 4,
-        colour: "#fff",
-        snap: true,
-      },
-      zoom: {
-        controls: true,
-        wheel: true,
-      },
-      move: {
-        drag: true,
-        wheel: true,
-      },
-      trashcan: {},
-    });
+  workspaceRef.current = Blockly.inject(blocklyDiv.current, {
+    renderer: "zelos",
+    toolbox: toolboxXml,
+    theme: isDarkMode ? darkTheme : lightTheme,
+    grid: { spacing: 40, length: 4, colour: "#fff", snap: true },
+    zoom: { controls: true, wheel: true },
+    move: { drag: true, wheel: true },
+    trashcan: {},
+  });
 
-    return () => {
-      if (linkRef.current) {
-        linkRef.current.remove();
-        linkRef.current = null;
-      }
-      workspaceRef.current?.dispose();
-    };
-  }, [isDarkMode, toolboxXml]);
+    return () => workspaceRef.current?.dispose();}, []);
+useEffect(() => {
+  if (workspaceRef.current) {
+    workspaceRef.current.setTheme(isDarkMode ? darkTheme : lightTheme);
+  }
+}, [isDarkMode]);
+useEffect(() => {
+  workspaceRef.current?.updateToolbox(toolboxXml);
+}, [toolboxXml]);
 
-  // Render the Blockly workspace and UI for file upload and level selection
+
   return (
     <Box
       sx={{
