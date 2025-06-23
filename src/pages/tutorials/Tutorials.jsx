@@ -108,9 +108,9 @@ const Tutorials = ({ isDarkMode }) => {
               backgroundColor: isDarkMode ? "rgba(181, 143, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
             },
           }}
-          onClick={() => setIsGerman((prev) => !prev)}
+          onClick={ () => setIsGerman((prev) => !prev) }
         >
-          {isGerman ? "Switch to English" : "Zur deutschen Version"}
+          { isGerman ? "Switch to English" : "Zur deutschen Version" }
         </Button>
 
         {/* Tutorial Tab List */}
@@ -144,9 +144,9 @@ const Tutorials = ({ isDarkMode }) => {
             },
           }}
         >
-          {tutorialData.map((tut, index) => (
-            <Tab key={index} label={isGerman ? tut.headline_de : tut.headline} />
-          ))}
+          { tutorialData.map((tut, index) => (
+            <Tab key={ index } label={ isGerman ? tut.headline_de : tut.headline } />
+          )) }
         </Tabs>
       </Box>
 
@@ -162,8 +162,8 @@ const Tutorials = ({ isDarkMode }) => {
         <Box sx={{ marginBottom: 3 }}>
           <TextField
             placeholder="Search tutorial content..."
-            value={searchTerm}
-            onChange={handleSearch}
+            value={ searchTerm }
+            onChange={ handleSearch }
             fullWidth
             variant="outlined"
             size="small"
@@ -177,29 +177,29 @@ const Tutorials = ({ isDarkMode }) => {
           />
 
           {/* Search Results */}
-          {searchResults.length > 0 && (
+          { searchResults.length > 0 && (
             <List dense sx={{ backgroundColor: isDarkMode ? "#1e1e1e" : "#f9f9f9", borderRadius: 1, mt: 1 }}>
-              {searchResults.map((res, idx) => (
-                <React.Fragment key={idx}>
-                  <ListItemButton onClick={() => jumpToTutorial(res.index)}>
+              { searchResults.map((res, idx) => (
+                <React.Fragment key={ idx }>
+                  <ListItemButton onClick={ () => jumpToTutorial(res.index) }>
                     <ListItemText
-                      primary={res.headline}
-                      secondary={res.description.substring(0, 80) + "..."}
+                      primary={ res.headline }
+                      secondary={ res.description.substring(0, 80) + "..." }
                     />
                   </ListItemButton>
-                  {idx < searchResults.length - 1 && <Divider />}
+                  { idx < searchResults.length - 1 && <Divider /> }
                 </React.Fragment>
-              ))}
+              )) }
             </List>
-          )}
+          ) }
         </Box>
 
         {/* Individual Tab Panels */}
-        {tutorialData.map((tut, index) => (
+        { tutorialData.map((tut, index) => (
           <TabPanel key={ index } value={ value } index={ index }>
             {/* Headline */}
             <Typography variant="h4" fontWeight="bold" gutterBottom>
-              {isGerman ? tut.headline_de : tut.headline}
+              { isGerman ? tut.headline_de : tut.headline }
             </Typography>
 
             {/* Markdown Content (incl. tables) */}
@@ -226,23 +226,23 @@ const Tutorials = ({ isDarkMode }) => {
               }}
             >
               <ReactMarkdown remarkPlugins={ [remarkGfm] }>
-                {isGerman ? tut.description_de : tut.description}
+                { isGerman ? tut.description_de : tut.description }
               </ReactMarkdown>
 
               {/* Downloads (if available) */}
-              {tut.downloads && tut.downloads.length > 0 && (
-                <Box mt={3}>
+              { tut.downloads && tut.downloads.length > 0 && (
+                <Box mt={ 3 }>
                   <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-                    {isGerman ? "Beispieldateien herunterladen:" : "Example files to download:"}
+                    { isGerman ? "Beispieldateien herunterladen:" : "Example files to download:" }
                   </Typography>
 
-                  <Box display="flex" flexDirection="column" gap={1}>
-                    {tut.downloads.map((file, i) => (
+                  <Box display="flex" flexDirection="column" gap={ 1 }>
+                    { tut.downloads.map((file, i) => (
                       <Button
                         key={i}
                         variant="outlined"
-                        startIcon={<DownloadIcon />}
-                        href={file.url}
+                        startIcon={ <DownloadIcon /> }
+                        href={ file.url }
                         download
                         sx={{
                           justifyContent: "flex-start",
@@ -254,7 +254,7 @@ const Tutorials = ({ isDarkMode }) => {
                           }
                         }}
                       >
-                        {file.label}
+                        { file.label }
                       </Button>
                     ))}
                   </Box>

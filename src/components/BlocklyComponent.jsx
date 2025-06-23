@@ -110,9 +110,13 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                 </shadow>
               </value>
               <value name="Legend">
-                <shadow type="text">
-                  <field name="TEXT">Legend</field>
-                </shadow>
+                <block type="list_create">
+                  <value name="element_0">
+                    <block type="text">
+                      <field name="TEXT">Legend</field>
+                    </block>
+                  </value>
+                </block>
               </value>
             </block>
           </category>
@@ -205,6 +209,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                 </shadow>
               </value>
             </block>
+            <block type="to_bool"></block>
+            <block type="bool"></block>
             <block type="logic_compare"></block>
             <block type="math_square"></block>
             <block type="sqrt_of"></block>
@@ -213,12 +219,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="trigo"></block>
             <block type="round"></block>
             <block type="modulo"></block>
-          </category>
-
-          <category name="${Blockly.Msg.Categories["BOOLEANS"]}" colour="#1d8425">
-            <block type="to_bool"></block>
-            <block type="bool1"></block>
-            <block type="bool2"></block>
           </category>
 
           <category name="${Blockly.Msg.Categories["DATA"]}" colour="#FA2">
@@ -280,9 +280,13 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                 </shadow>
               </value>
               <value name="Legend">
-                <shadow type="text">
-                  <field name="TEXT">Legend</field>
-                </shadow>
+                <block type="list_create">
+                  <value name="element_0">
+                    <block type="text">
+                      <field name="TEXT">Legend</field>
+                    </block>
+                  </value>
+                </block>
               </value>
             </block>
             <block type="scatter">
@@ -308,13 +312,44 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
               </value>
             </block>
             <block type="pie_chart">
-              <value name="title">
-                <shadow type="text">
-                  <field name="TEXT">Title</field>
-                </shadow>
+              <value name="sizes">
+                <block type="list_create">
+                  <value name="element_0">
+                    <block type="math_number">
+                      <field name="NUM">100</field>
+                    </block>
+                  </value>
+                </block>
+              </value>
+              <value name="labels">
+                <block type="list_create">
+                  <value name="element_0">
+                    <block type="text">
+                      <field name="TEXT">Value 1</field>
+                    </block>
+                  </value>
+                </block>
               </value>
             </block>
             <block type="bar_chart">
+              <value name="sizes">
+                <block type="list_create">
+                  <value name="element_0">
+                    <block type="text">
+                      <field name="TEXT">A</field>
+                    </block>
+                  </value>
+                </block>
+              </value>
+              <value name="heights">
+                <block type="list_create">
+                  <value name="element_0">
+                    <block type="math_number">
+                      <field name="NUM">10</field>
+                    </block>
+                  </value>
+                </block>
+              </value>
               <value name="title">
                 <shadow type="text">
                   <field name="TEXT">Title</field>
@@ -332,10 +367,23 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
               </value>
             </block>
             <block type="boxplot">
-              <value name="title">
-                <shadow type="text">
-                  <field name="TEXT">Title</field>
-                </shadow>
+              <value name="data">
+                <block type="list_create">
+                  <value name="element_0">
+                    <block type="math_number">
+                      <field name="NUM">1</field>
+                    </block>
+                  </value>
+                </block>
+              </value>
+              <value name="label_group">
+                <block type="list_create">
+                  <value name="element_0">
+                    <block type="text">
+                      <field name="TEXT">Label 1</field>
+                    </block>
+                  </value>
+                </block>
               </value>
               <value name="XLabel">
                 <shadow type="text">
@@ -610,7 +658,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                                     '\t\t\twith open(filename, "wb") as f:\n' + 
                                         '\t\t\t\tfor chunk in r.iter_content(chunk_size=8192):\n' +
                                             '\t\t\t\t\tf.write(chunk)\n' + 
-                                '\t\tprint("Downloaded ", filename)\n\n'
+                                '\t\tprint("Downloaded \'" + filename + "\'")\n\n'
     : '';
     libs += def_downloadB ? 'import requests\n' +
                             'import os\n' +
@@ -621,7 +669,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                                     '\t\t\twith open(filename, "wb") as f:\n' + 
                                         '\t\t\t\tfor chunk in r.iter_content(chunk_size=8192):\n' +
                                             '\t\t\t\t\tf.write(chunk)\n' + 
-                                '\t\tprint("Downloaded ", filename)\n\n' : '';
+                                '\t\tprint("Downloaded \'" + filename + "\'")\n\n' : '';
     libs += px ?  'import plotly.express as px\n' + 
                   'fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])\n' +
                   'fig.show()' : '';

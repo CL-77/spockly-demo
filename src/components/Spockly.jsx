@@ -136,7 +136,7 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
               </Box>
             }
             sx={{
-              fontWeight: "bold",
+              // fontWeight: "bold",
               color: isDarkMode ? "lightgrey" : "darkgrey",
               textTransform: "none"
             }}
@@ -164,13 +164,8 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
           </Card>
         </Grid>
         
-        <Grid
-          size={ 12 }
-          sx={{
-            height: "150%",
-          }}
-        >
-          <Card 
+        <Grid size={ 12 }>
+          {/* <Card 
             sx={{
               m: 2,
               p: 2,
@@ -181,9 +176,9 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
               position: "relative",
               width: "95%",
             }}
-          >
+          > */}
             <PlottingOutput plot={ plot } isDarkMode={ isDarkMode } />
-          </Card>
+          {/* </Card> */}
         </Grid>
       </Grid>
 

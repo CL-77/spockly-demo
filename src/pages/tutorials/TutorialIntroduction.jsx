@@ -12,24 +12,24 @@ const TutorialIntroduction = () => {
       <div className="flex flex-wrap justify-center gap-2 mb-8">
         {tutorialData.map((tut, index) => (
           <button
-            key={index}
-            className={`border px-4 py-2 rounded ${
+            key={ index }
+            className={ `border px-4 py-2 rounded ${
               selected === index
                 ? "bg-black text-white"
                 : "bg-white text-black hover:bg-gray-100"
-            }`}
-            onClick={() => setSelected(index)}
+            }` }
+            onClick={ () => setSelected(index) }
           >
-            {tut.headline}
+            { tut.headline }
           </button>
         ))}
       </div>
 
       {/* Content */}
       <div className="prose max-w-3xl w-full">
-        <h1>{tutorialData[selected].headline}</h1>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {tutorialData[selected].description}</ReactMarkdown>
+        <h1>{ tutorialData[selected].headline }</h1>
+        <ReactMarkdown remarkPlugins={ [remarkGfm] }>
+          { tutorialData[selected].description }</ReactMarkdown>
       </div>
     </div>
   );

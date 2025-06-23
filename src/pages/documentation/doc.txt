@@ -1,0 +1,27 @@
+Data blocks Advanced
+
+Download sample data
+Error: No such file or directory: 'data/something.csv'.
+Solution: Create a folder beforehand with block 'Create folder "data"'
+Note: You have to choose a folder to download the data into. If you leave the field empty, the sample data will be downloaded into folder 'data' (which, if not created, will result in an error).
+
+Read file file.csv from folder data
+Error: data/file.csv: No such file or directory
+Solution: Create folder 'data', download file using one of the appropriate blocks, check spelling of file and folder, 
+
+Visualisation blocks Advanced
+Error: I have two overlapping graphs.
+Solution: Refresh the page and start again.
+
+Error: I have a bad resolution.
+Solution: Due to limitations in the Python compiler, we have to convert the generated image to base 64 and decode that again. Therefore, there are losses in the resolution. You can try to increase the size of the image on both axes to prevent that (if possible).
+
+Error: /9j/4AAQSkZJRgABAQEAZABkAAD...
+Solution: Scroll down and check the plot
+
+Plot line
+ValueError: cannot write empty image as JPEG
+Solution: Change size of plot in fields X and Y, according to your needs
+
+
+ 

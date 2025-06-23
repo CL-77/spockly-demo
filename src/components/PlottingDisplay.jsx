@@ -41,7 +41,7 @@ const PlottingDisplay = ({ plot, isDarkMode }) => {
                 // bottom: 20,
                 right: 20,
                 left: 20,
-                height: "200px",
+                // height: "200px",
                 borderRadius: "5px",
                 zIndex: 1,
                 // overflow: "visible",
@@ -88,23 +88,21 @@ const PlottingDisplay = ({ plot, isDarkMode }) => {
                     id="plotting-display"
                     sx={{
                     position: "relative",
-                    borderRadius: "5px",
                     width: "100%",
-                    height: "250%",
                     bgcolor: theme.palette.background.paper,
                     zIndex: 101,
-                    overflow: "auto",
-                    resize: "vertical",
+                    overflow: "visible",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    backgroundColor: "#f5f5f5"
                 }}
             >
                 {plot ? (
                     <img
                         src={`data:image/jpeg;base64,${plot}`}
                         alt="Plot"
-                        style={{ width: "100%", height: "auto", borderRadius: "5px" }}
+                        style={{ width: "90%", height: "auto", borderRadius: "50px" }}
                     />
                 ) : (
                     <Typography
@@ -113,6 +111,7 @@ const PlottingDisplay = ({ plot, isDarkMode }) => {
                             color: isDarkMode ? "#FFFFFA" : "#000000",
                             padding: "20px",
                             whiteSpace: 'pre',
+                            backgroundColor: "initial"
                         }}
                     >
                         Generated plot will appear here...

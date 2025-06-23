@@ -4,8 +4,7 @@ import { PlayArrow } from "@mui/icons-material";
 import { darkTheme, lightTheme } from "./../appTheme";
 import { ContentPaste } from '@mui/icons-material';
 import main from './init.js';
-import { pyodideWorker } from "./workerApi.mjs";
-import { asyncRun } from "./workerApi.mjs";
+import { pyodideWorker, asyncRun } from "./workerApi.mjs";
 
 const CodeOutput = ({ code, isDarkMode, setPlot }) => {
     const [output, setOutput] = useState("Loading Pyodide...");
@@ -29,6 +28,8 @@ class Dud:
         return Dud
 
 js.document = Dud()
+bytes_io = None
+base64_encoded_spectrogram = None
 
 ${code}
 
@@ -133,21 +134,11 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
       }}
     >
       <Stack direction="row">
-        <Typography
-          variant="h6"
-          fontWeight="bold"
-          sx={{
-            color: theme.palette.primary.light,
-            paddingBottom: "15px",
-          }}
-        >
-          Output
-        </Typography>
-
         <Fab
           size="small"
           variant="extended"
           sx={{
+            marginBottom: "10px",
             left: 20,
             width: "200px",
             bgcolor: "#33bfff",
@@ -182,7 +173,6 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
         }}
       >
         <Typography
-          fontWeight="bold"
           sx={{
             color: isDarkMode ? "#FFFFFA" : "#000000",
             paddingBottom: "10px",
