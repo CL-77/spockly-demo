@@ -628,7 +628,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
       console.error("Blockly workspace is not initialised.");
       return;
     }
-    var libs = "", np, pd, gpd, sns, plt, requests, os, def_downloadA, def_downloadB, px, folium, interpol;
+    var libs = "", np, pd, gpd, sns, plt, requests, os, def_downloadA, def_downloadB, px, folium, interpol, geodes, point;
     var pythonCode = pythonGenerator.workspaceToCode(workspaceRef.current);
     if(~pythonCode.indexOf('np.')) np = true;
     if(~pythonCode.indexOf('pd.')) pd = true;
@@ -642,6 +642,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     if(~pythonCode.indexOf('px.')) px = true;
     if(~pythonCode.indexOf('folium.')) folium = true;
     if(~pythonCode.indexOf('idw_interpolation(')) interpol = true;
+    if(~pythonCode.indexOf('geodesic(')) geodes = true;
+    if(~pythonCode.indexOf('Point')) point = true;
     libs += np ? "import numpy as np\n" : "";
     libs += pd ? "import pandas as pd\n" : "";
     libs += sns ? "import seaborn as sns\n" : ""; 
@@ -674,6 +676,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                   'fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])\n' +
                   'fig.show()' : '';
     libs += folium ? 'import folium\n' : '';
+    libs += geodes ? "from geopy.distance import geodesic\n" : "";
+    libs += point ? "from shapely import Point\n" : "";
     libs += interpol ? `
 from scipy.spatial import cKDTree
 def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):

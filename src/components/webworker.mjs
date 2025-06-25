@@ -12,6 +12,8 @@ self.onmessage = async (event) => {
   await pyodide.loadPackage("micropip");
   const micropip = pyodide.pyimport("micropip");
   await micropip.install('plotly.express');
+  await micropip.install("ssl")
+  await micropip.install('geopy');
   await micropip.install('folium');
   const dict = pyodide.globals.get("dict");
   const globals = dict(Object.entries(context));
