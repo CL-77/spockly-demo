@@ -734,6 +734,7 @@ Blockly.Blocks['delete_axes'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setTooltip('Deletes given rows and columns from a dataframe');
+    this.setHelpUrl('https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.drop.html'); 
     this.setColour(195);
   }
 };
@@ -743,7 +744,7 @@ pythonGenerator.forBlock['delete_axes'] = function(block, generator) {
   const varID = block.getFieldValue('DATAFRAME') || '0';
   const getVar = block.workspace.getVariableById(varID);
   const df = getVar ? getVar.name : 'df';
-  return `${df}.drop(${'index=' + delInds + ', '|| ''}${'columns=' + delCols || ''})\n`;
+  return `${df}.drop(${(delInds === '[None]') ? '' : 'index=' + delInds + ', '}${(delCols === '[None]') ? '' : 'columns=' + delCols})\n`;
 }
 
 
@@ -1747,7 +1748,7 @@ Blockly.Blocks['polygon_area'] = {
 };
 pythonGenerator.forBlock['polygon_area'] = function(block, generator) {
   const polygon = generator.valueToCode(block, 'polygon', pythonGenerator.ORDER_ATOMIC);
-  return `${polygon}.area`;
+  return [`${polygon}.area`, pythonGenerator.ORDER_ATOMIC];
 }
 
 //**Polygon perimeter */
@@ -1764,7 +1765,7 @@ Blockly.Blocks['polygon_perimeter'] = {
 };
 pythonGenerator.forBlock['polygon_perimeter'] = function(block, generator) {
   const polygon = generator.valueToCode(block, 'polygon', pythonGenerator.ORDER_ATOMIC);
-  return `${polygon}.length`;
+  return [`${polygon}.length`, pythonGenerator.ORDER_ATOMIC];
 }
 
 Blockly.Blocks['geometry_type'] = {
@@ -1779,7 +1780,7 @@ Blockly.Blocks['geometry_type'] = {
 };
 pythonGenerator.forBlock['geometry_type'] = function(block, generator) {
   const geome = generator.valueToCode(block, 'geom', pythonGenerator.ORDER_ATOMIC);
-  return `${geome}.geom_type`;
+  return [`${geome}.geom_type`, pythonGenerator.ORDER_ATOMIC];
 }
 
 Blockly.Blocks['distance_calc'] = {
@@ -1807,17 +1808,14 @@ pythonGenerator.forBlock['distance_calc'] = function(block, generator) {
 //**Multipolygon */
 Blockly.Blocks['multipolygon'] = {
   init: function() {
+    this.appendDummyInput('')
+      .appendField('MultiPolygon')
     this.appendValueInput('polygon1')
     .setCheck('Polygon')
       .appendField(new Blockly.FieldLabelSerializable('Polygon1'), 'Polygon1');
     this.appendValueInput('polygon2')
     .setCheck('Polygon')
       .appendField(new Blockly.FieldLabelSerializable('Polygon2'), 'Polygon2');
-    this.appendDummyInput('')
-      .appendField(new Blockly.FieldLabelSerializable('Show multipolygon?'), 'show')
-      .appendField(new Blockly.FieldCheckbox('TRUE'), 'SHOW');
-    this.appendDummyInput('')
-      .appendField(new Blockly.FieldTextInput('multipolygon'), 'variable');
     this.setOutput(true, 'Polygon');
     this.setTooltip('Create a multipolygon from a sequel of polygons');
     this.setHelpUrl('https://shapely.readthedocs.io/en/stable/reference/shapely.MultiPolygon.html');
@@ -1828,12 +1826,7 @@ Blockly.Blocks['multipolygon'] = {
 pythonGenerator.forBlock['multipolygon'] = function(block, generator) {
   const value_polygon1 = generator.valueToCode(block, 'polygon1', pythonGenerator.ORDER_ATOMIC);
   const value_polygon2 = generator.valueToCode(block, 'polygon2', pythonGenerator.ORDER_ATOMIC);
-  const text_variable = block.getFieldValue('variable');
-  let show_polygon = block.getFieldValue('SHOW');
-  show_polygon = (show_polygon.toLowerCase() === 'true') ? `\n${text_variable}\n` : '\n'
-  return [`from shapely.geometry import Polygon, MultiPolygon\n`+
-          `${text_variable} = MultiPolygon([${value_polygon1}, ${value_polygon2}])\n`+
-          `${show_polygon}`, pythonGenerator.ORDER_ATOMIC];
+  return [`MultiPolygon([${value_polygon1}, ${value_polygon2}])\n`, pythonGenerator.ORDER_ATOMIC];
 }
 
 //**Bounding box */
@@ -1862,8 +1855,7 @@ pythonGenerator.forBlock['bounding_box'] = function(block) {
   const min_y = block.getFieldValue('min_y') || '0';
   const max_x = block.getFieldValue('max_x') || '0';
   const max_y = block.getFieldValue('max_y') || '0';
-  return `from shapely.geometry import box\n`+
-  `bbox = box(minx=${min_x}, miny=${min_y}, maxx=${max_x}, maxy=${max_y})`
+  return [`box(minx=${min_x}, miny=${min_y}, maxx=${max_x}, maxy=${max_y})`, pythonGenerator.ORDER_ATOMIC];
 }
 
 //**Polygon block */
@@ -1976,7 +1968,7 @@ Blockly.Blocks["centroid"] = {
 };
 pythonGenerator.forBlock["centroid"] = function(block, generator) {
   const centroide = generator.valueToCode(block, 'CTR', pythonGenerator.ORDER_NONE);
-  return `${centroide}.centroid`;
+  return [`${centroide}.centroid`, pythonGenerator.ORDER_ATOMIC];
 };
 
 /****************
