@@ -233,6 +233,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="append_array"></block>
     <block type="create_array"></block>
     <block type="slice_file"></block>
+	<block type="convert_to_sf"></block>
+	<block type="convert_to_dataframe"></block>
   </category>
 
     <category name="Maps" colour="#81C784">
