@@ -174,6 +174,7 @@ Blockly.Extensions.register('dynamic_column_dropdown', function() {
 
   block.updateDropdown = function() {
     const dropdown = this.getField('COLUMN');
+    if (!dropdown) return;
     const currentVal = dropdown.getValue();
     const columns = this.getLoadedDatasetColumns();
     const newOptions = columns.length > 0 ? columns : [['Select column', '']];
