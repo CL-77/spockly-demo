@@ -1,6 +1,6 @@
 Data blocks Advanced
 
-Download sample data
+Download data
 Error: No such file or directory: 'data/something.csv'.
 Solution: Create a folder beforehand with block 'Create folder "data"'
 Note: You have to choose a folder to download the data into. If you leave the field empty, the sample data will be downloaded into folder 'data' (which, if not created, will result in an error).
@@ -13,15 +13,31 @@ Visualisation blocks Advanced
 Error: I have two overlapping graphs.
 Solution: Refresh the page and start again.
 
-Error: I have a bad resolution.
+Error: I have a bad resolution. / Plot is not centered.
 Solution: Due to limitations in the Python compiler, we have to convert the generated image to base 64 and decode that again. Therefore, there are losses in the resolution. You can try to increase the size of the image on both axes to prevent that (if possible).
 
-Error: /9j/4AAQSkZJRgABAQEAZABkAAD...
-Solution: Scroll down and check the plot
+
 
 Plot line
 ValueError: cannot write empty image as JPEG
-Solution: Change size of plot in fields X and Y, according to your needs
+Solution: Change size of plot in fields X and Y, according to your needs ((0, 0) won't work).
 
+Bar chart
+ValueError: shape mismatch: objects cannot be broadcast to a single shape.  Mismatch is between arg 0 with shape (2,) and arg 1 with shape (3,).
+Solution: Check that your Labels and Heights array have the same size. 
 
- 
+List sort
+numpy.exceptions.AxisError: axis -1 is out of bounds for array of dimension 0
+Solution: Check that the a list is passed
+
+Statistical blocks
+TypeError: array() missing required argument 'object' (pos 0)
+Solution: Check if there isn't an empty block in the workspace.
+
+List blocks
+TypeError: list indices must be integers or slices, not list
+Solution: Suppose arr[bools], with 'arr' a list of elements of any type and 'bools' a list of booleans. Convert 'arr' to 'np.array' using block 'Create array from' in tab 'Data' before printing/assigning value to another array. 
+
+General
+OSError: [Errno 29] I/O error
+Solution: Reload page and try again, it's an internal error

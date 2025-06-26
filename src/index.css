@@ -77,3 +77,25 @@ footer {
     /* left: 0; */
     z-index: 10000;
 }
+
+#responsiveBox1, #responsiveBox2 {
+    height: 80%;
+  }
+
+@media screen and (min-height: 420px) {
+  #responsiveBox1, #responsiveBox2 {
+    height: 100%;
+  }
+}
+
+@media screen and (min-height: 600px) {
+  #responsiveBox1, #responsiveBox2 {
+    height: 120%;
+  }
+}
+
+@media screen and (min-height: 700px) {
+  #responsiveBox1, #responsiveBox2 {
+    height: 130%;
+  }
+}

@@ -7,7 +7,6 @@ import FileUploadManager from "./FileUploadManager";
 import CodeOutput from "./CodeOutput"
 import { MdOutlineOutput } from "react-icons/md";
 import { FaCode } from "react-icons/fa6";
-import PlottingOutput from "./PlottingDisplay";
 import main from "./init";
 
 function TabPanel({ children, value, index }) {
@@ -21,7 +20,7 @@ function TabPanel({ children, value, index }) {
         flexDirection: "column",
       }}
     >
-      <Box sx={{ flex: 1, height: "100%" }}>{children}</Box>
+      <Box sx={{ flex: 1, height: "100%" }}>{ children }</Box>
     </div>
   );
 }
@@ -136,7 +135,7 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
               </Box>
             }
             sx={{
-              // fontWeight: "bold",
+              fontWeight: "bold",
               color: isDarkMode ? "lightgrey" : "darkgrey",
               textTransform: "none"
             }}
@@ -162,23 +161,6 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
               </Box>
             </TabPanel>
           </Card>
-        </Grid>
-        
-        <Grid size={ 12 }>
-          {/* <Card 
-            sx={{
-              m: 2,
-              p: 2,
-              borderRadius: "16px",
-              backgroundColor: theme.palette.primary.main,
-              height: "70%",
-              boxShadow: 3,
-              position: "relative",
-              width: "95%",
-            }}
-          > */}
-            <PlottingOutput plot={ plot } isDarkMode={ isDarkMode } />
-          {/* </Card> */}
         </Grid>
       </Grid>
 

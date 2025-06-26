@@ -80,35 +80,16 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="sort"></block>
             <block type="delete_axes">
               <value name="ColArr">
-                <block type="list_create">
-                  <field name="test"></field>
-                </block>
+                <block type="list_create"></block>
               </value>
               <value name="IndArr">
-                <block type="list_create">
-                  <field name="test2"></field>
-                </block>
+                <block type="list_create"></block>
               </value>
             </block>
           </category>
 
           <category name="${Blockly.Msg.Categories["VISUALISATION"]}" colour="#90A4AE">
             <block type="plot">
-              <value name="title">
-                <shadow type="text">
-                  <field name="TEXT">Title</field>
-                </shadow>
-              </value>
-              <value name="XLabel">
-                <shadow type="text">
-                  <field name="TEXT">X-axis</field>
-                </shadow>
-              </value>
-              <value name="YLabel">
-                <shadow type="text">
-                  <field name="TEXT">Y-axis</field>
-                </shadow>
-              </value>
               <value name="Legend">
                 <block type="list_create">
                   <value name="element_0">
@@ -134,7 +115,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           <category name="${Blockly.Msg.Categories["VARIABLES"]}" custom="VARIABLE" colour="#A65E2E"></category>
 
           <category name="${Blockly.Msg.Categories["BASIC_FUNCTIONS"]}" colour="#123456">
-            <block type="input"></block>
             <block type="slice"></block>
             <block type="text_print"></block>
             <block type="length_of_str"></block>
@@ -244,19 +224,26 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="del_col"></block> 
             <block type="delete_object"></block>
             <block type="create_array"></block>
-            <block type="list_filter"></block>
             <block type="sort"></block>
             <block type="reshape"></block>
             <block type="slice_file"></block>
             <block type="delete_axes">
               <value name="ColArr">
                 <block type="list_create">
-                  <field name=""></field>
+                  <value name="element_0">
+                    <block type="text">
+                      <field name="TEXT">Column Name</field>
+                    </block>
+                  </value>
                 </block>
               </value>
               <value name="IndArr">
                 <block type="list_create">
-                  <field name=""></field>
+                  <value name="element_0">
+                    <block type="text">
+                      <field name="TEXT">Row name</field>
+                    </block>
+                  </value>
                 </block>
               </value>
             </block>
@@ -264,21 +251,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 
           <category name="${Blockly.Msg.Categories["VISUALISATION"]}" colour="#90A4AE">
             <block type="plot">
-              <value name="title">
-                <shadow type="text">
-                  <field name="TEXT">Title</field>
-                </shadow>
-              </value>
-              <value name="XLabel">
-                <shadow type="text">
-                  <field name="TEXT">X-axis</field>
-                </shadow>
-              </value>
-              <value name="YLabel">
-                <shadow type="text">
-                  <field name="TEXT">Y-axis</field>
-                </shadow>
-              </value>
               <value name="Legend">
                 <block type="list_create">
                   <value name="element_0">
@@ -290,25 +262,14 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
               </value>
             </block>
             <block type="scatter">
-              <value name="title">
-                <shadow type="text">
-                  <field name="TEXT">Title</field>
-                </shadow>
-              </value>
-              <value name="XLabel">
-                <shadow type="text">
-                  <field name="TEXT">X-axis</field>
-                </shadow>
-              </value>
-              <value name="YLabel">
-                <shadow type="text">
-                  <field name="TEXT">Y-axis</field>
-                </shadow>
-              </value>
               <value name="Legend">
-                <shadow type="text">
-                  <field name="TEXT">Legend</field>
-                </shadow>
+                <block type="list_create">
+                  <value name="element_0">
+                    <block type="text">
+                      <field name="TEXT">Legend</field>
+                    </block>
+                  </value>
+                </block>
               </value>
             </block>
             <block type="pie_chart">
@@ -349,21 +310,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                     </block>
                   </value>
                 </block>
-              </value>
-              <value name="title">
-                <shadow type="text">
-                  <field name="TEXT">Title</field>
-                </shadow>
-              </value>
-              <value name="XLabel">
-                <shadow type="text">
-                  <field name="TEXT">X-axis</field>
-                </shadow>
-              </value>
-              <value name="YLabel">
-                <shadow type="text">
-                  <field name="TEXT">Y-axis</field>
-                </shadow>
               </value>
             </block>
             <block type="boxplot">
@@ -418,7 +364,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           </category>
 
           <category name="${Blockly.Msg.Categories["BASIC_FUNCTIONS"]}" colour="#123456">
-            <block type="input"></block>
             <block type="slice"></block>
             <block type="lambda"></block>
             <block type="text_print"></block>
@@ -649,16 +594,16 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     libs += gpd ? "import geopandas as gpd\n" : "";
     libs += requests ? "import requests\n" : "";
     libs += os ? "import os\n" : "";
-    libs += def_downloadA ?  'import requests\n' +
+    libs += def_downloadA ? 'import requests\n' +
                             'import os\n' +
-                              'def downloadA(url, folder):\n' +
-                              '\tfilename = os.path.join(folder, os.path.basename(url))\n' +
-                              '\tif not os.path.exists(filename):\n' + 
+                              'def downloadA(url, folder, filename = "file.csv"):\n' +
+                              '\tfilenamee = os.path.join(folder, filename)\n' +
+                              '\tif not os.path.exists(filenamee):\n' + 
                                 '\t\twith requests.get(url, stream=True, allow_redirects=True) as r:\n' +
-                                    '\t\t\twith open(filename, "wb") as f:\n' + 
+                                    '\t\t\twith open(filenamee, "wb") as f:\n' + 
                                         '\t\t\t\tfor chunk in r.iter_content(chunk_size=8192):\n' +
                                             '\t\t\t\t\tf.write(chunk)\n' + 
-                                '\t\tprint("Downloaded \'" + filename + "\'")\n\n'
+                                '\t\tprint("Downloaded \'" + filenamee + "\'")\n\n'
     : '';
     libs += def_downloadB ? 'import requests\n' +
                             'import os\n' +
@@ -689,7 +634,7 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
   return (
     <Box
       sx={{
-        height: "90%",
+        height: "100%",
         width: "100%",
         margin: 0,
         padding: 0,

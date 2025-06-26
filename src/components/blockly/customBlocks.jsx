@@ -792,36 +792,6 @@ pythonGenerator.forBlock['add_object'] = function(block, generator) {
 }
 
 /**
- * Nunmpy: filter list
- */
-Blockly.Blocks['list_filter'] = {
-  init: function() {
-    this.appendValueInput('CNAME')
-      .appendField('array to filter')
-      .appendField(new Blockly.FieldTextInput('LIST_NAME'), 'CNAME');
-    this.appendValueInput('DNAME')
-      .appendField('according to')
-      .appendField(new Blockly.FieldTextInput('LIST_NAME2'), 'DNAME');
-    this.appendDummyInput('ENAME')
-      .appendField('store array in')
-      .appendField(new Blockly.FieldTextInput('VAR_NAME'), 'ENAME');
-    this.setInputsInline(false)
-    this.setOutput(true, null);
-    this.setTooltip('Filter a list according to a list of booleans');
-    this.setHelpUrl('');
-    this.setColour(315);
-  }
-};
-pythonGenerator.forBlock['list_filter'] = function(block, generator) {
-  const text_cname = block.getFieldValue('CNAME');
-  const text_dname = block.getFieldValue('DNAME');
-  const text_ename = block.getFieldValue('ENAME');
-  const value_cname = generator.valueToCode(block, 'CNAME', pythonGenerator.ORDER_ATOMIC);
-  const value_dname = generator.valueToCode(block, 'DNAME', pythonGenerator.ORDER_ATOMIC);
-  return [`${text_cname} = np.array(${value_cname})\n${text_dname} = ${value_dname}\n${text_ename} = ${text_cname}[${text_dname}]\n`, pythonGenerator.ORDER_ATOMIC];
-}
-
-/**
  * Value to boolean
  */
 Blockly.Blocks['to_bool'] = {
@@ -878,28 +848,6 @@ pythonGenerator.forBlock['sort'] = function(block, generator) {
   return [`np.sort(np.array(${value_name}))`, pythonGenerator.ORDER_ATOMIC];
 }
 
-/**
- * Input block
- */
-
-Blockly.Blocks['input'] = {
-  init: function() {
-    this.appendDummyInput('CNAME')
-        .appendField('input')
-        .appendField(new Blockly.FieldTextInput('question', (txt) => { 
-          return txt
-        }), 'CSV');
-    this.setTooltip('Make user input a value');
-    this.setOutput(true, null);
-    this.appendEndRowInput();
-    this.setColour(95);
-  }
-};
-pythonGenerator.forBlock['input'] = function(block) {
-  const question = block.getFieldValue('CSV') || '0';
-  return [`input('${question}')`, pythonGenerator.ORDER_ATOMIC];
-}
-
 /** Lambda func block */
 Blockly.Blocks['lambda'] = {
   init: function() {
@@ -917,7 +865,7 @@ Blockly.Blocks['lambda'] = {
 pythonGenerator.forBlock['lambda'] = function(block, generator) {
   const VAR = block.getFieldValue('LAMBDA') || '0';
   const EXPR = generator.valueToCode(block, 'EXPR', pythonGenerator.ORDER_NONE)
-  return [`lambda ${VAR}: (${EXPR})`, pythonGenerator.ORDER_LAMBDA];
+  return [`lambda ${VAR}: ${EXPR}`, pythonGenerator.ORDER_LAMBDA];
 }
 
 /**
@@ -1047,6 +995,9 @@ Blockly.Blocks['func_downloadA'] = {
         .appendField(new Blockly.FieldTextInput('http://file.csv'), 'NAME')
         .appendField('into folder')
         .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER');
+    this.appendDummyInput()
+        .appendField('File name')
+        .appendField(new Blockly.FieldTextInput('file.csv'), 'filename')
     this.setTooltip('Use function to download file from URL into given file.');
     this.setNextStatement(true);
     this.setPreviousStatement(true);
@@ -1056,7 +1007,8 @@ Blockly.Blocks['func_downloadA'] = {
 pythonGenerator.forBlock['func_downloadA'] = function(block) {
   const url = block.getFieldValue('NAME') || 'http://file.csv';
   const folder = block.getFieldValue('FOLDER') || 'data';
-  return `downloadA('${url}', '${folder}')\n`
+  const filename = block.getFieldValue('filename') || 'file.csv';
+  return `downloadA('${url}', '${folder}', '${filename}')\n`
 }
 
 Blockly.Blocks['func_downloadB'] = {
@@ -1081,13 +1033,13 @@ Blockly.Blocks['read_fileA'] = {
         .appendField('Read file')
         .appendField(new Blockly.FieldTextInput('file.csv'), 'NAME')
         .appendField('from folder')
-        .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER');
+        .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[<>:?*\\"|]/g, '')), 'FOLDER');
     this.setTooltip('Use function to read file in given folder name.');
     this.setOutput(true)
     this.setColour(200);
   }
 };
-pythonGenerator.forBlock['read_fileA'] = function(block,generator) {
+pythonGenerator.forBlock['read_fileA'] = function(block) {
   const fileName = block.getFieldValue('NAME');
   const dataFolder = block.getFieldValue('FOLDER') || '';
   //const columns = generator.valueToCode(block, 'columns', pythonGenerator.ORDER_ATOMIC);
@@ -1243,19 +1195,22 @@ Blockly.Blocks['plot'] = {
         .appendField('Y-value');
     this.appendDummyInput('fmt')
         .appendField('Colour')
-        .appendField(new Blockly.FieldTextInput('red'), 'FMT')
-    this.appendValueInput('title')
-        .appendField('Title');
+        .appendField(new Blockly.FieldTextInput('red'), 'FMT');
+    this.appendDummyInput()
+        .appendField('Title')
+        .appendField(new Blockly.FieldTextInput('Title'), 'title');
     this.appendDummyInput('size')
         .appendField('Size:')
         .appendField('X')
-        .appendField(new Blockly.FieldNumber(''), 'XVAL')
+        .appendField(new Blockly.FieldNumber('1'), 'XVAL')
         .appendField('Y')
-        .appendField(new Blockly.FieldNumber(''), 'YVAL');
-    this.appendValueInput('XLabel')
-        .appendField('X-axis label');
-    this.appendValueInput('YLabel')
-        .appendField('Y-axis label');
+        .appendField(new Blockly.FieldNumber('1'), 'YVAL');
+    this.appendDummyInput()
+        .appendField('X-axis label')
+        .appendField(new Blockly.FieldTextInput('Label'), 'XLVAL');;
+    this.appendDummyInput()
+        .appendField('Y-axis label')
+        .appendField(new Blockly.FieldTextInput('Label'), 'YLVAL');;
     this.appendValueInput('Legend')
         .appendField('Legend');
     this.appendDummyInput('GRID')
@@ -1273,10 +1228,10 @@ pythonGenerator.forBlock['plot'] = function(block, generator) {
   const dataX = generator.valueToCode(block, 'valX', pythonGenerator.ORDER_NONE) || "0";
   const dataY = generator.valueToCode(block, 'valY', pythonGenerator.ORDER_NONE) || "x";
   const format = block.getFieldValue('FMT') || 'black';
-  const title = generator.valueToCode(block, 'title', pythonGenerator.ORDER_NONE) || "Title";
+  const title = block.getFieldValue('title') || "Title";
   const size = [block.getFieldValue('XVAL'), block.getFieldValue('YVAL')];
-  const labels = [generator.valueToCode(block, 'XLabel', pythonGenerator.ORDER_NONE) || "X", generator.valueToCode(block, 'YLabel', pythonGenerator.ORDER_NONE) || "Y"];
-  const legend = generator.valueToCode(block, 'Legend', pythonGenerator.ORDER_NONE) || "M";
+  const labels = [block.getFieldValue('XLVAL') || "X", block.getFieldValue('YLVAL') || "Y"];
+  const legend = generator.valueToCode(block, 'Legend', pythonGenerator.ORDER_NONE) || "Legend";
   let grid = block.getFieldValue('Grid').toLowerCase();
   grid = grid[0].toUpperCase() + grid.slice(1);
   return '' +
@@ -1284,9 +1239,9 @@ pythonGenerator.forBlock['plot'] = function(block, generator) {
   `y = ${dataY}\n` +
   `plt.figure(figsize = (${size[0]}, ${size[1]}))\n` + 
   `plt.plot(x, y, color = '${format}')\n` + 
-  `plt.title(${title})\n` +
-  `plt.xlabel(${labels[0]})\n` + 
-  `plt.ylabel(${labels[1]})\n` +
+  `plt.title('${title}')\n` +
+  `plt.xlabel('${labels[0]}')\n` + 
+  `plt.ylabel('${labels[1]}')\n` +
   `plt.grid(${grid})\n` +
   `plt.legend(${legend})\n`
 }
@@ -1304,17 +1259,20 @@ Blockly.Blocks['scatter'] = {
         .appendField('Colour')
         .appendField(new Blockly.FieldTextInput('red'), 'COL')
     this.appendValueInput('title')
-        .appendField('Title');
+        .appendField('Title')
+        .appendField(new Blockly.FieldTextInput('Title'), 'title');
     this.appendDummyInput('size')
         .appendField('Size:')
         .appendField('X')
-        .appendField(new Blockly.FieldNumber(''), 'XVAL')
+        .appendField(new Blockly.FieldNumber('1'), 'XVAL')
         .appendField('Y')
-        .appendField(new Blockly.FieldNumber(''), 'YVAL');
+        .appendField(new Blockly.FieldNumber('1'), 'YVAL');
     this.appendValueInput('XLabel')
-        .appendField('X-axis label');
+        .appendField('X-axis label')
+        .appendField(new Blockly.FieldTextInput('Label'), 'XLabel');
     this.appendValueInput('YLabel')
-        .appendField('Y-axis label');
+        .appendField('Y-axis label')
+        .appendField(new Blockly.FieldTextInput('Label'), 'YLabel');
     this.appendValueInput('Legend')
         .appendField('Legend');
     this.appendDummyInput('GRID')
@@ -1329,12 +1287,12 @@ Blockly.Blocks['scatter'] = {
   }
 }
 pythonGenerator.forBlock['scatter'] = function(block, generator) {
-  const dataX = generator.valueToCode(block, 'valX', pythonGenerator.ORDER_NONE) || "0";
-  const dataY = generator.valueToCode(block, 'valY', pythonGenerator.ORDER_NONE) || "0";
-  const title = generator.valueToCode(block, 'title', pythonGenerator.ORDER_NONE) || "0";
+  const dataX = generator.valueToCode(block, 'valX', pythonGenerator.ORDER_NONE) || "1";
+  const dataY = generator.valueToCode(block, 'valY', pythonGenerator.ORDER_NONE) || "1";
+  const title = block.getFieldValue('title') || "Title";
   const col = block.getFieldValue('COL');
   const size = [block.getFieldValue('XVAL'), block.getFieldValue('YVAL')];
-  const labels = [generator.valueToCode(block, 'XLabel', pythonGenerator.ORDER_NONE) || "0", generator.valueToCode(block, 'YLabel', pythonGenerator.ORDER_NONE) || "0"];
+  const labels = [block.getFieldValue('XLabel') || "X", block.getFieldValue('YLabel') || "Y"];
   const legend = generator.valueToCode(block, 'Legend', pythonGenerator.ORDER_NONE) || "0";
   let grid = block.getFieldValue('Grid').toLowerCase();
   grid = grid[0].toUpperCase() + grid.slice(1);
@@ -1343,9 +1301,9 @@ pythonGenerator.forBlock['scatter'] = function(block, generator) {
   `y = ${dataY}\n` +
   `plt.figure(figsize = (${size[0]}, ${size[1]}))\n` + 
   `plt.scatter(x, y, color = '${col}')\n` + 
-  `plt.title(${title})\n` +
-  `plt.xlabel(${labels[0]})\n` + 
-  `plt.ylabel(${labels[1]})\n` +
+  `plt.title('${title}')\n` +
+  `plt.xlabel('${labels[0]}')\n` + 
+  `plt.ylabel('${labels[1]}')\n` +
   `plt.grid(${grid})\n` +
   `plt.legend(${legend})\n`
 }
@@ -2445,9 +2403,9 @@ Blockly.Blocks['bar_chart'] = {
 }
 pythonGenerator.forBlock['bar_chart'] = function(block, generator) {
   const sizes = generator.valueToCode(block, 'sizes', pythonGenerator.ORDER_NONE) || "[5]";
-  const labels = [block.getFieldValue('XLabel') || "", block.getFieldValue('YLabel') || ""];
+  const labels = [block.getFieldValue('XLabel') || "X", block.getFieldValue('YLabel') || "Y"];
   const title = block.getFieldValue('title') || "Title";
-  const heights = generator.valueToCode(block, 'sizes', pythonGenerator.ORDER_NONE) || "[10]";
+  const heights = generator.valueToCode(block, 'heights', pythonGenerator.ORDER_NONE) || "[10]";
   return '' +
   `plt.bar(${sizes}, ${heights})\n` +
   `plt.title('${title}')\n` +
@@ -2491,7 +2449,7 @@ pythonGenerator.forBlock['boxplot'] = function(block, generator) {
   const notches = block.getFieldValue('notches') === 'TRUE';
   const data = generator.valueToCode(block, 'data', pythonGenerator.ORDER_NONE) || "[0]";
   const label_group = generator.valueToCode(block, 'label_group', pythonGenerator.ORDER_NONE) || "['null']";
-  const labels = [block.getFieldValue('XLabel') || "", block.getFieldValue('YLabel') || ""];
+  const labels = [block.getFieldValue('XLabel') || "X", block.getFieldValue('YLabel') || "Y"];
   const title = block.getFieldValue('title') || "Title";
   return `plt.boxplot(${data}, labels = ${label_group}, vert = ${orientation ? 'True' : 'False'}, notch = ${notches ? 'True' : 'False'})\n` +
   `plt.title('${title}')\n` +

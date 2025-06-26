@@ -155,10 +155,11 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
         </Box>
       </Stack>
       <Box
+      id="responsiveBox1"
         sx={{
           position: "relative",
           borderRadius: "5px",
-          height: '120%',
+          // height: '120%',
           bgcolor: theme.palette.background.paper,
           zIndex: 1,
           overflowY: "auto",

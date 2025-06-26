@@ -1,8 +1,20 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Box, Fab, Stack, Typography } from "@mui/material";
-import { PlayArrow } from "@mui/icons-material";
+import {
+  Box,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import {
+  PlayArrow,
+  OpenInNew,
+  Visibility,
+  VisibilityOff,
+  RestartAlt
+} from "@mui/icons-material";
 import { darkTheme, lightTheme } from "./../appTheme";
-import { ContentPaste } from '@mui/icons-material';
+// import { ContentPaste } from '@mui/icons-material';
 import main from './init.js';
 import { pyodideWorker, asyncRun } from "./workerApi.mjs";
 
@@ -10,8 +22,17 @@ const CodeOutput = ({ code, isDarkMode, setPlot }) => {
     const [output, setOutput] = useState("Loading Pyodide...");
     const [isLoading, setIsLoading] = useState(true);
     const theme = isDarkMode ? darkTheme : lightTheme;
+    const [isAPlot, setIsAPlot] = useState(false);
+    const [showPlot, setShowPlot] = useState(true);
+
+    const openInNewTabHandler = () => {
+      window.open(`data:image/jpeg;base64,${globalThis.getRes()}`, '_blank');
+    };
+    const hidePlotHandle = () => setShowPlot(false);
+    const showPlotHandle = () => setShowPlot(true);
 
     const runCode = async () => {
+      setIsAPlot(false);
       console.log('Running code...');
       setOutput("Running...");
       if(~code.indexOf('plt.') || ~code.indexOf('df_interp.plot')) {
@@ -63,12 +84,13 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
             a.download = fileName;
             a.click();
           }
-          window.URL.revokeObjectURL(url); // Preventing memory leaks
+          window.URL.revokeObjectURL(url); //Preventing memory leaks
         }
       }
       foliumHandler(code, fileName);
       setOutput(result);
       if (typeof result === "string" && result.length > 100 && /^[A-Za-z0-9+/=\s]+$/.test(result)) {
+        setIsAPlot(true);
         try {
           setPlot(result);
         } catch {
@@ -76,6 +98,10 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
         }
       } else {
         setPlot("");
+      }
+
+      globalThis.getRes = () => {
+        return result
       }
     }
     useEffect(() => {
@@ -126,47 +152,124 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
     return (
         <Box
       sx={{
-        top: 20,
-        left: 20,
+        // top: 20,
+        // left: 20,
         height: "100%",
         borderRadius: "5px",
-        zIndex: 1,
+        // zIndex: 1,
       }}
     >
-      <Stack direction="row">
-        <Fab
-          size="small"
-          variant="extended"
-          sx={{
-            marginBottom: "10px",
-            left: 20,
-            width: "200px",
-            bgcolor: "#33bfff",
-            color: theme.palette.primary.contrastText,
-            "&:hover": {
-              bgcolor: "#00b0ff",
-            },
-            boxShadow: "none",
-          }}
-          onClick={ runCode }
-          disabled={ isLoading }
+      <Stack direction="row-reverse" sx={{ paddingY: 1 }}>
+        <Box 
+        sx={{
+          height: "100%",
+          zIndex: 1,
+          color: theme.palette.primary.light,
+          paddingBottom: "15px",
+        }}
         >
-          <Box display="flex" alignItems="center" gap={ 0.5 }>
-            <PlayArrow fontSize="small" />
-            <Typography fontWeight="bold">Run Python Code</Typography>
-          </Box>
-        </Fab>
+          <Stack direction="row" gap={ 1 }>
+            <Tooltip title="Run Python Code">
+              <IconButton
+                onClick={ runCode }
+                disabled={ isLoading }
+                sx={{
+                  bgcolor: "#33bfff",
+                  color: theme.palette.primary.contrastText,
+                  "&:hover": {
+                    bgcolor: "#00b0ff",
+                  },
+                }}
+              >
+                <PlayArrow />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Reset output">
+                  <IconButton
+                    onClick={ () => { hidePlotHandle(); setOutput(""); setIsAPlot(false); setShowPlot(false); } }
+                    sx={{
+                      backgroundColor: theme.palette.primary.light,
+                      "&:hover": {
+                        bgcolor: isDarkMode ? "#835ACC" : "#CCAD33",
+                      },
+                    }}
+                  >
+                    <RestartAlt />
+                  </IconButton>
+                </Tooltip>
+            { isAPlot ? (
+                <Tooltip title="Open plot in new tab">
+                  <IconButton
+                    onClick={ openInNewTabHandler }
+                    sx={{
+                      backgroundColor: theme.palette.primary.light,
+                      "&:hover": {
+                        bgcolor: isDarkMode ? "#835ACC" : "#CCAD33",
+                      },
+                    }}
+                  >
+                    <OpenInNew />
+                  </IconButton>
+                </Tooltip>
+            ) : (null) }
+                { isAPlot && showPlot ? (
+                  <Tooltip title="Hide plot">
+                  <IconButton
+                    onClick={ hidePlotHandle }
+                    sx={{
+                      backgroundColor: theme.palette.primary.light,
+                      "&:hover": {
+                        bgcolor: isDarkMode ? "#835ACC" : "#CCAD33",
+                      },
+                    }}
+                  >
+                    <VisibilityOff />
+                  </IconButton>
+                </Tooltip>
+                ) : (null) }
+                { isAPlot && !showPlot ? (
+                  <Tooltip title="Show plot">
+                    <IconButton
+                      onClick={ showPlotHandle }
+                      sx={{
+                        backgroundColor: theme.palette.primary.light,
+                        "&:hover": {
+                          bgcolor: isDarkMode ? "#835ACC" : "#CCAD33",
+                        },
+                      }}
+                    >
+                      <Visibility />
+                    </IconButton>
+                  </Tooltip>
+                  ) : (null) }
+          </Stack>
+        </Box>
         {/* <Box display="flex" alignItems="center" gap={ 0.5 }>
           <Typography sx={{ fontSize: "0.9em", marginLeft: "30px", color: "#BBB" }}>Ctrl + Alt + Enter</Typography>  
         </Box> */}
       </Stack>
-
-      <Box
+      { isAPlot && showPlot ? (
+        <img
+          src={`data:image/jpeg;base64,${globalThis.getRes()}`}
+          alt="Plot"
+          style={{
+            height: "auto",
+            borderRadius: "5px",
+            overflow: "auto",
+            zIndex: 1,
+            position: "relative",
+            width: "100%",
+            display: "flex",
+          }}
+         />
+          ) : (
+            <Box
+        id="responsiveBox2"
         sx={{
           position: "relative",
           borderRadius: "5px",
           width: "100%",
-          height: "120%",
           bgcolor: theme.palette.background.paper,
           zIndex: 1,
           overflow: "auto",
@@ -183,6 +286,7 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
           { output || 'No output' }
         </Typography>
       </Box>
+          ) }
     </Box>
     );
 };
