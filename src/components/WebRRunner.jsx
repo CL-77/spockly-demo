@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
 import { darkTheme, lightTheme } from "./../appTheme";
+import PackageLoadingDialog from "./PackageLoadingDialog";
 
 const webR = new WebR();
 const CANVAS_SIZE = 650;
@@ -17,13 +18,17 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
   const theme = isDarkMode ? darkTheme : lightTheme;
   const [textOutput, setTextOutput] = useState("");
   const [sfPackageReady, setSfPackageReady] = useState(false);
+  const [sfSetupInProgress, setSfSetupInProgress] = useState(false);  
   const [webRReady, setWebRReady] = useState(false);
+  const [showLoadingDialog, setShowLoadingDialog] = useState(false);
+  const [currentPackage, setCurrentPackage] = useState("");
+  const [packagesReady, setPackagesReady] = useState(false);
 
   const installAndLoadPackages = async () => {
-    const packages = [
-      "jsonlite", "sp", "gstat", "ggplot2"
-    ];
+    const packages = ["jsonlite", "sp", "gstat"];
+  
     for (const pkg of packages) {
+      setCurrentPackage(pkg);
       try {
         await webR.installPackages([pkg]);
         await webR.evalRVoid(`suppressMessages(library(${pkg}))`);
@@ -31,10 +36,20 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
         console.error(`Error installing/loading ${pkg}:`, err);
       }
     }
-  };
+    setPackagesReady(true);
+    setCurrentPackage("");
+    setCurrentPackage("Done!");
+
+    setTimeout(() => {
+      setShowLoadingDialog(false);
+      setCurrentPackage("");
+    }, 2000);
+    
+  };  
 
   const setupSfPackage = async () => {
-    if (sfPackageReady || !webRReady) return;
+    if (sfPackageReady || sfSetupInProgress || !webRReady) return;
+    setSfSetupInProgress(true);
     try {
       console.log("Setting up minimal units database...");
 
@@ -108,7 +123,8 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
       setSfPackageReady(true);
     } catch (err) {
       console.error("Error setting up sf:", err);
-      setSfPackageReady(true);
+    } finally {
+      setSfSetupInProgress(false);
     }
   };
 
@@ -116,21 +132,19 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
     const initWebR = async () => {
       try {
         await webR.init();
-        console.log("WebR initialized");
         setWebRReady(true);
-        if (webRRef) {
-          webRRef.current = webR;
-        }
-
-        // Preload all required libraries
-        await installAndLoadPackages();
+        if (webRRef) webRRef.current = webR;
+  
+        await installAndLoadPackages();  // install and load packages in background
+        await setupSfPackage();          // same for sf
       } catch (err) {
-        console.error("WebR initialization failed:", err);
+        console.error("WebR init failed:", err);
         setTextOutput(`Error initializing WebR: ${err.message}`);
       }
     };
     initWebR();
   }, []);
+  
 
   useEffect(() => {
     if (webRReady && !sfPackageReady) {
@@ -140,6 +154,21 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
 
   const runCode = async () => {
     setTextOutput("");
+
+    // Check if packages are ready
+    const stillInstalling = !packagesReady;
+    // if packages are noch ready show dialog
+    if (stillInstalling) {
+      setShowLoadingDialog(true);
+      while (!packagesReady) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+      }
+      setShowLoadingDialog(false);
+    }
+    
+    // Fallback: ensure currentPackage is cleared
+    setCurrentPackage("");
+
     try {
       await setupSfPackage();
       await webR.evalRVoid("options(device=webr::canvas)");
@@ -265,6 +294,11 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
               height: CANVAS_SIZE + "px",
               display: "block",
             }}
+          />
+          <PackageLoadingDialog
+            open={showLoadingDialog}
+            currentPackage={currentPackage}
+            onClose={() => setShowLoadingDialog(false)}
           />
         </Box>
       </Box>
