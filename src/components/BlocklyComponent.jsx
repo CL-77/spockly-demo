@@ -9,10 +9,11 @@ import { Upload, UploadFile } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup, IconButton } from "@mui/material";
 import { FaBookOpen, FaMapMarkedAlt, FaQuestionCircle } from "react-icons/fa";
+import { MdCo2 } from "react-icons/md";
 import { Toolbar } from "@mui/material";
 
 import CreateDataDialog from "./CreateDataDialog.jsx";
-
+import SimpleTutorialPanel from "./SimpleTutorialPanel.jsx"; 
 
 const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) => {
   const theme = useTheme();
@@ -23,6 +24,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   const [level, setLevel] = useState("level1");
 
   const [openCreateDataDialog, setOpenCreateDataDialog] = useState(false);
+
+  const [showTutorial, setShowTutorial] = useState(false);
 
 
   // Blockly toolbox definition for Level 1 (Beginner)
@@ -433,6 +436,16 @@ useEffect(() => {
             <FaQuestionCircle />
           </IconButton>
         </Tooltip>
+
+        <Tooltip title="Show Simple CO₂ Tutorial" arrow>
+          <IconButton
+            onClick={() => setShowTutorial(prev => !prev)}
+            sx={{ color: showTutorial ? "green" : "inherit" }}
+          >
+            <MdCo2 />
+          </IconButton>
+        </Tooltip>
+
         </Box>
         </Toolbar>
 
@@ -447,6 +460,8 @@ useEffect(() => {
           padding: 0,
         }}
       />
+
+    {showTutorial && <SimpleTutorialPanel onClose={() => setShowTutorial(false)} />}
     </Box>
   );
 };
