@@ -13,43 +13,67 @@ Mit Hilfe von Blockly-Blöcken wirst du lernen, wie man die Daten lädt, untersu
     },
     {
       title: "1. CSV-Datei laden",
-      content: `Öffne in der linken Toolbox die Kategorie **Load Data** und ziehe den Block **load CSV file** in den Editor.\nGib den Dateinamen **co2.csv** an.`
+      content: `Öffne in der linken Toolbox die Kategorie **Load Data** und ziehe den Block **load CSV file** in den Editor.
+Gehe anschließend zur Kategorie **Variables**, erstelle eine neue Variable mit dem Namen **co2** und verwende den Block **set VARIABLE to**. Setze den CSV-Block in diesen hinein.
+Gib im CSV-Block den Dateinamen **co2.csv** an.`
     },
     {
       title: "2. Vorschau anzeigen",
-      content: `Nutze den Block **summary of** aus der **Data Inspection** Kategorie und ziehe den geladenen Datensatz in die Lücke, um dir die Strukur der Daten anzusehen.`
+      content: `Nutze den Block **summary of** aus der **Data Inspection** Kategorie und ziehe die Variable **co2** hinein, um dir die Struktur der Daten anzusehen.`
     },
     {
       title: "3. Durchschnitt berechnen",
-      content: `Ziehe den Block **calculate_mean** aus der **Statistics** Kategorie in den Editor und berechne den Mittelwert der Spalte mit den CO₂-Werten.`
+      content: `Ziehe den Block **calculate_mean** aus der **Statistics** Kategorie in den Editor und verwende ihn mit der CO₂-Spalte aus **co2**, z. B. **co2$average**.`
     },
     {
       title: "4. Visualisieren",
-      content: `Zeichne ein Liniendiagramm mit **plot**. X-Achse: Monat, Y-Achse: CO₂.\n\nWas fällt dir auf? Gibt es bestimmte Jahre oder Monate mit besonders hohen Werten? Wie hat sich der Durchschnitt über die Zeit verändert?` 
+      content: `Zeichne ein Liniendiagramm mit dem Block **plot** aus der **Visualization** Kategorie. X-Achse: **decimal_date**, Y-Achse: **average**.
+
+Was fällt dir auf? Gibt es bestimmte Jahre oder Monate mit besonders hohen Werten? Wie hat sich der Durchschnitt über die Zeit verändert?`
+    },
+    {
+      title: "5. Code generieren",
+      content: `Klicke auf den Button **Generate Code**, um den zugehörigen R-Code zu erzeugen. Überprüfe, ob alle Blöcke korrekt verbunden sind.`
+    },
+    {
+      title: "6. Output anzeigen",
+      content: `Wechsle zum Reiter **Output** und führe den generierten Code mit dem **Play-Button** aus. Sieh dir die Ausgabe an und vergleiche sie mit deinen Erwartungen.`
     }
   ],
   en: [
     {
       title: "Introduction",
-      content: `In this tutorial, you'll learn how to analyze and visualize CO₂ data collected at Mauna Loa volcano in Hawaii. Since 1958, atmospheric CO₂ levels have been measured continuously there. These measurements are especially important because they show the long-term rise in greenhouse gases and provide key evidence for climate change.
+      content: `In this tutorial, you will learn how to analyze and visualize CO₂ data from the Mauna Loa volcano in Hawaii. Since 1958, atmospheric CO₂ concentrations have been continuously recorded there. These data are especially important as they reveal the long-term increase in greenhouse gases, providing key evidence for climate change.
 
-Using Blockly blocks, you'll explore how to load, inspect, and visualize the dataset.`
+With Blockly blocks, you will learn how to load, examine, and visualize the data.`
     },
     {
       title: "1. Load CSV File",
-      content: `Open the **Load Data** category in the toolbox on the left and drag the **load CSV file** block into the editor.\nEnter the filename **co2.csv**.`
+      content: `Open the **Load Data** category in the toolbox on the left and drag the **load CSV file** block into the editor.
+Then go to the **Variables** category, create a new variable named **co2**, and use the **set VARIABLE to** block. Place the CSV block into it.
+In the CSV block, enter the filename **co2.csv**.`
     },
     {
       title: "2. Show Preview",
-      content: `Use the **summary of** block from the **Data Inspection** category and drop your dataset into it to get a structural overview.`
+      content: `Use the **summary of** block from the **Data Inspection** category and insert the **co2** variable to inspect the structure of the dataset.`
     },
     {
       title: "3. Calculate Mean",
-      content: `Drag the **calculate_mean** block from the **Statistics** category into the editor and calculate the mean of the CO₂ column.`
+      content: `Drag the **calculate_mean** block from the **Statistics** category into the editor and apply it to the CO₂ column from **co2**, e.g., **co2$average**.`
     },
     {
       title: "4. Visualize",
-      content: `Create a line chart using the **plot** block. X-axis: month, Y-axis: CO₂.\n\nWhat do you notice? Are there specific years or months with particularly high values? How has the average changed over time?`
+      content: `Use the **plot** block from the **Visualization** category to draw a line chart. X-axis: **decimal_date**, Y-axis: **average**.
+
+What do you notice? Are there specific years or months with particularly high values? How has the average changed over time?`
+    },
+    {
+      title: "5. Generate Code",
+      content: `Click the **Generate Code** button to produce the corresponding R code. Make sure all blocks are properly connected.`
+    },
+    {
+      title: "6. Show Output",
+      content: `Switch to the **Output** tab and run the generated code using the **Play button**. Observe the results and compare them to your expectations.`
     }
   ]
 };
