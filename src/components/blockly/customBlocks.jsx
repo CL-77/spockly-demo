@@ -328,8 +328,7 @@ Blockly.Blocks['bool1'] = {
   }
 };
 pythonGenerator.forBlock['bool1'] = function(block) {
-  const bool = block.getFieldValue('drop');
-  return [bool, pythonGenerator.ORDER_ATOMIC];
+  return ['True', pythonGenerator.ORDER_ATOMIC];
 }
 
 Blockly.Blocks['bool2'] = {
@@ -792,35 +791,6 @@ pythonGenerator.forBlock['add_object'] = function(block, generator) {
   return [`np.append(${value_array}, ${value_object})`, pythonGenerator.ORDER_COLLECTION];
 }
 
-/**
- * Nunmpy: filter list
- */
-Blockly.Blocks['list_filter'] = {
-  init: function() {
-    this.appendValueInput('CNAME')
-      .appendField('array to filter')
-      .appendField(new Blockly.FieldTextInput('LIST_NAME'), 'CNAME');
-    this.appendValueInput('DNAME')
-      .appendField('according to')
-      .appendField(new Blockly.FieldTextInput('LIST_NAME2'), 'DNAME');
-    this.appendDummyInput('ENAME')
-      .appendField('store array in')
-      .appendField(new Blockly.FieldTextInput('VAR_NAME'), 'ENAME');
-    this.setInputsInline(false)
-    this.setOutput(true, null);
-    this.setTooltip('Filter a list according to a list of booleans');
-    this.setHelpUrl('');
-    this.setColour(315);
-  }
-};
-pythonGenerator.forBlock['list_filter'] = function(block, generator) {
-  const text_cname = block.getFieldValue('CNAME');
-  const text_dname = block.getFieldValue('DNAME');
-  const text_ename = block.getFieldValue('ENAME');
-  const value_cname = generator.valueToCode(block, 'CNAME', pythonGenerator.ORDER_ATOMIC);
-  const value_dname = generator.valueToCode(block, 'DNAME', pythonGenerator.ORDER_ATOMIC);
-  return [`${text_cname} = np.array(${value_cname})\n${text_dname} = ${value_dname}\n${text_ename} = ${text_cname}[${text_dname}]\n`, pythonGenerator.ORDER_ATOMIC];
-}
 
 /**
  * Value to boolean
