@@ -2,16 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { WebR } from "@r-wasm/webr";
 import {
   Box,
-  Fab,
   IconButton,
   Stack,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
 import { darkTheme, lightTheme } from "./../appTheme";
-const webR = new WebR();
+import PackageLoadingDialog from "./PackageLoadingDialog";
 
+const webR = new WebR();
 const CANVAS_SIZE = 650;
 
 const WebRRunner = ({ code, isDarkMode, webRRef }) => {
@@ -19,12 +18,38 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
   const theme = isDarkMode ? darkTheme : lightTheme;
   const [textOutput, setTextOutput] = useState("");
   const [sfPackageReady, setSfPackageReady] = useState(false);
+  const [sfSetupInProgress, setSfSetupInProgress] = useState(false);  
   const [webRReady, setWebRReady] = useState(false);
+  const [showLoadingDialog, setShowLoadingDialog] = useState(false);
+  const [currentPackage, setCurrentPackage] = useState("");
+  const [packagesReady, setPackagesReady] = useState(false);
 
-  // Setup sf package with minimal units database
+  const installAndLoadPackages = async () => {
+    const packages = ["jsonlite", "sp", "gstat"];
+  
+    for (const pkg of packages) {
+      setCurrentPackage(pkg);
+      try {
+        await webR.installPackages([pkg]);
+        await webR.evalRVoid(`suppressMessages(library(${pkg}))`);
+      } catch (err) {
+        console.error(`Error installing/loading ${pkg}:`, err);
+      }
+    }
+    setPackagesReady(true);
+    setCurrentPackage("");
+    setCurrentPackage("Done!");
+
+    setTimeout(() => {
+      setShowLoadingDialog(false);
+      setCurrentPackage("");
+    }, 2000);
+    
+  };  
+
   const setupSfPackage = async () => {
-    if (sfPackageReady || !webRReady) return;
-
+    if (sfPackageReady || sfSetupInProgress || !webRReady) return;
+    setSfSetupInProgress(true);
     try {
       console.log("Setting up minimal units database...");
 
@@ -70,7 +95,6 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
           '  </unit>',
           '</unit-system>'
         )
-        
         minimal_xml <- paste(minimal_xml_lines, collapse = "\\n")
         writeLines(minimal_xml, "/home/web_user/minimal_udunits.xml")
         Sys.setenv(UDUNITS2_XML_PATH = "/home/web_user/minimal_udunits.xml")
@@ -83,150 +107,83 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
           return(invisible(NULL))
         }
 
-        units_loaded <- FALSE
         suppressMessages(suppressWarnings({
           tryCatch({
             library(units)
-            units_loaded <- TRUE
           }, error = function(e) {
-            message("Normal units loading failed, trying workaround...")
             tryCatch({
               loadNamespace("units")
               library.dynam("units", "units")
-              units_loaded <- TRUE
-            }, error = function(e2) {
-              message("Units loading completely failed")
-            })
+            }, error = function(e2) {})
           })
         }))
       `);
 
-      console.log("Minimal units database successfully initialized.");
+      await webR.installPackages(["sf"]);
+      await webR.evalRVoid(`suppressMessages(library(sf))`);
       setSfPackageReady(true);
     } catch (err) {
-      console.error("Error setting up database:", err);
-      setSfPackageReady(true);
+      console.error("Error setting up sf:", err);
+    } finally {
+      setSfSetupInProgress(false);
     }
   };
 
-  // Run code with sf workaround
-  const runCodeWithSfWorkaround = async (code) => {
-    if (
-      code.includes('library("sf")') ||
-      code.includes("library(sf)") ||
-      code.includes("sf::")
-    ) {
-      const lines = code.split("\n");
-      let modifiedCode = "";
-      let sfInstallLine = "";
-      let sfLibraryLine = "";
-
-      for (const line of lines) {
-        if (line.includes('webr::install("sf")')) {
-          sfInstallLine = line;
-        } else if (
-          line.includes('library("sf")') ||
-          line.includes("library(sf)")
-        ) {
-          sfLibraryLine = line;
-        } else {
-          modifiedCode += line + "\n";
-        }
-      }
-
-      if (sfInstallLine) {
-        await webR.evalRVoid(sfInstallLine);
-      }
-
-      await webR.evalRVoid(`
-        Sys.setenv(UDUNITS2_XML_PATH = "/home/web_user/minimal_udunits.xml")
-        sf_loaded <- FALSE
-        suppressMessages(suppressWarnings({
-          tryCatch({
-            library(sf)
-            sf_loaded <- TRUE
-            message("SF package loaded successfully")
-          }, error = function(e) {
-            tryCatch({
-              loadNamespace("sf")
-              attachNamespace("sf")
-              sf_loaded <- TRUE
-              message("SF package loaded with workaround")
-            }, error = function(e2) {
-              tryCatch({
-                library.dynam("sf", "sf")
-                sf_loaded <- TRUE
-                message("SF package partially loaded")
-              }, error = function(e3) {
-                message(paste("SF loading failed:", e3$message))
-              })
-            })
-          })
-        }))
-      `);
-
-      if (modifiedCode.trim()) {
-        return await webR.evalR(modifiedCode);
-      }
-    } else {
-      return await webR.evalR(code);
-    }
-  };
-
-  // Initialize WebR only once when the component mounts
   useEffect(() => {
     const initWebR = async () => {
       try {
-        // Initialize WebR environment
         await webR.init();
-        console.log("WebR initialized");
-
         setWebRReady(true);
-
-        // Make WebR instance available to parent components
-        if (webRRef) {
-          webRRef.current = webR;
-        }
+        if (webRRef) webRRef.current = webR;
+  
+        await installAndLoadPackages();  // install and load packages in background
+        await setupSfPackage();          // same for sf
       } catch (err) {
-        console.error("WebR initialization failed:", err);
+        console.error("WebR init failed:", err);
         setTextOutput(`Error initializing WebR: ${err.message}`);
       }
     };
     initWebR();
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
+  
 
-  // Setup sf package when WebR is ready
   useEffect(() => {
     if (webRReady && !sfPackageReady) {
       setupSfPackage();
     }
   }, [webRReady, sfPackageReady]);
 
-  // Function to run R code
   const runCode = async () => {
-    // Clear previous text output
     setTextOutput("");
 
-    try {
-      // Setup sf package if needed
-      await setupSfPackage();
+    // Check if packages are ready
+    const stillInstalling = !packagesReady;
+    // if packages are noch ready show dialog
+    if (stillInstalling) {
+      setShowLoadingDialog(true);
+      while (!packagesReady) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+      }
+      setShowLoadingDialog(false);
+    }
+    
+    // Fallback: ensure currentPackage is cleared
+    setCurrentPackage("");
 
-      // Set the default graphics device to webr::canvas
+    try {
+      await setupSfPackage();
       await webR.evalRVoid("options(device=webr::canvas)");
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
-
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Handle webR output messages in an async loop
       (async () => {
         for (;;) {
           const output = await webR.read();
           switch (output.type) {
             case "canvas":
               if (output.data.event === "canvasImage") {
-                // Add plot image data to the current canvas element
                 const canvas = canvasRef.current;
                 const ctx = canvas.getContext("2d");
                 ctx.drawImage(
@@ -237,7 +194,6 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
                   canvas.height - 10
                 );
               } else if (output.data.event === "canvasNewPage") {
-                // Clear the canvas for a new plot
                 const canvas = canvasRef.current;
                 const ctx = canvas.getContext("2d");
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -245,7 +201,6 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
               break;
             case "stdout":
             case "stderr":
-              // Capture text output
               if (output.data) {
                 setTextOutput((prev) => prev + output.data);
               }
@@ -256,20 +211,9 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
         }
       })();
 
-      // Evaluate the R code with text output capture
       let result;
       try {
-        if (
-          code.includes("sf::") ||
-          code.includes('library("sf")') ||
-          code.includes("library(sf)")
-        ) {
-          result = await runCodeWithSfWorkaround(code);
-        } else {
-          result = await webR.evalR(code);
-        }
-
-        // If we have a result, display it as text output
+        result = await webR.evalR(code);
         if (result) {
           const values = await result.toArray();
           const filtered = values.filter(
@@ -289,7 +233,6 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
           }
         }
       } catch (err) {
-        // If evalR fails, try evalRVoid
         try {
           await webR.evalRVoid(code);
         } catch (voidErr) {
@@ -297,20 +240,13 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
         }
       }
     } catch (err) {
-      // Handle errors gracefully
       console.error("WebR Error:", err);
       setTextOutput(`Error: ${err.message}`);
     }
   };
 
   return (
-    <Box
-      sx={{
-        height: "100%",
-        borderRadius: "5px",
-        zIndex: 1,
-      }}
-    >
+    <Box sx={{ height: "100%", borderRadius: "5px", zIndex: 1 }}>
       <Stack direction="row-reverse" sx={{ paddingY: 1 }}>
         <Tooltip title="Run R Code">
           <IconButton
@@ -337,7 +273,6 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
           overflow: "auto",
         }}
       >
-        {/* Text output */}
         {textOutput && (
           <Box
             sx={{
@@ -350,9 +285,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
             {textOutput}
           </Box>
         )}
-
         <Box sx={{ marginX: 4 }}>
-          {/* Canvas for plots */}
           <canvas
             ref={canvasRef}
             width={CANVAS_SIZE * window.devicePixelRatio}
@@ -363,6 +296,11 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
               display: "block",
             }}
           />
+          <PackageLoadingDialog
+            open={showLoadingDialog}
+            currentPackage={currentPackage}
+            onClose={() => setShowLoadingDialog(false)}
+          />
         </Box>
       </Box>
     </Box>
@@ -370,3 +308,5 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
 };
 
 export default WebRRunner;
+
+

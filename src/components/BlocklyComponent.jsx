@@ -9,6 +9,11 @@ import { Upload, UploadFile } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup, IconButton } from "@mui/material";
 import { FaBookOpen, FaMapMarkedAlt, FaQuestionCircle } from "react-icons/fa";
+import { MdCo2 } from "react-icons/md";
+import { Toolbar } from "@mui/material";
+
+import CreateDataDialog from "./CreateDataDialog.jsx";
+import SimpleTutorialPanel from "./SimpleTutorialPanel.jsx"; 
 
 const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) => {
   const theme = useTheme();
@@ -17,6 +22,11 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 
   // State to toggle between beginner and advanced block toolboxes
   const [level, setLevel] = useState("level1");
+
+  const [openCreateDataDialog, setOpenCreateDataDialog] = useState(false);
+
+  const [showTutorial, setShowTutorial] = useState(false);
+
 
   // Blockly toolbox definition for Level 1 (Beginner)
   // Change content later
@@ -34,7 +44,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="math_arithmetic"></block>
     <block type="text"></block>
     <block type="text_print"></block>
-    <block type="histogram_block"></block>
     <block type="rnorm_block"></block>
     <block type="print_files"></block> 
     <block type="head_print"></block>
@@ -80,10 +89,13 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="exp_of"></block>
     <block type="log_of"></block>
   </category>
-
+  
   <category name="Statistics" colour="#BA68C8">
     <block type="calculate_mean"></block>
     <block type="calculate_sd"></block>
+    <block type="quantile_column"></block>
+    <block type="sorted_element_at"></block>
+    <block type="summarize_data"></block>
     <block type="calculate_median"></block>
     <block type="calculate_max"></block>
     <block type="calculate_min"></block>
@@ -113,13 +125,18 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   </category>
   
   <category name="Visualization" colour="#90A4AE">
-    <block type="print_output"></block>
-    <block type="histogram_block"></block>
-    <block type="boxplot_block"></block>
+    <block type="print_data"></block>
+    <block type="preview_data"></block>
+    <block type="show_structure"></block>
+    <block type="show_rows"></block>
+    <block type="show_tail"></block>
+    <block type="plot_scatter"></block>
+    <block type="plot_histogram"></block>
+    <block type="plot_boxplot"></block>
     <block type="barplot_block"></block>
     <block type="piechart_block"></block>
-    <block type="scatterplot_block"></block>
   </category>
+
 
   <category name="Export" colour="#FFB74D">
     <block type="export_plot_png"></block>
@@ -148,7 +165,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="math_arithmetic"></block>
     <block type="text"></block>
     <block type="text_print"></block>
-    <block type="histogram_block"></block>
     <block type="rnorm_block"></block>
     <block type="print_files"></block> 
     <block type="head_print"></block>
@@ -175,6 +191,9 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 	  <block type="load_tif"></block>
     <block type="load_csv_url"></block>
     <block type="load_api_data"></block>
+	<block type="load_csv"></block>
+	<block type="load_geojson"></block>
+	<block type="load_tif"></block>
   </category>
 
   <category name="Data Inspection" colour="#FF7043">
@@ -307,7 +326,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="linear_model_block"></block>
     <block type="semivariogram"></block>
     <block type="kriging_interpolation"></block>
-    <block type="idw_interpolation"></block>
+    <!---<block type="idw_interpolation"></block>-->
     <block type="nn_interpolation"></block>
   </category>
 
@@ -341,42 +360,29 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 
   // Initialize Blockly with the selected theme and toolbox whenever the theme or level changes
   useEffect(() => {
-    if (!blocklyDiv.current) {
-      console.error("blocklyDiv is not available.");
-      return;
-    }
+  if (!blocklyDiv.current) return;
 
-    workspaceRef.current = Blockly.inject(blocklyDiv.current, {
-      renderer: "zelos",
-      toolbox: toolboxXml,
-      theme: isDarkMode ? darkTheme : lightTheme,
-      grid: {
-        spacing: 40,
-        length: 4,
-        colour: "#fff",
-        snap: true,
-      },
-      zoom: {
-        controls: true,
-        wheel: true,
-      },
-      move: {
-        drag: true,
-        wheel: true,
-      },
-      trashcan: {},
-    });
+  workspaceRef.current = Blockly.inject(blocklyDiv.current, {
+    renderer: "zelos",
+    toolbox: toolboxXml,
+    theme: isDarkMode ? darkTheme : lightTheme,
+    grid: { spacing: 40, length: 4, colour: "#fff", snap: true },
+    zoom: { controls: true, wheel: true },
+    move: { drag: true, wheel: true },
+    trashcan: {},
+  });
 
-    return () => {
-      if (linkRef.current) {
-        linkRef.current.remove();
-        linkRef.current = null;
-      }
-      workspaceRef.current?.dispose();
-    };
-  }, [isDarkMode, toolboxXml]);
+    return () => workspaceRef.current?.dispose();}, []);
+useEffect(() => {
+  if (workspaceRef.current) {
+    workspaceRef.current.setTheme(isDarkMode ? darkTheme : lightTheme);
+  }
+}, [isDarkMode]);
+useEffect(() => {
+  workspaceRef.current?.updateToolbox(toolboxXml);
+}, [toolboxXml]);
 
-  // Render the Blockly workspace and UI for file upload and level selection
+
   return (
     <Box
       sx={{
@@ -387,23 +393,18 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
       }}
     >
       {/* Top bar with Upload button and Level toggle */}
-      <Box
-        display="flex"
-        alignItems="stretch"
-        justifyContent="space-between"
-        px={3}
-        py={1.5}
-        mb={2}
+      <Toolbar
         sx={{
-          bgcolor: isDarkMode ? "#2b2d42" : "#e7ebf0",
+          display: "flex",
+          justifyContent: "space-between",
+          bgcolor: isDarkMode ? "#150e31" : "#f5f5f5",
+          mb: 2,
           borderRadius: 4,
-          boxShadow: 3,
-          border: "1px solid",
-          borderColor: isDarkMode ? "#4e5d6c" : "#ccd6df",
         }}
-      >
+        >
         <Tooltip title="Upload your CSV, GeoJSON or TIF data." arrow>
           <Button
+            id="uploadDataButton"
             variant="contained"
             onClick={onUploadClick}
             sx={{
@@ -427,7 +428,33 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           </Button>
         </Tooltip>
 
+        <Tooltip title="Create CSV data manually">
+          <Button
+            variant="outlined"
+            onClick={() => setOpenCreateDataDialog(true)}
+            sx={{ ml: 2 }}
+          >
+            Create Data
+          </Button>
+        </Tooltip>
+
+        <CreateDataDialog
+          open={openCreateDataDialog}
+          onClose={() => setOpenCreateDataDialog(false)}
+        />
+
         <Box display="flex" alignItems="center" gap={2} flex={1} justifyContent="flex-end" minWidth={0}>
+        <Tooltip
+            title={
+              <Box>
+                Beginner: built-in datasets & simple blocks.<br />
+                Advanced: load files, model, visualize spatial data.<br />
+                See tutorials for more information.
+              </Box>
+            }
+            arrow
+            enterDelay={0}
+          >
           <ToggleButtonGroup
             exclusive
             value={level}
@@ -437,6 +464,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
               borderRadius: 2,
               boxShadow: 1,
             }}
+            id="switchLevelsButton"
           >
             <ToggleButton value="level1" sx={{ px: 2, py: 1, gap: 1 }}>
               <FaBookOpen /> Beginner
@@ -445,31 +473,33 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
               <FaMapMarkedAlt /> Advanced
             </ToggleButton>
           </ToggleButtonGroup>
-          <Tooltip
-            title={
-              <Box>
-                Beginner: built-in datasets & simple blocks.<br />
-                Advanced: load files, model, visualize spatial data.<br />
-                Click to see tutorials for more.
-              </Box>
-            }
-            arrow
-            enterDelay={0}
+        </Tooltip>
+
+         { /* Help button to start Spockly tour */}
+         <Tooltip title="Start Spockly Tour" arrow>
+          <IconButton
+            onClick={() => window?.__startSpocklyTour?.()}
+            sx={{ color: "inherit" }}
           >
-            <IconButton
-              component="a"
-              href="/tutorials"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{ color: "inherit" }}
-            >
-              <FaQuestionCircle />
-            </IconButton>
-          </Tooltip>
+            <FaQuestionCircle />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="Show Simple CO₂ Tutorial" arrow>
+          <IconButton
+            onClick={() => setShowTutorial(prev => !prev)}
+            sx={{ color: showTutorial ? "green" : "inherit" }}
+          >
+            <MdCo2 />
+          </IconButton>
+        </Tooltip>
+
         </Box>
-      </Box>
+        </Toolbar>
+
       {/* Blockly rendering area */}
       <Box
+        id="blocklyWorkspaceContainer"
         ref={blocklyDiv}
         sx={{
           height: "90%",
@@ -478,6 +508,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           padding: 0,
         }}
       />
+
+    {showTutorial && <SimpleTutorialPanel onClose={() => setShowTutorial(false)} />}
     </Box>
   );
 };

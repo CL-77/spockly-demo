@@ -7,6 +7,7 @@ import WebRRunner from "./WebRRunner";
 import FileUploadManager from "./FileUploadManager";
 import { MdOutlineOutput } from "react-icons/md";
 import { FaCode } from "react-icons/fa6";
+import useSpocklyTour from './useSpocklyTour';
 
 function TabPanel({ children, value, index }) {
   return (
@@ -31,6 +32,8 @@ export default function SPOCKLY({ isDarkMode }) {
   const webRRef = useRef(null);
   const workspaceRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
+
+  useSpocklyTour();
 
   const handleChange = (_event, newValue) => {
     setValue(newValue);
@@ -100,6 +103,7 @@ export default function SPOCKLY({ isDarkMode }) {
           }}
         >
           <Tab
+            id ="codeTab"
             label={
               <Box display="flex" alignItems="center" gap={1}>
                 <FaCode /> Code
@@ -112,6 +116,7 @@ export default function SPOCKLY({ isDarkMode }) {
             }}
           />
           <Tab
+            id="outputTab"
             label={
               <Box display="flex" alignItems="center" gap={1}>
                 <MdOutlineOutput /> Output
