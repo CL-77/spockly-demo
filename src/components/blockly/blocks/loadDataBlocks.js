@@ -231,16 +231,15 @@ Blockly.defineBlocksWithJsonArray([
 // Generator for load_csv block
 Blockly.Generator.R.forBlock['load_csv'] = function(block) {
   var filename = block.getFieldValue('FILENAME');
-  Blockly.Generator.R.addLibrary('readr');
-  
-  var code = 'read_csv("' + filename + '")';
-  return [code, Blockly.Generator.R.ORDER_FUNCTION_CALL];
+
+  var code = 'read.csv("' + filename + '")';
+  return [code, Blockly.Generator.R.ORDER_NONE];
 };
 
 // Generator for load_shapefile block
 Blockly.Generator.R.forBlock['load_shapefile'] = function(block) {
   var filename = block.getFieldValue('FILENAME');
-  Blockly.Generator.R.addLibrary('sf');
+  Blockly.Generator.R.requirePackage('sf');
   
   var code = 'st_read("' + filename + '")';
   return [code, Blockly.Generator.R.ORDER_FUNCTION_CALL];
@@ -249,9 +248,9 @@ Blockly.Generator.R.forBlock['load_shapefile'] = function(block) {
 // Generator for load_raster block
 Blockly.Generator.R.forBlock['load_raster'] = function(block) {
   var filename = block.getFieldValue('FILENAME');
-  Blockly.Generator.R.addLibrary('stars');
+  Blockly.Generator.R.requirePackage('terra');
   
-  var code = 'read_stars("' + filename + '")';
+  var code = 'rast("' + filename + '")';
   return [code, Blockly.Generator.R.ORDER_FUNCTION_CALL];
 };
 

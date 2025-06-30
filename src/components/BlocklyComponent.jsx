@@ -69,6 +69,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   	<block type="data_summary"></block>
     <block type="structure_overview"></block>
     <block type="preview_head_n"></block>
+	<block type="data_table"></block>
+	<block type="length_data"></block>
   </category>
 
   <category name="Variables" colour="#7d4561" custom="VARIABLE"></category>
@@ -207,6 +209,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="subset_rows"></block>
     <block type="subset_column_range"></block>
 	<block type="data_table"></block>
+	<block type="length_data"></block>
   </category>
 
   <category name="Variables" colour="#7d4561" custom="VARIABLE"></category>
@@ -246,14 +249,13 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   </category>
 
   <category name="Transformations" colour="#FFD54F">
-	  <block type="convert_to_sf"></block>
+	<block type="convert_to_sf"></block>
+	<block type="convert_to_dataframe"></block>
     <block type="sort_array"></block>
     <block type="stack_data"></block>
     <block type="append_array"></block>
     <block type="create_array"></block>
     <block type="slice_file"></block>
-	<block type="convert_to_sf"></block>
-	<block type="convert_to_dataframe"></block>
   </category>
 
     <category name="Maps" colour="#81C784">

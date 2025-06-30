@@ -36,96 +36,6 @@ Blockly.defineBlocksWithJsonArray([
 	},
 ]);
 
-//
-// ─── ARRAY AND UTILITY BLOCKS ───────────────────────────────────────────────────
-//
-
-Blockly.defineBlocksWithJsonArray([
-  {
-	type: "stack_data",
-	message0: "stack data %1 and %2 using %3",
-	args0: [
-	  { type: "input_value", name: "DATA1" },
-	  { type: "input_value", name: "DATA2" },
-	  {
-		type: "field_dropdown",
-		name: "METHOD",
-		options: [
-		  ["rbind", "rbind"],
-		  ["cbind", "cbind"]
-		]
-	  }
-	],
-	previousStatement: null,
-	nextStatement: null,
-	output: "DataFrame",
-	colour: "#FFA726",
-	tooltip: "Stack two data objects using rbind() or cbind()",
-	helpUrl: "https://www.rdocumentation.org/packages/R6Frame/versions/0.1.0/topics/rbind"
-  },
-  {
-	type: "append_array",
-	message0: "append value %1 to %2",
-	args0: [
-	  { type: "input_value", name: "VALUE" },
-	  { type: "input_value", name: "ARRAY" }
-	],
-	previousStatement: null,
-	nextStatement: null,
-	output: null,
-	colour: "#FFA726",
-	tooltip: "Append a value to a vector using append()",
-	helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/append"
-  },
-  {
-	type: "create_array",
-	message0: "create array from %1 with dimension %2",
-	args0: [
-	  { type: "input_value", name: "DATA" },
-	  { type: "input_value", name: "DIM" }
-	],
-	previousStatement: null,
-	nextStatement: null,
-	output: "Array",
-	colour: "#FFA726",
-	tooltip: "Create an array from a dataset and a dimension vector",
-	helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/array"
-  },
-  {
-	type: "sort_array",
-	message0: "sort array %1 by %2 in %3 order",
-	args0: [
-	  { type: "input_value", name: "ARRAY" },
-	  { type: "field_input", name: "COLUMN", text: "1" },
-	  {
-		type: "field_dropdown",
-		name: "ORDER",
-		options: [["ascending", "TRUE"], ["descending", "FALSE"]]
-	  }
-	],
-	previousStatement: null,
-	nextStatement: null,
-	output: "Array",
-	colour: "#FFA726",
-	tooltip: "Sort an array by a specific column in ascending or descending order",
-	helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/sort"
-  },
-  {
-	type: "slice_file",
-	message0: "subset %1 with condition %2",
-	args0: [
-	  { type: "input_value", name: "DATA" },
-	  { type: "field_input", name: "CONDITION", text: "value > 10" }
-	],
-	previousStatement: null,
-	nextStatement: null,
-	output: "DataFrame",
-	colour: "#FFA726",
-	tooltip: "Subset data by condition, like data[condition, ]",
-	helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/Extract"
-  }
-]);
-
 Blockly.Generator.R.forBlock["convert_to_sf"] = function (block, generator) {
 	generator.requirePackage("sf", 'Sys.setenv(UDUNITS2_XML_PATH=system.file("share/udunits/udunits2.xml", package="units"))');
 	const dataFrame = generator.valueToCode(block, "OBJECT", Blockly.Generator.R.ORDER_NONE);
@@ -193,3 +103,157 @@ function generateSingleBlockCode(block, generator) {
 
     return code;
 }
+
+//
+// ─── ARRAY AND UTILITY BLOCKS ───────────────────────────────────────────────────
+//
+
+Blockly.defineBlocksWithJsonArray([
+	{
+	  type: "stack_data",
+	  message0: "stack data %1 and %2 using %3",
+	  args0: [
+		{ type: "input_value", name: "DATA1", check: ["DataFrame", "Variable", "Array"] },
+		{ type: "input_value", name: "DATA2", check: ["DataFrame", "Variable", "Array"] },
+		{
+		  type: "field_dropdown",
+		  name: "METHOD",
+		  options: [
+			["rbind (rows)", "rbind"],
+			["cbind (columns)", "cbind"]
+		  ]
+		}
+	  ],
+	  previousStatement: null,
+	  nextStatement: null,
+	  output: "DataFrame",
+	  colour: "#FFA726",
+	  tooltip: "Stack two data objects using rbind() or cbind()",
+	  helpUrl: "https://www.rdocumentation.org/packages/R6Frame/versions/0.1.0/topics/rbind"
+	},
+	{
+	  type: "append_array",
+	  message0: "append value %1 to %2",
+	  args0: [
+		{ type: "input_value", name: "VALUE", check: ["String", "Number", "Variable"] },
+		{ type: "input_value", name: "ARRAY", check: ["Vector", "Array", "Variable"] }
+	  ],
+	  previousStatement: null,
+	  nextStatement: null,
+	  output: "Vector",
+	  colour: "#FFA726",
+	  tooltip: "Append a value to a vector using append()",
+	  helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/append"
+	},
+	{
+	  type: "create_array",
+	  message0: "create array from %1 with dimensions %2",
+	  args0: [
+		{ type: "input_value", name: "DATA", check: ["Vector", "Variable"] },
+		{ type: "field_input", name: "DIM", text: "c(2, 3)" }
+	  ],
+	  previousStatement: null,
+	  nextStatement: null,
+	  output: "Array",
+	  colour: "#FFA726",
+	  tooltip: "Create an array from data with specified dimensions",
+	  helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/array"
+	},
+	{
+	  type: "sort_array",
+	  message0: "sort %1 in %2 order",
+	  args0: [
+		{ type: "input_value", name: "ARRAY", check: ["Vector", "Array", "Variable"] },
+		{
+		  type: "field_dropdown",
+		  name: "ORDER",
+		  options: [
+			["ascending", "FALSE"], 
+			["descending", "TRUE"]
+		  ]
+		}
+	  ],
+	  previousStatement: null,
+	  nextStatement: null,
+	  output: "Vector",
+	  colour: "#FFA726",
+	  tooltip: "Sort a vector or array in ascending or descending order",
+	  helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/sort"
+	},
+	{
+	  type: "slice_file",
+	  message0: "subset %1 where %2",
+	  args0: [
+		{ type: "input_value", name: "DATA", check: ["DataFrame", "Variable"] },
+		{ type: "field_input", name: "CONDITION", text: "column > 10" }
+	  ],
+	  previousStatement: null,
+	  nextStatement: null,
+	  output: "DataFrame",
+	  colour: "#FFA726",
+	  tooltip: "Subset data by condition using bracket notation",
+	  helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/Extract"
+	}
+  ]);
+  
+  // Code generators for array and utility blocks
+  Blockly.Generator.R.forBlock['stack_data'] = function(block, generator) {
+	const data1 = generator.valueToCode(block, 'DATA1', Blockly.Generator.R.ORDER_ATOMIC) || 'data1';
+	const data2 = generator.valueToCode(block, 'DATA2', Blockly.Generator.R.ORDER_ATOMIC) || 'data2';
+	const method = block.getFieldValue('METHOD');
+	
+	const code = `${method}(${data1}, ${data2})`;
+	
+	if (block.outputConnection && !block.outputConnection.isConnected()) {
+	  return code + '\n';
+	}
+	return [code, Blockly.Generator.R.ORDER_FUNCTION_CALL];
+  };
+  
+  Blockly.Generator.R.forBlock['append_array'] = function(block, generator) {
+	const value = generator.valueToCode(block, 'VALUE', Blockly.Generator.R.ORDER_ATOMIC) || '1';
+	const array = generator.valueToCode(block, 'ARRAY', Blockly.Generator.R.ORDER_ATOMIC) || 'c()';
+	
+	const code = `append(${array}, ${value})`;
+	
+	if (block.outputConnection && !block.outputConnection.isConnected()) {
+	  return code + '\n';
+	}
+	return [code, Blockly.Generator.R.ORDER_FUNCTION_CALL];
+  };
+  
+  Blockly.Generator.R.forBlock['create_array'] = function(block, generator) {
+	const data = generator.valueToCode(block, 'DATA', Blockly.Generator.R.ORDER_ATOMIC) || '1:12';
+	const dim = block.getFieldValue('DIM') || 'c(2, 3)';
+	
+	const code = `array(${data}, dim = ${dim})`;
+	
+	if (block.outputConnection && !block.outputConnection.isConnected()) {
+	  return code + '\n';
+	}
+	return [code, Blockly.Generator.R.ORDER_FUNCTION_CALL];
+  };
+  
+  Blockly.Generator.R.forBlock['sort_array'] = function(block, generator) {
+	const array = generator.valueToCode(block, 'ARRAY', Blockly.Generator.R.ORDER_ATOMIC) || 'data';
+	const decreasing = block.getFieldValue('ORDER');
+	
+	const code = `sort(${array}, decreasing = ${decreasing})`;
+	
+	if (block.outputConnection && !block.outputConnection.isConnected()) {
+	  return code + '\n';
+	}
+	return [code, Blockly.Generator.R.ORDER_FUNCTION_CALL];
+  };
+  
+  Blockly.Generator.R.forBlock['slice_file'] = function(block, generator) {
+	const data = generator.valueToCode(block, 'DATA', Blockly.Generator.R.ORDER_ATOMIC) || 'data';
+	const condition = block.getFieldValue('CONDITION') || 'TRUE';
+	
+	const code = `${data}[${condition}, ]`;
+	
+	if (block.outputConnection && !block.outputConnection.isConnected()) {
+	  return code + '\n';
+	}
+	return [code, Blockly.Generator.R.ORDER_FUNCTION_CALL];
+  };
