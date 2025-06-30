@@ -202,19 +202,21 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           </category>
 
           <category name="${Blockly.Msg.Categories["DATA"]}" colour="#FA2">
-            <block type="sampleDataA"></block>
-            <block type="create_folder"></block>
-            <block type="func_download"></block>
-            <block type="read_file"></block>
-            <block type="write_file"></block>
-            <block type="listdir"></block>
-            <block type="getDir"></block>
-            <block type="chdir"></block>
-            <block type="load_csv"></block>
-            <block type="load_csv_from_url"></block>
-            <block type="load_txt"></block>
-            <block type="load_json"></block>
-            <block type="request_json_data"></block>
+            <category name="${Blockly.Msg.Categories["DOWNLOAD_DATA"]}">
+              <block type="sampleDataA"></block>
+              <block type="create_folder"></block>
+              <block type="func_download"></block>
+              <block type="read_file"></block>
+              <block type="write_file"></block>
+              <block type="listdir"></block>
+              <block type="getDir"></block>
+              <block type="chdir"></block>
+              <block type="load_csv"></block>
+              <block type="load_csv_from_url"></block>
+              <block type="load_txt"></block>
+              <block type="load_json"></block>
+              <block type="request_json_data"></block>
+            </category>
             <block type="convert_column"></block>
             <block type="convert_np_to_pd"></block>          
             <block type="load_shapefile"></block>
@@ -382,12 +384,14 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="line_segment"></block>
             <block type="polygon"></block>
             <block type="multipolygon"></block>
-            <block type="distance_calc"></block>
-            <block type="distance_vinc"></block>
-            <block type="distance_sph"></block>
-            <block type="distance_rect"></block>
-            <block type="distance_manhattan"></block>
-            <block type="distance_haversine"></block>
+            <category name="${Blockly.Msg.Categories["DISTANCE"]}">
+              <block type="distance_calc"></block>
+              <block type="distance_vinc"></block>
+              <block type="distance_sph"></block>
+              <block type="distance_rect"></block>
+              <block type="distance_manhattan"></block>
+              <block type="distance_haversine"></block>
+            </category>
             <block type="centroid"></block>
             <block type="polygon_area"></block>
             <block type="polygon_perimeter"></block>
@@ -574,7 +578,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
       console.error("Blockly workspace is not initialised.");
       return;
     }
-    var libs = "", np, pd, gpd, sns, plt, requests, os, def_download, px, folium, interpol;
+    var libs = "", np, pd, gpd, sns, plt, requests, os, def_download, px, folium, interpol, geodes, point, line, polyg, multipolyg, box;
     var pythonCode = pythonGenerator.workspaceToCode(workspaceRef.current);
     if(~pythonCode.indexOf('np.')) np = true;
     if(~pythonCode.indexOf('pd.')) pd = true;
@@ -587,6 +591,12 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     if(~pythonCode.indexOf('px.')) px = true;
     if(~pythonCode.indexOf('folium.')) folium = true;
     if(~pythonCode.indexOf('idw_interpolation(')) interpol = true;
+    if(~pythonCode.indexOf('geodesic(')) geodes = true;
+    if(~pythonCode.indexOf('Point')) point = true;
+    if(~pythonCode.indexOf('LineString([')) line = true;
+    if(~pythonCode.indexOf('Polygon([')) polyg = true;
+    if(~pythonCode.indexOf('MultiPolygon([')) multipolyg = true;
+    if(~pythonCode.indexOf('box')) box = true;
     libs += np ? "import numpy as np\n" : "";
     libs += pd ? "import pandas as pd\n" : "";
     libs += sns ? "import seaborn as sns\n" : ""; 
@@ -606,6 +616,12 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                                 '\t\tprint("Downloaded \'" + filename + "\'")\n\n' : '';
     libs += px ? 'import plotly.express as px\n' : '';
     libs += folium ? 'import folium\n' : '';
+    libs += geodes ? "from geopy.distance import geodesic\n" : "";
+    libs += point ? "from shapely import Point\n" : "";
+    libs += line ? "from shapely import LineString\n" : "";
+    libs += polyg ? "from shapely import Polygon\n" : "";
+    libs += multipolyg ? "from shapely import MultiPolygon\n" : "";
+    libs += box ? "from shapely.geometry import box\n" : "";
     libs += interpol ? `
 from scipy.spatial import cKDTree
 def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):

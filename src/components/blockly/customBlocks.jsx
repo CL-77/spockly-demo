@@ -734,6 +734,7 @@ Blockly.Blocks['delete_axes'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setTooltip('Deletes given rows and columns from a dataframe');
+    this.setHelpUrl('https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.drop.html'); 
     this.setColour(195);
   }
 };
@@ -743,7 +744,7 @@ pythonGenerator.forBlock['delete_axes'] = function(block, generator) {
   const varID = block.getFieldValue('DATAFRAME') || '0';
   const getVar = block.workspace.getVariableById(varID);
   const df = getVar ? getVar.name : 'df';
-  return `${df}.drop(${'index=' + delInds + ', '|| ''}${'columns=' + delCols || ''})\n`;
+  return `${df}.drop(${(delInds === '[None]') ? '' : 'index=' + delInds + ', '}${(delCols === '[None]') ? '' : 'columns=' + delCols})\n`;
 }
 
 
@@ -1664,7 +1665,7 @@ Blockly.Blocks['polygon_area'] = {
 };
 pythonGenerator.forBlock['polygon_area'] = function(block, generator) {
   const polygon = generator.valueToCode(block, 'polygon', pythonGenerator.ORDER_ATOMIC);
-  return `${polygon}.area`;
+  return [`${polygon}.area`, pythonGenerator.ORDER_ATOMIC];
 }
 
 //**Polygon perimeter */
@@ -1681,7 +1682,7 @@ Blockly.Blocks['polygon_perimeter'] = {
 };
 pythonGenerator.forBlock['polygon_perimeter'] = function(block, generator) {
   const polygon = generator.valueToCode(block, 'polygon', pythonGenerator.ORDER_ATOMIC);
-  return `${polygon}.length`;
+  return [`${polygon}.length`, pythonGenerator.ORDER_ATOMIC];
 }
 
 Blockly.Blocks['geometry_type'] = {
@@ -1696,7 +1697,7 @@ Blockly.Blocks['geometry_type'] = {
 };
 pythonGenerator.forBlock['geometry_type'] = function(block, generator) {
   const geome = generator.valueToCode(block, 'geom', pythonGenerator.ORDER_ATOMIC);
-  return `${geome}.geom_type`;
+  return [`${geome}.geom_type`, pythonGenerator.ORDER_ATOMIC];
 }
 
 Blockly.Blocks['distance_calc'] = {
@@ -1710,7 +1711,7 @@ Blockly.Blocks['distance_calc'] = {
         .appendField('Point 2')
         .setCheck('Coords');
     this.setOutput(true, 'Number');
-    this.setTooltip('Find the distance between points and polygons');
+    this.setTooltip('Find the distance between points');
     this.setHelpUrl('https://shapely.readthedocs.io/en/stable/reference/shapely.distance.html');
     this.setColour(60);
   }
@@ -1724,6 +1725,8 @@ pythonGenerator.forBlock['distance_calc'] = function(block, generator) {
 //**Multipolygon */
 Blockly.Blocks['multipolygon'] = {
   init: function() {
+    this.appendDummyInput('')
+      .appendField('MultiPolygon')
     this.appendValueInput('polygon1')
         .setCheck('Polygon')
         .appendField('Polygon1');
@@ -1745,12 +1748,7 @@ Blockly.Blocks['multipolygon'] = {
 pythonGenerator.forBlock['multipolygon'] = function(block, generator) {
   const value_polygon1 = generator.valueToCode(block, 'polygon1', pythonGenerator.ORDER_ATOMIC);
   const value_polygon2 = generator.valueToCode(block, 'polygon2', pythonGenerator.ORDER_ATOMIC);
-  const text_variable = block.getFieldValue('variable');
-  let show_polygon = block.getFieldValue('SHOW');
-  show_polygon = (show_polygon.toLowerCase() === 'true') ? `\n${text_variable}\n` : '\n'
-  return [`from shapely.geometry import Polygon, MultiPolygon\n`+
-          `${text_variable} = MultiPolygon([${value_polygon1}, ${value_polygon2}])\n`+
-          `${show_polygon}`, pythonGenerator.ORDER_ATOMIC];
+  return [`MultiPolygon([${value_polygon1}, ${value_polygon2}])\n`, pythonGenerator.ORDER_ATOMIC];
 }
 
 //**Bounding box */
@@ -1779,8 +1777,7 @@ pythonGenerator.forBlock['bounding_box'] = function(block) {
   const min_y = block.getFieldValue('min_y') || '0';
   const max_x = block.getFieldValue('max_x') || '0';
   const max_y = block.getFieldValue('max_y') || '0';
-  return `from shapely.geometry import box\n`+
-  `bbox = box(minx=${min_x}, miny=${min_y}, maxx=${max_x}, maxy=${max_y})`
+  return [`box(minx=${min_x}, miny=${min_y}, maxx=${max_x}, maxy=${max_y})`, pythonGenerator.ORDER_ATOMIC];
 }
 
 //**Polygon block */
@@ -1893,7 +1890,7 @@ Blockly.Blocks["centroid"] = {
 };
 pythonGenerator.forBlock["centroid"] = function(block, generator) {
   const centroide = generator.valueToCode(block, 'CTR', pythonGenerator.ORDER_NONE);
-  return `${centroide}.centroid`;
+  return [`${centroide}.centroid`, pythonGenerator.ORDER_ATOMIC];
 };
 
 /****************
@@ -2422,21 +2419,20 @@ Blockly.Blocks['distance_vinc'] = {
         .appendField('Vincenty’s distance');
     this.appendValueInput('point1')
         .appendField('Point 1')
-        .setCheck(['Coords', 'GeoCoords']);
+        .setCheck('GeoCoords');
     this.appendValueInput('point2')
         .appendField('Point 2')
-        .setCheck(['Coords', 'GeoCoords']);
+        .setCheck('GeoCoords');
     this.setOutput(true, 'Number');
     this.setTooltip('Find the Vincenty distance');
-    this.setHelpUrl('');
+    this.setHelpUrl('https://geopy.readthedocs.io/en/stable/index.html?highlight=geodesic#geopy.distance.geodesic');
     this.setColour(60);
   }
 };
 pythonGenerator.forBlock['distance_vinc'] = function(block, generator) {
   const coord1 = generator.valueToCode(block, 'point1', pythonGenerator.ORDER_ATOMIC);
   const coord2 = generator.valueToCode(block, 'point2', pythonGenerator.ORDER_ATOMIC);
-  return [`from geopy.distance import geodesic\n`+
-          `geodesic(${coord1}, ${coord2}).meters`, pythonGenerator.ORDER_ATOMIC];
+  return [`geodesic(${coord1}, ${coord2}).meters`, pythonGenerator.ORDER_ATOMIC];
 }
 
 //Distance on a sphere
@@ -2445,19 +2441,17 @@ Blockly.Blocks['distance_sph'] = {
     this.appendDummyInput()
         .appendField('Distance on a sphere');
     this.appendDummyInput()
-        .appendField('Point 1: (')
+        .appendField('Point 1: Lat:')
         .appendField(new Blockly.FieldNumber('0'), 'Lat1')
-        .appendField(',')
-        .appendField(new Blockly.FieldNumber('0'), 'Lon1')
-        .appendField(')');
+        .appendField(', Lon:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon1');
     this.appendDummyInput()
-        .appendField('Point 2: (')
+        .appendField('Point 2: Lat:')
         .appendField(new Blockly.FieldNumber('0'), 'Lat2')
-        .appendField(',')
-        .appendField(new Blockly.FieldNumber('0'), 'Lon2')
-        .appendField(')');
+        .appendField(', Lon:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon2');
     this.setOutput(true, 'Number');
-    this.setTooltip('Find the distance on a sphere with lat and lon');
+    this.setTooltip('Find the distance on a sphere with latitude and longitude');
     this.setHelpUrl('');
     this.setColour(60);
   }
@@ -2467,11 +2461,7 @@ pythonGenerator.forBlock['distance_sph'] = function(block) {
   const lat2 = block.getFieldValue('Lat2') || '0';
   const lon1 = block.getFieldValue('Lon1') || '0';
   const lon2 = block.getFieldValue('Lon2') || '0';
-  return [`R = 6371e3\n`+
-    `phi1 = np.radians(${lat1})\n`+
-    `phi2 = np.radians(${lat2})\n`+
-    `delta_lambda = np.radians(${lon2} - ${lon1})\n`+
-    `np.acos(np.sin(phi1) * np.sin(phi2) + np.cos(phi1) * np.cos(phi2) * np.cos(delta_lambda)) * R`, pythonGenerator.ORDER_ATOMIC];
+  return [`np.acos(np.sin(np.radians(${lat1})) * np.sin(np.radians(${lat2})) + np.cos(np.radians(${lat1})) * np.cos(np.radians(${lat2})) * np.cos(np.radians(${lon2} - ${lon1}))) * 6371e3`, pythonGenerator.ORDER_ATOMIC];
 }
 
 //Distance with rectangular approximation
@@ -2480,17 +2470,15 @@ Blockly.Blocks['distance_rect'] = {
     this.appendDummyInput()
         .appendField('Distance with rectangular approximation');
     this.appendDummyInput()
-        .appendField('Point 1: (')
+        .appendField('Point 1: Lat:')
         .appendField(new Blockly.FieldNumber('0'), 'Lat1')
-        .appendField(',')
-        .appendField(new Blockly.FieldNumber('0'), 'Lon1')
-        .appendField(')');
+        .appendField(', Lon:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon1');
     this.appendDummyInput()
-        .appendField('Point 2: (')
+        .appendField('Point 2: Lat:')
         .appendField(new Blockly.FieldNumber('0'), 'Lat2')
-        .appendField(',')
-        .appendField(new Blockly.FieldNumber('0'), 'Lon2')
-        .appendField(')');
+        .appendField(', Lon:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon2');
     this.setOutput(true, 'Number');
     this.setTooltip('Find the distance with rectangular approximation with lat and lon');
     this.setHelpUrl('');
@@ -2502,10 +2490,7 @@ pythonGenerator.forBlock['distance_rect'] = function(block) {
   const lat2 = block.getFieldValue('Lat2') || '0';
   const lon1 = block.getFieldValue('Lon1') || '0';
   const lon2 = block.getFieldValue('Lon2') || '0';
-  return [`R = 6371e3\n`+
-    `x = np.radians(${lon2} - ${lon1}) * np.cos(np.radians((${lat1} + ${lat2}) / 2))\n`+
-    `y = np.radians(${lat2} - ${lat1})\n`+
-    `R * np.sqrt(x*x + y*y)`, pythonGenerator.ORDER_ATOMIC];
+  return [`6371e3 * np.sqrt((np.radians(${lon2} - ${lon1}) * np.cos(np.radians((${lat1} + ${lat2}) / 2)))**2 + (np.radians(${lat2} - ${lat1}))**2)`, pythonGenerator.ORDER_ATOMIC];
 }
 
 
@@ -2514,19 +2499,17 @@ Blockly.Blocks['distance_manhattan'] = {
     this.appendDummyInput()
         .appendField('Manhattan distance');
     this.appendDummyInput()
-        .appendField('Point 1: (')
+        .appendField('Point 1: Lat:')
         .appendField(new Blockly.FieldNumber('0'), 'Lat1')
-        .appendField(',')
-        .appendField(new Blockly.FieldNumber('0'), 'Lon1')
-        .appendField(')');
+        .appendField(', Lon:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon1');
     this.appendDummyInput()
-        .appendField('Point 2: (')
+        .appendField('Point 2: Lat:')
         .appendField(new Blockly.FieldNumber('0'), 'Lat2')
-        .appendField(',')
-        .appendField(new Blockly.FieldNumber('0'), 'Lon2')
-        .appendField(')');
+        .appendField(', Lon:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon2');
     this.setOutput(true, 'Number');
-    this.setTooltip('Find the manhattan distance with lat and lon');
+    this.setTooltip('Find the manhattan distance with lat and lon. Only for very short distances, maximum difference between coordinates in hundredths of degrees');
     this.setHelpUrl('');
     this.setColour(60);
   }
@@ -2536,9 +2519,7 @@ pythonGenerator.forBlock['distance_manhattan'] = function(block) {
   const lat2 = block.getFieldValue('Lat2') || '0';
   const lon1 = block.getFieldValue('Lon1') || '0';
   const lon2 = block.getFieldValue('Lon2') || '0';
-  return [`lat_dist = abs(${lat2} - ${lat1}) * 111320\n`+
-    `lon_dist = abs(${lon2} - ${lon1}) * 40075000 * np.cos(np.radians((${lat2} + ${lat1}) / 2)) / 360\n`+
-    `lat_dist + lon_dist`, pythonGenerator.ORDER_ATOMIC];
+  return [`(abs(${lat2} - ${lat1}) * 111320) + (abs(${lon2} - ${lon1}) * 40075000 * np.cos(np.radians((${lat2} + ${lat1}) / 2)) / 360)`, pythonGenerator.ORDER_ATOMIC];
 }
 
 
@@ -2548,17 +2529,15 @@ Blockly.Blocks['distance_haversine'] = {
     this.appendDummyInput()
         .appendField('Distance haversine');
     this.appendDummyInput()
-        .appendField('Point 1: (')
+        .appendField('Point 1: Lat:')
         .appendField(new Blockly.FieldNumber('0'), 'Lat1')
-        .appendField(',')
-        .appendField(new Blockly.FieldNumber('0'), 'Lon1')
-        .appendField(')');
+        .appendField(', Lon:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon1');
     this.appendDummyInput()
-        .appendField('Point 2: (')
+        .appendField('Point 2: Lat:')
         .appendField(new Blockly.FieldNumber('0'), 'Lat2')
-        .appendField(',')
-        .appendField(new Blockly.FieldNumber('0'), 'Lon2')
-        .appendField(')');
+        .appendField(', Lon:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon2');
     this.setOutput(true, 'Number');
     this.setTooltip('Find the distance haversine with lat and lon');
     this.setHelpUrl('');
@@ -2570,14 +2549,7 @@ pythonGenerator.forBlock['distance_haversine'] = function(block) {
   const lat2 = block.getFieldValue('Lat2') || '0';
   const lon1 = block.getFieldValue('Lon1') || '0';
   const lon2 = block.getFieldValue('Lon2') || '0';
-  return [`R = 6371e3\n`+
-    `phi1 = np.radians(${lat1})\n`+
-    `phi2 = np.radians(${lat2})\n`+
-    `delta_lambda = np.radians(${lon2} - ${lon1})\n`+
-    `delta_phi = np.radians(${lat2} - ${lat1})\n`+
-    `a = np.sin(delta_phi / 2) ** 2 + np.cos(phi1) * np.cos(phi2) * np.sin(delta_lambda / 2) ** 2\n`+
-    `c = 2 * np.atan2(np.sqrt(a), np.sqrt(1 - a))\n`+
-    `R * c`, pythonGenerator.ORDER_ATOMIC];
+  return [`6371e3 * 2 * np.atan2(np.sqrt((np.sin(np.radians(${lat2} - ${lat1}) / 2) ** 2 + np.cos(np.radians(${lat1})) * np.cos(np.radians(${lat2})) * np.sin(np.radians(${lon2} - ${lon1}) / 2) ** 2)), np.sqrt(1 - (np.sin(np.radians(${lat2} - ${lat1}) / 2) ** 2 + np.cos(np.radians(${lat1})) * np.cos(np.radians(${lat2})) * np.sin(np.radians(${lon2} - ${lon1}) / 2) ** 2)))`, pythonGenerator.ORDER_ATOMIC];
 }
 
 Blockly.Blocks['while_loop'] = {

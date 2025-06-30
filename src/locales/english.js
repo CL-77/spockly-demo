@@ -14,6 +14,7 @@ export const english = {
         "BASIC_FUNCTIONS": "Basic Functions",
         "PROCEDURES": "Functions",
         "GEOMETRY": "Geometry",
+        "DISTANCE": "Distance",
         "INTERPOLATION": "Interpolation",
         "MAPS": "Maps",
         "OTHER": "Other",
