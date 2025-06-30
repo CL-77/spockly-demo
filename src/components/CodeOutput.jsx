@@ -60,6 +60,7 @@ bytes_io.seek(0)
 base64_encoded_spectrogram = base64.b64encode(bytes_io.read())
 print(base64_encoded_spectrogram.decode('utf-8'))`
       }
+
       const result = await main(code);
       const saveMap = !~code.indexOf('###DISPLAYONLY###');
       var fileName;
@@ -88,6 +89,35 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
         }
       }
       foliumHandler(code, fileName);
+
+      const savePlot = !~code.indexOf('###DISPLAYONLY###');
+      var plotlyFileName;
+      try {
+        plotlyFileName = code.split("write_html('")[1].split(".html')")[0];
+      } catch {
+        plotlyFileName = 'plot';
+      }
+      const plotlyHandler = async (code, plotlyFileName) => {
+        if(~code.indexOf("write_html('")) {
+          let txtBis = await asyncRun(`
+            with open('${plotlyFileName}.html', 'rt') as fh:
+                txt = fh.read()
+            txt
+`, {});
+          const blobBis = new Blob([txtBis.result], {type : 'text/html'});
+          let urlBis = window.URL.createObjectURL(blobBis);
+          window.open(urlBis);
+          if(savePlot) {
+            var a = document.createElement("a");
+            a.href = urlBis;
+            a.download = plotlyFileName;
+            a.click();
+          }
+          window.URL.revokeObjectURL(urlBis); //Preventing memory leaks
+        }
+      }
+      plotlyHandler(code, plotlyFileName);
+
       setOutput(result);
       if (typeof result === "string" && result.length > 100 && /^[A-Za-z0-9+/=\s]+$/.test(result)) {
         setIsAPlot(true);
@@ -136,10 +166,10 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
                             if (keyName === "Control") {
                             return;
                         }
-                            if ((ev.ctrlKey || ev.metaKey) && ev.altKey && keyName === 'Enter') {
+                          if ((ev.ctrlKey || ev.metaKey) && ev.altKey && keyName === 'Enter') {
                             ev.preventDefault();
                             runCode();
-                        }
+                          }
                         },
                         false,
                   );
@@ -152,11 +182,8 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
     return (
         <Box
       sx={{
-        // top: 20,
-        // left: 20,
         height: "100%",
         borderRadius: "5px",
-        // zIndex: 1,
       }}
     >
       <Stack direction="row-reverse" sx={{ paddingY: 1 }}>
@@ -169,6 +196,9 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
         }}
         >
           <Stack direction="row" gap={ 1 }>
+            <Box display="flex" alignItems="center" gap={ 0.5 } sx={{ marginRight: "10px" }}>
+              <Typography sx={{ fontSize: "0.9em", color: "#BBB" }}>Ctrl + Alt + Enter</Typography>  
+            </Box>
             <Tooltip title="Run Python Code">
               <IconButton
                 onClick={ runCode }
@@ -187,7 +217,14 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
 
             <Tooltip title="Reset output">
                   <IconButton
-                    onClick={ () => { hidePlotHandle(); setOutput(""); setIsAPlot(false); setShowPlot(false); } }
+                    onClick={
+                      () => {
+                        hidePlotHandle();
+                        setOutput("");
+                        setIsAPlot(false);
+                        setShowPlot(false);
+                      }
+                    }
                     sx={{
                       backgroundColor: theme.palette.primary.light,
                       "&:hover": {
@@ -245,9 +282,6 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
                   ) : (null) }
           </Stack>
         </Box>
-        {/* <Box display="flex" alignItems="center" gap={ 0.5 }>
-          <Typography sx={{ fontSize: "0.9em", marginLeft: "30px", color: "#BBB" }}>Ctrl + Alt + Enter</Typography>  
-        </Box> */}
       </Stack>
       { isAPlot && showPlot ? (
         <img

@@ -9,14 +9,16 @@ Read file file.csv from folder data
 Error: data/file.csv: No such file or directory
 Solution: Create folder 'data', download file using one of the appropriate blocks, check spelling of file and folder, 
 
+Reshape array
+ValueError: cannot reshape array of size 561706 into shape (1,1)
+Solution: Reshape value must be compatible with new size. Data can't get deleted, so sizes must be equivalent. Example: an initial array of length 15 can be reshaped into (5, 3), (3, 5), or event (15, 1) or (1, 15).
+
 Visualisation blocks Advanced
 Error: I have two overlapping graphs.
 Solution: Refresh the page and start again.
 
 Error: I have a bad resolution. / Plot is not centered.
 Solution: Due to limitations in the Python compiler, we have to convert the generated image to base 64 and decode that again. Therefore, there are losses in the resolution. You can try to increase the size of the image on both axes to prevent that (if possible).
-
-
 
 Plot line
 ValueError: cannot write empty image as JPEG

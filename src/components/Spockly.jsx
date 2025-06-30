@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import BlocklyComponent from "./BlocklyComponent";
 import CodeDisplay from "./CodeDisplay";
-import { Card, Box, Grid, Tab, Tabs, Typography } from "@mui/material";
+import { Card, Box, Grid, Tab, Tabs, Tooltip } from "@mui/material";
 import { darkTheme, lightTheme } from "./../appTheme";
 import FileUploadManager from "./FileUploadManager";
 import CodeOutput from "./CodeOutput"
@@ -61,6 +61,35 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
     setUploadDialogOpen(false);
   };
 
+  document.addEventListener(
+    "keydown",
+    (ev) => {
+    const keyName = ev.key;
+        if (keyName === "Control") {
+        return;
+    }
+      if ((ev.ctrlKey || ev.metaKey) && ev.altKey && keyName === 'o') {
+        ev.preventDefault();
+        setValue(1);
+      }
+    },
+    false,
+  );
+  document.addEventListener(
+    "keydown",
+    (ev) => {
+    const keyName = ev.key;
+        if (keyName === "Control") {
+        return;
+    }
+      if ((ev.ctrlKey || ev.metaKey) && ev.altKey && keyName === 'c') {
+        ev.preventDefault();
+        setValue(0);
+      }
+    },
+    false,
+  );
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Grid
@@ -116,30 +145,34 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
             borderRadius: 4,
           }}
         >
-          <Tab
-            label={
-              <Box display="flex" alignItems="center" gap={ 1 }>
-                <FaCode /> Code
-              </Box>
-            }
-            sx={{
-              fontWeight: "bold",
-              color: isDarkMode ? "lightgrey" : "darkgrey",
-              textTransform: "none"
-            }}
-          />
-          <Tab
-            label={
-              <Box display="flex" alignItems="center" gap={ 1 }>
-                <MdOutlineOutput /> Output
-              </Box>
-            }
-            sx={{
-              fontWeight: "bold",
-              color: isDarkMode ? "lightgrey" : "darkgrey",
-              textTransform: "none"
-            }}
-          />
+          <Tooltip title="Ctrl + Alt + C">
+            <Tab
+              label={
+                <Box display="flex" alignItems="center" gap={ 1 }>
+                  <FaCode /> Code
+                </Box>
+              }
+              sx={{
+                fontWeight: "bold",
+                color: isDarkMode ? "lightgrey" : "darkgrey",
+                textTransform: "none"
+              }}
+            />
+          </Tooltip>
+          <Tooltip title="Ctrl + Alt + O">
+            <Tab
+              label={
+                <Box display="flex" alignItems="center" gap={ 1 }>
+                  <MdOutlineOutput /> Output
+                </Box>
+              }
+              sx={{
+                fontWeight: "bold",
+                color: isDarkMode ? "lightgrey" : "darkgrey",
+                textTransform: "none"
+              }}
+            />
+          </Tooltip>
         </Tabs>
             <TabPanel value={ value } index={ 0 }>
               <Box sx={{ height: "60%", p: 1 }}>

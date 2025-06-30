@@ -69,11 +69,11 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           <category name="${Blockly.Msg.Categories["DATA"]}" colour="#FA2">
             <category name="${Blockly.Msg.Categories["DOWNLOAD_DATA"]}">
                 <block type="create_folder"></block>
-                <block type="func_downloadB"></block>
+                <block type="func_download"></block>
                 <block type="sampleDataB"></block>
             </category>
             <block type="convert_column"></block>
-            <block type="read_fileB"></block>
+            <block type="read_file"></block>
             <block type="data_shape"></block>
             <block type="add_object"></block>
             <block type="delete_object"></block>
@@ -204,8 +204,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           <category name="${Blockly.Msg.Categories["DATA"]}" colour="#FA2">
             <block type="sampleDataA"></block>
             <block type="create_folder"></block>
-            <block type="func_downloadA"></block>
-            <block type="read_fileA"></block>
+            <block type="func_download"></block>
+            <block type="read_file"></block>
             <block type="write_file"></block>
             <block type="listdir"></block>
             <block type="getDir"></block>
@@ -221,11 +221,22 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="data_shape"></block>
             <block type="stacking"></block>
             <block type="add_object"></block
-            <block type="del_col"></block> 
+            <block type="del_col"></block>
             <block type="delete_object"></block>
             <block type="create_array"></block>
             <block type="sort"></block>
-            <block type="reshape"></block>
+            <block type="reshape">
+              <value name="rows">
+                <shadow type="math_number">
+                  <field name="NUM">1</field>
+                </shadow>
+              </value>
+              <value name="columns">
+                <shadow type="math_number">
+                  <field name="NUM">1</field>
+                </shadow>
+              </value>
+            </block>
             <block type="slice_file"></block>
             <block type="delete_axes">
               <value name="ColArr">
@@ -331,16 +342,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                   </value>
                 </block>
               </value>
-              <value name="XLabel">
-                <shadow type="text">
-                  <field name="TEXT">X-axis</field>
-                </shadow>
-              </value>
-              <value name="YLabel">
-                <shadow type="text">
-                  <field name="TEXT">Y-axis</field>
-                </shadow>
-              </value>
             </block>
           </category>
 
@@ -427,14 +428,14 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             </block>
             <block type="folium_polygon">
               <value name="position">
-                <shadow type="list_create">
+                <block type="list_create">
                   <value name="element_0">
-                    <shadow type="GeoCoords">
+                    <block type="GeoCoords">
                       <field name="XCoord">0</field>
                       <field name="YCoord">0</field>
-                    </shadow>
+                    </block>
                   </value>
-                </shadow>
+                </block>
               </value>
             </block>
             <block type="folium_circle">
@@ -461,14 +462,14 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             </block>
             <block type="folium_polyline">
               <value name="position">
-                <shadow type="list_create">
+                <block type="list_create">
                   <value name="element_0">
-                    <shadow type="GeoCoords">
+                    <block type="GeoCoords">
                       <field name="XCoord">0</field>
                       <field name="YCoord">0</field>
-                    </shadow>
+                    </block>
                   </value>
-                </shadow>
+                </block>
               </value>
             </block>
             <block type="Choropleth_map">
@@ -573,7 +574,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
       console.error("Blockly workspace is not initialised.");
       return;
     }
-    var libs = "", np, pd, gpd, sns, plt, requests, os, def_downloadA, def_downloadB, px, folium, interpol;
+    var libs = "", np, pd, gpd, sns, plt, requests, os, def_download, px, folium, interpol;
     var pythonCode = pythonGenerator.workspaceToCode(workspaceRef.current);
     if(~pythonCode.indexOf('np.')) np = true;
     if(~pythonCode.indexOf('pd.')) pd = true;
@@ -582,8 +583,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     if(~pythonCode.indexOf('gpd.')) gpd = true;
     if(~pythonCode.indexOf('requests.')) requests = true;
     if(~pythonCode.indexOf('os.')) os = true;
-    if(~pythonCode.indexOf('downloadA(')) def_downloadA = true;
-    if(~pythonCode.indexOf('downloadB(')) def_downloadB = true;
+    if(~pythonCode.indexOf('download(')) def_download = true;
     if(~pythonCode.indexOf('px.')) px = true;
     if(~pythonCode.indexOf('folium.')) folium = true;
     if(~pythonCode.indexOf('idw_interpolation(')) interpol = true;
@@ -594,20 +594,9 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     libs += gpd ? "import geopandas as gpd\n" : "";
     libs += requests ? "import requests\n" : "";
     libs += os ? "import os\n" : "";
-    libs += def_downloadA ? 'import requests\n' +
+    libs += def_download ? 'import requests\n' +
                             'import os\n' +
-                              'def downloadA(url, folder, filename = "file.csv"):\n' +
-                              '\tfilenamee = os.path.join(folder, filename)\n' +
-                              '\tif not os.path.exists(filenamee):\n' + 
-                                '\t\twith requests.get(url, stream=True, allow_redirects=True) as r:\n' +
-                                    '\t\t\twith open(filenamee, "wb") as f:\n' + 
-                                        '\t\t\t\tfor chunk in r.iter_content(chunk_size=8192):\n' +
-                                            '\t\t\t\t\tf.write(chunk)\n' + 
-                                '\t\tprint("Downloaded \'" + filenamee + "\'")\n\n'
-    : '';
-    libs += def_downloadB ? 'import requests\n' +
-                            'import os\n' +
-                            'def downloadB(url):\n' +
+                            'def download(url):\n' +
                               '\tfilename = os.path.basename(url)\n' +
                               '\tif not os.path.exists(filename):\n' + 
                                 '\t\twith requests.get(url, stream=True, allow_redirects=True) as r:\n' +
@@ -615,9 +604,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                                         '\t\t\t\tfor chunk in r.iter_content(chunk_size=8192):\n' +
                                             '\t\t\t\t\tf.write(chunk)\n' + 
                                 '\t\tprint("Downloaded \'" + filename + "\'")\n\n' : '';
-    libs += px ?  'import plotly.express as px\n' + 
-                  'fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])\n' +
-                  'fig.show()' : '';
+    libs += px ? 'import plotly.express as px\n' : '';
     libs += folium ? 'import folium\n' : '';
     libs += interpol ? `
 from scipy.spatial import cKDTree

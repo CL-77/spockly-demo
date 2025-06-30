@@ -6,7 +6,6 @@ import sys
 import io
 _stdout = io.StringIO()
 sys.stdout = _stdout
-
 `;
 
   const captureOutput = `

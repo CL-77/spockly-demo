@@ -13,6 +13,7 @@ import {
   Chip
 } from '@mui/material';
 import { CheckCircle, Error, InsertDriveFile, Map } from '@mui/icons-material';
+import { writeFile } from './workerApi.mjs';
 
 const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
   const [uploadStatus, setUploadStatus] = useState(null);
@@ -27,22 +28,27 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
 
     setIsUploading(true);
     setFileName(file.name);
-    
-    // Determine file type
+
     const extension = file.name.toLowerCase().split('.').pop();
     setFileType(extension);
-    
+
     try {
-      // Convert file to ArrayBuffer
-      const arrayBuffer = await file.arrayBuffer();
-      const uint8Array = new Uint8Array(arrayBuffer);
-      
-      // Define the path in WebR filesystem
-      const targetPath = `/home/web_user/${file.name}`;
-      
-      // Write file to WebR filesystem
-      await workspaceRef.FS.writeFile(targetPath, uint8Array);
-      
+      const targetPath = file.name;
+
+      if (extension === "csv" || extension === "json") {
+        const fileData = await file.text();
+        console.log(fileData);
+        console.log(targetPath);
+        await writeFile(targetPath, fileData);
+      // } else if (extension === "tif") {
+        // const arrayBuffer = await file.arrayBuffer();
+        // const uint8Array = new Uint8Array(arrayBuffer);
+        // await writeFile(targetPath, uint8Array);
+      } else {
+        setUploadStatus('invalidtype');
+        return;
+      }
+
       setFilePath(targetPath);
       setUploadStatus('success');
     } catch (error) {
@@ -67,16 +73,16 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
   };
 
   const getFileIcon = () => {
-    return fileType === 'geojson' ? <Map /> : <InsertDriveFile />;
+    return fileType === 'geojson' || fileType === 'json' ? <Map /> : <InsertDriveFile />;
   };
 
   const getFileTypeChip = () => {
     if (fileType === 'csv') {
       return <Chip label="CSV" size="small" color="primary" />;
-    } else if (fileType === 'geojson') {
+    } else if (fileType === 'geojson' || fileType === 'json') {
       return <Chip label="GeoJSON" size="small" color="secondary" />;
     }
-	else if (fileType === 'tif'){
+	else if (fileType === 'tif' || fileType === 'tiff'){
 	  return <Chip label="Raster" size="small" color="secondary" />;
 	}
     return null;
@@ -85,10 +91,10 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
   const getUsageInstructions = () => {
     if (fileType === 'csv') {
       return "Use this filename in your load_csv block:";
-    } else if (fileType === 'geojson') {
-      return "Use this filename in your load_geojson block:";
+    } else if (fileType === 'geojson' || fileType === 'json') {
+      return "Use this filename in your load_json block:";
     }
-	else if (fileType === 'tif') {
+	else if (fileType === 'tif' || fileType === 'tiff') {
 	  return "Use this filename in your load_raster block:";
 	}
     return "Use this filename in your blocks:";
@@ -96,8 +102,8 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
 
   return (
     <Dialog 
-      open={open} 
-      onClose={handleClose}
+      open={ open } 
+      onClose={ handleClose }
       maxWidth="sm"
       fullWidth
       PaperProps={{
@@ -112,10 +118,10 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
       </DialogTitle>
       
       <DialogContent>
-        {!uploadStatus && !isUploading && (
+        { !uploadStatus && !isUploading && (
           <Box>
             <Typography variant="body1" sx={{ mb: 2, color: isDarkMode ? '#ffffff' : '#000000' }}>
-              Select a CSV, TIF or GeoJSON file to upload to WebR:
+              Select a CSV, TIF or GeoJSON file to upload to Pyodide:
             </Typography>
             <Box
               onDragOver={(e) => e.preventDefault()}
@@ -124,7 +130,7 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
                 const file = e.dataTransfer.files[0];
                 if (!file) return;
               
-                const allowedExtensions = ['csv', 'geojson', 'tif'];
+                const allowedExtensions = ['csv', 'geojson', 'tif', 'json', 'tiff'];
                 const extension = file.name.toLowerCase().split('.').pop();
               
                 if (!allowedExtensions.includes(extension)) {
@@ -147,13 +153,13 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
               }}
             >
               <Typography variant="body2">
-                Drag & drop your CSV, GeoJSON or TIF file here or{" "}
+                Drag & drop your CSV, GeoJSON or TIF file here or{ " " }
                 <label htmlFor="file-upload" style={{ color: '#1976d2', cursor: 'pointer', textDecoration: 'underline' }}>
                   choose a data file
                 </label>.
               </Typography>
               <input
-                accept=".csv, .geojson, .tif"
+                accept=".csv, .geojson, .tif, .json, .tiff"
                 style={{ display: 'none' }}
                 id="file-upload"
                 type="file"
@@ -161,13 +167,13 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
               />
             </Box>
           </Box>
-        )}
+        ) }
 
          { isUploading && (
           <Box display="flex" alignItems="center" gap={ 2 }>
             <CircularProgress size={ 24 } />
             <Typography sx={{ color: isDarkMode ? '#ffffff' : '#000000' }}>
-              Uploading {fileName}...
+              Uploading { fileName }...
             </Typography>
           </Box>
         ) }
@@ -182,7 +188,7 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
             <Box display="flex" alignItems="center" gap={ 1 } sx={{ mt: 1, mb: 2 }}>
               { getFileIcon() }
               <Typography variant="body2">
-                File uploaded successfully to WebR filesystem.
+                File uploaded successfully to Pyodide filesystem.
               </Typography>
               { getFileTypeChip() }
             </Box>
@@ -201,7 +207,7 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
               }}
             >
               <Typography variant="body2" sx={{ color: '#000' }}>
-                {fileName}
+                { fileName }
               </Typography>
               <Button 
                 size="small" 
@@ -212,7 +218,7 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
               </Button>
             </Box>
           </Alert>
-        )}
+        ) }
 
         { uploadStatus === 'invalidtype' && (
           <Alert severity="warning" icon={ <Error /> }>

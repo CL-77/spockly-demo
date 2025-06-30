@@ -49,6 +49,21 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
     }
   };
 
+  document.addEventListener(
+        "keydown",
+        (ev) => {
+        const keyName = ev.key;
+            if (keyName === "Control") {
+            return;
+        }
+          if ((ev.ctrlKey || ev.metaKey) && !ev.altKey && keyName === 'Enter') {
+            ev.preventDefault();
+            handleGenerateCode();
+          }
+        },
+        false,
+  );
+
   return (
     <Box
       sx={{
@@ -84,6 +99,9 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
                 justifyContent: "flex-start",
               }}
             >
+              <Box display="flex" alignItems="center" gap={ 0.5 } sx={{ marginRight: "10px" }}>
+                <Typography sx={{ fontSize: "0.9em", color: "#BBB" }}>Ctrl + Enter</Typography>  
+              </Box>
               <Tooltip title="Generate Python Code">
                 <IconButton
                   onClick={ handleGenerateCode }
@@ -159,7 +177,6 @@ const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode }) => {
         sx={{
           position: "relative",
           borderRadius: "5px",
-          // height: '120%',
           bgcolor: theme.palette.background.paper,
           zIndex: 1,
           overflowY: "auto",

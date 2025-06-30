@@ -83,7 +83,7 @@ Blockly.Blocks['modulo'] = {
     this.appendValueInput('NAME')
     .setAlign(Blockly.inputs.Align.RIGHT)
       .appendField(new Blockly.FieldNumber(0), 'a')
-      .appendField(new Blockly.FieldLabelSerializable('modulo'), 'NAME')
+      .appendField('modulo')
       .appendField(new Blockly.FieldNumber(0), 'b');
     this.setOutput(true, 'Number');
     this.setTooltip('Module: returns the remainder of a division');
@@ -166,22 +166,22 @@ pythonGenerator.forBlock['consts'] = function(block) {
  * Load csv file
  */
 Blockly.Blocks['load_csv'] = {
-  init: function(){
+  init: function() {
     this.appendDummyInput()
         .appendField('Load data from CSV:')
-        .appendField(new Blockly.FieldTextInput('file'), 'CSV');
+        .appendField(new Blockly.FieldTextInput('file.csv'), 'CSV');
     this.appendDummyInput()
         .appendField('with separator')
         .appendField(new Blockly.FieldTextInput(','), 'sep');
     this.setTooltip('Loads a given CSV dataset');
     this.appendEndRowInput();
     this.setOutput(true, 'Array');
-    this.setHelpUrl('https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html')
+    this.setHelpUrl('https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html');
     this.setColour(200);
   },
 };
 pythonGenerator.forBlock['load_csv'] = function(block) {
-  const dataset = block.getFieldValue('CSV') || '0';
+  const dataset = block.getFieldValue('CSV') || '';
   const separator = block.getFieldValue('sep') || ',';
   return [`pd.read_csv('${dataset}', sep = '${separator}')`, pythonGenerator.ORDER_ATOMIC];
 };
@@ -448,7 +448,7 @@ Blockly.Blocks['max'] = {
   init: function() {
     this.appendValueInput('maximum')
         .setCheck('Array')
-        .appendField(new Blockly.FieldLabelSerializable('Maximum of'), 'MAXIMUM');
+        .appendField('Maximum of');
     this.setOutput(true, 'Number');
     this.setTooltip('"Returns the maximum of an array of numbers"');
     this.setHelpUrl('');
@@ -468,7 +468,7 @@ Blockly.Blocks['min'] = {
   init: function() {
     this.appendValueInput('minimum')
     .setCheck('Array')
-      .appendField(new Blockly.FieldLabelSerializable('Minimum of'), 'MINIMUM');
+      .appendField('Minimum of');
     this.setOutput(true, 'Number');
     this.setTooltip('Returns the minimum of an array of numbers');
     this.setColour(150);
@@ -660,8 +660,8 @@ function getExtraBlockState(block) {
 Blockly.Blocks['data_shape'] = {
   init: function() {
     this.appendValueInput('data')
-    .setCheck('Array')
-      .appendField(new Blockly.FieldLabelSerializable('Data shape'), 'DATA SHAPE');
+        .setCheck('Array')
+        .appendField('Data shape');
     this.setInputsInline(true)
     this.setOutput(true, 'tuple');
     this.setTooltip('Find shape of data');
@@ -671,14 +671,14 @@ Blockly.Blocks['data_shape'] = {
 pythonGenerator.forBlock['data_shape'] = function(block, generator) {
   const data = generator.valueToCode(block, 'data', pythonGenerator.ORDER_ATOMIC);
   return [`np.shape(${data})`, pythonGenerator.ORDER_COLLECTION];
-}
+};
 
 //**stacking data */
 Blockly.Blocks['stacking'] = {
   init: function() {
     this.appendValueInput('db1')
     .setCheck('Array')
-      .appendField(new Blockly.FieldLabelSerializable('stacking by'), 'NAME')
+      .appendField('Stacking by')
       .appendField(new Blockly.FieldDropdown([
           ['columns', 'COLUMNS'],
           ['rows', 'ROWS']
@@ -707,8 +707,8 @@ pythonGenerator.forBlock['stacking'] = function(block, generator) {
 Blockly.Blocks['create_array'] = {
   init: function() {
     this.appendValueInput('array')
-    .setCheck(['Number', 'Boolean', 'String', 'List', 'Matrix'])
-      .appendField(new Blockly.FieldLabelSerializable('create array of'), 'CREATE');
+        .setCheck(['Number', 'Boolean', 'String', 'List', 'Array', 'Matrix'])
+        .appendField('Create array with');
     this.setOutput(true, 'Array');
     this.setTooltip('Create an array with np.array()');
     this.setColour(200);
@@ -722,11 +722,11 @@ pythonGenerator.forBlock['create_array'] = function(block, generator) {
 Blockly.Blocks['delete_axes'] = {
   init: function() {
     this.appendValueInput('ColArr')
-        .setCheck(['List', 'String', 'Number'])
-        .appendField((new Blockly.FieldLabel('ColArr'), 'Delete columns'));
+        .setCheck(['List', 'Array', 'String', 'Number'])
+        .appendField('Delete columns');
     this.appendValueInput('IndArr')
-        .setCheck(['List', 'String', 'Number'])
-        .appendField((new Blockly.FieldLabel('IndArr'), 'and/or rows'));
+        .setCheck(['List', 'Array', 'String', 'Number'])
+        .appendField('and/or rows');
     this.appendDummyInput()
         .appendField('from dataframe')
         .appendField(new Blockly.FieldVariable('df'), 'DATAFRAME');
@@ -751,12 +751,11 @@ pythonGenerator.forBlock['delete_axes'] = function(block, generator) {
 Blockly.Blocks['delete_object'] = {
   init: function() {
     this.appendValueInput('object')
-    .setCheck(['Array', 'Number'])
-      .appendField(new Blockly.FieldLabelSerializable('delete'), 'DELETE');
-      
+        .setCheck(['Array', 'Number'])
+        .appendField('delete');
     this.appendValueInput('array')
-    .setCheck('Array')
-      .appendField(new Blockly.FieldLabelSerializable('in'), 'IN');
+        .setCheck('Array')
+        .appendField('in');
     this.setInputsInline(true);
     this.setOutput(true, 'Array');
     this.setTooltip('Delete an object in an array');
@@ -773,11 +772,11 @@ pythonGenerator.forBlock['delete_object'] = function(block, generator) {
 Blockly.Blocks['add_object'] = {
   init: function() {
     this.appendValueInput('object')
-    .setCheck(['Array', 'Number'])
-      .appendField(new Blockly.FieldLabelSerializable('add'), 'ADD');
+        .setCheck(['Array', 'Number'])
+        .appendField('add');
     this.appendValueInput('array')
-    .setCheck('Array')
-      .appendField(new Blockly.FieldLabelSerializable('in'), 'IN');
+        .setCheck('Array')
+        .appendField('in');
     this.setInputsInline(true);
     this.setOutput(true, 'Array');
     this.setTooltip('Add an object in an array');
@@ -988,30 +987,7 @@ pythonGenerator.forBlock['create_folder'] = function(block) {
         `\tos.mkdir('${folder}')\n`;
 };
 
-Blockly.Blocks['func_downloadA'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Download (from URL)')
-        .appendField(new Blockly.FieldTextInput('http://file.csv'), 'NAME')
-        .appendField('into folder')
-        .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER');
-    this.appendDummyInput()
-        .appendField('File name')
-        .appendField(new Blockly.FieldTextInput('file.csv'), 'filename')
-    this.setTooltip('Use function to download file from URL into given file.');
-    this.setNextStatement(true);
-    this.setPreviousStatement(true);
-    this.setColour(200);
-  }
-}
-pythonGenerator.forBlock['func_downloadA'] = function(block) {
-  const url = block.getFieldValue('NAME') || 'http://file.csv';
-  const folder = block.getFieldValue('FOLDER') || 'data';
-  const filename = block.getFieldValue('filename') || 'file.csv';
-  return `downloadA('${url}', '${folder}', '${filename}')\n`
-}
-
-Blockly.Blocks['func_downloadB'] = {
+Blockly.Blocks['func_download'] = {
   init: function() {
     this.appendDummyInput()
         .appendField('Download (from URL)')
@@ -1022,31 +998,12 @@ Blockly.Blocks['func_downloadB'] = {
     this.setColour(200);
   }
 }
-pythonGenerator.forBlock['func_downloadB'] = function(block) {
+pythonGenerator.forBlock['func_download'] = function(block) {
   const url = block.getFieldValue('NAME') || 'http://file.csv';
-  return `downloadB('${url}')\n`
+  return `download('${url}')\n`
 }
 
-Blockly.Blocks['read_fileA'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Read file')
-        .appendField(new Blockly.FieldTextInput('file.csv'), 'NAME')
-        .appendField('from folder')
-        .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[<>:?*\\"|]/g, '')), 'FOLDER');
-    this.setTooltip('Use function to read file in given folder name.');
-    this.setOutput(true)
-    this.setColour(200);
-  }
-};
-pythonGenerator.forBlock['read_fileA'] = function(block) {
-  const fileName = block.getFieldValue('NAME');
-  const dataFolder = block.getFieldValue('FOLDER') || '';
-  //const columns = generator.valueToCode(block, 'columns', pythonGenerator.ORDER_ATOMIC);
-  return [`gpd.read_file(os.path.join('${dataFolder}', '${fileName}'))`, pythonGenerator.ORDER_ATOMIC];
-}
-
-Blockly.Blocks['read_fileB'] = {
+Blockly.Blocks['read_file'] = {
   init: function() {
     this.appendDummyInput()
         .appendField('Read file')
@@ -1056,7 +1013,7 @@ Blockly.Blocks['read_fileB'] = {
     this.setColour(200);
   }
 };
-pythonGenerator.forBlock['read_fileB'] = function(block,generator) {
+pythonGenerator.forBlock['read_file'] = function(block,generator) {
   const fileName = block.getFieldValue('NAME');
   return [`gpd.read_file('${fileName}')`, pythonGenerator.ORDER_ATOMIC];
 }
@@ -1313,13 +1270,14 @@ Blockly.Blocks['reshape'] = {
   init: function() {
     this.appendValueInput('NAME')
     .setCheck('Array')
-      .appendField(new Blockly.FieldLabelSerializable('reshape array:'), 'DATA');
+      .appendField('Reshape array', 'DATA');
     this.appendValueInput('rows')
-    .setCheck('Number')
-      .appendField(new Blockly.FieldLabelSerializable('new size:'), 'SIZE');
+        .setCheck('Number')
+        .appendField('Number of arrays');
     this.appendValueInput('columns')
-    .setCheck('Number');
-    this.setInputsInline(true)
+        .setCheck('Number')
+        .appendField('Elements per array');
+    this.setInputsInline(false)
     this.setOutput(true, null);
     this.setTooltip('Reshape an array');
     this.setHelpUrl('https://www.w3schools.com/python/numpy/numpy_array_reshape.asp');
@@ -1337,12 +1295,12 @@ pythonGenerator.forBlock['reshape'] = function(block, generator) {
 Blockly.Blocks['load_txt'] = {
   init: function(){
     this.appendDummyInput()
-        .appendField('Load data from txt:')
+        .appendField('Load data from txt')
         .appendField(new Blockly.FieldTextInput(''), 'txt')
         .appendField('.txt');
     this.appendDummyInput()
         .appendField('with separator')
-        .appendField(new Blockly.FieldTextInput(','), 'sep')
+        .appendField(new Blockly.FieldTextInput(','), 'sep');
     this.appendDummyInput()
         .appendField('(only include columns numbered')
         .appendField(new Blockly.FieldTextInput(''), 'usecols')
@@ -1358,8 +1316,8 @@ Blockly.Blocks['load_txt'] = {
 pythonGenerator.forBlock['load_txt'] = function(block) {
   const dataset = block.getFieldValue('txt') || '0';
   const sep = block.getFieldValue('sep') || ',';
-  const usecols = block.getFieldValue('usecols') || 'None';
-  return [`np.loadtxt('${dataset}.txt', delimiter='${sep}', usecols=(${usecols}))`, pythonGenerator.ORDER_ATOMIC];
+  const usecols = block.getFieldValue('usecols') || '';
+  return [`np.loadtxt('${dataset}.txt', delimiter='${sep}'${usecols ? ', usecols=' + usecols : ''})`, pythonGenerator.ORDER_ATOMIC];
 };
 
 //**load from a json file */
@@ -1450,7 +1408,7 @@ Blockly.Blocks['ind_min'] = {
   init: function() {
     this.appendValueInput('minimum')
         .setCheck('Array')
-        .appendField(new Blockly.FieldLabelSerializable('Indice of minimum of'), "IND_MINIMUM");
+        .appendField('Indice of minimum of');
     this.setOutput(true, 'Number');
     this.setTooltip('Returns the indice of the minimum of an array of numbers');
     this.setColour(150);
@@ -1470,7 +1428,7 @@ Blockly.Blocks['ind_max'] = {
   init: function() {
     this.appendValueInput('maximum')
         .setCheck('Array')
-        .appendField(new Blockly.FieldLabelSerializable('Indice of maximum of'), 'IND_MAXIMUM');
+        .appendField('Indice of maximum of');
     this.setOutput(true, 'Number');
     this.setTooltip('Returns the indice of the maximum of an array of numbers');
     this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.argmax.html');
@@ -1490,7 +1448,7 @@ Blockly.Blocks['ind_sort'] = {
   init: function() {
     this.appendValueInput('sort')
         .setCheck('Array')
-        .appendField(new Blockly.FieldLabelSerializable('Sorted array of indices of'), 'IND_SORT');
+        .appendField('Sorted array of indices of');
     this.setOutput(true, 'Array');
     this.setTooltip('Returns an array of indices of an array of numbers according to their values');
     this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.argsort.html');
@@ -1509,8 +1467,7 @@ pythonGenerator.forBlock["ind_sort"] = function(block, generator) {
 Blockly.Blocks['ind_find'] = { 
   init: function() {
     this.appendValueInput('find')
-        .setCheck('Boolean')
-        .appendField(new Blockly.FieldLabelSerializable('Find indices'), 'IND_FIND');
+        .appendField('Find indices');
     this.setOutput(true, 'Array');
     this.setTooltip('Returns the found indices of an array of numbers, given a condition');
     this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.argwhere.html');
@@ -1526,10 +1483,12 @@ pythonGenerator.forBlock["ind_find"] = function(block, generator) {
 //**GEOMETRY BLOCKS*/
 Blockly.Blocks['buffer'] = {
   init: function() {
+    this.appendDummyInput()
+        .appendField('Create circle buffer');
     this.appendValueInput('center')
-        .appendField(new Blockly.FieldLabelSerializable('Buffer: center coordinates'), 'CENTER');
+        .appendField('Center coordinates');
     this.appendDummyInput('radius')
-        .appendField(new Blockly.FieldLabelSerializable('Radius'), 'RADIUS')
+        .appendField('Radius')
         .appendField(new Blockly.FieldNumber(0), 'r');
     this.setOutput(true);
     this.setInputsInline(false);
@@ -1696,7 +1655,7 @@ Blockly.Blocks['polygon_area'] = {
   init: function() {
     this.appendValueInput('polygon')
         .setCheck('Polygon')
-        .appendField(new Blockly.FieldLabelSerializable('Polygon area'), 'NAME');
+        .appendField('Polygon area');
     this.setOutput(true, 'Number');
     this.setTooltip('Compute the polygon area');
     this.setHelpUrl('');
@@ -1712,8 +1671,8 @@ pythonGenerator.forBlock['polygon_area'] = function(block, generator) {
 Blockly.Blocks['polygon_perimeter'] = {
   init: function() {
     this.appendValueInput('polygon')
-    .setCheck('Polygon')
-      .appendField(new Blockly.FieldLabelSerializable('Polygon perimeter'), 'NAME');
+        .setCheck('Polygon')
+        .appendField('Polygon perimeter');
     this.setOutput(true, 'Number');
     this.setTooltip('Compute the polygon perimeter');
     this.setHelpUrl('https://shapely.readthedocs.io/en/stable/reference/shapely.length.html');
@@ -1728,7 +1687,7 @@ pythonGenerator.forBlock['polygon_perimeter'] = function(block, generator) {
 Blockly.Blocks['geometry_type'] = {
   init: function() {
     this.appendValueInput('geom')
-        .appendField(new Blockly.FieldLabelSerializable('Geometry type'), 'NAME');
+        .appendField('Geometry type');
     this.setOutput(true, 'Number');
     this.setTooltip('Give the type of a geometry');
     this.setHelpUrl('https://autogis-site.readthedocs.io/en/latest/lessons/lesson-1/geometry-objects.html');
@@ -1766,14 +1725,14 @@ pythonGenerator.forBlock['distance_calc'] = function(block, generator) {
 Blockly.Blocks['multipolygon'] = {
   init: function() {
     this.appendValueInput('polygon1')
-    .setCheck('Polygon')
-      .appendField(new Blockly.FieldLabelSerializable('Polygon1'), 'Polygon1');
+        .setCheck('Polygon')
+        .appendField('Polygon1');
     this.appendValueInput('polygon2')
-    .setCheck('Polygon')
-      .appendField(new Blockly.FieldLabelSerializable('Polygon2'), 'Polygon2');
+        .setCheck('Polygon')
+        .appendField('Polygon2');
     this.appendDummyInput('')
-      .appendField(new Blockly.FieldLabelSerializable('Show multipolygon?'), 'show')
-      .appendField(new Blockly.FieldCheckbox('TRUE'), 'SHOW');
+        .appendField('Show multipolygon?')
+        .appendField(new Blockly.FieldCheckbox('TRUE'), 'SHOW');
     this.appendDummyInput('')
       .appendField(new Blockly.FieldTextInput('multipolygon'), 'variable');
     this.setOutput(true, 'Polygon');
@@ -1800,12 +1759,12 @@ Blockly.Blocks['bounding_box'] = {
     this.appendDummyInput('NAME')
       .appendField('Bounding box');
     this.appendDummyInput('minimum')
-      .appendField(new Blockly.FieldLabelSerializable('min: x'), 'MIN')
+      .appendField('Min: x')
       .appendField(new Blockly.FieldNumber(0), 'min_x')
       .appendField(', y')
       .appendField(new Blockly.FieldNumber(0), 'min_y');
     this.appendDummyInput('maximum')
-      .appendField(new Blockly.FieldLabelSerializable('max: x'), 'MAX')
+      .appendField('Max: x', 'MAX')
       .appendField(new Blockly.FieldNumber(0), 'max_x')
       .appendField(', y')
       .appendField(new Blockly.FieldNumber(0), 'max_y');
@@ -2046,7 +2005,7 @@ Blockly.Blocks['folium_polygon'] = {
         .appendField('Create Polygon on map');
     this.appendValueInput('position')
         .setCheck('Array')
-        .appendField(new Blockly.FieldLabelSerializable('Summits of polygon'), 'Coords');
+        .appendField('Summits of polygon');
     this.appendDummyInput()
         .appendField('Popup')
         .appendField(new Blockly.FieldTextInput('Polygon'), 'popup');
@@ -2092,7 +2051,7 @@ Blockly.Blocks['folium_polyline'] = {
         .appendField('Create PolyLine on map');
     this.appendValueInput('position')
         .setCheck('Array')
-        .appendField(new Blockly.FieldLabelSerializable('Points of PolyLine'), 'Coords');
+        .appendField('Points of PolyLine');
     this.appendDummyInput()
         .appendField('Popup')
         .appendField(new Blockly.FieldTextInput('PolyLine'), 'popup');
@@ -2226,7 +2185,7 @@ Blockly.Blocks['saveAndDisplayMap'] = {
   init: function() {
     this.appendDummyInput()
         .appendField('Display map as')
-        .appendField(new Blockly.FieldTextInput('map', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'path')
+        .appendField(new Blockly.FieldTextInput('map', txt => txt.replace(/[<>:?*\\"|]/g, '')), 'path')
         .appendField('.html');
     this.appendDummyInput()
         .appendField('Save map?')
@@ -2240,7 +2199,6 @@ Blockly.Blocks['saveAndDisplayMap'] = {
 pythonGenerator.forBlock['saveAndDisplayMap'] = function(block) {
   const path = block.getFieldValue('path') || 'map';
   const saveMap = block.getFieldValue('saveMap') === 'TRUE';
-  console.info(saveMap);
   return `m.save('${path}.html')\n${saveMap ? '' : '###DISPLAYONLY###\n'}`;
 };
 
@@ -2645,11 +2603,11 @@ pythonGenerator.forBlock['while_loop'] = function(block, generator) {
 
 
 // Plotly Scatter Mapbox Block
-// Plotly Scatter Mapbox Block with fig.show()
+
 Blockly.Blocks['plotly_scatter_mapbox'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("Create and Show Scatter Mapbox");
+        .appendField("Create and Show Scatter Map");
     this.appendValueInput("DATAFRAME")
         .setCheck(null)
         .appendField("DataFrame");
@@ -2665,9 +2623,9 @@ Blockly.Blocks['plotly_scatter_mapbox'] = {
     this.appendDummyInput()
         .appendField("Map style")
         .appendField(new Blockly.FieldDropdown([
-          ["carto-positron", "carto-positron"],
-          ["open-street-map", "open-street-map"],
-          ["stamen-terrain", "stamen-terrain"]
+          ["OSM OpenStreetMap", "open-street-map"],
+          ["Carto Positron", "carto-positron"],
+          ["Satellite", "satellite"],
         ]), "STYLE");
     this.appendDummyInput()
         .appendField("Zoom")
@@ -2677,11 +2635,18 @@ Blockly.Blocks['plotly_scatter_mapbox'] = {
         .appendField(new Blockly.FieldNumber(0), "CENTER_LAT")
         .appendField("Lon")
         .appendField(new Blockly.FieldNumber(0), "CENTER_LON");
+    this.appendDummyInput()
+        .appendField('Display map as')
+        .appendField(new Blockly.FieldTextInput('map', txt => txt.replace(/[<>:?*\\"|]/g, '')), 'path')
+        .appendField('.html');
+    this.appendDummyInput()
+        .appendField('Save map?')
+        .appendField(new Blockly.FieldCheckbox('TRUE'), 'saveMap');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(270);
-    this.setTooltip("Creates and shows a Plotly scatter mapbox plot.");
-    this.setHelpUrl("https://plotly.github.io/plotly.py-docs/generated/plotly.express.scatter_mapbox.html");
+    this.setTooltip("Creates and shows a Plotly scatter map plot.");
+    this.setHelpUrl("https://plotly.com/python-api-reference/generated/plotly.express.scatter_map.html");
   }
 };
 
@@ -2694,18 +2659,18 @@ pythonGenerator.forBlock['plotly_scatter_mapbox'] = function(block, generator) {
   const zoom = block.getFieldValue('ZOOM');
   const centerLat = block.getFieldValue('CENTER_LAT');
   const centerLon = block.getFieldValue('CENTER_LON');
-
-  const code = `
-fig = px.scatter_mapbox(
+  const path = block.getFieldValue('path') || 'mapbox';
+  const saveMap = block.getFieldValue('saveMap') === 'TRUE';
+  return `
+fig = px.scatter_map(
   ${df},
   lat="${lat}",
   lon="${lon}",
   hover_name="${hover}",
-  mapbox_style="${style}",
+  map_style="${style}",
   center={"lat": ${centerLat}, "lon": ${centerLon}},
   zoom=${zoom}
-)\nfig.show()\n`;
-  return code;
+)\nfig.write_html('${path}.html')\n${saveMap ? '' : '###DISPLAYONLY###\n'}`;
 };
 
 
@@ -2778,9 +2743,9 @@ Blockly.Blocks['del_col'] = {
   init: function() {
     this.appendValueInput('array')
     .setCheck(['Array'])
-      .appendField(new Blockly.FieldLabelSerializable('Delete these columns'), 'COLUMNS');
+      .appendField('Delete columns');
     this.appendValueInput('columns')
-      .appendField(new Blockly.FieldLabelSerializable('Name of columns'), 'COLUMNS');
+      .appendField('Name of columns');
     this.setOutput(true);
     this.setTooltip('');
     this.setColour(200);
@@ -2797,11 +2762,11 @@ Blockly.Blocks['convert_np_to_pd'] = {
   init: function() {
     this.appendValueInput('array')
     .setCheck(['Array'])
-      .appendField(new Blockly.FieldLabelSerializable('Convert in DataFrame'), 'CONVERT');
+      .appendField('Convert to DataFrame');
     this.appendValueInput('columns')
-      .appendField(new Blockly.FieldLabelSerializable('Name of columns'), 'COLUMNS');
+      .appendField('Name of columns');
     this.setOutput(true);
-    this.setTooltip('Convert in DataFrame');
+    this.setTooltip('Convert to DataFrame');
     this.setColour(200);
   }
 };

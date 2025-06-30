@@ -7,7 +7,20 @@ let pyodideReadyPromise = loadPyodide().then((pyodide) => {
 
 self.onmessage = async (event) => {
   const pyodide = await pyodideReadyPromise;
-  const { id, python, context } = event.data;
+  const { type, filename, data, id } = event.data;
+
+  if (type === "writeFile") {
+    try {
+      pyodide.FS.writeFile(filename, data, { encoding: "utf8" });
+      self.postMessage({ id, result: "File written" });
+      console.log('Done');
+    } catch (error) {
+      self.postMessage({ id, error: error.message });
+    }
+    return;
+  }
+
+  const { _ID, python, context } = event.data;
   await pyodide.loadPackagesFromImports(python);
   await pyodide.loadPackage("micropip");
   const micropip = pyodide.pyimport("micropip");

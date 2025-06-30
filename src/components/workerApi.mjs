@@ -36,3 +36,11 @@ export function asyncRun(script, context) {
     python: script,
   });
 }
+
+export function writeFile(filename, data) { 
+  return requestResponse(pyodideWorker, {
+    type: "writeFile",
+    filename,
+    data,
+  });
+}
