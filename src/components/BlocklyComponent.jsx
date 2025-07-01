@@ -68,7 +68,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 
           <category name="${Blockly.Msg.Categories["DATA"]}" colour="#FA2">
             <category name="${Blockly.Msg.Categories["DOWNLOAD_DATA"]}">
-                <block type="create_folder"></block>
                 <block type="func_download"></block>
                 <block type="sampleDataB"></block>
             </category>
@@ -204,15 +203,10 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           <category name="${Blockly.Msg.Categories["DATA"]}" colour="#FA2">
             <category name="${Blockly.Msg.Categories["DOWNLOAD_DATA"]}">
               <block type="sampleDataA"></block>
-              <block type="create_folder"></block>
               <block type="func_download"></block>
               <block type="read_file"></block>
-              <block type="write_file"></block>
-              <block type="listdir"></block>
-              <block type="getDir"></block>
-              <block type="chdir"></block>
+              <block type="listdir"></block>  
               <block type="load_csv"></block>
-              <block type="load_csv_from_url"></block>
               <block type="load_txt"></block>
               <block type="load_json"></block>
               <block type="request_json_data"></block>

@@ -187,9 +187,9 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
             <TabPanel value={ value } index={ 1 }>
               <Box sx={{ height: "60%", p: 1 }}>
                 <CodeOutput 
-                setPlot={ setPlot } 
-                code={ code } 
-                isDarkMode={ isDarkMode }
+                  setPlot={ setPlot } 
+                  code={ code } 
+                  isDarkMode={ isDarkMode }
                 />
               </Box>
             </TabPanel>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   IconButton,
@@ -14,7 +14,6 @@ import {
   RestartAlt
 } from "@mui/icons-material";
 import { darkTheme, lightTheme } from "./../appTheme";
-// import { ContentPaste } from '@mui/icons-material';
 import main from './init.js';
 import { pyodideWorker, asyncRun } from "./workerApi.mjs";
 
@@ -24,15 +23,58 @@ const CodeOutput = ({ code, isDarkMode, setPlot }) => {
     const theme = isDarkMode ? darkTheme : lightTheme;
     const [isAPlot, setIsAPlot] = useState(false);
     const [showPlot, setShowPlot] = useState(true);
+    const [isAMap, setIsAMap] = useState(false);
+    const [showMap, setShowMap] = useState(true);
 
-    const openInNewTabHandler = () => {
+    const openPlotInNewTabHandler = () => {
       window.open(`data:image/jpeg;base64,${globalThis.getRes()}`, '_blank');
+    };
+    const openMapInNewTabHandler = async () => {
+      let fileName;
+      try {
+        fileName = code.split("m.save('")[1].split(".html')")[0];
+      } catch {
+        fileName = 'map';
+      }
+      let txt = await asyncRun(`
+        with open('${fileName}.html', 'rt') as fh:
+            txt = fh.read()
+        txt
+`, {});
+      const blob = new Blob([txt.result], {type : 'text/html'});
+      let url = window.URL.createObjectURL(blob);
+      window.open(url);
+      window.URL.revokeObjectURL(url);
     };
     const hidePlotHandle = () => setShowPlot(false);
     const showPlotHandle = () => setShowPlot(true);
+    const hideMapHandle = () => {
+      setShowMap(false);
+      var d = document.getElementById("iframeMap");
+      var e = document.getElementById("responsiveBox2");
+      Array.from(e.children).forEach(child => {
+        child.style.display = "block";
+      });
+      if (d) {
+        d.style.display = "none";
+      }
+    };
+    const showMapHandle = () => {
+      setShowMap(true);
+      var d = document.getElementById("iframeMap");
+      var e = document.getElementById("responsiveBox2");
+      Array.from(e.children).forEach(child => {
+        child.style.display = "none";
+      });
+      if (d) {
+        d.style.display = "block";
+      }
+    };
 
     const runCode = async () => {
       setIsAPlot(false);
+      setIsAMap(false);
+      setShowPlot(true);
       console.log('Running code...');
       setOutput("Running...");
       if(~code.indexOf('plt.') || ~code.indexOf('df_interp.plot')) {
@@ -62,6 +104,8 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
       }
 
       const result = await main(code);
+
+      /*** Create map w/ Folium ***/
       const saveMap = !~code.indexOf('###DISPLAYONLY###');
       var fileName;
       try {
@@ -69,27 +113,45 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
       } catch {
         fileName = 'map';
       }
-      const foliumHandler = async (code, fileName) => {
-        if(~code.indexOf("m.save('")) {
-          let txt = await asyncRun(`
-            with open('${fileName}.html', 'rt') as fh:
-                txt = fh.read()
-            txt
-`, {});
-          const blob = new Blob([txt.result], {type : 'text/html'});
-          let url = window.URL.createObjectURL(blob);
-          window.open(url);
-          if (saveMap) {
-            var a = document.createElement("a");
-            a.href = url;
-            a.download = fileName;
-            a.click();
-          }
-          window.URL.revokeObjectURL(url); //Preventing memory leaks
-        }
-      }
-      foliumHandler(code, fileName);
 
+      window.foliumHandler = async (fileName) => {
+        setIsAMap(true);
+        let txt = await asyncRun(`
+          with open('${fileName}.html', 'rt') as fh:
+              txt = fh.read()
+          txt
+`, {});
+        const blob = new Blob([txt.result], {type : 'text/html'});
+        const box = document.getElementById("responsiveBox2");
+        let url = window.URL.createObjectURL(blob);
+        try {
+          document.getElementById("iframeMap").remove();
+        } catch {}
+        var iframe = document.createElement("iframe");
+        iframe.id = 'iframeMap';
+        iframe.style.border = "none";
+        iframe.src = url;
+        iframe.style.width = "inherit";
+        iframe.style.height = "inherit";
+        var e = document.getElementById("responsiveBox2");
+        Array.from(e.children).forEach(child => {
+          child.style.display = "none";
+        });
+        box.appendChild(iframe);
+        if (saveMap) {
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = fileName;
+          a.click();
+        }
+        window.URL.revokeObjectURL(url); //Preventing memory leaks
+        return url;
+      }
+      if(~code.indexOf("m.save('")) {
+        foliumHandler(fileName);
+      }
+
+      /*** Plot w/ Plotly ***/
       const savePlot = !~code.indexOf('###DISPLAYONLY###');
       var plotlyFileName;
       try {
@@ -97,26 +159,42 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
       } catch {
         plotlyFileName = 'plot';
       }
-      const plotlyHandler = async (code, plotlyFileName) => {
-        if(~code.indexOf("write_html('")) {
-          let txtBis = await asyncRun(`
-            with open('${plotlyFileName}.html', 'rt') as fh:
-                txt = fh.read()
-            txt
+      window.plotlyHandler = async (plotlyFileName) => {
+        setIsAMap(true);
+        let txtBis = await asyncRun(`
+          with open('${plotlyFileName}.html', 'rt') as fh:
+              txt = fh.read()
+          txt
 `, {});
-          const blobBis = new Blob([txtBis.result], {type : 'text/html'});
-          let urlBis = window.URL.createObjectURL(blobBis);
-          window.open(urlBis);
-          if(savePlot) {
-            var a = document.createElement("a");
-            a.href = urlBis;
-            a.download = plotlyFileName;
-            a.click();
-          }
-          window.URL.revokeObjectURL(urlBis); //Preventing memory leaks
+        const blobBis = new Blob([txtBis.result], {type : 'text/html'});
+        const boxBis = document.getElementById("responsiveBox2");
+        let urlBis = window.URL.createObjectURL(blobBis);
+        try {
+          document.getElementById("iframeMap").remove();
+        } catch {}
+        var iframe = document.createElement("iframe");
+        iframe.id = 'iframeMap';
+        iframe.style.border = "none";
+        iframe.src = urlBis;
+        iframe.style.width = "inherit";
+        iframe.style.height = "inherit";
+        var e = document.getElementById("responsiveBox2");
+        Array.from(e.children).forEach(child => {
+          child.style.display = "none";
+        });
+        boxBis.appendChild(iframe);
+        if(savePlot) {
+          var a = document.createElement("a");
+          a.href = urlBis;
+          a.download = plotlyFileName;
+          a.click();
         }
+        window.URL.revokeObjectURL(urlBis);
+        return urlBis;
       }
-      plotlyHandler(code, plotlyFileName);
+      if(~code.indexOf("write_html('")) {
+        plotlyHandler(plotlyFileName);
+      }
 
       setOutput(result);
       if (typeof result === "string" && result.length > 100 && /^[A-Za-z0-9+/=\s]+$/.test(result)) {
@@ -135,12 +213,12 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
       }
     }
     useEffect(() => {
-        pyodideWorker.addEventListener("message", (event) => {
-            if (event.data && event.data.ready) {
-                setOutput('No output');
-                setIsLoading(false);
-            }
-        });
+      pyodideWorker.addEventListener("message", (event) => {
+          if (event.data && event.data.ready) {
+              setOutput('No output');
+              setIsLoading(false);
+          }
+      });
     }, []);
     useEffect(() => {
         const findInfo = () => {
@@ -223,6 +301,14 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
                         setOutput("");
                         setIsAPlot(false);
                         setShowPlot(false);
+                        setIsAMap(false);
+                        setShowMap(true);
+                        try {
+                          document.getElementById("iframeMap").remove();
+                          Array.from(document.getElementById("responsiveBox2").children).forEach(child => {
+                            child.style.display = "block";
+                          });
+                        } catch {}
                       }
                     }
                     sx={{
@@ -238,7 +324,7 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
             { isAPlot ? (
                 <Tooltip title="Open plot in new tab">
                   <IconButton
-                    onClick={ openInNewTabHandler }
+                    onClick={ openPlotInNewTabHandler }
                     sx={{
                       backgroundColor: theme.palette.primary.light,
                       "&:hover": {
@@ -249,7 +335,21 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
                     <OpenInNew />
                   </IconButton>
                 </Tooltip>
-            ) : (null) }
+            ) : (isAMap ? (
+              <Tooltip title="Open map in new tab">
+                <IconButton
+                  onClick={ openMapInNewTabHandler }
+                  sx={{
+                    backgroundColor: theme.palette.primary.light,
+                    "&:hover": {
+                      bgcolor: isDarkMode ? "#835ACC" : "#CCAD33",
+                    },
+                  }}
+                >
+                  <OpenInNew />
+                </IconButton>
+              </Tooltip>
+            ) : null) }
                 { isAPlot && showPlot ? (
                   <Tooltip title="Hide plot">
                   <IconButton
@@ -280,6 +380,36 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
                     </IconButton>
                   </Tooltip>
                   ) : (null) }
+                  { isAMap && showMap ? (
+                  <Tooltip title="Hide map">
+                  <IconButton
+                    onClick={ hideMapHandle }
+                    sx={{
+                      backgroundColor: theme.palette.primary.light,
+                      "&:hover": {
+                        bgcolor: isDarkMode ? "#835ACC" : "#CCAD33",
+                      },
+                    }}
+                  >
+                    <VisibilityOff />
+                  </IconButton>
+                </Tooltip>
+                ) : (null) }
+                { isAMap && !showMap ? (
+                  <Tooltip title="Show map">
+                  <IconButton
+                    onClick={ showMapHandle }
+                    sx={{
+                      backgroundColor: theme.palette.primary.light,
+                      "&:hover": {
+                        bgcolor: isDarkMode ? "#835ACC" : "#CCAD33",
+                      },
+                    }}
+                  >
+                    <Visibility />
+                  </IconButton>
+                </Tooltip>
+                ) : (null) }
           </Stack>
         </Box>
       </Stack>

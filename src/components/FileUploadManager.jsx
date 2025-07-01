@@ -35,7 +35,7 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
     try {
       const targetPath = file.name;
 
-      if (extension === "csv" || extension === "json") {
+      if (extension === "csv" || extension === "json" || extension === "geojson") {
         const fileData = await file.text();
         console.log(fileData);
         console.log(targetPath);

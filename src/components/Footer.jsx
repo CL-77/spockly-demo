@@ -1,5 +1,3 @@
-// Footer.jsx
-import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { FaGithub } from "react-icons/fa";
 import { useTheme, Box, Breadcrumbs, Link, Typography } from "@mui/material";

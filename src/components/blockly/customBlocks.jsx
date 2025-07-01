@@ -185,30 +185,6 @@ pythonGenerator.forBlock['load_csv'] = function(block) {
   const separator = block.getFieldValue('sep') || ',';
   return [`pd.read_csv('${dataset}', sep = '${separator}')`, pythonGenerator.ORDER_ATOMIC];
 };
-
-/**
- * Load file from URL
- */
-Blockly.Blocks['load_csv_from_url'] = {
-  init: function(){
-    this.appendDummyInput()
-      .appendField('Load CSV file from URL')
-      .appendField(new Blockly.FieldTextInput('http://example.com/file.csv', (url) => url.match(/^[a-z]{4,5}:\/\/[A-Za-zÀ-ÖØ-öø-ÿ0-9./:_-]*?\.[a-z]{2,6}/) ? url : 'ERROR!'), 'CSV');
-    this.appendDummyInput()
-      .appendField('with separator')
-      .appendField(new Blockly.FieldTextInput(','), 'sep');
-    this.setTooltip('Loads a given CSV dataset from an URL. Local files can be used by prepending "file://".');
-    this.appendEndRowInput();
-    this.setOutput(true, 'Array');
-    this.setColour(200);
-
-  },
-};
-pythonGenerator.forBlock['load_csv_from_url'] = function(block) {
-  const dataset = block.getFieldValue('CSV') || '0';
-  const separator = block.getFieldValue('sep') || ',';
-  return [`pd.read_csv('${dataset}', sep = '${separator}')\n`, pythonGenerator.ORDER_ATOMIC];
-};
       
 /** sqrt block**/
 Blockly.Blocks["sqrt_of"] = {
@@ -970,23 +946,23 @@ pythonGenerator.forBlock['import3'] = function(block) {
  * DATA VIZ BLOCKS
  *****************/
 
-Blockly.Blocks['create_folder'] = {
-  init: function() {
-    this.appendDummyInput('')
-        .appendField('Create folder')
-        .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER');
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setColour(200);
-    this.setTooltip('Create data and output folders for data visualisation');
-  }
-};
-pythonGenerator.forBlock['create_folder'] = function(block) {
-  const folder = block.getFieldValue('FOLDER') || 'data';
-  return '' +
-    `if not os.path.exists('${folder}'):\n` +
-        `\tos.mkdir('${folder}')\n`;
-};
+// Blockly.Blocks['create_folder'] = {
+//   init: function() {
+//     this.appendDummyInput('')
+//         .appendField('Create folder')
+//         .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER');
+//     this.setPreviousStatement(true);
+//     this.setNextStatement(true);
+//     this.setColour(200);
+//     this.setTooltip('Create a folder to store files.');
+//   }
+// };
+// pythonGenerator.forBlock['create_folder'] = function(block) {
+//   const folder = block.getFieldValue('FOLDER') || 'data';
+//   return '' +
+//     `if not os.path.exists('${folder}'):\n` +
+//         `\tos.mkdir('${folder}')\n`;
+// };
 
 Blockly.Blocks['func_download'] = {
   init: function() {
@@ -1009,7 +985,7 @@ Blockly.Blocks['read_file'] = {
     this.appendDummyInput()
         .appendField('Read file')
         .appendField(new Blockly.FieldTextInput('file.csv'), 'NAME');
-    this.setTooltip('Use function to read file.');
+    this.setTooltip('Use function to read file with GeoPandas.');
     this.setOutput(true)
     this.setColour(200);
   }
@@ -1019,58 +995,54 @@ pythonGenerator.forBlock['read_file'] = function(block,generator) {
   return [`gpd.read_file('${fileName}')`, pythonGenerator.ORDER_ATOMIC];
 }
 
-Blockly.Blocks['write_file'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Create GeoPackage')
-        .appendField(new Blockly.FieldTextInput('file_name'), 'NAME');
-    this.appendDummyInput()
-        .appendField('In folder')
-        .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER')
-        .appendField('.gpkg')
-    this.appendValueInput('RES')
-        .appendField('With data');
-    this.setTooltip('Write to given output folder. The format of this file is GeoPackage (.gpkg). A variable is expected as input.');
-    this.setNextStatement(true);
-    this.setPreviousStatement(true);
-    this.setColour(200);
-  }
-}
-pythonGenerator.forBlock['write_file'] = function(block, generator) {
-  const fileName = block.getFieldValue('NAME');
-  const res = generator.valueToCode(block, 'RES', pythonGenerator.ORDER_ATOMIC);
-  return '\n' + 
-  `${res}.to_file(driver='GPKG', filename=os.path.join(output_folder, '${fileName}.gpkg'))\n`
-}
+// Blockly.Blocks['write_file'] = {
+//   init: function() {
+//     this.appendDummyInput()
+//         .appendField('Create GeoPackage')
+//         .appendField(new Blockly.FieldTextInput('file_name'), 'NAME')
+//         .appendField('.gpkg');
+//     this.appendValueInput('RES')
+//         .appendField('With data');
+//     this.setTooltip('Write to given output folder. The format of this file is GeoPackage (.gpkg). A variable is expected as input.');
+//     this.setNextStatement(true);
+//     this.setPreviousStatement(true);
+//     this.setColour(200);
+//   }
+// }
+// pythonGenerator.forBlock['write_file'] = function(block, generator) {
+//   const fileName = block.getFieldValue('NAME');
+//   const res = generator.valueToCode(block, 'RES', pythonGenerator.ORDER_ATOMIC);
+//   return `${res}.to_file(driver='GPKG', filename='${fileName}.gpkg')\n`
+// }
 
-Blockly.Blocks['chdir'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Change current directory to')
-        .appendField(new Blockly.FieldTextInput('path'), 'PATH');
-    this.setTooltip('Change directory to given path');
-    this.setNextStatement(true);
-    this.setPreviousStatement(true);
-    this.setColour(200); 
-  }
-}
-pythonGenerator.forBlock['chdir'] = function(block) {
-  const path = block.getFieldValue('PATH');
-  return `\nos.chdir('${path}')`;
-}
+// Blockly.Blocks['chdir'] = {
+//   init: function() {
+//     this.appendDummyInput()
+//         .appendField('Change current directory to')
+//         .appendField(new Blockly.FieldTextInput('path'), 'PATH');
+//     this.setTooltip('Change directory to given path');
+//     this.setNextStatement(true);
+//     this.setPreviousStatement(true);
+//     this.setColour(200); 
+//   }
+// }
+// pythonGenerator.forBlock['chdir'] = function(block) {
+//   const path = block.getFieldValue('PATH');
+//   return `\nos.chdir('${path}')`;
+// }
 
-Blockly.Blocks['getDir'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Get current directory');
-    this.setTooltip('Get the current working directory')
-    this.setOutput(true, 'String');
-    this.setColour(200);
-  }
-}
-pythonGenerator.forBlock['getDir'] = function() {
-  return [`os.path.abspath(os.getcwd())`, pythonGenerator.ORDER_ATOMIC];
-}
+// Blockly.Blocks['getDir'] = {
+//   init: function() {
+//     this.appendDummyInput()
+//         .appendField('Get current directory');
+//     this.setTooltip('Get the current working directory')
+//     this.setOutput(true, 'String');
+//     this.setColour(200);
+//   }
+// }
+// pythonGenerator.forBlock['getDir'] = function() {
+//   return [`os.path.abspath(os.getcwd())`, pythonGenerator.ORDER_ATOMIC];
+// }
 
 Blockly.Blocks['sampleDataA'] = {
   init: function() {
@@ -1082,20 +1054,16 @@ Blockly.Blocks['sampleDataA'] = {
           ['grid.csv', 'https://gist.githubusercontent.com/vivien789/cc1072281ccc542affbc0676cc852615/raw/3559558e3690b1962a83b2191f3943ec18813b79/grid.csv'],
           ['litter.csv', 'https://gist.githubusercontent.com/MatteoBRGR/ef8230eed8a33d6febb5c4399582b161/raw/d2b0164b295e2e8055e449a07109a64c6f5bc877/litter.csv'],
           ['trashCans.csv', 'https://gist.githubusercontent.com/MatteoBRGR/d0b377baabc494ab9de1edba2c2dd893/raw/3d5cefe34ff669d399da2f42c8b7e19f501658a3/trashCans.csv']
-        ]), 'NAME')
-        .appendField('into folder')
-        .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER');
-    this.setTooltip('Download sample data from GitHub Gist into given folder.');
+        ]), 'NAME');
+    this.setTooltip('Download sample data from GitHub Gist.');
     this.setNextStatement(true);
     this.setPreviousStatement(true);
     this.setColour(200); 
   }
 }
 pythonGenerator.forBlock['sampleDataA'] = function(block) {
-  const folder = block.getFieldValue('FOLDER') || 'data';
-  const dataset = block.getFieldValue('NAME') || 'https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv';
-  return `url = '${dataset}'
-downloadA(url, '${folder}')\n`;
+  const dataset = block.getFieldValue('NAME') ||  'https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv';
+  return `download('${dataset}')\n`;
 }
 
 Blockly.Blocks['sampleDataB'] = {
@@ -1109,8 +1077,7 @@ Blockly.Blocks['sampleDataB'] = {
   }
 }
 pythonGenerator.forBlock['sampleDataB'] = function(block) {
-  return `\nurl = 'https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv'
-downloadB(url)\n`;
+  return `download('https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv')\n`;
 }
 
 Blockly.Blocks['listdir'] = {
@@ -1922,7 +1889,7 @@ Blockly.Blocks['folium_map'] = {
         .appendField('Create a map centered on');
     this.appendDummyInput()
         .appendField('with zoom level')
-        .appendField(new Blockly.FieldNumber(6), 'zoom');
+        .appendField(new Blockly.FieldNumber(3), 'zoom');
     this.setNextStatement(true, null);
     this.setInputsInline(false);
     this.setTooltip('');
@@ -2416,7 +2383,7 @@ pythonGenerator.forBlock['boxplot'] = function(block, generator) {
 Blockly.Blocks['distance_vinc'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField('Vincenty’s distance');
+        .appendField('Vincenty distance');
     this.appendValueInput('point1')
         .appendField('Point 1')
         .setCheck('GeoCoords');
@@ -2527,7 +2494,7 @@ pythonGenerator.forBlock['distance_manhattan'] = function(block) {
 Blockly.Blocks['distance_haversine'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField('Distance haversine');
+        .appendField('Haversine distance');
     this.appendDummyInput()
         .appendField('Point 1: Lat:')
         .appendField(new Blockly.FieldNumber('0'), 'Lat1')

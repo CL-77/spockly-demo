@@ -21,7 +21,7 @@ _output = _stdout.getvalue()
   if (result) {
     console.log("%cOutput:", "font-size: 1.5em; color: green", '\n' + result);
   } else if (error) {
-    console.log("Error:", error);
+    console.error("Error:\n", error);
   }
   return result || error;
 };
