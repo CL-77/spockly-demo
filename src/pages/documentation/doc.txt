@@ -9,6 +9,16 @@ Read file file.csv from folder data
 Error: data/file.csv: No such file or directory
 Solution: Create folder 'data', download file using one of the appropriate blocks, check spelling of file and folder, 
 
+Load data from json
+ValueError: Trailing data
+Solution: Modify the input file. Probably it is corrupted in some way, e.g. some "{" char was deleted.
+
+ValueError: All arrays must be of the same length
+Solution: Check the shape
+
+ValueError: Mixing dicts with non-Series may lead to ambiguous ordering
+Solution: Take one column
+
 Reshape array
 ValueError: cannot reshape array of size 561706 into shape (1,1)
 Solution: Reshape value must be compatible with new size. Data can't get deleted, so sizes must be equivalent. Example: an initial array of length 15 can be reshaped into (5, 3), (3, 5), or event (15, 1) or (1, 15).

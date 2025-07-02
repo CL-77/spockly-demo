@@ -400,6 +400,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 
           <category name="${Blockly.Msg.Categories["INTERPOLATION"]}" colour="#BA68C8">
             <block type="idw_interpolation"></block>
+            <block type="ppv_interpolation"></block>
           </category>
 
           <category name="${Blockly.Msg.Categories["MAPS"]}" colour="#3E65F8">
@@ -583,7 +584,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
       console.error("Blockly workspace is not initialised.");
       return;
     }
-    var libs = "", np, pd, gpd, sns, plt, requests, os, def_download, px, folium, interpol, geodes, point, line, polyg, multipolyg, box;
+    var libs = "", np, pd, gpd, sns, plt, requests, os, def_download, px, folium, interpol_idw, interpol_ppv, geodes, point, line, polyg, multipolyg, box;
     var pythonCode = pythonGenerator.workspaceToCode(workspaceRef.current);
     if(~pythonCode.indexOf('np.')) np = true;
     if(~pythonCode.indexOf('pd.')) pd = true;
@@ -595,7 +596,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     if(~pythonCode.indexOf('download(')) def_download = true;
     if(~pythonCode.indexOf('px.')) px = true;
     if(~pythonCode.indexOf('folium.')) folium = true;
-    if(~pythonCode.indexOf('idw_interpolation(')) interpol = true;
+    if(~pythonCode.indexOf('idw_interpolation(')) interpol_idw = true;
+    if(~pythonCode.indexOf('interp_ppv(')) interpol_ppv = true;
     if(~pythonCode.indexOf('geodesic(')) geodes = true;
     if(~pythonCode.indexOf('Point')) point = true;
     if(~pythonCode.indexOf('LineString([')) line = true;
@@ -627,7 +629,17 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     libs += polyg ? "from shapely import Polygon\n" : "";
     libs += multipolyg ? "from shapely import MultiPolygon\n" : "";
     libs += box ? "from shapely.geometry import box\n" : "";
-    libs += interpol ? `
+    libs += interpol_ppv ? `
+import numpy as np
+def interp_ppv(x_obs, y_obs, z_obs, x_int, y_int):   
+  z_int = np.nan*np.zeros(x_int.shape)
+  for i in np.arange(0,x_int.shape[0]):
+      for j in np.arange(0,x_int.shape[1]):
+          d = np.sqrt((x_int[i,j]-x_obs)**2+(y_int[i,j]-y_obs)**2)
+          idx = np.argmin(d)
+          z_int[i,j] = z_obs[idx]
+  return z_int` : '';
+    libs += interpol_idw ? `
 from scipy.spatial import cKDTree
 def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
     tree = cKDTree(np.c_[xi, yi])
