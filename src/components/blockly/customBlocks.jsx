@@ -1129,9 +1129,9 @@ Blockly.Blocks['plot'] = {
     this.appendDummyInput('size')
         .appendField('Size:')
         .appendField('X')
-        .appendField(new Blockly.FieldNumber('10'), 'XVAL')
+        .appendField(new Blockly.FieldNumber('1'), 'XVAL')
         .appendField('Y')
-        .appendField(new Blockly.FieldNumber('10'), 'YVAL');
+        .appendField(new Blockly.FieldNumber('1'), 'YVAL');
     this.appendDummyInput()
         .appendField('X-axis label')
         .appendField(new Blockly.FieldTextInput('Label'), 'XLVAL');;
@@ -1178,7 +1178,7 @@ pythonGenerator.forBlock['plot'] = function(block, generator) {
 Blockly.Blocks['scatter'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField('Plot points');
+        .appendField('Plot scatter graph');
     this.appendValueInput('valX')
         .appendField('X-value');
     this.appendValueInput('valY')
@@ -1186,19 +1186,19 @@ Blockly.Blocks['scatter'] = {
     this.appendDummyInput()
         .appendField('Colour')
         .appendField(new Blockly.FieldTextInput('red'), 'COL')
-    this.appendDummyInput('title')
+    this.appendValueInput('title')
         .appendField('Title')
         .appendField(new Blockly.FieldTextInput('Title'), 'title');
     this.appendDummyInput('size')
         .appendField('Size:')
         .appendField('X')
-        .appendField(new Blockly.FieldNumber('10'), 'XVAL')
+        .appendField(new Blockly.FieldNumber('1'), 'XVAL')
         .appendField('Y')
-        .appendField(new Blockly.FieldNumber('10'), 'YVAL');
-    this.appendDummyInput('XLabel')
+        .appendField(new Blockly.FieldNumber('1'), 'YVAL');
+    this.appendValueInput('XLabel')
         .appendField('X-axis label')
         .appendField(new Blockly.FieldTextInput('Label'), 'XLabel');
-    this.appendDummyInput('YLabel')
+    this.appendValueInput('YLabel')
         .appendField('Y-axis label')
         .appendField(new Blockly.FieldTextInput('Label'), 'YLabel');
     this.appendValueInput('Legend')
@@ -1894,13 +1894,6 @@ Blockly.Blocks['folium_map'] = {
     this.appendDummyInput()
         .appendField('with zoom level')
         .appendField(new Blockly.FieldNumber(3), 'zoom');
-    this.appendDummyInput()
-        .appendField('using map style')
-        .appendField(new Blockly.FieldDropdown([
-          ['OSM Open Street Map', 'OpenStreetMap'],
-          ['CartoDB Positron', 'CartoDB Positron'],
-          ['CartoDB Dark Matter', 'CartoDB Dark Matter']
-        ]), 'DROP');
     this.setNextStatement(true, null);
     this.setInputsInline(false);
     this.setTooltip('');
@@ -1911,8 +1904,7 @@ Blockly.Blocks['folium_map'] = {
 pythonGenerator.forBlock['folium_map'] = function(block, generator) {
   const value_center = generator.valueToCode(block, 'center', pythonGenerator.ORDER_ATOMIC) || '(0, 0)';
   const zoom_level = block.getFieldValue('zoom') || 12;
-  const map_style = block.getFieldValue('DROP') || 'OpenStreetMap';
-  return `m = folium.Map(location=${value_center}, zoom_start=${zoom_level}, tiles='${map_style}')\n`;
+  return `m = folium.Map(location=${value_center}, zoom_start=${zoom_level})\n`;
 }
 
 Blockly.Blocks['folium_marker'] = {
@@ -2398,42 +2390,6 @@ pythonGenerator.forBlock['boxplot'] = function(block, generator) {
   `plt.ylabel('${labels[1]}')\n`
 }
 
-Blockly.Blocks['create_list_XCoords'] = {
-  init: function() {
-    this.appendDummyInput('')
-        .appendField('Create list with X coords')
-        .appendField(new Blockly.FieldVariable('ARR_NAME'), 'VAR');
-    this.setOutput(true);
-    this.setTooltip('Attach an array. This array should be an array of points with X and Y coordinates. This blocks creates a list of all X coordinates of the points.');
-    this.setColour(100);
-    this.setHelpUrl('https://stackoverflow.com/questions/59417997/how-to-plot-a-list-of-shapely-points');
-  }
-}
-pythonGenerator.forBlock['create_list_XCoords'] = function (block) {
-  const varID = block.getFieldValue('VAR') || '0';
-  const getVar = block.workspace.getVariableById(varID);
-  const Var = getVar ? getVar.name : 'undefined';
-  return [`[point.x for point in ${Var}]`, pythonGenerator.ORDER_ATOMIC];
-}
-
-Blockly.Blocks['create_list_YCoords'] = {
-  init: function() {
-    this.appendDummyInput('')
-        .appendField('Create list with Y coords')
-        .appendField(new Blockly.FieldVariable('ARR_NAME'), 'VAR');
-    this.setOutput(true);
-    this.setTooltip('Attach an array. This array should be an array of points with X and Y coordinates. This blocks creates a list of all Y coordinates of the points.');
-    this.setColour(100);
-    this.setHelpUrl('https://stackoverflow.com/questions/59417997/how-to-plot-a-list-of-shapely-points');
-  }
-}
-pythonGenerator.forBlock['create_list_YCoords'] = function (block) {
-  const varID = block.getFieldValue('VAR') || '0';
-  const getVar = block.workspace.getVariableById(varID);
-  const Var = getVar ? getVar.name : 'undefined';
-  return [`[point.y for point in ${Var}]`, pythonGenerator.ORDER_ATOMIC];
-}
-
 //Distance Vincenty
 Blockly.Blocks['distance_vinc'] = {
   init: function() {
@@ -2719,6 +2675,61 @@ zi = known['${column}'].values
 xi_interp = unknown['${x_position}'].values
 yi_interp = unknown['${y_position}'].values
 zi_interp = idw_interpolation(xi, yi, zi, xi_interp, yi_interp, ${power})
+df_interp.loc[df_interp['${column}'].isna(), '${column}'] = zi_interp
+
+fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+${datasetVar}.plot(kind = "scatter", x="${x_position}", y="${y_position}", c="${column}", ax=ax[0], cmap='pink', colorbar=True, legend=True)
+df_interp.plot(kind = "scatter", x="${x_position}", y="${y_position}", c="${column}", ax=ax[1], cmap='pink', colorbar=True, legend=True)
+ax[0].set_title("Original", fontsize=12, pad=12)
+ax[1].set_title("Interpolated", fontsize=12, pad=12)
+for a in ax:
+    a.axis('off')
+`;
+  return code;
+};
+
+//Neighbour interpolation
+Blockly.Blocks['ppv_interpolation'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("PPV Interpolation");
+    this.appendValueInput("DATASET")
+        .setCheck('Array')
+        .appendField("Dataset with missing values");
+    this.appendDummyInput()
+        .appendField("X axis")
+        .appendField(new Blockly.FieldTextInput("X"), "X");
+    this.appendDummyInput()
+        .appendField("Y axis")
+        .appendField(new Blockly.FieldTextInput("Y"), "Y");
+    this.appendDummyInput()
+        .appendField("Column")
+        .appendField(new Blockly.FieldTextInput("pop_density"), "COLUMN");
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+    this.setTooltip("Perform PPV interpolation on missing values in a dataset");
+    this.setHelpUrl("");
+  }
+};
+
+pythonGenerator.forBlock['ppv_interpolation'] = function(block, generator) {
+  const datasetVar = generator.valueToCode(block, 'DATASET', pythonGenerator.ORDER_NONE) || 'df_copy';
+  const x_position = block.getFieldValue('X') || 'x';
+  const y_position = block.getFieldValue('Y') || 'y';
+  const column = block.getFieldValue('COLUMN') || 'pop_density';
+
+  const code = `
+df_interp= ${datasetVar}.copy()
+known = df_interp[df_interp['${column}'].notna()]
+unknown = df_interp[df_interp['${column}'].isna()]
+xi = known['${x_position}'].values
+yi = known['${y_position}'].values
+zi = known['${column}'].values
+xi_interp = unknown['${x_position}'].values
+yi_interp = unknown['${y_position}'].values
+zi_interp = interp_ppv(xi, yi, zi, xi_interp, yi_interp)
 df_interp.loc[df_interp['${column}'].isna(), '${column}'] = zi_interp
 
 fig, ax = plt.subplots(1, 2, figsize=(10, 5))
