@@ -113,7 +113,7 @@ Blockly.Blocks['operators'] = {
           ['NOT', 'NOT']
         ]), 'NAME');
     this.setInputsInline(true)
-    this.setOutput(true, null);
+    this.setOutput(true, 'Boolean');
     this.setTooltip('All the basic logical operators');
     this.setColour(0);
   }
@@ -489,7 +489,7 @@ Blockly.Blocks['slice_file'] = {
     this.appendValueInput('CNAME')
         .appendField('to condition');
     this.setInputsInline(true);
-    this.setOutput(true);
+    this.setOutput(true, 'Array');
     this.setTooltip('Slice a file according to a given condition.')
     this.setColour(200);
   }
@@ -545,7 +545,7 @@ Blockly.Blocks['list_create'] = {
     )
     this.appendDummyInput('close').appendField(appendFieldPlusIcon);
     this.setColour(230);
-    this.setOutput(true, null);
+    this.setOutput(true, 'List');
     this.setTooltip('Create a Python list');
   },
 
@@ -641,6 +641,7 @@ Blockly.Blocks['data_shape'] = {
     this.setInputsInline(true)
     this.setOutput(true, 'tuple');
     this.setTooltip('Find shape of data');
+    this.setHelpUrl('https://numpy.org/devdocs/reference/generated/numpy.shape.html');
     this.setColour(200);
   }
 };
@@ -811,9 +812,10 @@ pythonGenerator.forBlock['line_break'] = function() {
 Blockly.Blocks['sort'] = {
   init: function() {
     this.appendValueInput('CNAME')
-      .appendField('list to sort');
+      .appendField('list to sort')
+      .setCheck('List');
     this.setInputsInline(true)
-    this.setOutput(true, null);
+    this.setOutput(true, 'List');
     this.setTooltip('Sort an array (one- or multidimensionl)');
     this.setHelpUrl('');
     this.setColour(95);
@@ -1100,7 +1102,7 @@ Blockly.Blocks['type'] = {
     this.appendValueInput('TYPE')
         .appendField('check type of');
     this.setTooltip('Find the type of another block');
-    this.setOutput(true);
+    this.setOutput(true, 'Type');
     this.setColour(200);
   }
 }
@@ -1137,6 +1139,7 @@ Blockly.Blocks['plot'] = {
         .appendField('Y-axis label')
         .appendField(new Blockly.FieldTextInput('Label'), 'YLVAL');;
     this.appendValueInput('Legend')
+        .setCheck('List')
         .appendField('Legend');
     this.appendDummyInput('GRID')
         .appendField('Grid?')
@@ -1199,6 +1202,7 @@ Blockly.Blocks['scatter'] = {
         .appendField('Y-axis label')
         .appendField(new Blockly.FieldTextInput('Label'), 'YLabel');
     this.appendValueInput('Legend')
+        .setCheck('List')
         .appendField('Legend');
     this.appendDummyInput('GRID')
         .appendField('Grid?')
@@ -1246,7 +1250,7 @@ Blockly.Blocks['reshape'] = {
         .setCheck('Number')
         .appendField('Elements per array');
     this.setInputsInline(false)
-    this.setOutput(true, null);
+    this.setOutput(true, 'Array');
     this.setTooltip('Reshape an array');
     this.setHelpUrl('https://www.w3schools.com/python/numpy/numpy_array_reshape.asp');
     this.setColour(200);
@@ -1458,7 +1462,7 @@ Blockly.Blocks['buffer'] = {
     this.appendDummyInput('radius')
         .appendField('Radius')
         .appendField(new Blockly.FieldNumber(0), 'r');
-    this.setOutput(true);
+    this.setOutput(true, 'Polygon');
     this.setInputsInline(false);
     this.setTooltip('Create a circle with its center and its radius');
     this.setColour(150);
@@ -1656,7 +1660,7 @@ Blockly.Blocks['geometry_type'] = {
   init: function() {
     this.appendValueInput('geom')
         .appendField('Geometry type');
-    this.setOutput(true, 'Number');
+    this.setOutput(true, null);
     this.setTooltip('Give the type of a geometry');
     this.setHelpUrl('https://autogis-site.readthedocs.io/en/latest/lessons/lesson-1/geometry-objects.html');
     this.setColour(150);
@@ -2192,7 +2196,7 @@ Blockly.Blocks['Choropleth_map'] = {
         .appendField('and data');
     this.appendValueInput('columns_shown')
         .appendField('of columns')
-        // .setCheck('Array');
+        .setCheck('List');
     this.appendDummyInput('fill_color')
         .appendField('Fill colour')
         .appendField(new Blockly.FieldTextInput('YlGn'), 'fill_color');
@@ -2277,8 +2281,10 @@ Blockly.Blocks['pie_chart'] = {
     this.appendDummyInput()
         .appendField('Pie chart');
     this.appendValueInput('sizes')
+        .setCheck('List')
         .appendField('Sizes');
     this.appendValueInput('labels')
+        .setCheck('List')
         .appendField('Labels');
     this.appendDummyInput()
         .appendField('Percentages')
@@ -2303,8 +2309,10 @@ Blockly.Blocks['bar_chart'] = {
     this.appendDummyInput()
         .appendField('Bar chart');
     this.appendValueInput('heights')
+        .setCheck('List')
         .appendField('Heights');
     this.appendValueInput('sizes')
+        .setCheck('List')
         .appendField('Labels');
     this.appendDummyInput()
         .appendField('Title')
@@ -2340,8 +2348,10 @@ Blockly.Blocks['boxplot'] = {
     this.appendDummyInput()
         .appendField('Boxplot');
     this.appendValueInput('data')
+        .setCheck('List')
         .appendField('Data');
     this.appendValueInput('label_group')
+        .setCheck('List')
         .appendField('Labels');
     this.appendDummyInput()
         .appendField('Vertical')
@@ -2391,7 +2401,7 @@ Blockly.Blocks['distance_vinc'] = {
         .appendField('Point 2')
         .setCheck('GeoCoords');
     this.setOutput(true, 'Number');
-    this.setTooltip('Find the Vincenty distance');
+    this.setTooltip('Find the Vincenty distance: Geo coordinates in input. THis distance is computed on a ellipsoid');
     this.setHelpUrl('https://geopy.readthedocs.io/en/stable/index.html?highlight=geodesic#geopy.distance.geodesic');
     this.setColour(60);
   }
@@ -2418,7 +2428,7 @@ Blockly.Blocks['distance_sph'] = {
         .appendField(', Lon:')
         .appendField(new Blockly.FieldNumber('0'), 'Lon2');
     this.setOutput(true, 'Number');
-    this.setTooltip('Find the distance on a sphere with latitude and longitude');
+    this.setTooltip('Find the distance on a sphere with latitude and longitude. Different of haversine distance');
     this.setHelpUrl('');
     this.setColour(60);
   }
@@ -2506,7 +2516,7 @@ Blockly.Blocks['distance_haversine'] = {
         .appendField(', Lon:')
         .appendField(new Blockly.FieldNumber('0'), 'Lon2');
     this.setOutput(true, 'Number');
-    this.setTooltip('Find the distance haversine with lat and lon');
+    this.setTooltip('Find the distance haversine with lat and lon on a sphere');
     this.setHelpUrl('');
     this.setColour(60);
   }
@@ -2618,7 +2628,7 @@ Blockly.Blocks['idw_interpolation'] = {
     this.appendDummyInput()
         .appendField("IDW Interpolation");
     this.appendValueInput("DATASET")
-        .setCheck(null)
+        .setCheck('Array')
         .appendField("Dataset with missing values");
     this.appendDummyInput()
         .appendField("X axis")
@@ -2681,11 +2691,11 @@ for a in ax:
 Blockly.Blocks['del_col'] = {
   init: function() {
     this.appendValueInput('array')
-    .setCheck(['Array'])
+      .setCheck(['Array'])
       .appendField('Delete columns');
     this.appendValueInput('columns')
       .appendField('Name of columns');
-    this.setOutput(true);
+    this.setOutput(true, 'Array');
     this.setTooltip('');
     this.setColour(200);
   }

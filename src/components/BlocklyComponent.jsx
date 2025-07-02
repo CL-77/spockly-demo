@@ -210,10 +210,10 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
               <block type="load_txt"></block>
               <block type="load_json"></block>
               <block type="request_json_data"></block>
+              <block type="load_shapefile"></block>
             </category>
             <block type="convert_column"></block>
             <block type="convert_np_to_pd"></block>          
-            <block type="load_shapefile"></block>
             <block type="data_shape"></block>
             <block type="stacking"></block>
             <block type="add_object"></block
