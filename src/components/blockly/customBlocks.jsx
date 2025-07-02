@@ -2160,12 +2160,13 @@ pythonGenerator.forBlock['folium_circle'] = function(block, generator) {
 Blockly.Blocks['saveAndDisplayMap'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField('Display map as')
+        .appendField('Show map');
+    this.appendDummyInput()
+        .appendField('')
+        .appendField(new Blockly.FieldCheckbox('TRUE'), 'saveMap')
+        .appendField('Save map as')
         .appendField(new Blockly.FieldTextInput('map', txt => txt.replace(/[<>:?*\\"|]/g, '')), 'path')
         .appendField('.html');
-    this.appendDummyInput()
-        .appendField('Save map?')
-        .appendField(new Blockly.FieldCheckbox('TRUE'), 'saveMap');
     this.setPreviousStatement(true);
     this.setColour(230);
     this.setHelpUrl('');
@@ -2705,7 +2706,6 @@ pythonGenerator.forBlock['idw_interpolation'] = function(block, generator) {
   const column = block.getFieldValue('COLUMN') || 'pop_density';
   const power = block.getFieldValue('POWER') || 2;
   const numMissing = block.getFieldValue('NUM_MISSING') || 4;
-
   const code = `
 df_copy = ${datasetVar}.copy()
 indices_to_replace = np.random.choice(df_copy.index, size=${numMissing}, replace=False)

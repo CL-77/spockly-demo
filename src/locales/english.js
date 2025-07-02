@@ -19,7 +19,7 @@ export const english = {
         "MAPS": "Maps",
         "OTHER": "Other",
         "DOWNLOAD_DATA": "Download Data",
-        "DATA_MANIPULATION": "Data manipulation",
-        "POINTS": "Points & figures",
+        "DATA_MANIPULATION": "Data Manipulation",
+        "POINTS": "Points & Figures",
     },
 }
