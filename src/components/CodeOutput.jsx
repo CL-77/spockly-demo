@@ -131,8 +131,8 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
         iframe.id = 'iframeMap';
         iframe.style.border = "none";
         iframe.src = url;
-        iframe.style.width = "inherit";
-        iframe.style.height = "inherit";
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
         var e = document.getElementById("responsiveBox2");
         Array.from(e.children).forEach(child => {
           child.style.display = "none";
@@ -176,8 +176,8 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
         iframe.id = 'iframeMap';
         iframe.style.border = "none";
         iframe.src = urlBis;
-        iframe.style.width = "inherit";
-        iframe.style.height = "inherit";
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
         var e = document.getElementById("responsiveBox2");
         Array.from(e.children).forEach(child => {
           child.style.display = "none";

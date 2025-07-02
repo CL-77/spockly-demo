@@ -19,5 +19,7 @@ export const german = {
         "MAPS": "Karten",
         "OTHER": "Andere",
         "DOWNLOAD_DATA": "Daten herunterladen",
+        "DATA_MANIPULATION": "Datenmanipulation",
+        "POINTS": "Punkte und Figuren",
     },
 }

@@ -26,12 +26,9 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   const theme = useTheme();
   const blocklyDiv = useRef(null);
   const linkRef = useRef(null);
-
-     // State to toggle between beginner and advanced block toolboxes
   const [level, setLevel] = useState("level1");
 
   // Blockly toolbox definition for Level 1 (Beginner)
-  // Change content later
   const beginnerToolbox = `
         <xml>
           <category name="${Blockly.Msg.Categories["MATH"]}" colour="#FF8A65">
@@ -71,20 +68,22 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                 <block type="func_download"></block>
                 <block type="sampleDataB"></block>
             </category>
-            <block type="convert_column"></block>
-            <block type="read_file"></block>
-            <block type="data_shape"></block>
-            <block type="add_object"></block>
-            <block type="delete_object"></block>
-            <block type="sort"></block>
-            <block type="delete_axes">
-              <value name="ColArr">
-                <block type="list_create"></block>
-              </value>
-              <value name="IndArr">
-                <block type="list_create"></block>
-              </value>
-            </block>
+            <category name="${Blockly.Msg.Categories["DATA_MANIPULATION"]}">
+              <block type="convert_column"></block>
+              <block type="read_file"></block>
+              <block type="data_shape"></block>
+              <block type="add_object"></block>
+              <block type="delete_object"></block>
+              <block type="sort"></block>
+              <block type="delete_axes">
+                <value name="ColArr">
+                  <block type="list_create"></block>
+                </value>
+                <value name="IndArr">
+                  <block type="list_create"></block>
+                </value>
+              </block>
+            </category>
           </category>
 
           <category name="${Blockly.Msg.Categories["VISUALISATION"]}" colour="#90A4AE">
@@ -211,52 +210,56 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
               <block type="load_json"></block>
               <block type="request_json_data"></block>
             </category>
-            <block type="convert_column"></block>
-            <block type="convert_np_to_pd"></block>          
-            <block type="load_shapefile"></block>
-            <block type="data_shape"></block>
-            <block type="stacking"></block>
-            <block type="add_object"></block
-            <block type="del_col"></block>
-            <block type="delete_object"></block>
-            <block type="create_array"></block>
-            <block type="sort"></block>
-            <block type="reshape">
-              <value name="rows">
-                <shadow type="math_number">
-                  <field name="NUM">1</field>
-                </shadow>
-              </value>
-              <value name="columns">
-                <shadow type="math_number">
-                  <field name="NUM">1</field>
-                </shadow>
-              </value>
-            </block>
-            <block type="slice_file"></block>
-            <block type="delete_axes">
-              <value name="ColArr">
-                <block type="list_create">
-                  <value name="element_0">
-                    <block type="text">
-                      <field name="TEXT">Column Name</field>
-                    </block>
-                  </value>
-                </block>
-              </value>
-              <value name="IndArr">
-                <block type="list_create">
-                  <value name="element_0">
-                    <block type="text">
-                      <field name="TEXT">Row name</field>
-                    </block>
-                  </value>
-                </block>
-              </value>
-            </block>
+            <category name="${Blockly.Msg.Categories["DATA_MANIPULATION"]}">
+              <block type="convert_column"></block>
+              <block type="convert_np_to_pd"></block>          
+              <block type="load_shapefile"></block>
+              <block type="data_shape"></block>
+              <block type="stacking"></block>
+              <block type="add_object"></block>
+              <block type="del_col"></block>
+              <block type="delete_object"></block>
+              <block type="create_array"></block>
+              <block type="sort"></block>
+              <block type="reshape">
+                <value name="rows">
+                  <shadow type="math_number">
+                    <field name="NUM">1</field>
+                  </shadow>
+                </value>
+                <value name="columns">
+                  <shadow type="math_number">
+                    <field name="NUM">1</field>
+                  </shadow>
+                </value>
+              </block>
+              <block type="slice_file"></block>
+              <block type="delete_axes">
+                <value name="ColArr">
+                  <block type="list_create">
+                    <value name="element_0">
+                      <block type="text">
+                        <field name="TEXT">Column Name</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <value name="IndArr">
+                  <block type="list_create">
+                    <value name="element_0">
+                      <block type="text">
+                        <field name="TEXT">Row name</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+              </block>
+            </category>
           </category>
 
           <category name="${Blockly.Msg.Categories["VISUALISATION"]}" colour="#90A4AE">
+            <block type="create_list_XCoords"></block>
+            <block type="create_list_YCoords"></block>
             <block type="plot">
               <value name="Legend">
                 <block type="list_create">
@@ -372,12 +375,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           <category name="${Blockly.Msg.Categories["PROCEDURES"]}" custom="PROCEDURE" colour="#05a219"></category>
 
           <category name="${Blockly.Msg.Categories["GEOMETRY"]}" colour="#4DD0E1">
-            <block type="coords"></block>
-            <block type="create_point"></block>
-            <block type="buffer"></block>
-            <block type="line_segment"></block>
-            <block type="polygon"></block>
-            <block type="multipolygon"></block>
             <category name="${Blockly.Msg.Categories["DISTANCE"]}">
               <block type="distance_calc"></block>
               <block type="distance_vinc"></block>
@@ -386,11 +383,19 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
               <block type="distance_manhattan"></block>
               <block type="distance_haversine"></block>
             </category>
-            <block type="centroid"></block>
-            <block type="polygon_area"></block>
-            <block type="polygon_perimeter"></block>
-            <block type="bounding_box"></block>
-            <block type="geometry_type"></block>
+            <category name="${Blockly.Msg.Categories["POINTS"]}">
+              <block type="coords"></block>
+              <block type="create_point"></block>
+              <block type="buffer"></block>
+              <block type="line_segment"></block>
+              <block type="polygon"></block>
+              <block type="multipolygon"></block>
+              <block type="centroid"></block>
+              <block type="polygon_area"></block>
+              <block type="polygon_perimeter"></block>
+              <block type="bounding_box"></block>
+              <block type="geometry_type"></block>
+            </category>
           </category>
 
           <category name="${Blockly.Msg.Categories["INTERPOLATION"]}" colour="#BA68C8">
@@ -472,7 +477,13 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             </block>
             <block type="Choropleth_map">
               <value name="columns_shown">
-                <block type="list_create"></block>
+                <block type="list_create">
+                  <value name="element_0">
+                    <block type="text">
+                      <field name="TEXT">Column 1</field>
+                    </block>
+                  </value>
+                </block>
               </value>
             </block>
             <block type="JSON_on_map"></block>
