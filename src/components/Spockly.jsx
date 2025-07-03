@@ -8,6 +8,7 @@ import CodeOutput from "./CodeOutput"
 import { MdOutlineOutput } from "react-icons/md";
 import { FaCode } from "react-icons/fa6";
 import main from "./init";
+import useSpocklyTour from './useSpocklyTour';
 
 function TabPanel({ children, value, index }) {
   return (
@@ -32,6 +33,8 @@ export default function SPOCKLY({ isDarkMode }) {
   const [plot, setPlot] = useState("");
   const workspaceRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
+
+  useSpocklyTour();
 
   const handleChange = (_event, newValue) => {
     setValue(newValue);
@@ -147,7 +150,8 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
         >
           <Tooltip title="Ctrl + Alt + C">
             <Tab
-              label={
+              id ="codeTab"
+            label={
                 <Box display="flex" alignItems="center" gap={ 1 }>
                   <FaCode /> Code
                 </Box>
@@ -161,7 +165,8 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
           </Tooltip>
           <Tooltip title="Ctrl + Alt + O">
             <Tab
-              label={
+              id="outputTab"
+            label={
                 <Box display="flex" alignItems="center" gap={ 1 }>
                   <MdOutlineOutput /> Output
                 </Box>

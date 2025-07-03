@@ -7,6 +7,11 @@ import { Upload, UploadFile } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup, IconButton } from "@mui/material";
 import { FaBookOpen, FaMapMarkedAlt, FaQuestionCircle } from "react-icons/fa";
+import { MdCo2 } from "react-icons/md";
+import { Toolbar } from "@mui/material";
+
+import CreateDataDialog from "./CreateDataDialog.jsx";
+import SimpleTutorialPanel from "./SimpleTutorialPanel.jsx"; 
 import { pythonGenerator } from "blockly/python";
 import { english } from "../locales/english";
 import { german } from "../locales/german";
@@ -27,6 +32,11 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   const blocklyDiv = useRef(null);
   const linkRef = useRef(null);
   const [level, setLevel] = useState("level1");
+
+  const [openCreateDataDialog, setOpenCreateDataDialog] = useState(false);
+
+  const [showTutorial, setShowTutorial] = useState(false);
+
 
   // Blockly toolbox definition for Level 1 (Beginner)
   const beginnerToolbox = `
@@ -661,23 +671,18 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
       }}
     >
       {/* Top bar with Upload button and Level toggle */}
-      <Box
-        display="flex"
-        alignItems="stretch"
-        justifyContent="space-between"
-        px={ 3 }
-        py={ 1.5 }
-        mb={ 2 }
+      <Toolbar
         sx={{
-          bgcolor: isDarkMode ? "#2b2d42" : "#e7ebf0",
+          display: "flex",
+          justifyContent: "space-between",
+          bgcolor: isDarkMode ? "#150e31" : "#f5f5f5",
+          mb: 2,
           borderRadius: 4,
-          boxShadow: 3,
-          border: "1px solid",
-          borderColor: isDarkMode ? "#4e5d6c" : "#ccd6df",
         }}
-      >
+        >
         <Tooltip title="Upload your CSV, GeoJSON or TIF data." arrow>
           <Button
+            id="uploadDataButton"
             variant="contained"
             onClick={ onUploadClick }
             sx={{
@@ -701,7 +706,33 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
           </Button>
         </Tooltip>
 
+        <Tooltip title="Create CSV data manually">
+          <Button
+            variant="outlined"
+            onClick={() => setOpenCreateDataDialog(true)}
+            sx={{ ml: 2 }}
+          >
+            Create Data
+          </Button>
+        </Tooltip>
+
+        <CreateDataDialog
+          open={openCreateDataDialog}
+          onClose={() => setOpenCreateDataDialog(false)}
+        />
+
         <Box display="flex" alignItems="center" gap={2} flex={1} justifyContent="flex-end" minWidth={0}>
+        <Tooltip
+            title={
+              <Box>
+                Beginner: built-in datasets & simple blocks.<br />
+                Advanced: load files, model, visualize spatial data.<br />
+                See tutorials for more information.
+              </Box>
+            }
+            arrow
+            enterDelay={0}
+          >
           <ToggleButtonGroup
             exclusive
             value={ level }
@@ -711,6 +742,7 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
               borderRadius: 2,
               boxShadow: 1,
             }}
+            id="switchLevelsButton"
           >
             <ToggleButton value="level1" sx={{ px: 2, py: 1, gap: 1 }}>
               <FaBookOpen /> Beginner
@@ -719,31 +751,33 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
               <FaMapMarkedAlt /> Advanced
             </ToggleButton>
           </ToggleButtonGroup>
-          <Tooltip
-            title={
-              <Box>
-                Beginner: built-in datasets & simple blocks.<br />
-                Advanced: load files, model, visualise spatial data.<br />
-                Click to see tutorials for more.
-              </Box>
-            }
-            arrow
-            enterDelay={ 0 }
+        </Tooltip>
+
+         { /* Help button to start Spockly tour */}
+         <Tooltip title="Start Spockly Tour" arrow>
+          <IconButton
+            onClick={() => window?.__startSpocklyTour?.()}
+            sx={{ color: "inherit" }}
           >
-            <IconButton
-              component="a"
-              href="/tutorials"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{ color: "inherit" }}
-            >
-              <FaQuestionCircle />
-            </IconButton>
-          </Tooltip>
+            <FaQuestionCircle />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="Show Simple CO₂ Tutorial" arrow>
+          <IconButton
+            onClick={() => setShowTutorial(prev => !prev)}
+            sx={{ color: showTutorial ? "green" : "inherit" }}
+          >
+            <MdCo2 />
+          </IconButton>
+        </Tooltip>
+
         </Box>
-      </Box>
+        </Toolbar>
+
       {/* Blockly rendering area */}
       <Box
+        id="blocklyWorkspaceContainer"
         ref={ blocklyDiv }
         sx={{
           height: "90%",
@@ -752,6 +786,8 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
           padding: 0,
         }}
       />
+
+    {showTutorial && <SimpleTutorialPanel onClose={() => setShowTutorial(false)} />}
     </Box>
   );
 };
