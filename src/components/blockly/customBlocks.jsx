@@ -102,11 +102,10 @@ pythonGenerator.forBlock['modulo'] = function(block) {
 Blockly.Blocks['operators'] = {
   init: function() {
     this.appendValueInput('VALUE')
-    .setAlign(Blockly.inputs.Align.RIGHT)
-    .setCheck('Boolean');
+        .setCheck(['Boolean', 'Number']);
     this.appendValueInput('VALUE2')
-    .setCheck('Boolean')
-      .appendField(new Blockly.FieldDropdown([
+        .setCheck(['Boolean', 'Number'])
+        .appendField(new Blockly.FieldDropdown([
           ['XOR', 'XOR'],
           ['AND', 'AND'],
           ['OR', 'OR'],
@@ -304,8 +303,7 @@ Blockly.Blocks['bool1'] = {
   }
 };
 pythonGenerator.forBlock['bool1'] = function(block) {
-  const bool = block.getFieldValue('drop');
-  return [bool, pythonGenerator.ORDER_ATOMIC];
+  return ['True', pythonGenerator.ORDER_ATOMIC];
 }
 
 Blockly.Blocks['bool2'] = {
@@ -2402,7 +2400,7 @@ Blockly.Blocks['distance_vinc'] = {
         .appendField('Point 2')
         .setCheck('GeoCoords');
     this.setOutput(true, 'Number');
-    this.setTooltip('Find the Vincenty distance: Geo coordinates in input. THis distance is computed on a ellipsoid');
+    this.setTooltip('Find the Vincenty distance: Geo coordinates in input. This distance is computed on a ellipsoid');
     this.setHelpUrl('https://geopy.readthedocs.io/en/stable/index.html?highlight=geodesic#geopy.distance.geodesic');
     this.setColour(60);
   }
