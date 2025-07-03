@@ -29,34 +29,6 @@ Blockly.defineBlocksWithJsonArray([
 	return [`sf::st_read("${filename}")`, Blockly.Generator.R.ORDER_NONE];
   };
 
-  Blockly.defineBlocksWithJsonArray([
-	{
-	  type: "load_tif",
-	  message0: "load GeoTIF file %1",
-	  args0: [
-		{
-		  type: "field_input",
-		  name: "FILENAME",
-		  text: "data.tif",
-		},
-	  ],
-	  previousStatement: null,
-	  nextStatement: null,
-	  output: null,
-	  colour: "#FFA726",
-	  tooltip: "Load a tif file",
-	},
-  ]);
-  
-  Blockly.Generator.R.forBlock["load_tif"] = function (block, generator) {
-	generator.requirePackage("terra");
-	const filename = block.getFieldValue("FILENAME");
-	return [`terra::rast("${filename}")`, Blockly.Generator.R.ORDER_NONE];
-  };
-
-
-
-
 // Blocks to load various types of data sources into the workspace
   
 Blockly.defineBlocksWithJsonArray([
@@ -71,19 +43,6 @@ Blockly.defineBlocksWithJsonArray([
     colour: "#FFA726",
     tooltip: "Load a CSV file from WebR filesystem",
     helpUrl: "https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/read.table"
-  },
-
-  // Load TIF
-  {
-    type: "load_tif",
-    message0: "load TIF file %1",
-    args0: [{ type: "field_input", name: "FILENAME", text: "data.tif" }],
-    previousStatement: null,
-    nextStatement: null,
-    output: null,
-    colour: "#FFA726",
-    tooltip: "Load a tif file using terra::rast()",
-    helpUrl: "https://www.rdocumentation.org/packages/terra/versions/1.7-39/topics/rast"
   },
 
   // Load GeoJSON
@@ -470,6 +429,7 @@ Blockly.defineBlocksWithJsonArray([
   ]);
   
   Blockly.Generator.R.forBlock["load_tif"] = function (block, generator) {
+	generator.requirePackage("sf", 'Sys.setenv(UDUNITS2_XML_PATH=system.file("share/udunits/udunits2.xml", package="units"))');
 	generator.requirePackage("terra");
 	const filename = block.getFieldValue("FILENAME");
 	return [`terra::rast("${filename}")`, Blockly.Generator.R.ORDER_NONE];

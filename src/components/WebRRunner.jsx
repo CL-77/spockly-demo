@@ -18,7 +18,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
   const theme = isDarkMode ? darkTheme : lightTheme;
   const [textOutput, setTextOutput] = useState("");
   const [sfPackageReady, setSfPackageReady] = useState(false);
-  const [sfSetupInProgress, setSfSetupInProgress] = useState(false);  
+  const [sfSetupInProgress, setSfSetupInProgress] = useState(false);
   const [webRReady, setWebRReady] = useState(false);
   const [showLoadingDialog, setShowLoadingDialog] = useState(false);
   const [currentPackage, setCurrentPackage] = useState("");
@@ -26,7 +26,6 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
 
   const installAndLoadPackages = async () => {
     const packages = ["jsonlite", "sp", "gstat"];
-  
     for (const pkg of packages) {
       setCurrentPackage(pkg);
       try {
@@ -39,74 +38,54 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
     setPackagesReady(true);
     setCurrentPackage("");
     setCurrentPackage("Done!");
-
     setTimeout(() => {
       setShowLoadingDialog(false);
       setCurrentPackage("");
     }, 2000);
-    
-  };  
+  };
 
   const setupSfPackage = async () => {
     if (sfPackageReady || sfSetupInProgress || !webRReady) return;
     setSfSetupInProgress(true);
-    try {
-      console.log("Setting up minimal units database...");
 
-      // Create minimal XML database as a replacement for udunits2
+    try {
+      // Load local udunits2 files
       await webR.evalRVoid(`
-        minimal_xml_lines <- c(
+        local_udunits_files <- c(
+          "udunits2-prefixes.xml",
+          "udunits2-base.xml",
+          "udunits2-derived.xml",
+          "udunits2-accepted.xml",
+          "udunits2-common.xml"
+        )
+
+        for (file in local_udunits_files) {
+          file_path <- paste0("/units/", file)
+          content <- readLines(file_path)
+          writeLines(content, paste0("/home/web_user/", file))
+        }
+
+        udunits_xml_content <- c(
           '<?xml version="1.0" encoding="UTF-8"?>',
           '<unit-system>',
-          '  <unit>',
-          '    <def>1</def>',
-          '    <name><singular>meter</singular><plural>meters</plural></name>',
-          '    <symbol>m</symbol>',
-          '  </unit>',
-          '  <unit>',
-          '    <def>1</def>',
-          '    <name><singular>kilogram</singular><plural>kilograms</plural></name>',
-          '    <symbol>kg</symbol>',
-          '  </unit>',
-          '  <unit>',
-          '    <def>1</def>',
-          '    <name><singular>second</singular><plural>seconds</plural></name>',
-          '    <symbol>s</symbol>',
-          '  </unit>',
-          '  <unit>',
-          '    <def>1</def>',
-          '    <name><singular>degree</singular><plural>degrees</plural></name>',
-          '    <symbol>deg</symbol>',
-          '  </unit>',
-          '  <unit>',
-          '    <def>1</def>',
-          '    <name><singular>radian</singular><plural>radians</plural></name>',
-          '    <symbol>rad</symbol>',
-          '  </unit>',
-          '  <unit>',
-          '    <def>m^2</def>',
-          '    <name><singular>square meter</singular><plural>square meters</plural></name>',
-          '    <symbol>m2</symbol>',
-          '  </unit>',
-          '  <unit>',
-          '    <def>1000 m</def>',
-          '    <name><singular>kilometer</singular><plural>kilometers</plural></name>',
-          '    <symbol>km</symbol>',
-          '  </unit>',
+          '  <import>udunits2-prefixes.xml</import>',
+          '  <import>udunits2-base.xml</import>',
+          '  <import>udunits2-derived.xml</import>',
+          '  <import>udunits2-accepted.xml</import>',
+          '  <import>udunits2-common.xml</import>',
           '</unit-system>'
         )
-        minimal_xml <- paste(minimal_xml_lines, collapse = "\\n")
-        writeLines(minimal_xml, "/home/web_user/minimal_udunits.xml")
-        Sys.setenv(UDUNITS2_XML_PATH = "/home/web_user/minimal_udunits.xml")
+
+        writeLines(udunits_xml_content, "/home/web_user/udunits2.xml")
+        Sys.setenv(UDUNITS2_XML_PATH = "/home/web_user/udunits2.xml")
       `);
 
       await webR.evalRVoid(`
-        options(units.database.path = "/home/web_user/minimal_udunits.xml")
+        options(units.database.path = "/home/web_user/udunits2.xml")
         .onLoad_units_patched <- function(libname, pkgname) {
-          Sys.setenv(UDUNITS2_XML_PATH = "/home/web_user/minimal_udunits.xml")
+          Sys.setenv(UDUNITS2_XML_PATH = "/home/web_user/udunits2.xml")
           return(invisible(NULL))
         }
-
         suppressMessages(suppressWarnings({
           tryCatch({
             library(units)
@@ -129,15 +108,73 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
     }
   };
 
+  const runCodeWithSfWorkaround = async (code) => {
+    if (
+      code.includes('library("sf")') ||
+      code.includes("library(sf)") ||
+      code.includes("sf::")
+    ) {
+      const lines = code.split("\n");
+      let modifiedCode = "";
+      let sfInstallLine = "";
+      let sfLibraryLine = "";
+      for (const line of lines) {
+        if (line.includes('webr::install("sf")')) {
+          sfInstallLine = line;
+        } else if (
+          line.includes('library("sf")') ||
+          line.includes("library(sf)")
+        ) {
+          sfLibraryLine = line;
+        } else {
+          modifiedCode += line + "\n";
+        }
+      }
+      if (sfInstallLine) {
+        await webR.evalRVoid(sfInstallLine);
+      }
+      await webR.evalRVoid(`
+        Sys.setenv(UDUNITS2_XML_PATH = "/home/web_user/udunits2.xml")
+        sf_loaded <- FALSE
+        suppressMessages(suppressWarnings({
+          tryCatch({
+            library(sf)
+            sf_loaded <- TRUE
+            message("SF package loaded successfully")
+          }, error = function(e) {
+            tryCatch({
+              loadNamespace("sf")
+              attachNamespace("sf")
+              sf_loaded <- TRUE
+              message("SF package loaded with workaround")
+            }, error = function(e2) {
+              tryCatch({
+                library.dynam("sf", "sf")
+                sf_loaded <- TRUE
+                message("SF package partially loaded")
+              }, error = function(e3) {
+                message(paste("SF loading failed:", e3$message))
+              })
+            })
+          })
+        }))
+      `);
+      if (modifiedCode.trim()) {
+        return await webR.evalR(modifiedCode);
+      }
+    } else {
+      return await webR.evalR(code);
+    }
+  };
+
   useEffect(() => {
     const initWebR = async () => {
       try {
         await webR.init();
         setWebRReady(true);
         if (webRRef) webRRef.current = webR;
-  
-        await installAndLoadPackages();  // install and load packages in background
-        await setupSfPackage();          // same for sf
+        await installAndLoadPackages();
+        await setupSfPackage();
       } catch (err) {
         console.error("WebR init failed:", err);
         setTextOutput(`Error initializing WebR: ${err.message}`);
@@ -145,7 +182,6 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
     };
     initWebR();
   }, []);
-  
 
   useEffect(() => {
     if (webRReady && !sfPackageReady) {
@@ -155,10 +191,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
 
   const runCode = async () => {
     setTextOutput("");
-
-    // Check if packages are ready
     const stillInstalling = !packagesReady;
-    // if packages are noch ready show dialog
     if (stillInstalling) {
       setShowLoadingDialog(true);
       while (!packagesReady) {
@@ -166,10 +199,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
       }
       setShowLoadingDialog(false);
     }
-    
-    // Fallback: ensure currentPackage is cleared
     setCurrentPackage("");
-
     try {
       await setupSfPackage();
       await webR.evalRVoid("options(device=webr::canvas)");
@@ -177,7 +207,6 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       (async () => {
         for (;;) {
           const output = await webR.read();
@@ -210,10 +239,17 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
           }
         }
       })();
-
       let result;
       try {
-        result = await webR.evalR(code);
+        if (
+          code.includes("sf::") ||
+          code.includes('library("sf")') ||
+          code.includes("library(sf)")
+        ) {
+          result = await runCodeWithSfWorkaround(code);
+        } else {
+          result = await webR.evalR(code);
+        }
         if (result) {
           const values = await result.toArray();
           const filtered = values.filter(
@@ -308,5 +344,3 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
 };
 
 export default WebRRunner;
-
-

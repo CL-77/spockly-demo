@@ -295,3 +295,109 @@ Blockly.Generator.R.forBlock["controls_if"] = function (block, generator) {
     return code;
   };
   
+
+  Blockly.defineBlocksWithJsonArray([
+	{
+		type: "install_package",
+		message0: "install %1 package",
+		args0: [
+			{
+				type: "field_input",
+				name: "PACKAGE",
+				text: "package_name",
+			},
+		],
+		previousStatement: null,
+		nextStatement: null,
+		colour: 160,
+		tooltip: "Install a specific package in R.",
+		helpUrl: "",
+	},
+]);
+
+Blockly.Generator.R.forBlock["install_package"] = function (block, generator) {
+	const packageName = block.getFieldValue("PACKAGE");
+	return `webr::install("${packageName}")\n`;
+};
+
+Blockly.defineBlocksWithJsonArray([
+	{
+	  "type": "plot_rgb",
+	  "message0": "plot RGB for data %1 with R %2 G %3 B %4",
+	  "args0": [
+		{
+		  "type": "input_value",
+		  "name": "DATA",
+		  "check": null
+		},
+		{
+		  "type": "input_value",
+		  "name": "R",
+		  "check": "Number"
+		},
+		{
+		  "type": "input_value",
+		  "name": "G",
+		  "check": "Number"
+		},
+		{
+		  "type": "input_value",
+		  "name": "B",
+		  "check": "Number"
+		}
+	  ],
+	  "previousStatement": null,
+	  "nextStatement": null,
+	  "colour": 160,
+	  "tooltip": "Plot an RGB image using terra::plotRGB.",
+	  "helpUrl": ""
+	}
+  ]);
+  
+  Blockly.Generator.R.forBlock["plot_rgb"] = function (block, generator) {
+	generator.requirePackage("terra");
+	const data = generator.valueToCode(block, "DATA", Blockly.Generator.R.ORDER_NONE) || "x";
+	const r = generator.valueToCode(block, "R", Blockly.Generator.R.ORDER_NONE) || "3";
+	const g = generator.valueToCode(block, "G", Blockly.Generator.R.ORDER_NONE) || "2";
+	const b = generator.valueToCode(block, "B", Blockly.Generator.R.ORDER_NONE) || "1";
+	return `plot(terra::plotRGB(${data}, r=${r}, g=${g}, b=${b}, stretch="LIN"))\n`;
+  };
+
+
+  Blockly.defineBlocksWithJsonArray([
+	{
+	  "type": "calculate_area",
+	  "message0": "calculate area of %1 in unit %2",
+	  "args0": [
+		{
+		  "type": "input_value",
+		  "name": "OBJECT",
+		  "check": null
+		},
+		{
+		  "type": "field_dropdown",
+		  "name": "UNIT",
+		  "options": [
+			["m", "m"],
+			["km", "km"],
+			["ha", "ha"]
+		  ]
+		}
+	  ],
+	  "output": null,
+	  "colour": 160,
+	  "tooltip": "Calculate the area of a SpatRaster or SpatVector object.",
+	  "helpUrl": ""
+	}
+  ]);
+  
+  Blockly.Generator.R.forBlock["calculate_area"] = function (block, generator) {
+	const object = generator.valueToCode(block, "OBJECT", Blockly.Generator.R.ORDER_NONE) || "x";
+	const unit = block.getFieldValue("UNIT");
+  
+	return [`terra::expanse(${object}, unit="${unit}")`, Blockly.Generator.R.ORDER_ATOMIC];
+  };
+  
+  
+  
+  

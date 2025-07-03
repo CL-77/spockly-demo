@@ -55,6 +55,9 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="create_vector"></block>
     <block type="plot_vector"></block>
 	<block type="x_to_y_mapping"></block>
+	<block type="install_package"></block>
+	<block type="plot_rgb"></block>
+	<block type="calculate_area"></block>
   </category>
 
   <category name="Load Data" colour="#FFA726">
