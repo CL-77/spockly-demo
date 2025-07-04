@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && npm run copy-webr",
+    "copy-webr": "cp -r node_modules/@r-wasm/webr/dist/* dist/",
     "lint": "eslint .",
     "preview": "vite preview"
   },
