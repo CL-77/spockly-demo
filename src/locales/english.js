@@ -20,6 +20,6 @@ export const english = {
         "OTHER": "Other",
         "DOWNLOAD_DATA": "Download Data",
         "DATA_MANIPULATION": "Data Manipulation",
-        "POINTS": "Points & Figures",
+        "POINTS": "Points &amp; Figures",
     },
 }

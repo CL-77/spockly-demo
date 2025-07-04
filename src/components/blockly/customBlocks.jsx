@@ -652,9 +652,9 @@ pythonGenerator.forBlock['data_shape'] = function(block, generator) {
 Blockly.Blocks['stacking'] = {
   init: function() {
     this.appendValueInput('db1')
-    .setCheck('Array')
-      .appendField('Stacking by')
-      .appendField(new Blockly.FieldDropdown([
+        .setCheck('Array')
+        .appendField('Stacking by')
+        .appendField(new Blockly.FieldDropdown([
           ['columns', 'COLUMNS'],
           ['rows', 'ROWS']
         ]), 'type');
@@ -1176,7 +1176,7 @@ pythonGenerator.forBlock['plot'] = function(block, generator) {
 Blockly.Blocks['scatter'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField('Plot scatter graph');
+        .appendField('Plot points');
     this.appendValueInput('valX')
         .appendField('X-value');
     this.appendValueInput('valY')
@@ -1184,19 +1184,19 @@ Blockly.Blocks['scatter'] = {
     this.appendDummyInput()
         .appendField('Colour')
         .appendField(new Blockly.FieldTextInput('red'), 'COL')
-    this.appendValueInput('title')
+    this.appendDummyInput()
         .appendField('Title')
         .appendField(new Blockly.FieldTextInput('Title'), 'title');
-    this.appendDummyInput('size')
+    this.appendDummyInput()
         .appendField('Size:')
         .appendField('X')
         .appendField(new Blockly.FieldNumber('1'), 'XVAL')
         .appendField('Y')
         .appendField(new Blockly.FieldNumber('1'), 'YVAL');
-    this.appendValueInput('XLabel')
+    this.appendDummyInput()
         .appendField('X-axis label')
         .appendField(new Blockly.FieldTextInput('Label'), 'XLabel');
-    this.appendValueInput('YLabel')
+    this.appendDummyInput()
         .appendField('Y-axis label')
         .appendField(new Blockly.FieldTextInput('Label'), 'YLabel');
     this.appendValueInput('Legend')
@@ -1892,9 +1892,16 @@ Blockly.Blocks['folium_map'] = {
     this.appendDummyInput()
         .appendField('with zoom level')
         .appendField(new Blockly.FieldNumber(3), 'zoom');
+    this.appendDummyInput()
+        .appendField('using map style')
+        .appendField(new Blockly.FieldDropdown([
+          ['OSM Open Street Map', 'OpenStreetMap'],
+          ['CartoDB Positron', 'CartoDB Positron'],
+          ['CartoDB Dark Matter', 'CartoDB Dark Matter']
+        ]), 'DROP');
     this.setNextStatement(true, null);
     this.setInputsInline(false);
-    this.setTooltip('');
+    this.setTooltip('Use this block to initialise a map.');
     this.setHelpUrl('https://python-visualization.github.io/folium/latest/getting_started.html');
     this.setColour(230);
   }
@@ -1902,7 +1909,8 @@ Blockly.Blocks['folium_map'] = {
 pythonGenerator.forBlock['folium_map'] = function(block, generator) {
   const value_center = generator.valueToCode(block, 'center', pythonGenerator.ORDER_ATOMIC) || '(0, 0)';
   const zoom_level = block.getFieldValue('zoom') || 12;
-  return `m = folium.Map(location=${value_center}, zoom_start=${zoom_level})\n`;
+  const map_style = block.getFieldValue('DROP') || 'OpenStreetMap';
+  return `m = folium.Map(location=${value_center}, zoom_start=${zoom_level}, tiles='${map_style}')\n`;
 }
 
 Blockly.Blocks['folium_marker'] = {
@@ -2303,6 +2311,42 @@ pythonGenerator.forBlock['pie_chart'] = function(block, generator) {
   return `plt.pie(${sizes}, labels=${labels}, autopct=${percent === 'TRUE' ? '\'%1.1f%%\'':'None'})\n`
 }
 
+Blockly.Blocks['create_list_XCoords'] = {
+  init: function() {
+    this.appendDummyInput('')
+        .appendField('Create list with X coords')
+        .appendField(new Blockly.FieldVariable('df'), 'VAR');
+    this.setOutput(true);
+    this.setTooltip('Attach an array. This array should be an array of points with X and Y coordinates. This blocks creates a list of all X coordinates of the points.');
+    this.setColour(100);
+    this.setHelpUrl('https://stackoverflow.com/questions/59417997/how-to-plot-a-list-of-shapely-points');
+  }
+}
+pythonGenerator.forBlock['create_list_XCoords'] = function (block) {
+  const varID = block.getFieldValue('VAR') || '0';
+  const getVar = block.workspace.getVariableById(varID);
+  const Var = getVar ? getVar.name : 'undefined';
+  return [`[point.x for point in ${Var}]`, pythonGenerator.ORDER_ATOMIC];
+}
+
+Blockly.Blocks['create_list_YCoords'] = {
+  init: function() {
+    this.appendDummyInput('')
+        .appendField('Create list with Y coords')
+        .appendField(new Blockly.FieldVariable('df'), 'VAR');
+    this.setOutput(true);
+    this.setTooltip('Attach an array. This array should be an array of points with X and Y coordinates. This blocks creates a list of all Y coordinates of the points.');
+    this.setColour(100);
+    this.setHelpUrl('https://stackoverflow.com/questions/59417997/how-to-plot-a-list-of-shapely-points');
+  }
+}
+pythonGenerator.forBlock['create_list_YCoords'] = function (block) {
+  const varID = block.getFieldValue('VAR') || '0';
+  const getVar = block.workspace.getVariableById(varID);
+  const Var = getVar ? getVar.name : 'undefined';
+  return [`[point.y for point in ${Var}]`, pythonGenerator.ORDER_ATOMIC];
+}
+
 Blockly.Blocks['bar_chart'] = {
   init: function() {
     this.appendDummyInput()
@@ -2557,17 +2601,17 @@ Blockly.Blocks['plotly_scatter_mapbox'] = {
     this.appendDummyInput()
         .appendField("Create and Show Scatter Map");
     this.appendValueInput("DATAFRAME")
-        .setCheck(null)
+        .setCheck('Array')
         .appendField("DataFrame");
     this.appendDummyInput()
         .appendField("Latitude column")
-        .appendField(new Blockly.FieldTextInput("lat"), "LAT_COL");
+        .appendField(this.generateOptions(), "LAT_COL");
     this.appendDummyInput()
         .appendField("Longitude column")
-        .appendField(new Blockly.FieldTextInput("lon"), "LON_COL");
+        .appendField(this.generateOptions(), "LON_COL");
     this.appendDummyInput()
         .appendField("Hover column")
-        .appendField(new Blockly.FieldTextInput("name"), "HOVER_COL");
+        .appendField(this.generateOptions(), "HOVER_COL");
     this.appendDummyInput()
         .appendField("Map style")
         .appendField(new Blockly.FieldDropdown([
@@ -2595,6 +2639,18 @@ Blockly.Blocks['plotly_scatter_mapbox'] = {
     this.setColour(270);
     this.setTooltip("Creates and shows a Plotly scatter map plot.");
     this.setHelpUrl("https://plotly.com/python-api-reference/generated/plotly.express.scatter_map.html");
+  },
+
+  generateOptions: function() {
+    var options = [];
+    try {
+      for(var x of globalThis.fileColumns) {
+        options.push([x, x]);
+      }
+      return (new Blockly.FieldDropdown(options));
+    } catch (e) {
+      return (new Blockly.FieldTextInput('Latitude'));
+    }
   }
 };
 

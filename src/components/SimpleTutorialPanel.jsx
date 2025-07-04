@@ -139,45 +139,45 @@ const SimpleTutorialPanel = ({ onClose }) => {
         cursor: "grab"
       }}
     >
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={1} className="tutorial-header">
-        <Typography variant="h6">{step.title}</Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={ 1 } className="tutorial-header">
+        <Typography variant="h6">{ step.title }</Typography>
         <Box>
-          <Button size="small" onClick={() => setLang(lang === "de" ? "en" : "de")}>{lang === "de" ? "EN" : "DE"}</Button>
-          <IconButton onClick={onClose} size="small">
+          <Button size="small" onClick={ () => setLang(lang === "de" ? "en" : "de") }>{ lang === "de" ? "EN" : "DE" }</Button>
+          <IconButton onClick={ onClose } size="small">
             <CloseIcon />
           </IconButton>
         </Box>
       </Box>
 
       <Box sx={{ mb: 2 }}>
-        <ReactMarkdown children={step.content} />
+        <ReactMarkdown children={ step.content } />
       </Box>
 
       <Box display="flex" justifyContent="space-between">
         <Button
           variant="outlined"
-          onClick={() => setStepIndex(i => Math.max(0, i - 1))}
-          disabled={stepIndex === 0}
+          onClick={ () => setStepIndex(i => Math.max(0, i - 1)) }
+          disabled={ stepIndex === 0 }
         >
-          {lang === "de" ? "Zurück" : "Back"}
+          { lang === "de" ? "Zurück" : "Back" }
         </Button>
 
-        {stepIndex === steps.length - 1 ? (
+        { stepIndex === steps.length - 1 ? (
           <Button
             variant="contained"
             color="success"
-            onClick={onClose}
+            onClick={ onClose }
           >
-            {lang === "de" ? "Fertig" : "Finish"}
+            { lang === "de" ? "Fertig" : "Finish" }
           </Button>
         ) : (
           <Button
             variant="contained"
-            onClick={() => setStepIndex(i => Math.min(steps.length - 1, i + 1))}
+            onClick={ () => setStepIndex(i => Math.min(steps.length - 1, i + 1)) }
           >
-            {lang === "de" ? "Weiter" : "Next"}
+            { lang === "de" ? "Weiter" : "Next" }
           </Button>
-        )}
+        ) }
       </Box>
     </Card>
   );

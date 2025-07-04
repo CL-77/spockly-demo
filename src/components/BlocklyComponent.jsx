@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useMemo, useState } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 import * as Blockly from "blockly";
 import "./blockly/customBlocks";
-import { Box, Fab, Typography, useTheme, Button } from "@mui/material";
+import { Box, useTheme, Button } from "@mui/material";
 import { lightTheme, darkTheme } from "./blockly/blocklyThemes";
-import { Upload, UploadFile } from "@mui/icons-material";
+import { Upload } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup, IconButton } from "@mui/material";
 import { FaBookOpen, FaMapMarkedAlt, FaQuestionCircle } from "react-icons/fa";
@@ -709,7 +709,7 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
         <Tooltip title="Create CSV data manually">
           <Button
             variant="outlined"
-            onClick={() => setOpenCreateDataDialog(true)}
+            onClick={ () => setOpenCreateDataDialog(true) }
             sx={{ ml: 2 }}
           >
             Create Data
@@ -717,21 +717,25 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
         </Tooltip>
 
         <CreateDataDialog
-          open={openCreateDataDialog}
-          onClose={() => setOpenCreateDataDialog(false)}
+          open={ openCreateDataDialog }
+          onClose={ () => setOpenCreateDataDialog(false) }
         />
 
-        <Box display="flex" alignItems="center" gap={2} flex={1} justifyContent="flex-end" minWidth={0}>
+        <Box id="uploadFileNames" sx={{ ml: 2 }} gap={ 2 } alignItems="center" minWidth={ 0 } width="30%">
+          { globalThis.files[0] ? `Uploaded file${globalThis.files.length !== 1 ? 's' : ''}: ${globalThis.files.join(', ')}.` : '' }
+        </Box>
+
+        <Box display="flex" alignItems="center" gap={ 2 } flex={ 1 } justifyContent="flex-end" minWidth={ 0 }>
         <Tooltip
             title={
               <Box>
                 Beginner: built-in datasets & simple blocks.<br />
-                Advanced: load files, model, visualize spatial data.<br />
+                Advanced: load files, model, visualise spatial data.<br />
                 See tutorials for more information.
               </Box>
             }
             arrow
-            enterDelay={0}
+            enterDelay={ 0 }
           >
           <ToggleButtonGroup
             exclusive
@@ -753,10 +757,10 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
           </ToggleButtonGroup>
         </Tooltip>
 
-         { /* Help button to start Spockly tour */}
+         {/* Help button to start Spockly tour */}
          <Tooltip title="Start Spockly Tour" arrow>
           <IconButton
-            onClick={() => window?.__startSpocklyTour?.()}
+            onClick={ () => window?.__startSpocklyTour?.() }
             sx={{ color: "inherit" }}
           >
             <FaQuestionCircle />
@@ -765,7 +769,7 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
 
         <Tooltip title="Show Simple CO₂ Tutorial" arrow>
           <IconButton
-            onClick={() => setShowTutorial(prev => !prev)}
+            onClick={ () => setShowTutorial(prev => !prev) }
             sx={{ color: showTutorial ? "green" : "inherit" }}
           >
             <MdCo2 />
@@ -787,7 +791,7 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
         }}
       />
 
-    {showTutorial && <SimpleTutorialPanel onClose={() => setShowTutorial(false)} />}
+    { showTutorial && <SimpleTutorialPanel onClose={ () => setShowTutorial(false) } /> }
     </Box>
   );
 };

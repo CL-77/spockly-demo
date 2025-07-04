@@ -19,18 +19,14 @@ const DownloadCodeDialog = ({
 }) => {
   const theme = useTheme();
   const [fileName, setFileName] = useState("MyNewSpocklyProject");
-
   const handleDownloadCode = () => {
     const blob = new Blob([code], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
-
     const a = document.createElement("a");
     a.href = url;
     a.download = `${fileName}.py`;
     a.click();
-
     URL.revokeObjectURL(url);
-
     handleCloseDownloadDialog();
   };
 
@@ -43,7 +39,7 @@ const DownloadCodeDialog = ({
           color: theme.palette.primary.contrastText,
         }}
       >
-        Download R File
+        Download Python File
       </DialogTitle>
       <DialogContent
         dividers

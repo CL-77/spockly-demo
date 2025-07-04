@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import {
   AppBar,
@@ -77,13 +77,13 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
 
           <NavLink
             to="/tutorials"
-            style={({ isActive }) => ({
+            style={ ({ isActive }) => ({
               textDecoration: "none",
               color: isActive
                 ? theme.palette.primary.light
                 : theme.palette.primary.contrastText,
               fontWeight: "bold",
-            })}
+            }) }
           >
             Tutorials
           </NavLink>
@@ -105,11 +105,11 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
             }}
           >
             <Box display="flex" alignItems="center" gap={ 0.5 }>
-              {isDarkMode ? (
+              { isDarkMode ? (
                 <LightMode fontSize="small" />
               ) : (
                 <Brightness3 fontSize="small" />
-              )}
+              ) }
               { isDarkMode ? "Light" : "Dark" }
             </Box>
           </Fab>

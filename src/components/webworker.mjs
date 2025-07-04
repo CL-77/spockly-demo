@@ -13,7 +13,6 @@ self.onmessage = async (event) => {
     try {
       pyodide.FS.writeFile(filename, data, { encoding: "utf8" });
       self.postMessage({ id, result: "File written" });
-      console.log('Done');
     } catch (error) {
       self.postMessage({ id, error: error.message });
     }
@@ -21,13 +20,15 @@ self.onmessage = async (event) => {
   }
 
   const { _ID, python, context } = event.data;
+
   await pyodide.loadPackagesFromImports(python);
   await pyodide.loadPackage("micropip");
   const micropip = pyodide.pyimport("micropip");
   await micropip.install('plotly.express');
-  await micropip.install("ssl")
+  await micropip.install("ssl");
   await micropip.install('geopy');
   await micropip.install('folium');
+
   const dict = pyodide.globals.get("dict");
   const globals = dict(Object.entries(context));
   try {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Box,
   IconButton,
@@ -16,15 +16,22 @@ import {
 import { darkTheme, lightTheme } from "./../appTheme";
 import main from './init.js';
 import { pyodideWorker, asyncRun } from "./workerApi.mjs";
+import PackageLoadingDialog from "./PackageLoadingDialog.jsx";
 
 const CodeOutput = ({ code, isDarkMode, setPlot }) => {
-    const [output, setOutput] = useState("Loading Pyodide...");
     const [isLoading, setIsLoading] = useState(true);
     const theme = isDarkMode ? darkTheme : lightTheme;
     const [isAPlot, setIsAPlot] = useState(false);
     const [showPlot, setShowPlot] = useState(true);
     const [isAMap, setIsAMap] = useState(false);
     const [showMap, setShowMap] = useState(true);
+    const [showLoadingDialog, setShowLoadingDialog] = useState(false);
+    const [currentPackage, setCurrentPackage] = useState("");
+    const [packagesReady, setPackagesReady] = useState(false);
+    const canvasRef = useRef(null);
+    const [output, setOutput] = useState("Loading Pyodide...");
+
+    const CANVAS_SIZE = 650;
 
     const openPlotInNewTabHandler = () => {
       window.open(`data:image/jpeg;base64,${globalThis.getRes()}`, '_blank');
@@ -209,52 +216,52 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
       }
 
       globalThis.getRes = () => {
-        return result
+        return result;
       }
     }
     useEffect(() => {
       pyodideWorker.addEventListener("message", (event) => {
-          if (event.data && event.data.ready) {
-              setOutput('No output');
-              setIsLoading(false);
-          }
+        if (event.data && event.data.ready) {
+          setOutput('No output');
+          setIsLoading(false);
+        }
       });
     }, []);
     useEffect(() => {
-        const findInfo = () => {
-            const cslInfo = console.info;
-            console.info = function(message) {
-                onInfo(message);
-            };
+      const findInfo = () => {
+          const cslInfo = console.info;
+          console.info = function(message) {
+            onInfo(message);
+          };
 
-            function onInfo(message){
-                cslInfo(message);
-                if (message === 'Pyodide is ready!') {
-                    try {
-                        document.getElementsByClassName('Mui-disabled')[0].classList.remove('Mui-disabled');
-                    } catch {}
-                    document.getElementById('toast').style.color = '#089d08';
-                    document.querySelector('#toast p').innerHTML = 'Libraries loaded!';
-                    document.getElementById('toast').style.animation = 'slideOut 5s ease-in-out';
-                    setTimeout(() => document.getElementById('toast').style.display = 'none', 4950);
-                    document.addEventListener(
-                        "keydown",
-                        (ev) => {
-                        const keyName = ev.key;
-                            if (keyName === "Control") {
-                            return;
-                        }
-                          if ((ev.ctrlKey || ev.metaKey) && ev.altKey && keyName === 'Enter') {
-                            ev.preventDefault();
-                            runCode();
-                          }
-                        },
-                        false,
-                  );
-                }
+          function onInfo(message) {
+            cslInfo(message);
+            if (message === 'Pyodide is ready!') {
+              try {
+                  document.getElementsByClassName('Mui-disabled')[0].classList.remove('Mui-disabled');
+              } catch {}
+              document.getElementById('toast').style.color = '#089d08';
+              document.querySelector('#toast p').innerHTML = 'Libraries loaded!';
+              document.getElementById('toast').style.animation = 'slideOut 5s ease-in-out';
+              setTimeout(() => document.getElementById('toast').style.display = 'none', 4950);
+              document.addEventListener(
+                "keydown",
+                (ev) => {
+                  const keyName = ev.key;
+                      if (keyName === "Control") {
+                      return;
+                  }
+                  if ((ev.ctrlKey || ev.metaKey) && ev.altKey && keyName === 'Enter') {
+                    ev.preventDefault();
+                    runCode();
+                  }
+                },
+                false,
+              );
             }
-        };
-        findInfo();
+        }
+      };
+      findInfo();
     });
 
     return (
@@ -451,6 +458,23 @@ print(base64_encoded_spectrogram.decode('utf-8'))`
         </Typography>
       </Box>
           ) }
+          {/* <Box sx={{ marginX: 4 }}>
+          <canvas
+            ref={ canvasRef }
+            width={ CANVAS_SIZE * window.devicePixelRatio }
+            height={ CANVAS_SIZE * window.devicePixelRatio }
+            style={{
+              width: CANVAS_SIZE + "px",
+              height: CANVAS_SIZE + "px",
+              display: "block",
+            }}
+          />
+          <PackageLoadingDialog
+            open={ showLoadingDialog }
+            currentPackage={ currentPackage }
+            onClose={ () => setShowLoadingDialog(false) }
+          />
+        </Box> */}
     </Box>
     );
 };

@@ -88,62 +88,62 @@ const CreateDataDialog = ({ open, onClose }) => {
         <Table size="small">
           <TableHead>
             <TableRow>
-              {headers.map((h, j) => (
+              { headers.map((h, j) => (
                 <TableCell key={j}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <Box sx={{ flexGrow: 1 }}>
                       <TextField
                         value={h}
-                        onChange={(e) => handleHeaderChange(j, e.target.value)}
+                        onChange={ (e) => handleHeaderChange(j, e.target.value) }
                         variant="standard"
                         fullWidth
                       />
                     </Box>
-                    {headers.length > 1 && (
+                    { headers.length > 1 && (
                       <IconButton
                         size="small"
-                        onClick={() => handleDeleteColumn(j)}
+                        onClick={ () => handleDeleteColumn(j) }
                         sx={{ p: 0.5 }}
                       >
                         <Delete fontSize="small" />
                       </IconButton>
-                    )}
+                    ) }
                   </Box>
                 </TableCell>
-              ))}
+              )) }
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, i) => (
-              <TableRow key={i}>
-                {row.map((cell, j) => (
+            { rows.map((row, i) => (
+              <TableRow key={ i }>
+                { row.map((cell, j) => (
                   <TableCell key={j}>
                     <Box sx={{ flexGrow: 1 }}>
                       <TextField
-                        value={cell}
-                        onChange={(e) => handleChange(i, j, e.target.value)}
+                        value={ cell }
+                        onChange={ (e) => handleChange(i, j, e.target.value) }
                         variant="standard"
                         fullWidth
                       />
                     </Box>
                   </TableCell>
-                ))}
+                )) }
                 <TableCell>
-                  <IconButton onClick={() => handleDeleteRow(i)}>
+                  <IconButton onClick={ () => handleDeleteRow(i) }>
                     <Delete />
                   </IconButton>
                 </TableCell>
               </TableRow>
-            ))}
+            )) }
           </TableBody>
         </Table>
 
         {/* Row/Column Controls */}
         <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-          <Button startIcon={<Add />} onClick={handleAddRow}>
+          <Button startIcon={ <Add /> } onClick={ handleAddRow }>
             Add Row
           </Button>
-          <Button startIcon={<Add />} onClick={handleAddColumn}>
+          <Button startIcon={ <Add /> } onClick={ handleAddColumn }>
             Add Column
           </Button>
         </Box>
@@ -152,8 +152,8 @@ const CreateDataDialog = ({ open, onClose }) => {
         <Box sx={{ mt: 3, maxWidth: 300 }}>
           <TextField
             label="Filename"
-            value={filename}
-            onChange={(e) => setFilename(e.target.value)}
+            value={ filename }
+            onChange={ (e) => setFilename(e.target.value) }
             variant="standard"
             fullWidth
             helperText="Example: my_data.csv"
@@ -163,8 +163,8 @@ const CreateDataDialog = ({ open, onClose }) => {
 
       {/* Footer Buttons */}
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button variant="contained" onClick={downloadFile}>
+        <Button onClick={ onClose }>Cancel</Button>
+        <Button variant="contained" onClick={ downloadFile }>
           Download
         </Button>
       </DialogActions>

@@ -7,17 +7,17 @@ Note: You have to choose a folder to download the data into. If you leave the fi
 
 Read file file.csv from folder data
 Error: data/file.csv: No such file or directory
-Solution: Create folder 'data', download file using one of the appropriate blocks, check spelling of file and folder, 
+Solution: Download file using one of the appropriate blocks, check spelling of file name, reimport file from local machine.
 
 Load data from json
 ValueError: Trailing data
-Solution: Modify the input file. Probably it is corrupted in some way, e.g. some "{" char was deleted.
+Solution: Modify the input file. Probably it is corrupted in some way, e.g. a "{" character was deleted.
 
 ValueError: All arrays must be of the same length
-Solution: Check the shape
+Solution: Check the shape of the JSON file and if there aren't any issuesṡwith it.
 
 ValueError: Mixing dicts with non-Series may lead to ambiguous ordering
-Solution: Take one column
+Solution: Take one column.
 
 Reshape array
 ValueError: cannot reshape array of size 561706 into shape (1,1)

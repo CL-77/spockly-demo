@@ -15,6 +15,9 @@ import {
 import { CheckCircle, Error, InsertDriveFile, Map } from '@mui/icons-material';
 import { writeFile } from './workerApi.mjs';
 
+globalThis.files = [];
+globalThis.fileColumns = [];
+
 const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
   const [uploadStatus, setUploadStatus] = useState(null);
   const [fileName, setFileName] = useState('');
@@ -31,19 +34,20 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
 
     const extension = file.name.toLowerCase().split('.').pop();
     setFileType(extension);
-
+    const targetPath = file.name;
     try {
-      const targetPath = file.name;
-
-      if (extension === "csv" || extension === "json" || extension === "geojson") {
+      if (extension === "csv") {
         const fileData = await file.text();
-        console.log(fileData);
-        console.log(targetPath);
         await writeFile(targetPath, fileData);
-      // } else if (extension === "tif") {
-        // const arrayBuffer = await file.arrayBuffer();
-        // const uint8Array = new Uint8Array(arrayBuffer);
-        // await writeFile(targetPath, uint8Array);
+        globalThis.fileColumns.push('---');
+        globalThis.fileColumns.push(...fileData.split('\n')[0].split(','));
+      } else if(extension === "json" || extension === "geojson") {
+        const fileData = await file.text();
+        await writeFile(targetPath, fileData);
+      } else if (extension === "tif") {
+        const arrayBuffer = await file.arrayBuffer();
+        const uint8Array = new Uint8Array(arrayBuffer);
+        await writeFile(targetPath, uint8Array);
       } else {
         setUploadStatus('invalidtype');
         return;
@@ -51,6 +55,7 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
 
       setFilePath(targetPath);
       setUploadStatus('success');
+      globalThis.files.push(file.name);
     } catch (error) {
       console.error('File upload failed:', error);
       setUploadStatus('error');
