@@ -380,6 +380,116 @@ Blockly.defineBlocksWithJsonArray([
 	return [code, Blockly.Generator.R.ORDER_FUNCTION_CALL];
   };
 
+
+
+// Preview dataset (head + tail)
+Blockly.defineBlocksWithJsonArray([
+	{
+		type: "preview_data",
+		message0: "preview dataset(view head and tail) of %1",
+		args0: [
+			{ type: "input_value", name: "DATA", check: ["DataFrame", "Variable"] }
+		],
+		previousStatement: null,
+		nextStatement: null,
+		colour: "#FF7043",
+		tooltip: "Preview the dataset by showing the top and bottom rows",
+		helpUrl: ""
+	}
+]);
+
+Blockly.Generator.R.forBlock["preview_data"] = function (block, generator) {
+	const data = generator.valueToCode(block, "DATA", Blockly.Generator.R.ORDER_ATOMIC) || "data";
+	return `rbind(head(${data}, 3), tail(${data}, 3))\n`;
+};
+
+// Print full dataset
+Blockly.defineBlocksWithJsonArray([
+	{
+		type: "print_data",
+		message0: "print dataset %1",
+		args0: [
+			{ type: "input_value", name: "DATA", check: ["DataFrame", "Variable"] }
+		],
+		previousStatement: null,
+		nextStatement: null,
+		colour: "#FF7043",
+		tooltip: "Prints the entire loaded dataset",
+		helpUrl: ""
+	}
+]);
+
+Blockly.Generator.R.forBlock["print_data"] = function (block, generator) {
+	const data = generator.valueToCode(block, "DATA", Blockly.Generator.R.ORDER_ATOMIC) || "data";
+	return `print(${data})\n`;
+};
+
+// Show structure of the dataset
+Blockly.defineBlocksWithJsonArray([
+	{
+		type: "show_structure",
+		message0: "show structure of %1",
+		args0: [
+			{ type: "input_value", name: "DATA", check: ["DataFrame", "Variable"] }
+		],
+		previousStatement: null,
+		nextStatement: null,
+		colour: "#FF7043",
+		tooltip: "Show the structure of the loaded dataset (e.g., columns, types)",
+		helpUrl: ""
+	}
+]);
+
+Blockly.Generator.R.forBlock["show_structure"] = function (block, generator) {
+	const data = generator.valueToCode(block, "DATA", Blockly.Generator.R.ORDER_ATOMIC) || "data";
+	return `cat(capture.output(str(${data})), sep = "\\n")\n`;
+};
+
+// Show last N rows
+Blockly.defineBlocksWithJsonArray([
+	{
+		type: "show_tail",
+		message0: "tail %1 rows of %2",
+		args0: [
+			{ type: "field_number", name: "ROWS", value: 5, min: 1, max: 1000 },
+			{ type: "input_value", name: "DATA", check: ["DataFrame", "Variable"] }
+		],
+		previousStatement: null,
+		nextStatement: null,
+		colour: "#FF7043",
+		tooltip: "Show tail n rows of the loaded dataset",
+		helpUrl: ""
+	}
+]);
+
+Blockly.Generator.R.forBlock["show_tail"] = function (block, generator) {
+	const rows = block.getFieldValue("ROWS");
+	const data = generator.valueToCode(block, "DATA", Blockly.Generator.R.ORDER_ATOMIC) || "data";
+	return `tail(${data}, ${rows})\n`;
+};
+
+// Show first N rows
+Blockly.defineBlocksWithJsonArray([
+	{
+		type: "show_rows",
+		message0: "show first %1 rows of %2",
+		args0: [
+			{ type: "field_number", name: "ROWS", value: 5, min: 1, max: 1000 },
+			{ type: "input_value", name: "DATA", check: ["DataFrame", "Variable"] }
+		],
+		previousStatement: null,
+		nextStatement: null,
+		colour: "#FF7043",
+		tooltip: "Show the first n rows of the loaded dataset",
+		helpUrl: ""
+	}
+]);
+
+Blockly.Generator.R.forBlock["show_rows"] = function (block, generator) {
+	const rows = block.getFieldValue("ROWS");
+	const data = generator.valueToCode(block, "DATA", Blockly.Generator.R.ORDER_ATOMIC) || "data";
+	return `head(${data}, ${rows})\n`;
+};
 //
 // ─── GENERATOR FUNCTIONS ────────────────────────────────────────────────────────
 //

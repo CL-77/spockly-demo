@@ -1,421 +1,922 @@
 import * as Blockly from "blockly";
-import datasetColumnsMap from "../constants/constants";
+import { FieldColour } from '@blockly/field-colour';
 
+Blockly.fieldRegistry.register('field_colour', FieldColour);
 
-// Helper functions for dynamic dropdowns
-const getLoadedDatasetColumns = (workspace) => {
-  const blocks = workspace.getAllBlocks(false);
-  for (let i = blocks.length - 1; i >= 0; i--) {
-    const block = blocks[i];
-    if (block.type === 'load_builtin_dataset' && block.getFieldValue) {
-      const dataset = block.getFieldValue("DATASET");
-      return datasetColumnsMap[dataset] || [];
-    }
-  }
-  return [];
-};
-
-const getDropdownOptions = (workspace) => {
-  const defaultOptions = [["Select column", ""]];
-  const columns = getLoadedDatasetColumns(workspace);
-  return columns.length > 0 ? columns : defaultOptions;
-};
-
-const getDropdownOptionsWithNone = (workspace) => {
-  const columns = getLoadedDatasetColumns(workspace);
-  return [["None", "None"], ...columns];
-};
-
-// Update dropdown function
-const updateDropdowns = function(block, fieldNames) {
-  const workspace = block.workspace;
-  fieldNames.forEach(fieldName => {
-    const field = block.getField(fieldName);
-    if (!field) return;
-    
-    const current = field.getValue();
-    let newOptions;
-    
-    if (fieldName === 'COLORVAR' || fieldName === 'GROUPVAR') {
-      newOptions = getDropdownOptionsWithNone(workspace);
-    } else {
-      newOptions = getDropdownOptions(workspace);
-    }
-    
-    field.menuGenerator_ = newOptions;
-    const valid = newOptions.map(opt => opt[1]);
-    if (valid.includes(current)) {
-      field.setValue(current);
-    } else {
-      field.setValue(valid[0]);
-    }
-  });
-};
-
-// ------------------------ Block definition text vizualization inbuilt datasets------------------------ //
 Blockly.defineBlocksWithJsonArray([
-  // Show first N rows
-  {
-    type: "show_rows",
-    message0: "show first %1 rows of loaded data",
-    args0: [
-      {
-        type: "field_number",
-        name: "ROWS",
-        value: 5,
-        min: 1,
-        max: 1000
-      }
-    ],
-    previousStatement: null,
-    nextStatement: null,
-    colour: "#90A4AE",
-    tooltip: "Show the first n rows of the loaded dataset",
-    helpUrl: ""
-  },
+    // BEGINNER BLOCKS
+    {
+        "type": "create_chart_beginner",
+        "message0": "Create %1 %2 data %3 %4 color %5",
+        "args0": [
+            {
+                "type": "field_dropdown",
+                "name": "CHART_TYPE",
+                "options": [
+                    ["Scatter Plot", "scatter"],
+                    ["Bar Chart", "bar"],
+                    ["Histogram", "histogram"],
+                    ["Box Plot", "boxplot"],
+                    ["Line Chart", "line"]
+                ]
+            },
+            {
+                "type": "input_dummy"
+            },
+            {
+                "type": "input_value",
+                "name": "DATA",
+                "check": ["Variable", "Data", "Array"]
+            },
+            {
+                "type": "input_dummy"
+            },
+            {
+                "type": "field_colour",
+                "name": "COLOR",
+                "colour": "#4285F4"
+            }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "#90A4AE",
+        "tooltip": "Create a simple chart",
+        "helpUrl": "",
+        "extensions": ["chart_type_mutator_beginner"]
+    },
 
-  // Show last N rows
-  {
-    type: "show_tail",
-    message0: "tail %1 rows of loaded data",
-    args0: [
-      {
-        type: "field_number",
-        name: "ROWS",
-        value: 5,
-        min: 1,
-        max: 1000
-      }
-    ],
-    previousStatement: null,
-    nextStatement: null,
-    colour: "#90A4AE",
-    tooltip: "Show tail n rows of the loaded dataset",
-    helpUrl: ""
-  },
+    {
+        "type": "create_xy_chart_beginner",
+        "message0": "Create %1 %2 x data %3 %4 y data %5 %6 color %7",
+        "args0": [
+            {
+                "type": "field_dropdown",
+                "name": "CHART_TYPE",
+                "options": [
+                    ["Scatter Plot", "scatter"],
+                    ["Line Chart", "line"]
+                ]
+            },
+            {
+                "type": "input_dummy"
+            },
+            {
+                "type": "input_value",
+                "name": "X_DATA",
+                "check": ["Variable", "Data", "Array"]
+            },
+            {
+                "type": "input_dummy"
+            },
+            {
+                "type": "input_value",
+                "name": "Y_DATA",
+                "check": ["Variable", "Data", "Array"]
+            },
+            {
+                "type": "input_dummy"
+            },
+            {
+                "type": "field_colour",
+                "name": "COLOR",
+                "colour": "#4285F4"
+            }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "#90A4AE",
+        "tooltip": "Create a chart with X and Y data",
+        "helpUrl": ""
+    },
 
-  // Show structure of the dataset
-  {
-    type: "show_structure",
-    message0: "show structure of loaded dataset",
-    previousStatement: null,
-    nextStatement: null,
-    colour: "#90A4AE",
-    tooltip: "Show the structure of the loaded dataset (e.g., columns, types)",
-    helpUrl: ""
-  },
+    {
+        "type": "add_to_chart_beginner",
+        "message0": "Add %1 to existing chart %2 data %3",
+        "args0": [
+            {
+                "type": "field_dropdown",
+                "name": "ADD_TYPE",
+                "options": [
+                    ["Points", "points"],
+                    ["Line", "lines"]
+                ]
+            },
+            {
+                "type": "input_dummy"
+            },
+            {
+                "type": "input_value",
+                "name": "DATA",
+                "check": ["Variable", "Data", "Array"]
+            }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "#90A4AE",
+        "tooltip": "Add data to existing chart",
+        "helpUrl": "",
+        "extensions": ["add_type_mutator_beginner"]
+    },
 
-  // Print full dataset
-  {
-    type: "print_data",
-    message0: "print dataset",
-    previousStatement: null,
-    nextStatement: null,
-    colour: "#90A4AE",
-    tooltip: "Prints the entire loaded dataset",
-    helpUrl: ""
-  },
+    {
+        "type": "chart_layout_beginner",
+        "message0": "Show %1 charts in grid",
+        "args0": [
+            {
+                "type": "field_dropdown",
+                "name": "LAYOUT",
+                "options": [
+                    ["2", "1,2"],
+                    ["4", "2,2"],
+                    ["2 vertical", "2,1"],
+                    ["3", "1,3"],
+                    ["6", "2,3"]
+                ]
+            }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "#90A4AE",
+        "tooltip": "Arrange multiple charts in a grid",
+        "helpUrl": ""
+    },
 
-  // Preview dataset (head + tail)
-  {
-    type: "preview_data",
-    message0: "preview dataset(view head and tail)",
-    previousStatement: null,
-    nextStatement: null,
-    colour: "#90A4AE",
-    tooltip: "Preview the dataset by showing the top and bottom rows",
-    helpUrl: ""
-  },
+    // ADVANCED BLOCKS
+    {
+        "type": "plot_advanced",
+        "message0": "Plot %1 %2 settings %3",
+        "args0": [
+            {
+                "type": "field_dropdown",
+                "name": "PLOT_TYPE",
+                "options": [
+                    ["Scatter Plot", "scatter"],
+                    ["Line Plot", "line"],
+                    ["Bar Plot", "bar"],
+                    ["Histogram", "histogram"],
+                    ["Box Plot", "boxplot"],
+                    ["Pie Chart", "pie"],
+                    ["Density Plot", "density"],
+                    ["Heatmap", "heatmap"]
+                ]
+            },
+            {
+                "type": "input_dummy"
+            },
+            {
+                "type": "input_statement",
+                "name": "SETTINGS",
+                "check": ["PlotSetting"]
+            }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "#607D8B",
+        "tooltip": "Create an advanced plot with custom settings",
+        "helpUrl": "",
+        "extensions": ["plot_type_mutator_advanced"]
+    },
 
-  // Bar chart
-  {
-    type: "barplot_block",
-    message0: "bar chart of %1",
-    args0: [
-      {
-        type: "field_dropdown",
-        name: "COLUMN",
-        options: [["Select column", ""]]
-      }
-    ],
-    previousStatement: null,
-    nextStatement: null,
-    colour: "#90A4AE",
-    tooltip: "Generate a bar chart of the data",
-    helpUrl: "https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/barplot"
-  },
+    {
+        "type": "plot_data_setting",
+        "message0": "data %1",
+        "args0": [
+            {
+                "type": "input_value",
+                "name": "DATA",
+                "check": ["Variable", "Data", "Array"]
+            }
+        ],
+        "previousStatement": "PlotSetting",
+        "nextStatement": "PlotSetting",
+        "colour": "#546E7A",
+        "tooltip": "Set data for plot"
+    },
 
-  // Pie chart
-  {
-    type: "piechart_block",
-    message0: "pie chart of %1",
-    args0: [
-      {
-        type: "field_dropdown",
-        name: "COLUMN",
-        options: [["Select column", ""]]
-      }
-    ],
-    previousStatement: null,
-    nextStatement: null,
-    colour: "#90A4AE",
-    tooltip: "Generate a pie chart of the data",
-    helpUrl: "https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/pie"
-  },
+    {
+        "type": "plot_xy_setting",
+        "message0": "x %1 y %2",
+        "args0": [
+            {
+                "type": "input_value",
+                "name": "X",
+                "check": ["Variable", "Data", "Array", "String"]
+            },
+            {
+                "type": "input_value",
+                "name": "Y",
+                "check": ["Variable", "Data", "Array", "String"]
+            }
+        ],
+        "previousStatement": "PlotSetting",
+        "nextStatement": "PlotSetting",
+        "colour": "#546E7A",
+        "tooltip": "Set X and Y data"
+    },
 
-  // Scatter plot (spatial plot of x and y)
-  {
-    type: "plot_scatter",
-    message0: "spatial plot of X: %1 Y: %2 Color by: %3",
-    args0: [
-      {
-        type: "field_dropdown",
-        name: "XVAR",
-        options: [["Select column", ""]]
-      },
-      {
-        type: "field_dropdown",
-        name: "YVAR",
-        options: [["Select column", ""]]
-      },
-      {
-        type: "field_dropdown",
-        name: "COLORVAR",
-        options: [["None", "None"]]
-      }
-    ],
-    previousStatement: null,
-    nextStatement: null,
-    colour: "#90A4AE",
-    tooltip: "Plot selected data using scatter plot",
-    helpUrl: "https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/plot"
-  },
+    {
+        "type": "plot_appearance_setting",
+        "message0": "appearance %1 %2",
+        "args0": [
+            {
+                "type": "input_dummy"
+            },
+            {
+                "type": "input_statement",
+                "name": "OPTIONS",
+                "check": "AppearanceOption"
+            }
+        ],
+        "previousStatement": "PlotSetting",
+        "nextStatement": "PlotSetting",
+        "colour": "#546E7A",
+        "tooltip": "Set appearance options"
+    },
 
-  // Histogram
-  {
-    type: "plot_histogram",
-    message0: "Histogram of %1",
-    args0: [
-      {
-        type: "field_dropdown",
-        name: "COLUMN",
-        options: [["Select column", ""]]
-      }
-    ],
-    previousStatement: null,
-    nextStatement: null,
-    colour: "#90A4AE",
-    tooltip: "Plot histogram of selected column",
-    helpUrl: "https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/hist"
-  },
+    {
+        "type": "color_option",
+        "message0": "color %1",
+        "args0": [
+            {
+                "type": "input_value",
+                "name": "COLOR",
+                "check": ["String", "Colour"]
+            }
+        ],
+        "previousStatement": "AppearanceOption",
+        "nextStatement": "AppearanceOption",
+        "colour": "#455A64",
+        "tooltip": "Set color"
+    },
 
-  // Boxplot
-  {
-    type: "plot_boxplot",
-    message0: "Boxplot of %1 Grouped by %2",
-    args0: [
-      {
-        type: "field_dropdown",
-        name: "COLUMN",
-        options: [["Select column", ""]]
-      },
-      {
-        type: "field_dropdown",
-        name: "GROUPVAR",
-        options: [["None", "None"]]
-      }
-    ],
-    previousStatement: null,
-    nextStatement: null,
-    colour: "#90A4AE",
-    tooltip: "Boxplot of a column, optionally grouped by another column",
-    helpUrl: "https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/boxplot"
-  }
+    {
+        "type": "symbol_option",
+        "message0": "symbol %1",
+        "args0": [
+            {
+                "type": "field_dropdown",
+                "name": "SYMBOL",
+                "options": [
+                    ["circle", "1"],
+                    ["triangle", "2"],
+                    ["plus", "3"],
+                    ["cross", "4"],
+                    ["diamond", "5"],
+                    ["square", "0"]
+                ]
+            }
+        ],
+        "previousStatement": "AppearanceOption",
+        "nextStatement": "AppearanceOption",
+        "colour": "#455A64",
+        "tooltip": "Set point symbol"
+    },
+
+    {
+        "type": "line_type_option",
+        "message0": "line type %1",
+        "args0": [
+            {
+                "type": "field_dropdown",
+                "name": "LINE_TYPE",
+                "options": [
+                    ["solid", "1"],
+                    ["dashed", "2"],
+                    ["dotted", "3"],
+                    ["dot-dash", "4"]
+                ]
+            }
+        ],
+        "previousStatement": "AppearanceOption",
+        "nextStatement": "AppearanceOption",
+        "colour": "#455A64",
+        "tooltip": "Set line type"
+    },
+
+    {
+        "type": "size_option",
+        "message0": "size %1",
+        "args0": [
+            {
+                "type": "field_number",
+                "name": "SIZE",
+                "value": 1,
+                "min": 0.1,
+                "max": 5,
+                "precision": 0.1
+            }
+        ],
+        "previousStatement": "AppearanceOption",
+        "nextStatement": "AppearanceOption",
+        "colour": "#455A64",
+        "tooltip": "Set size"
+    },
+
+    {
+        "type": "plot_labels_setting",
+        "message0": "labels %1 %2",
+        "args0": [
+            {
+                "type": "input_dummy"
+            },
+            {
+                "type": "input_statement",
+                "name": "LABELS",
+                "check": "LabelOption"
+            }
+        ],
+        "previousStatement": "PlotSetting",
+        "nextStatement": "PlotSetting",
+        "colour": "#546E7A",
+        "tooltip": "Set plot labels"
+    },
+
+    {
+        "type": "title_label",
+        "message0": "title %1",
+        "args0": [
+            {
+                "type": "input_value",
+                "name": "TITLE",
+                "check": "String"
+            }
+        ],
+        "previousStatement": "LabelOption",
+        "nextStatement": "LabelOption",
+        "colour": "#455A64",
+        "tooltip": "Set plot title"
+    },
+
+    {
+        "type": "axis_label",
+        "message0": "%1 axis label %2",
+        "args0": [
+            {
+                "type": "field_dropdown",
+                "name": "AXIS",
+                "options": [
+                    ["x", "x"],
+                    ["y", "y"]
+                ]
+            },
+            {
+                "type": "input_value",
+                "name": "LABEL",
+                "check": "String"
+            }
+        ],
+        "previousStatement": "LabelOption",
+        "nextStatement": "LabelOption",
+        "colour": "#455A64",
+        "tooltip": "Set axis label"
+    },
+
+    {
+        "type": "plot_limits_setting",
+        "message0": "axis limits %1 %2",
+        "args0": [
+            {
+                "type": "input_dummy"
+            },
+            {
+                "type": "input_statement",
+                "name": "LIMITS",
+                "check": "LimitOption"
+            }
+        ],
+        "previousStatement": "PlotSetting",
+        "nextStatement": "PlotSetting",
+        "colour": "#546E7A",
+        "tooltip": "Set axis limits"
+    },
+
+    {
+        "type": "axis_limit",
+        "message0": "%1 axis from %2 to %3",
+        "args0": [
+            {
+                "type": "field_dropdown",
+                "name": "AXIS",
+                "options": [
+                    ["x", "x"],
+                    ["y", "y"]
+                ]
+            },
+            {
+                "type": "input_value",
+                "name": "MIN",
+                "check": "Number"
+            },
+            {
+                "type": "input_value",
+                "name": "MAX",
+                "check": "Number"
+            }
+        ],
+        "previousStatement": "LimitOption",
+        "nextStatement": "LimitOption",
+        "colour": "#455A64",
+        "tooltip": "Set axis limits"
+    },
+
+    {
+        "type": "plot_legend_setting",
+        "message0": "legend %1 position %2",
+        "args0": [
+            {
+                "type": "field_checkbox",
+                "name": "SHOW",
+                "checked": true
+            },
+            {
+                "type": "field_dropdown",
+                "name": "POSITION",
+                "options": [
+                    ["top right", "topright"],
+                    ["top left", "topleft"],
+                    ["bottom right", "bottomright"],
+                    ["bottom left", "bottomleft"],
+                    ["center", "center"]
+                ]
+            }
+        ],
+        "previousStatement": "PlotSetting",
+        "nextStatement": "PlotSetting",
+        "colour": "#546E7A",
+        "tooltip": "Configure legend"
+    },
+
+    {
+        "type": "add_layer_advanced",
+        "message0": "Add layer %1 %2 settings %3",
+        "args0": [
+            {
+                "type": "field_dropdown",
+                "name": "LAYER_TYPE",
+                "options": [
+                    ["Points", "points"],
+                    ["Lines", "lines"],
+                    ["Smooth line", "smooth"],
+                    ["Regression line", "abline"],
+                    ["Text", "text"]
+                ]
+            },
+            {
+                "type": "input_dummy"
+            },
+            {
+                "type": "input_statement",
+                "name": "SETTINGS",
+                "check": ["PlotSetting"]
+            }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "#607D8B",
+        "tooltip": "Add a layer to existing plot",
+        "helpUrl": ""
+    },
+
+    {
+        "type": "layout_advanced",
+        "message0": "Layout %1 rows %2 columns %3 %4 margins %5",
+        "args0": [
+            {
+                "type": "input_dummy"
+            },
+            {
+                "type": "field_number",
+                "name": "ROWS",
+                "value": 1,
+                "min": 1,
+                "max": 5,
+                "precision": 1
+            },
+            {
+                "type": "field_number",
+                "name": "COLS",
+                "value": 2,
+                "min": 1,
+                "max": 5,
+                "precision": 1
+            },
+            {
+                "type": "input_dummy"
+            },
+            {
+                "type": "field_checkbox",
+                "name": "ADJUST_MARGINS",
+                "checked": false
+            }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "#607D8B",
+        "tooltip": "Set advanced layout for multiple plots",
+        "helpUrl": ""
+    }
 ]);
 
-Blockly.Blocks['barplot_block'].onchange = function(event) {
-  if (event.type === Blockly.Events.FINISHED_LOADING || 
-      event.type === Blockly.Events.BLOCK_CREATE ||
-      event.type === Blockly.Events.BLOCK_DELETE ||
-      event.type === Blockly.Events.BLOCK_CHANGE) {
-    updateDropdowns(this, ['COLUMN']);
-  }
+// Mutators for dynamic block updates
+Blockly.Extensions.register('chart_type_mutator_beginner', function() {
+    this.getInput('DATA').setCheck(['Variable', 'Data', 'Array']);
+});
+
+Blockly.Extensions.register('add_type_mutator_beginner', function() {
+    const updateShape = function() {
+        const addType = this.getFieldValue('ADD_TYPE');
+        if (addType === 'lines') {
+            this.getInput('DATA').setCheck(['Variable', 'Data', 'Array']);
+        } else {
+            this.getInput('DATA').setCheck(['Variable', 'Data', 'Array']);
+        }
+    };
+    this.setOnChange(updateShape.bind(this));
+});
+
+Blockly.Extensions.register('plot_type_mutator_advanced', function() {
+    const updateShape = function() {
+        const plotType = this.getFieldValue('PLOT_TYPE');
+    };
+    this.setOnChange(updateShape.bind(this));
+});
+
+// GENERATORS - BEGINNER
+Blockly.Generator.R.forBlock['create_chart_beginner'] = function(block, generator) {
+    const chartType = block.getFieldValue('CHART_TYPE');
+    const data = generator.valueToCode(block, 'DATA', Blockly.Generator.R.ORDER_ATOMIC) || 'NULL';
+    const color = block.getFieldValue('COLOR');
+    
+    let code = '';
+    
+    switch(chartType) {
+        case 'scatter':
+            code = `plot(${data}, col = "${color}", pch = 19)\n`;
+            break;
+        case 'bar':
+            code = `barplot(${data}, col = "${color}")\n`;
+            break;
+        case 'histogram':
+            code = `hist(${data}, col = "${color}", main = "Histogram")\n`;
+            break;
+        case 'boxplot':
+            code = `boxplot(${data}, col = "${color}")\n`;
+            break;
+        case 'line':
+            code = `plot(${data}, type = "l", col = "${color}")\n`;
+            break;
+    }
+    
+    return code;
 };
 
-Blockly.Blocks['piechart_block'].onchange = function(event) {
-  if (event.type === Blockly.Events.FINISHED_LOADING || 
-      event.type === Blockly.Events.BLOCK_CREATE ||
-      event.type === Blockly.Events.BLOCK_DELETE ||
-      event.type === Blockly.Events.BLOCK_CHANGE) {
-    updateDropdowns(this, ['COLUMN']);
-  }
+Blockly.Generator.R.forBlock['create_xy_chart_beginner'] = function(block, generator) {
+    const chartType = block.getFieldValue('CHART_TYPE');
+    const xData = generator.valueToCode(block, 'X_DATA', Blockly.Generator.R.ORDER_ATOMIC) || 'NULL';
+    const yData = generator.valueToCode(block, 'Y_DATA', Blockly.Generator.R.ORDER_ATOMIC) || 'NULL';
+    const color = block.getFieldValue('COLOR');
+    
+    let code = '';
+    
+    switch(chartType) {
+        case 'scatter':
+            code = `plot(${xData}, ${yData}, col = "${color}", pch = 19)\n`;
+            break;
+        case 'line':
+            code = `plot(${xData}, ${yData}, type = "l", col = "${color}")\n`;
+            break;
+    }
+    
+    return code;
 };
 
-Blockly.Blocks['plot_scatter'].onchange = function(event) {
-  if (event.type === Blockly.Events.FINISHED_LOADING || 
-      event.type === Blockly.Events.BLOCK_CREATE ||
-      event.type === Blockly.Events.BLOCK_DELETE ||
-      event.type === Blockly.Events.BLOCK_CHANGE) {
-    updateDropdowns(this, ['XVAR', 'YVAR', 'COLORVAR']);
-  }
+Blockly.Generator.R.forBlock['add_to_chart_beginner'] = function(block, generator) {
+    const addType = block.getFieldValue('ADD_TYPE');
+    const data = generator.valueToCode(block, 'DATA', Blockly.Generator.R.ORDER_ATOMIC) || 'NULL';
+    
+    let code = '';
+    
+    switch(addType) {
+        case 'points':
+            code = `points(${data}, pch = 19)\n`;
+            break;
+        case 'lines':
+            code = `lines(${data})\n`;
+            break;
+    }
+    
+    return code;
 };
 
-Blockly.Blocks['plot_histogram'].onchange = function(event) {
-  if (event.type === Blockly.Events.FINISHED_LOADING || 
-      event.type === Blockly.Events.BLOCK_CREATE ||
-      event.type === Blockly.Events.BLOCK_DELETE ||
-      event.type === Blockly.Events.BLOCK_CHANGE) {
-    updateDropdowns(this, ['COLUMN']);
-  }
+Blockly.Generator.R.forBlock['chart_layout_beginner'] = function(block, generator) {
+    const layout = block.getFieldValue('LAYOUT');
+    const code = `par(mfrow = c(${layout}))\n`;
+    return code;
 };
 
-Blockly.Blocks['plot_boxplot'].onchange = function(event) {
-  if (event.type === Blockly.Events.FINISHED_LOADING || 
-      event.type === Blockly.Events.BLOCK_CREATE ||
-      event.type === Blockly.Events.BLOCK_DELETE ||
-      event.type === Blockly.Events.BLOCK_CHANGE) {
-    updateDropdowns(this, ['COLUMN', 'GROUPVAR']);
-  }
+// GENERATORS - ADVANCED
+Blockly.Generator.R.forBlock['plot_advanced'] = function(block, generator) {
+    const plotType = block.getFieldValue('PLOT_TYPE');
+    
+    let data = null;
+    let xData = null;
+    let yData = null;
+    let title = null;
+    let xlab = null;
+    let ylab = null;
+    let xlim = null;
+    let ylim = null;
+    let color = '"black"';
+    let pch = '1';
+    let lty = '1';
+    let cex = '1';
+    let showLegend = false;
+    let legendPos = 'topright';
+    
+    let settingBlock = block.getInputTargetBlock('SETTINGS');
+    while (settingBlock) {
+        const settingType = settingBlock.type;
+        
+        switch(settingType) {
+            case 'plot_data_setting':
+                data = generator.valueToCode(settingBlock, 'DATA', Blockly.Generator.R.ORDER_ATOMIC);
+                break;
+            case 'plot_xy_setting':
+                xData = generator.valueToCode(settingBlock, 'X', Blockly.Generator.R.ORDER_ATOMIC);
+                yData = generator.valueToCode(settingBlock, 'Y', Blockly.Generator.R.ORDER_ATOMIC);
+                break;
+            case 'plot_appearance_setting':
+                let optionBlock = settingBlock.getInputTargetBlock('OPTIONS');
+                while (optionBlock) {
+                    switch(optionBlock.type) {
+                        case 'color_option':
+                            color = generator.valueToCode(optionBlock, 'COLOR', Blockly.Generator.R.ORDER_ATOMIC) || '"black"';
+                            break;
+                        case 'symbol_option':
+                            pch = optionBlock.getFieldValue('SYMBOL');
+                            break;
+                        case 'line_type_option':
+                            lty = optionBlock.getFieldValue('LINE_TYPE');
+                            break;
+                        case 'size_option':
+                            cex = optionBlock.getFieldValue('SIZE');
+                            break;
+                    }
+                    optionBlock = optionBlock.getNextBlock();
+                }
+                break;
+            case 'plot_labels_setting':
+                let labelBlock = settingBlock.getInputTargetBlock('LABELS');
+                while (labelBlock) {
+                    switch(labelBlock.type) {
+                        case 'title_label':
+                            title = generator.valueToCode(labelBlock, 'TITLE', Blockly.Generator.R.ORDER_ATOMIC);
+                            break;
+                        case 'axis_label':
+                            const axis = labelBlock.getFieldValue('AXIS');
+                            const label = generator.valueToCode(labelBlock, 'LABEL', Blockly.Generator.R.ORDER_ATOMIC);
+                            if (axis === 'x') xlab = label;
+                            else ylab = label;
+                            break;
+                    }
+                    labelBlock = labelBlock.getNextBlock();
+                }
+                break;
+            case 'plot_limits_setting':
+                let limitBlock = settingBlock.getInputTargetBlock('LIMITS');
+                while (limitBlock) {
+                    if (limitBlock.type === 'axis_limit') {
+                        const axis = limitBlock.getFieldValue('AXIS');
+                        const min = generator.valueToCode(limitBlock, 'MIN', Blockly.Generator.R.ORDER_ATOMIC);
+                        const max = generator.valueToCode(limitBlock, 'MAX', Blockly.Generator.R.ORDER_ATOMIC);
+                        if (axis === 'x') xlim = `c(${min}, ${max})`;
+                        else ylim = `c(${min}, ${max})`;
+                    }
+                    limitBlock = limitBlock.getNextBlock();
+                }
+                break;
+            case 'plot_legend_setting':
+                showLegend = settingBlock.getFieldValue('SHOW');
+                legendPos = settingBlock.getFieldValue('POSITION');
+                break;
+        }
+        settingBlock = settingBlock.getNextBlock();
+    }
+    
+    let code = '';
+    let args = [];
+    
+    switch(plotType) {
+        case 'scatter':
+            if (xData && yData) {
+                args.push(xData, yData);
+            } else if (data) {
+                args.push(data);
+            }
+            args.push(`col = ${color}`, `pch = ${pch}`, `cex = ${cex}`);
+            break;
+        case 'line':
+            if (xData && yData) {
+                args.push(xData, yData);
+            } else if (data) {
+                args.push(data);
+            }
+            args.push('type = "l"', `col = ${color}`, `lty = ${lty}`);
+            break;
+        case 'bar':
+            if (data) args.push(data);
+            args.push(`col = ${color}`);
+            code = `barplot(${args.join(', ')}`;
+            break;
+        case 'histogram':
+            if (data) args.push(data);
+            args.push(`col = ${color}`);
+            code = `hist(${args.join(', ')}`;
+            break;
+        case 'boxplot':
+            if (data) args.push(data);
+            args.push(`col = ${color}`);
+            code = `boxplot(${args.join(', ')}`;
+            break;
+        case 'pie':
+            if (data) args.push(data);
+            args.push(`col = rainbow(length(${data}))`);
+            code = `pie(${args.join(', ')}`;
+            break;
+        case 'density':
+            code = `plot(density(${data}), col = ${color}`;
+            break;
+        case 'heatmap':
+            code = `heatmap(as.matrix(${data})`;
+            break;
+    }
+    
+    if (plotType === 'scatter' || plotType === 'line') {
+        code = `plot(${args.join(', ')}`;
+    }
+    
+    if (title) code += `, main = ${title}`;
+    if (xlab) code += `, xlab = ${xlab}`;
+    if (ylab) code += `, ylab = ${ylab}`;
+    if (xlim) code += `, xlim = ${xlim}`;
+    if (ylim) code += `, ylim = ${ylim}`;
+    
+    code += ')\n';
+    
+    if (showLegend && (plotType === 'scatter' || plotType === 'line')) {
+        code += `legend("${legendPos}", legend = c("Data"), col = ${color}, pch = ${pch})\n`;
+    }
+    
+    return code;
 };
 
-// ------------ R code generator text vizualization inbuilt datasets------------- //
-
-Blockly.Generator.R.forBlock["show_rows"] = function(block) {
-  const rows = block.getFieldValue("ROWS");
-  return `head(data, ${rows})\n`;
+Blockly.Generator.R.forBlock['add_layer_advanced'] = function(block, generator) {
+    const layerType = block.getFieldValue('LAYER_TYPE');
+    
+    let data = null;
+    let xData = null;
+    let yData = null;
+    let color = '"black"';
+    let pch = '1';
+    let lty = '1';
+    let cex = '1';
+    
+    let settingBlock = block.getInputTargetBlock('SETTINGS');
+    while (settingBlock) {
+        const settingType = settingBlock.type;
+        
+        switch(settingType) {
+            case 'plot_data_setting':
+                data = generator.valueToCode(settingBlock, 'DATA', Blockly.Generator.R.ORDER_ATOMIC);
+                break;
+            case 'plot_xy_setting':
+                xData = generator.valueToCode(settingBlock, 'X', Blockly.Generator.R.ORDER_ATOMIC);
+                yData = generator.valueToCode(settingBlock, 'Y', Blockly.Generator.R.ORDER_ATOMIC);
+                break;
+            case 'plot_appearance_setting':
+                let optionBlock = settingBlock.getInputTargetBlock('OPTIONS');
+                while (optionBlock) {
+                    switch(optionBlock.type) {
+                        case 'color_option':
+                            color = generator.valueToCode(optionBlock, 'COLOR', Blockly.Generator.R.ORDER_ATOMIC) || '"black"';
+                            break;
+                        case 'symbol_option':
+                            pch = optionBlock.getFieldValue('SYMBOL');
+                            break;
+                        case 'line_type_option':
+                            lty = optionBlock.getFieldValue('LINE_TYPE');
+                            break;
+                        case 'size_option':
+                            cex = optionBlock.getFieldValue('SIZE');
+                            break;
+                    }
+                    optionBlock = optionBlock.getNextBlock();
+                }
+                break;
+        }
+        settingBlock = settingBlock.getNextBlock();
+    }
+    
+    let code = '';
+    
+    switch(layerType) {
+        case 'points':
+            if (xData && yData) {
+                code = `points(${xData}, ${yData}, col = ${color}, pch = ${pch}, cex = ${cex})\n`;
+            } else if (data) {
+                code = `points(${data}, col = ${color}, pch = ${pch}, cex = ${cex})\n`;
+            }
+            break;
+        case 'lines':
+            if (xData && yData) {
+                code = `lines(${xData}, ${yData}, col = ${color}, lty = ${lty})\n`;
+            } else if (data) {
+                code = `lines(${data}, col = ${color}, lty = ${lty})\n`;
+            }
+            break;
+        case 'smooth':
+            if (xData && yData) {
+                code = `lines(lowess(${xData}, ${yData}), col = ${color})\n`;
+            }
+            break;
+        case 'abline':
+            code = `abline(lm(${yData} ~ ${xData}), col = ${color})\n`;
+            break;
+        case 'text':
+            if (xData && yData && data) {
+                code = `text(${xData}, ${yData}, labels = ${data}, cex = ${cex})\n`;
+            }
+            break;
+    }
+    
+    return code;
 };
 
-Blockly.Generator.R.forBlock["show_tail"] = function(block) {
-  const rows = block.getFieldValue("ROWS");
-  return `tail(data, ${rows})\n`;
+Blockly.Generator.R.forBlock['layout_advanced'] = function(block, generator) {
+    const rows = block.getFieldValue('ROWS');
+    const cols = block.getFieldValue('COLS');
+    const adjustMargins = block.getFieldValue('ADJUST_MARGINS');
+    
+    let code = `par(mfrow = c(${rows}, ${cols})`;
+    
+    if (adjustMargins) {
+        code += ', mar = c(4, 4, 2, 1)';
+    }
+    
+    code += ')\n';
+    
+    return code;
 };
 
-Blockly.Generator.R.forBlock["show_structure"] = function(block) {
-  const code = `cat(capture.output(str(data)), sep = "\\n")\n`;
-  return code;
+// Helper blocks for settings
+Blockly.Generator.R.forBlock['plot_data_setting'] = function(block, generator) {
+    return null;
 };
 
-Blockly.Generator.R.forBlock["print_data"] = function(block) {
-  return `print(data)\n`;
+Blockly.Generator.R.forBlock['plot_xy_setting'] = function(block, generator) {
+    return null;
 };
 
-Blockly.Generator.R.forBlock["preview_data"] = function(block) {
-  return `rbind(head(data, 3), tail(data, 3))\n`;
+Blockly.Generator.R.forBlock['plot_appearance_setting'] = function(block, generator) {
+    return null;
 };
 
-// ------------ R code generator plots vizualization inbuilt datasets------------- //
-
-
-// Bar chart generator
-Blockly.Generator.R.forBlock["barplot_block"] = function(block) {
-  const column = block.getFieldValue("COLUMN");
-  const varName = `dataset$${column}`;
-  const varTitle = `Bar Chart of ${column}`;
-  let code = '';
-  code += 'dataset <- data\n';
-  code += `counts <- table(${varName})\n`;
-  code += `bar_colors <- rainbow(length(counts))\n`;
-  code += `barplot(counts, main="${varTitle}", xlab="${column}", ylab="Frequency", col=bar_colors)\n`;
-  code += `legend("topright", legend=names(counts), fill=bar_colors, title="${column}")\n`;
-  return code;
+Blockly.Generator.R.forBlock['color_option'] = function(block, generator) {
+    return null;
 };
 
-//piechart generator
-Blockly.Generator.R.forBlock["piechart_block"] = function(block) {
-  const column = block.getFieldValue("COLUMN");
-  let code = '';
-  code += 'dataset <- data\n';
-  code += `counts <- table(dataset$${column})\n`;
-  code += `percentages <- round(100 * counts / sum(counts), 1)\n`;
-  code += `labels <- paste(names(counts), ":", percentages, "%")\n`;
-  code += `pie(counts, labels=labels, main="Pie Chart of ${column}", col=rainbow(length(counts)))\n`;
-  return code;
+Blockly.Generator.R.forBlock['symbol_option'] = function(block, generator) {
+    return null;
 };
 
-// scatter-plot generator
-//ggplot option
-/*Blockly.Generator.R.forBlock["plot_scatter"] = function(block) {
-  const xVar = block.getFieldValue("XVAR");
-  const yVar = block.getFieldValue("YVAR");
-  const colorVar = block.getFieldValue("COLORVAR");
-
-  let code = '';
-  code += 'library(ggplot2)\n';
-  code += 'dataset <- data\n';
-  code += `ggplot(dataset, aes(x = ${xVar}, y = ${yVar}, color = ${colorVar})) +\n`;
-  code += '  geom_point(size = 2, alpha = 0.8) +\n';
-  code += `  labs(title = "Scatter plot of ${xVar} and ${yVar} colored by ${colorVar}",\n`;
-  code += `       x = "${xVar}", y = "${yVar}") +\n`;
-  code += '  theme_minimal()\n';
-
-  return code;
-};*/
-
-Blockly.Generator.R.forBlock["plot_scatter"] = function(block) {
-  const xVar = block.getFieldValue("XVAR");
-  const yVar = block.getFieldValue("YVAR");
-  const colorVar = block.getFieldValue("COLORVAR");
-
-  let code = '';
-  code += 'dataset <- data\n';
-  code += `color_values <- dataset$${colorVar}\n`;
-  code += 'if (is.numeric(color_values)) {\n';
-  code += '  color_palette <- colorRampPalette(c("blue", "green", "yellow", "red"))\n';
-  code += '  num_colors <- 100\n';
-  code += '  cols <- color_palette(num_colors)\n';
-  code += '  color_index <- as.numeric(cut(color_values, breaks = num_colors))\n';
-  code += '  point_colors <- cols[color_index]\n';
-  code += `  plot(dataset$${xVar}, dataset$${yVar}, col = point_colors, pch = 19,\n`;
-  code += `       xlab = "${xVar}", ylab = "${yVar}",\n`;
-  code += `       main = "Scatter plot of ${xVar} and ${yVar} colored by ${colorVar}")\n`;
-  code += '  par(xpd = TRUE)\n';
-  code += '  usr <- par("usr")\n';
-  code += '  legend_margin <- 0.02 * (usr[2] - usr[1])\n';
-  code += '  legend_x <- seq(usr[2] + legend_margin, usr[2] + legend_margin + 0.5 * legend_margin, length.out = 2)\n';
-  code += '  legend_y <- seq(min(color_values, na.rm = TRUE), max(color_values, na.rm = TRUE), length.out = num_colors)\n';
-  code += '  legend_z <- matrix(legend_y, nrow = 1)\n';
-  code += '  image(x = legend_x, y = legend_y, z = legend_z, col = cols, add = TRUE)\n';
-  code += '  axis(4, at = pretty(legend_y), labels = round(pretty(legend_y), 1), las = 1)\n';
-  code += '  par(xpd = FALSE)\n';
-  code += '} else {\n';
-  code += '  levels_ <- unique(as.character(color_values))\n';
-  code += '  category_colors <- rainbow(length(levels_))\n';
-  code += '  names(category_colors) <- levels_\n';
-  code += '  point_colors <- category_colors[as.character(color_values)]\n';
-  code += `  plot(dataset$${xVar}, dataset$${yVar}, col = point_colors, pch = 19,\n`;
-  code += `       xlab = "${xVar}", ylab = "${yVar}",\n`;
-  code += `       main = "Spatial plot of ${xVar} and ${yVar} colored by ${colorVar}")\n`;
-  code += '  legend("topright", legend = levels_, col = category_colors, pch = 19)\n';
-  code += '}\n';
-
-  return code;
+Blockly.Generator.R.forBlock['line_type_option'] = function(block, generator) {
+    return null;
 };
 
-// histogram generator
-Blockly.Generator.R.forBlock["plot_histogram"] = function(block) {
-  const column = block.getFieldValue("COLUMN");
-  let code = '';
-  code += 'dataset <- data\n';
-  code += `hist(dataset$${column}, main="Histogram of ${column}", xlab="${column}", col="skyblue", border="white")\n`;
-  return code;
+Blockly.Generator.R.forBlock['size_option'] = function(block, generator) {
+    return null;
 };
 
-// boxplot generator
-Blockly.Generator.R.forBlock["plot_boxplot"] = function(block) {
-  const column = block.getFieldValue("COLUMN");
-  const groupVar = block.getFieldValue("GROUPVAR");
-
-  let code = '';
-  code += 'dataset <- data\n';
-  if (groupVar && groupVar !== "None") {
-    code += `boxplot(dataset$${column} ~ dataset$${groupVar}, data=dataset,\n`;
-    code += `        main="Boxplot of ${column} by ${groupVar}",\n`;
-    code += `        xlab="${groupVar}", ylab="${column}", col=rainbow(length(unique(dataset$${groupVar}))))\n`;
-  } else {
-    code += `boxplot(dataset$${column}, main="Boxplot of ${column}", ylab="${column}", col="lightgreen")\n`;
-  }
-
-  return code;
+Blockly.Generator.R.forBlock['plot_labels_setting'] = function(block, generator) {
+    return null;
 };
 
+Blockly.Generator.R.forBlock['title_label'] = function(block, generator) {
+    return null;
+};
 
+Blockly.Generator.R.forBlock['axis_label'] = function(block, generator) {
+    return null;
+};
+
+Blockly.Generator.R.forBlock['plot_limits_setting'] = function(block, generator) {
+    return null;
+};
+
+Blockly.Generator.R.forBlock['axis_limit'] = function(block, generator) {
+    return null;
+};
+
+Blockly.Generator.R.forBlock['plot_legend_setting'] = function(block, generator) {
+    return null;
+};

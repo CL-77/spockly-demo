@@ -13,7 +13,7 @@ import PackageLoadingDialog from "./PackageLoadingDialog";
 const webR = new WebR();
 const CANVAS_SIZE = 650;
 
-const WebRRunner = ({ code, isDarkMode, webRRef }) => {
+const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
   const canvasRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
   const [textOutput, setTextOutput] = useState("");
@@ -21,12 +21,13 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
   const [sfSetupInProgress, setSfSetupInProgress] = useState(false);
   const [webRReady, setWebRReady] = useState(false);
   const [showLoadingDialog, setShowLoadingDialog] = useState(false);
-  const [currentPackage, setCurrentPackage] = useState("");
+  const [currentPackageInternal, setCurrentPackageInternal] = useState("");
   const [packagesReady, setPackagesReady] = useState(false);
 
   const installAndLoadPackages = async () => {
     const packages = ["jsonlite", "sp", "gstat"];
     for (const pkg of packages) {
+      setCurrentPackageInternal(pkg);
       setCurrentPackage(pkg);
       try {
         await webR.installPackages([pkg]);
@@ -36,10 +37,11 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
       }
     }
     setPackagesReady(true);
-    setCurrentPackage("");
+    setCurrentPackageInternal("Done!");
     setCurrentPackage("Done!");
     setTimeout(() => {
       setShowLoadingDialog(false);
+      setCurrentPackageInternal("");
       setCurrentPackage("");
     }, 2000);
   };
@@ -47,9 +49,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
   const setupSfPackage = async () => {
     if (sfPackageReady || sfSetupInProgress || !webRReady) return;
     setSfSetupInProgress(true);
-
     try {
-      // Load local udunits2 files
       await webR.evalRVoid(`
         local_udunits_files <- c(
           "udunits2-prefixes.xml",
@@ -58,13 +58,11 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
           "udunits2-accepted.xml",
           "udunits2-common.xml"
         )
-
         for (file in local_udunits_files) {
           file_path <- paste0("/units/", file)
           content <- readLines(file_path)
           writeLines(content, paste0("/home/web_user/", file))
         }
-
         udunits_xml_content <- c(
           '<?xml version="1.0" encoding="UTF-8"?>',
           '<unit-system>',
@@ -75,11 +73,9 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
           '  <import>udunits2-common.xml</import>',
           '</unit-system>'
         )
-
         writeLines(udunits_xml_content, "/home/web_user/udunits2.xml")
         Sys.setenv(UDUNITS2_XML_PATH = "/home/web_user/udunits2.xml")
       `);
-
       await webR.evalRVoid(`
         options(units.database.path = "/home/web_user/udunits2.xml")
         .onLoad_units_patched <- function(libname, pkgname) {
@@ -97,7 +93,6 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
           })
         }))
       `);
-
       await webR.installPackages(["sf"]);
       await webR.evalRVoid(`suppressMessages(library(sf))`);
       setSfPackageReady(true);
@@ -199,6 +194,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
       }
       setShowLoadingDialog(false);
     }
+    setCurrentPackageInternal("");
     setCurrentPackage("");
     try {
       await setupSfPackage();
@@ -334,7 +330,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef }) => {
           />
           <PackageLoadingDialog
             open={showLoadingDialog}
-            currentPackage={currentPackage}
+            currentPackage={currentPackageInternal}
             onClose={() => setShowLoadingDialog(false)}
           />
         </Box>

@@ -74,6 +74,11 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="preview_head_n"></block>
 	<block type="data_table"></block>
 	<block type="length_data"></block>
+	<block type="preview_data"></block>
+	<block type="print_data"></block>
+	<block type="show_structure"></block>
+	<block type="show_tail"></block>
+	<block type="show_rows"></block>
   </category>
 
   <category name="Variables" colour="#7d4561" custom="VARIABLE"></category>
@@ -129,18 +134,28 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="add_geojson"></block>
   </category>
   
-  <category name="Visualization" colour="#90A4AE">
-    <block type="print_data"></block>
-    <block type="preview_data"></block>
-    <block type="show_structure"></block>
-    <block type="show_rows"></block>
-    <block type="show_tail"></block>
-    <block type="plot_scatter"></block>
-    <block type="plot_histogram"></block>
-    <block type="plot_boxplot"></block>
-    <block type="barplot_block"></block>
-    <block type="piechart_block"></block>
-  </category>
+<category name="Visualization" colour="#90A4AE">
+  <label text="Basic Charts" web-class="toolboxLabel"></label>
+  <block type="create_chart_beginner">
+    <field name="CHART_TYPE">scatter</field>
+    <field name="COLOR">#4285F4</field>
+  </block>
+  
+  <block type="create_xy_chart_beginner">
+    <field name="CHART_TYPE">scatter</field>
+    <field name="COLOR">#4285F4</field>
+  </block>
+  
+  <label text="Add to Chart" web-class="toolboxLabel"></label>
+  <block type="add_to_chart_beginner">
+    <field name="ADD_TYPE">points</field>
+  </block>
+  
+  <label text="Layout" web-class="toolboxLabel"></label>
+  <block type="chart_layout_beginner">
+    <field name="LAYOUT">1,2</field>
+  </block>
+</category>
 
 
   <category name="Export" colour="#FFB74D">
@@ -213,6 +228,11 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="subset_column_range"></block>
 	<block type="data_table"></block>
 	<block type="length_data"></block>
+	<block type="preview_data"></block>
+	<block type="print_data"></block>
+	<block type="show_structure"></block>
+	<block type="show_tail"></block>
+	<block type="show_rows"></block>
   </category>
 
   <category name="Variables" colour="#7d4561" custom="VARIABLE"></category>
@@ -274,66 +294,133 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="add_geojson"></block>
   </category>y>
 
-  <category name="Visualization" colour="#90A4AE">
-    <block type="print_output"></block>
-    <block type="histogram_block"></block>
-    <block type="boxplot_block"></block>
-    <block type="barplot_block"></block>
-    <block type="piechart_block"></block>
-    <block type="scatterplot_block"></block>
-  </category>
-
-<category name="ggplot" colour="#FF6B6B">
-  <block type="ggplot_create">
-    <value name="DATA">
-      <block type="variables_get">
-        <field name="VAR">data</field>
+<category name="Visualization" colour="#607D8B">
+  <label text="Plot Types" web-class="toolboxLabel"></label>
+  <block type="plot_advanced">
+    <field name="PLOT_TYPE">scatter</field>
+    <statement name="SETTINGS">
+      <block type="plot_xy_setting"></block>
+    </statement>
+  </block>
+  
+  <label text="Data Settings" web-class="toolboxLabel"></label>
+  <block type="plot_data_setting"></block>
+  <block type="plot_xy_setting"></block>
+  
+  <label text="Appearance" web-class="toolboxLabel"></label>
+  <block type="plot_appearance_setting">
+    <statement name="OPTIONS">
+      <block type="color_option">
+        <value name="COLOR">
+          <block type="text">
+            <field name="TEXT">blue</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  
+  <block type="color_option">
+    <value name="COLOR">
+      <block type="text">
+        <field name="TEXT">red</field>
       </block>
     </value>
   </block>
   
-  <label text="Aesthetics" web-class="toolboxLabel"></label>
-  <block type="aes_xy"></block>
-  <block type="aes_color"></block>
-  <block type="aes_size"></block>
-  <block type="aes_fill"></block>
-  <block type="aes_alpha"></block>
+  <block type="symbol_option">
+    <field name="SYMBOL">1</field>
+  </block>
   
-  <label text="Geometries" web-class="toolboxLabel"></label>
-  <block type="geom_point"></block>
-  <block type="geom_bar"></block>
-  <block type="geom_histogram"></block>
-  <block type="geom_line"></block>
-  <block type="geom_smooth"></block>
-  <block type="geom_sf"></block>
+  <block type="line_type_option">
+    <field name="LINE_TYPE">1</field>
+  </block>
   
-  <label text="Geometry Options" web-class="toolboxLabel"></label>
-  <block type="geom_color"></block>
-  <block type="geom_fill"></block>
-  <block type="geom_alpha"></block>
-  <block type="geom_size"></block>
+  <block type="size_option">
+    <field name="SIZE">1</field>
+  </block>
   
-  <label text="Themes & Styling" web-class="toolboxLabel"></label>
-  <block type="theme_preset"></block>
-  <block type="labs"></block>
-  <block type="scale_color_viridis"></block>
-  <block type="facet_grid"></block>
-  <block type="coord_fixed"></block>
-  </category>
-
-  <category name="Export" colour="#FFB74D">
-    <block type="export_plot_png"></block>
-    <block type="export_data_csv"></block>
-    <block type="save_workspace"></block>
-  </category>
-
-  <category name="Modeling" colour="#A1887F">
-    <block type="linear_model_block"></block>
-    <block type="semivariogram"></block>
-    <block type="kriging_interpolation"></block>
-    <!---<block type="idw_interpolation"></block>-->
-    <block type="nn_interpolation"></block>
-  </category>
+  <label text="Labels & Titles" web-class="toolboxLabel"></label>
+  <block type="plot_labels_setting">
+    <statement name="LABELS">
+      <block type="title_label">
+        <value name="TITLE">
+          <block type="text">
+            <field name="TEXT">My Plot</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  
+  <block type="title_label">
+    <value name="TITLE">
+      <block type="text">
+        <field name="TEXT">Title</field>
+      </block>
+    </value>
+  </block>
+  
+  <block type="axis_label">
+    <field name="AXIS">x</field>
+    <value name="LABEL">
+      <block type="text">
+        <field name="TEXT">X Axis</field>
+      </block>
+    </value>
+  </block>
+  
+  <label text="Axis Limits" web-class="toolboxLabel"></label>
+  <block type="plot_limits_setting">
+    <statement name="LIMITS">
+      <block type="axis_limit">
+        <field name="AXIS">x</field>
+        <value name="MIN">
+          <block type="math_number">
+            <field name="NUM">0</field>
+          </block>
+        </value>
+        <value name="MAX">
+          <block type="math_number">
+            <field name="NUM">100</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  
+  <block type="axis_limit">
+    <field name="AXIS">x</field>
+    <value name="MIN">
+      <block type="math_number">
+        <field name="NUM">0</field>
+      </block>
+    </value>
+    <value name="MAX">
+      <block type="math_number">
+        <field name="NUM">10</field>
+      </block>
+    </value>
+  </block>
+  
+  <label text="Legend" web-class="toolboxLabel"></label>
+  <block type="plot_legend_setting">
+    <field name="SHOW">TRUE</field>
+    <field name="POSITION">topright</field>
+  </block>
+  
+  <label text="Add Layers" web-class="toolboxLabel"></label>
+  <block type="add_layer_advanced">
+    <field name="LAYER_TYPE">points</field>
+  </block>
+  
+  <label text="Layout" web-class="toolboxLabel"></label>
+  <block type="layout_advanced">
+    <field name="ROWS">2</field>
+    <field name="COLS">2</field>
+    <field name="ADJUST_MARGINS">FALSE</field>
+  </block>
+</category>
 
   <category name="Geometry" colour="#4DD0E1">
     <block type="st_centroid"></block>

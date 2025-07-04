@@ -8,6 +8,7 @@ import FileUploadManager from "./FileUploadManager";
 import { MdOutlineOutput } from "react-icons/md";
 import { FaCode } from "react-icons/fa6";
 import useSpocklyTour from './useSpocklyTour';
+import MiniPackageLoadingBar from "./MiniPackageLoadingBar";
 
 function TabPanel({ children, value, index }) {
   return (
@@ -29,6 +30,7 @@ export default function SPOCKLY({ isDarkMode }) {
   const [code, setCode] = useState("Generated R code will appear here...");
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [value, setValue] = useState(0);
+  const [currentPackage, setCurrentPackage] = useState("");
   const webRRef = useRef(null);
   const workspaceRef = useRef(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
@@ -75,7 +77,6 @@ export default function SPOCKLY({ isDarkMode }) {
             />
           </Card>
         </Grid>
-
         <Grid
           size={6}
           sx={{
@@ -93,42 +94,47 @@ export default function SPOCKLY({ isDarkMode }) {
               position: "relative",
             }}
           >
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          sx={{
-            padding: 1,
-            backgroundColor: theme.palette.background.default,
-            borderRadius: 4,
-          }}
-        >
-          <Tab
-            id ="codeTab"
-            label={
-              <Box display="flex" alignItems="center" gap={1}>
-                <FaCode /> Code
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              sx={{
+                padding: 1,
+                backgroundColor: theme.palette.background.default,
+                borderRadius: 4,
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <Tab
+                id="codeTab"
+                label={
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <FaCode /> Code
+                  </Box>
+                }
+                sx={{
+                  fontWeight: "bold",
+                  color: isDarkMode ? "lightgrey" : "darkgrey",
+                  textTransform: "none"
+                }}
+              />
+              <Tab
+                id="outputTab"
+                label={
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <MdOutlineOutput /> Output
+                  </Box>
+                }
+                sx={{
+                  fontWeight: "bold",
+                  color: isDarkMode ? "lightgrey" : "darkgrey",
+                  textTransform: "none"
+                }}
+              />
+              <Box sx={{ marginLeft: 'auto', marginRight: '50px' }}>
+                <MiniPackageLoadingBar currentPackage={currentPackage} />
               </Box>
-            }
-            sx={{
-              fontWeight: "bold",
-              color: isDarkMode ? "lightgrey" : "darkgrey",
-              textTransform: "none"
-            }}
-          />
-          <Tab
-            id="outputTab"
-            label={
-              <Box display="flex" alignItems="center" gap={1}>
-                <MdOutlineOutput /> Output
-              </Box>
-            }
-            sx={{
-              fontWeight: "bold",
-              color: isDarkMode ? "lightgrey" : "darkgrey",
-              textTransform: "none"
-            }}
-          />
-        </Tabs>
+            </Tabs>
             <TabPanel value={value} index={0}>
               <Box sx={{ height: "60%", p: 1 }}>
                 <CodeDisplay
@@ -145,13 +151,13 @@ export default function SPOCKLY({ isDarkMode }) {
                   code={code}
                   isDarkMode={isDarkMode}
                   webRRef={webRRef}
+                  setCurrentPackage={setCurrentPackage}
                 />
               </Box>
             </TabPanel>
           </Card>
         </Grid>
       </Grid>
-
       <FileUploadManager
         webRInstance={webRRef.current}
         isDarkMode={isDarkMode}
