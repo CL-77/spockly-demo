@@ -56,7 +56,6 @@ Blockly.defineBlocksWithJsonArray([
   }
 ]);
 
-// R code generators for export-related blocks
 Blockly.Generator.R.forBlock["export_plot_png"] = function (block, generator) {
   const filename = block.getFieldValue("FILENAME");
   return `png("${filename}")\nplot()\ndev.off()\n`;

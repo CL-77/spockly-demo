@@ -24,6 +24,126 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
   const [currentPackageInternal, setCurrentPackageInternal] = useState("");
   const [packagesReady, setPackagesReady] = useState(false);
 
+  const downloadFile = (blob, filename) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const exportPlotAsPNG = (filename) => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      canvas.toBlob((blob) => {
+        if (blob) {
+          downloadFile(blob, filename);
+          setTextOutput(prev => prev + `\nPlot exported as ${filename}`);
+        }
+      }, 'image/png');
+    }
+  };
+
+  const exportDataAsCSV = async (filename, dataVarName) => {
+    try {
+      // Wait for WebR to be ready
+      if (!webRReady || !packagesReady) {
+        setTextOutput(prev => prev + `\nWaiting for WebR to be ready...`);
+        return;
+      }
+
+      const webRForCSV = webRRef?.current || webR;
+      
+      const result = await webRForCSV.evalR(`
+        if (exists("${dataVarName}")) {
+          write.csv(${dataVarName}, file = "", row.names = FALSE)
+        } else {
+          "Error: Variable '${dataVarName}' not found"
+        }
+      `);
+      
+      const csvContent = await result.toString();
+      
+      if (csvContent.includes("Error:")) {
+        setTextOutput(prev => prev + `\n${csvContent}`);
+        return;
+      }
+      
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      downloadFile(blob, filename);
+      setTextOutput(prev => prev + `\nCSV exported as ${filename}`);
+    } catch (err) {
+      console.error("Error exporting CSV:", err);
+      setTextOutput(prev => prev + `\nError exporting CSV: ${err.message}`);
+    }
+  };
+
+  const exportWorkspace = async (filename) => {
+    try {
+      // Wait for WebR to be ready
+      if (!webRReady || !packagesReady) {
+        setTextOutput(prev => prev + `\nWaiting for WebR to be ready...`);
+        return;
+      }
+
+      const webRForWorkspace = webRRef?.current || webR;
+      
+      const result = await webRForWorkspace.evalR(`
+        temp_file <- tempfile()
+        save.image(file = temp_file)
+        readBin(temp_file, "raw", file.info(temp_file)$size)
+      `);
+      
+      const workspaceData = await result.toTypedArray();
+      const blob = new Blob([workspaceData], { type: 'application/octet-stream' });
+      downloadFile(blob, filename);
+      setTextOutput(prev => prev + `\nWorkspace saved as ${filename}`);
+    } catch (err) {
+      console.error("Error exporting workspace:", err);
+      setTextOutput(prev => prev + `\nError exporting workspace: ${err.message}`);
+    }
+  };
+
+  const processExportCommands = async (code) => {
+    const lines = code.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      
+      // Detect PNG export pattern
+      if (line.match(/png\s*\(\s*["']([^"']+)["']\s*\)/)) {
+        const match = line.match(/png\s*\(\s*["']([^"']+)["']\s*\)/);
+        const filename = match[1];
+        setTimeout(() => exportPlotAsPNG(filename), 1000);
+      }
+      
+      // Detect CSV export pattern
+      if (line.match(/write\.csv\s*\(\s*([^,]+)\s*,\s*file\s*=\s*["']([^"']+)["']/)) {
+        const match = line.match(/write\.csv\s*\(\s*([^,]+)\s*,\s*file\s*=\s*["']([^"']+)["']/);
+        const dataVar = match[1].trim();
+        const filename = match[2];
+        setTimeout(() => exportDataAsCSV(filename, dataVar), 600);
+      }
+      
+      // Detect workspace save pattern
+      if (line.match(/save\.image\s*\(\s*file\s*=\s*["']([^"']+)["']/)) {
+        const match = line.match(/save\.image\s*\(\s*file\s*=\s*["']([^"']+)["']/);
+        const filename = match[1];
+        setTimeout(() => exportWorkspace(filename), 600);
+      }
+    }
+  };
+
+  const cleanCodeForExecution = (code) => {
+    return code
+      .replace(/png\s*\([^)]+\)/g, '')
+      .replace(/dev\.off\s*\(\s*\)/g, '')
+      .replace(/write\.csv\s*\([^)]+\)/g, '')
+      .replace(/save\.image\s*\([^)]+\)/g, '');
+  };
+
   const installAndLoadPackages = async () => {
     const packages = ["jsonlite", "sp", "gstat"];
     for (const pkg of packages) {
@@ -104,6 +224,8 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
   };
 
   const runCodeWithSfWorkaround = async (code) => {
+    const webRForSf = webRRef?.current || webR;
+    
     if (
       code.includes('library("sf")') ||
       code.includes("library(sf)") ||
@@ -126,9 +248,9 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
         }
       }
       if (sfInstallLine) {
-        await webR.evalRVoid(sfInstallLine);
+        await webRForSf.evalRVoid(sfInstallLine);
       }
-      await webR.evalRVoid(`
+      await webRForSf.evalRVoid(`
         Sys.setenv(UDUNITS2_XML_PATH = "/home/web_user/udunits2.xml")
         sf_loaded <- FALSE
         suppressMessages(suppressWarnings({
@@ -155,10 +277,10 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
         }))
       `);
       if (modifiedCode.trim()) {
-        return await webR.evalR(modifiedCode);
+        return await webRForSf.evalR(modifiedCode);
       }
     } else {
-      return await webR.evalR(code);
+      return await webRForSf.evalR(code);
     }
   };
 
@@ -198,7 +320,8 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
     setCurrentPackage("");
     try {
       await setupSfPackage();
-      await webR.evalRVoid("options(device=webr::canvas)");
+      const webRForCanvas = webRRef?.current || webR;
+      await webRForCanvas.evalRVoid("options(device=webr::canvas)");
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
@@ -235,16 +358,22 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
           }
         }
       })();
+
+      await processExportCommands(code);
+
+      const cleanedCode = cleanCodeForExecution(code);
+      const webRForExecution = webRRef?.current || webR;
+
       let result;
       try {
         if (
-          code.includes("sf::") ||
-          code.includes('library("sf")') ||
-          code.includes("library(sf)")
+          cleanedCode.includes("sf::") ||
+          cleanedCode.includes('library("sf")') ||
+          cleanedCode.includes("library(sf)")
         ) {
-          result = await runCodeWithSfWorkaround(code);
+          result = await runCodeWithSfWorkaround(cleanedCode);
         } else {
-          result = await webR.evalR(code);
+          result = await webRForExecution.evalR(cleanedCode);
         }
         if (result) {
           const values = await result.toArray();
@@ -266,7 +395,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
         }
       } catch (err) {
         try {
-          await webR.evalRVoid(code);
+          await webRForExecution.evalRVoid(cleanedCode);
         } catch (voidErr) {
           setTextOutput(`Error: ${voidErr.message}`);
         }
