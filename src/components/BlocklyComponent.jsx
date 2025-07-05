@@ -441,6 +441,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="export_plot_png"></block>
     <block type="export_data_csv"></block>
     <block type="save_workspace"></block>
+	<block type="export_plot_pdf"></block>
   </category>
 </xml>
 `;

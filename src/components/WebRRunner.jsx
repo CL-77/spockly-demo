@@ -47,6 +47,59 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
     }
   };
 
+  const loadJsPDF = async () => {
+    if (window.jspdf) return window.jspdf;
+    
+    try {
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      document.head.appendChild(script);
+      
+      return new Promise((resolve, reject) => {
+        script.onload = () => resolve(window.jspdf);
+        script.onerror = () => reject(new Error('Failed to load jsPDF'));
+      });
+    } catch (error) {
+      throw new Error('Failed to load jsPDF');
+    }
+  };
+
+  const exportPlotAsPDF = async (filename) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    try {
+      const jspdf = await loadJsPDF();
+      const { jsPDF } = jspdf;
+      
+      const imgData = canvas.toDataURL('image/png');
+      const widthInMM = canvas.width * 0.264583; // Convert px to mm
+      const heightInMM = canvas.height * 0.264583;
+      
+      const pdf = new jsPDF({
+        orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
+        unit: 'mm',
+        format: [widthInMM, heightInMM]
+      });
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, widthInMM, heightInMM);
+      pdf.save(filename);
+      
+      setTextOutput(prev => prev + `\nPlot exported as ${filename}`);
+      
+    } catch (error) {
+      console.warn('PDF export failed, falling back to PNG:', error);
+      // Fallback to PNG export
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const pngFilename = filename.replace('.pdf', '.png');
+          downloadFile(blob, pngFilename);
+          setTextOutput(prev => prev + `\nPDF export failed, saved as PNG: ${pngFilename}`);
+        }
+      }, 'image/png');
+    }
+  };
+
   const exportDataAsCSV = async (filename, dataVarName) => {
     try {
       // Wait for WebR to be ready
@@ -119,6 +172,13 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
         setTimeout(() => exportPlotAsPNG(filename), 1000);
       }
       
+      // Detect PDF export pattern
+      if (line.match(/pdf\s*\(\s*["']([^"']+)["']\s*\)/)) {
+        const match = line.match(/pdf\s*\(\s*["']([^"']+)["']\s*\)/);
+        const filename = match[1];
+        setTimeout(async () => await exportPlotAsPDF(filename), 1000);
+      }
+      
       // Detect CSV export pattern
       if (line.match(/write\.csv\s*\(\s*([^,]+)\s*,\s*file\s*=\s*["']([^"']+)["']/)) {
         const match = line.match(/write\.csv\s*\(\s*([^,]+)\s*,\s*file\s*=\s*["']([^"']+)["']/);
@@ -139,6 +199,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
   const cleanCodeForExecution = (code) => {
     return code
       .replace(/png\s*\([^)]+\)/g, '')
+      .replace(/pdf\s*\([^)]+\)/g, '')
       .replace(/dev\.off\s*\(\s*\)/g, '')
       .replace(/write\.csv\s*\([^)]+\)/g, '')
       .replace(/save\.image\s*\([^)]+\)/g, '');
