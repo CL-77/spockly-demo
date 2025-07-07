@@ -30,7 +30,7 @@ Blockly.defineBlocksWithJsonArray([
 		previousStatement: null,
 		nextStatement: null,
 		output: "SFObject",
-		colour: "#FFA726",
+		colour: "#FFD54F",
 		tooltip: "Convert a DataFrame to an SF object with geographic coordinates",
 		helpUrl: "https://www.rdocumentation.org/packages/sf/versions/0.1/topics/as.sf",
 	},
@@ -61,7 +61,7 @@ Blockly.defineBlocksWithJsonArray([
             },
         ],
         output: "DataFrame",
-        colour: "#FFA726",
+        colour: "#FFD54F",
         tooltip: "Convert objects to a DataFrame",
         helpUrl: "",
     },
@@ -127,7 +127,7 @@ Blockly.defineBlocksWithJsonArray([
 	  previousStatement: null,
 	  nextStatement: null,
 	  output: "DataFrame",
-	  colour: "#FFA726",
+	  colour: "#FFD54F",
 	  tooltip: "Stack two data objects using rbind() or cbind()",
 	  helpUrl: "https://www.rdocumentation.org/packages/R6Frame/versions/0.1.0/topics/rbind"
 	},
@@ -141,7 +141,7 @@ Blockly.defineBlocksWithJsonArray([
 	  previousStatement: null,
 	  nextStatement: null,
 	  output: "Vector",
-	  colour: "#FFA726",
+	  colour: "#FFD54F",
 	  tooltip: "Append a value to a vector using append()",
 	  helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/append"
 	},
@@ -155,7 +155,7 @@ Blockly.defineBlocksWithJsonArray([
 	  previousStatement: null,
 	  nextStatement: null,
 	  output: "Array",
-	  colour: "#FFA726",
+	  colour: "#FFD54F",
 	  tooltip: "Create an array from data with specified dimensions",
 	  helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/array"
 	},
@@ -176,7 +176,7 @@ Blockly.defineBlocksWithJsonArray([
 	  previousStatement: null,
 	  nextStatement: null,
 	  output: "Vector",
-	  colour: "#FFA726",
+	  colour: "#FFD54F",
 	  tooltip: "Sort a vector or array in ascending or descending order",
 	  helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/sort"
 	},
@@ -190,7 +190,7 @@ Blockly.defineBlocksWithJsonArray([
 	  previousStatement: null,
 	  nextStatement: null,
 	  output: "DataFrame",
-	  colour: "#FFA726",
+	  colour: "#FFD54F",
 	  tooltip: "Subset data by condition using bracket notation",
 	  helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/Extract"
 	}

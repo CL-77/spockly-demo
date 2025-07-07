@@ -325,7 +325,7 @@ Blockly.defineBlocksWithJsonArray([
       }
     ],
     output: "DataFrame",
-    colour: "#FFA726",
+    colour: "#ffd54f",
     tooltip: "Stack two data objects using rbind() or cbind()",
     helpUrl: "https://www.rdocumentation.org/packages/R6Frame/versions/0.1.0/topics/rbind"
   },
@@ -337,7 +337,7 @@ Blockly.defineBlocksWithJsonArray([
       { type: "input_value", name: "ARRAY" }
     ],
     output: null,
-    colour: "#FFA726",
+    colour: "#FFD54F",
     tooltip: "Append a value to a vector using append()",
     helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/append"
   },

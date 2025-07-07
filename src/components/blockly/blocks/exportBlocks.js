@@ -13,7 +13,7 @@ Blockly.defineBlocksWithJsonArray([
     ],
     previousStatement: null,
     nextStatement: null,
-    colour: "#90A4AE",
+    colour: "#FFB74D",
     tooltip: "Export the current plot to a PNG file",
     helpUrl: "https://www.rdocumentation.org/packages/Rcssplot/versions/1.0.0/topics/png"
   },
@@ -29,7 +29,7 @@ Blockly.defineBlocksWithJsonArray([
     ],
     previousStatement: null,
     nextStatement: null,
-    colour: "#90A4AE",
+    colour: "#FFB74D",
     tooltip: "Export the current plot to a PDF file",
     helpUrl: "https://www.rdocumentation.org/packages/grDevices/topics/pdf"
   },
@@ -50,7 +50,7 @@ Blockly.defineBlocksWithJsonArray([
     ],
     previousStatement: null,
     nextStatement: null,
-    colour: "#90A4AE",
+    colour: "#FFB74D",
     tooltip: "Export a dataframe to a CSV file",
     helpUrl: "https://www.rdocumentation.org/packages/utils/topics/write.table"
   },
@@ -66,7 +66,7 @@ Blockly.defineBlocksWithJsonArray([
     ],
     previousStatement: null,
     nextStatement: null,
-    colour: "#90A4AE",
+    colour: "#FFB74D",
     tooltip: "Save the current R workspace",
     helpUrl: "https://www.rdocumentation.org/packages/imager/versions/0.45.2/topics/save.image"
   }
