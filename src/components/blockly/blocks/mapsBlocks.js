@@ -274,38 +274,38 @@ Blockly.defineBlocksWithJsonArray([
         "colour": "#00695C",
         "tooltip": "Set maximum zoom level"
     },
-    {
-        "type": "add_tiles_advanced",
-        "message0": "Add %1 tiles %2 attribution %3",
-        "args0": [
-            {
-                "type": "field_dropdown",
-                "name": "PROVIDER",
-                "options": [
-                    ["OpenStreetMap", "osm"],
-                    ["CartoDB Dark", "cartodb_dark"],
-                    ["CartoDB Light", "cartodb_light"],
-                    ["Stamen Terrain", "stamen_terrain"],
-                    ["ESRI World", "esri_world"],
-                    ["Custom URL", "custom"]
-                ]
-            },
-            {
-                "type": "input_dummy"
-            },
-            {
-                "type": "input_value",
-                "name": "ATTRIBUTION",
-                "check": "String"
-            }
-        ],
-        "previousStatement": null,
-        "nextStatement": null,
-        "colour": "#26A69A",
-        "tooltip": "Add tile layer",
-        "helpUrl": "",
-        "extensions": ["tile_provider_mutator"]
-    },
+	{
+		"type": "add_tiles_advanced",
+		"message0": "Add %1 tiles %2 attribution %3",
+		"args0": [
+			{
+				"type": "field_dropdown",
+				"name": "PROVIDER",
+				"options": [
+					["OpenStreetMap", "osm"],
+					["CartoDB Dark", "cartodb_dark"],
+					["CartoDB Light", "cartodb_light"],
+					["Stamen Terrain", "stamen_terrain"],
+					["ESRI World", "esri_world"],
+					["Custom URL", "custom"]
+				]
+			},
+			{
+				"type": "input_dummy"
+			},
+			{
+				"type": "input_value",
+				"name": "ATTRIBUTION",
+				"check": "String"
+			}
+		],
+		"previousStatement": "MapSetting",
+		"nextStatement": "MapSetting",
+		"colour": "#00897B",
+		"tooltip": "Add tile layer",
+		"helpUrl": "",
+		"extensions": ["tile_provider_mutator"]
+	},
     {
         "type": "add_markers_advanced",
         "message0": "Add markers %1 data %2 %3 settings %4",
@@ -644,9 +644,12 @@ message("Map saved as ${filename}")\n`;
 Blockly.Generator.R.forBlock['leaflet_map_advanced'] = function(block, generator) {
     generator.requirePackage("leaflet");
     generator.requirePackage("htmlwidgets");
+    
     let mapOptions = [];
     let centerLat = null, centerLng = null, zoom = null;
     let fitBounds = null;
+    let additionalMethods = [];
+    
     let settingBlock = block.getInputTargetBlock('SETTINGS');
     while (settingBlock) {
         switch(settingBlock.type) {
@@ -678,19 +681,32 @@ Blockly.Generator.R.forBlock['leaflet_map_advanced'] = function(block, generator
                     optionBlock = optionBlock.getNextBlock();
                 }
                 break;
+            case 'add_tiles_advanced':
+                const tilesCode = generator.blockToCode(settingBlock);
+                if (tilesCode) {
+                    additionalMethods.push(tilesCode);
+                }
+                break;
         }
         settingBlock = settingBlock.getNextBlock();
     }
+    
     let code = 'leaflet_map <- leaflet(';
     if (mapOptions.length > 0) {
         code += `options = leafletOptions(${mapOptions.join(', ')})`;
     }
     code += ')';
+    
+    if (additionalMethods.length > 0) {
+        code += ' %>%\n  ' + additionalMethods.join(' %>%\n  ');
+    }
+    
     if (centerLat && centerLng && zoom) {
         code += ` %>%\n  setView(lat = ${centerLat}, lng = ${centerLng}, zoom = ${zoom})`;
     } else if (fitBounds) {
         code += ` %>%\n  fitBounds(${fitBounds})`;
     }
+    
     code += '\n';
     return code;
 };
@@ -698,11 +714,13 @@ Blockly.Generator.R.forBlock['leaflet_map_advanced'] = function(block, generator
 Blockly.Generator.R.forBlock['add_tiles_advanced'] = function(block, generator) {
     const provider = block.getFieldValue('PROVIDER');
     const attribution = generator.valueToCode(block, 'ATTRIBUTION', Blockly.Generator.R.ORDER_ATOMIC);
+    
     let tileUrl = '';
     let defaultAttribution = '';
+    
     switch(provider) {
         case 'osm':
-            return 'leaflet_map <- leaflet_map %>% addTiles()\n';
+            return 'addTiles()';
         case 'cartodb_dark':
             tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
             defaultAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
@@ -724,10 +742,9 @@ Blockly.Generator.R.forBlock['add_tiles_advanced'] = function(block, generator) 
             tileUrl = tileUrl.replace(/^"|"$/g, '');
             break;
     }
+    
     const finalAttribution = attribution || `"${defaultAttribution}"`;
-    const code = `leaflet_map <- leaflet_map %>%
-  addTiles(urlTemplate = "${tileUrl}", attribution = ${finalAttribution})\n`;
-    return code;
+    return `addTiles(urlTemplate = "${tileUrl}", attribution = ${finalAttribution})`;
 };
 
 Blockly.Generator.R.forBlock['add_markers_advanced'] = function(block, generator) {
