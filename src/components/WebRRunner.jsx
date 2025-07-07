@@ -73,7 +73,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
       const { jsPDF } = jspdf;
       
       const imgData = canvas.toDataURL('image/png');
-      const widthInMM = canvas.width * 0.264583; // Convert px to mm
+      const widthInMM = canvas.width * 0.264583;
       const heightInMM = canvas.height * 0.264583;
       
       const pdf = new jsPDF({
@@ -89,7 +89,6 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
       
     } catch (error) {
       console.warn('PDF export failed, falling back to PNG:', error);
-      // Fallback to PNG export
       canvas.toBlob((blob) => {
         if (blob) {
           const pngFilename = filename.replace('.pdf', '.png');
@@ -102,7 +101,6 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
 
   const exportDataAsCSV = async (filename, dataVarName) => {
     try {
-      // Wait for WebR to be ready
       if (!webRReady || !packagesReady) {
         setTextOutput(prev => prev + `\nWaiting for WebR to be ready...`);
         return;
@@ -136,7 +134,6 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
 
   const exportWorkspace = async (filename) => {
     try {
-      // Wait for WebR to be ready
       if (!webRReady || !packagesReady) {
         setTextOutput(prev => prev + `\nWaiting for WebR to be ready...`);
         return;
@@ -160,26 +157,189 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
     }
   };
 
+  const handleLeafletDisplay = async (code) => {
+    try {
+      const webRForLeaflet = webRRef?.current || webR;
+      
+      const result = await webRForLeaflet.evalR(`
+        if (exists("leaflet_map")) {
+          # Extract the leaflet data
+          widget_data <- leaflet_map$x
+          
+          # Convert to JSON string
+          json_data <- jsonlite::toJSON(widget_data, auto_unbox = TRUE, pretty = TRUE)
+          
+          # Return the JSON data
+          json_data
+        } else {
+          "No leaflet map found"
+        }
+      `);
+      
+      const jsonData = await result.toString();
+      
+      if (jsonData === "No leaflet map found") {
+        setTextOutput(prev => prev + `\nNo leaflet map found`);
+        return;
+      }
+      
+      // Create a complete HTML document with embedded Leaflet
+      const completeHTML = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Leaflet Map</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+                integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+                crossorigin=""/>
+          <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+                  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+                  crossorigin=""></script>
+          <style>
+            body { 
+              margin: 0; 
+              padding: 0; 
+              font-family: Arial, sans-serif; 
+            }
+            #map { 
+              width: 100vw; 
+              height: 100vh; 
+            }
+          </style>
+        </head>
+        <body>
+          <div id="map"></div>
+          <script>
+            try {
+              const mapData = ${jsonData};
+              
+              // Create map with options
+              const map = L.map('map', mapData.options || {});
+              
+              // Set view if specified
+              if (mapData.setView && mapData.setView.length >= 2) {
+                const coords = mapData.setView[0];
+                const zoom = mapData.setView[1];
+                map.setView([coords[0], coords[1]], zoom);
+              }
+              
+              // Process calls (layers, tiles, etc.)
+              if (mapData.calls && Array.isArray(mapData.calls)) {
+                mapData.calls.forEach(call => {
+                  switch(call.method) {
+                    case 'addTiles':
+                      const tileUrl = call.args[0] || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+                      const tileOptions = call.args[3] || {};
+                      L.tileLayer(tileUrl, tileOptions).addTo(map);
+                      break;
+                      
+                    case 'addMarkers':
+                      if (call.args && call.args.length >= 2) {
+                        const lng = call.args[0];
+                        const lat = call.args[1];
+                        const options = call.args[2] || {};
+                        if (Array.isArray(lat) && Array.isArray(lng)) {
+                          for (let i = 0; i < lat.length; i++) {
+                            L.marker([lat[i], lng[i]], options).addTo(map);
+                          }
+                        } else {
+                          L.marker([lat, lng], options).addTo(map);
+                        }
+                      }
+                      break;
+                      
+                    case 'addCircles':
+                      if (call.args && call.args.length >= 2) {
+                        const lng = call.args[0];
+                        const lat = call.args[1];
+                        const options = call.args[2] || {};
+                        if (Array.isArray(lat) && Array.isArray(lng)) {
+                          for (let i = 0; i < lat.length; i++) {
+                            L.circle([lat[i], lng[i]], options).addTo(map);
+                          }
+                        } else {
+                          L.circle([lat, lng], options).addTo(map);
+                        }
+                      }
+                      break;
+                      
+                    case 'addPolygons':
+                      if (call.args && call.args.length >= 1) {
+                        const coordinates = call.args[0];
+                        const options = call.args[1] || {};
+                        if (coordinates && coordinates.length > 0) {
+                          L.polygon(coordinates, options).addTo(map);
+                        }
+                      }
+                      break;
+                      
+                    case 'fitBounds':
+                      if (call.args && call.args.length >= 1) {
+                        const bounds = call.args[0];
+                        if (bounds && bounds.length >= 4) {
+                          map.fitBounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]]);
+                        }
+                      }
+                      break;
+                  }
+                });
+              }
+              
+              // If no view was set and no bounds were fit, set a default view
+              if (!mapData.setView && !mapData.calls.some(call => call.method === 'fitBounds')) {
+                map.setView([0, 0], 2);
+              }
+              
+            } catch (error) {
+              console.error('Error creating map:', error);
+              document.body.innerHTML = '<h1>Error creating map</h1><p>' + error.message + '</p>';
+            }
+          </script>
+        </body>
+        </html>
+      `;
+      
+      const blob = new Blob([completeHTML], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      
+      // Open in new tab instead of new window
+      const newTab = window.open(url, '_blank');
+      
+      if (newTab) {
+        setTextOutput(prev => prev + `\nLeaflet map opened in new tab`);
+        
+        // Clean up the blob URL after a delay
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+        }, 1000);
+      } else {
+        setTextOutput(prev => prev + `\nPopup blocked - please allow popups for this site`);
+      }
+    } catch (err) {
+      console.error("Error displaying leaflet map:", err);
+      setTextOutput(prev => prev + `\nError displaying leaflet map: ${err.message}`);
+    }
+  };
+
   const processExportCommands = async (code) => {
     const lines = code.split('\n');
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
       
-      // Detect PNG export pattern
       if (line.match(/png\s*\(\s*["']([^"']+)["']\s*\)/)) {
         const match = line.match(/png\s*\(\s*["']([^"']+)["']\s*\)/);
         const filename = match[1];
         setTimeout(() => exportPlotAsPNG(filename), 1000);
       }
       
-      // Detect PDF export pattern
       if (line.match(/pdf\s*\(\s*["']([^"']+)["']\s*\)/)) {
         const match = line.match(/pdf\s*\(\s*["']([^"']+)["']\s*\)/);
         const filename = match[1];
         setTimeout(async () => await exportPlotAsPDF(filename), 1000);
       }
       
-      // Detect CSV export pattern
       if (line.match(/write\.csv\s*\(\s*([^,]+)\s*,\s*file\s*=\s*["']([^"']+)["']/)) {
         const match = line.match(/write\.csv\s*\(\s*([^,]+)\s*,\s*file\s*=\s*["']([^"']+)["']/);
         const dataVar = match[1].trim();
@@ -187,7 +347,6 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
         setTimeout(() => exportDataAsCSV(filename, dataVar), 600);
       }
       
-      // Detect workspace save pattern
       if (line.match(/save\.image\s*\(\s*file\s*=\s*["']([^"']+)["']/)) {
         const match = line.match(/save\.image\s*\(\s*file\s*=\s*["']([^"']+)["']/);
         const filename = match[1];
@@ -202,11 +361,12 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
       .replace(/pdf\s*\([^)]+\)/g, '')
       .replace(/dev\.off\s*\(\s*\)/g, '')
       .replace(/write\.csv\s*\([^)]+\)/g, '')
-      .replace(/save\.image\s*\([^)]+\)/g, '');
+      .replace(/save\.image\s*\([^)]+\)/g, '')
+      .replace(/htmlwidgets::saveWidget\s*\([^)]+\)/g, '');
   };
 
   const installAndLoadPackages = async () => {
-    const packages = ["jsonlite", "sp", "gstat"];
+    const packages = ["jsonlite", "sp", "gstat", "leaflet", "htmlwidgets"];
     for (const pkg of packages) {
       setCurrentPackageInternal(pkg);
       setCurrentPackage(pkg);
@@ -345,6 +505,25 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
     }
   };
 
+  const detectLeafletCode = (code) => {
+    const leafletPatterns = [
+      /leaflet\s*\(\s*\)/,
+      /leaflet_map\s*<-/,
+      /addTiles\s*\(\s*\)/,
+      /addMarkers\s*\(/,
+      /addCircles\s*\(/,
+      /addPolygons\s*\(/,
+      /setView\s*\(/,
+      /fitBounds\s*\(/,
+      /library\s*\(\s*leaflet\s*\)/,
+      /library\s*\(\s*"leaflet"\s*\)/,
+      /require\s*\(\s*leaflet\s*\)/,
+      /require\s*\(\s*"leaflet"\s*\)/
+    ];
+    
+    return leafletPatterns.some(pattern => pattern.test(code));
+  };
+
   useEffect(() => {
     const initWebR = async () => {
       try {
@@ -379,46 +558,53 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
     }
     setCurrentPackageInternal("");
     setCurrentPackage("");
+    
+    const isLeafletCode = detectLeafletCode(code);
+    
     try {
       await setupSfPackage();
       const webRForCanvas = webRRef?.current || webR;
-      await webRForCanvas.evalRVoid("options(device=webr::canvas)");
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      (async () => {
-        for (;;) {
-          const output = await webR.read();
-          switch (output.type) {
-            case "canvas":
-              if (output.data.event === "canvasImage") {
-                const canvas = canvasRef.current;
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(
-                  output.data.image,
-                  0,
-                  0,
-                  canvas.width - 10,
-                  canvas.height - 10
-                );
-              } else if (output.data.event === "canvasNewPage") {
-                const canvas = canvasRef.current;
-                const ctx = canvas.getContext("2d");
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-              }
-              break;
-            case "stdout":
-            case "stderr":
-              if (output.data) {
-                setTextOutput((prev) => prev + output.data);
-              }
-              break;
-            default:
-              console.log(output);
+      
+      if (!isLeafletCode) {
+        await webRForCanvas.evalRVoid("options(device=webr::canvas)");
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        (async () => {
+          for (;;) {
+            const output = await webR.read();
+            switch (output.type) {
+              case "canvas":
+                if (output.data.event === "canvasImage") {
+                  const canvas = canvasRef.current;
+                  const ctx = canvas.getContext("2d");
+                  ctx.drawImage(
+                    output.data.image,
+                    0,
+                    0,
+                    canvas.width - 10,
+                    canvas.height - 10
+                  );
+                } else if (output.data.event === "canvasNewPage") {
+                  const canvas = canvasRef.current;
+                  const ctx = canvas.getContext("2d");
+                  ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+                break;
+              case "stdout":
+              case "stderr":
+                if (output.data) {
+                  setTextOutput((prev) => prev + output.data);
+                }
+                break;
+              default:
+                console.log(output);
+            }
           }
-        }
-      })();
+        })();
+      }
 
       await processExportCommands(code);
 
@@ -436,6 +622,11 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
         } else {
           result = await webRForExecution.evalR(cleanedCode);
         }
+        
+        if (isLeafletCode) {
+          setTimeout(() => handleLeafletDisplay(cleanedCode), 1000);
+        }
+        
         if (result) {
           const values = await result.toArray();
           const filtered = values.filter(
@@ -457,6 +648,9 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
       } catch (err) {
         try {
           await webRForExecution.evalRVoid(cleanedCode);
+          if (isLeafletCode) {
+            setTimeout(() => handleLeafletDisplay(cleanedCode), 1000);
+          }
         } catch (voidErr) {
           setTextOutput(`Error: ${voidErr.message}`);
         }
