@@ -121,18 +121,53 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 	<block type="convert_to_dataframe"></block>
   </category>
 
-  <category name="Maps" colour="#81C784">
-    <block type="plot_map"></block>
-    <block type="set_map_title"></block>
-    <block type="color_by_attribute"></block>
-    <block type="create_marker"></block>
-    <block type="create_polygon"></block>
-    <block type="create_circle"></block>
-    <block type="create_polyline"></block>
-    <block type="create_rectangle"></block>
-    <block type="choropleth_map"></block>
-    <block type="add_geojson"></block>
-  </category>
+<category name="Maps" colour="#67c761">
+  <label text="Create Map" web-class="toolboxLabel"></label>
+  <block type="create_map_beginner">
+    <field name="LOCATION">new_york</field>
+    <field name="ZOOM">10</field>
+	<field name="STYLE">osm</field>
+  </block>
+  
+  <label text="Add to Map" web-class="toolboxLabel"></label>
+  <block type="add_marker_beginner">
+    <value name="LAT">
+      <block type="math_number">
+        <field name="NUM">40.7128</field>
+      </block>
+    </value>
+    <value name="LNG">
+      <block type="math_number">
+        <field name="NUM">-74.0060</field>
+      </block>
+    </value>
+    <value name="LABEL">
+      <block type="text">
+        <field name="TEXT">New York City</field>
+      </block>
+    </value>
+  </block>
+  
+  <block type="add_circle_beginner">
+    <field name="RADIUS">500</field>
+    <field name="COLOR">#FF5252</field>
+    <value name="LAT">
+      <block type="math_number">
+        <field name="NUM">40.7128</field>
+      </block>
+    </value>
+    <value name="LNG">
+      <block type="math_number">
+        <field name="NUM">-74.0060</field>
+      </block>
+    </value>
+  </block>
+  
+  <label text="Save Map" web-class="toolboxLabel"></label>
+  <block type="save_map_beginner">
+    <field name="FILENAME">my_map.html</field>
+  </block>
+</category>
   
 <category name="Visualization" colour="#90A4AE">
   <label text="Basic Charts" web-class="toolboxLabel"></label>
@@ -281,18 +316,188 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="slice_file"></block>
   </category>
 
-    <category name="Maps" colour="#81C784">
-    <block type="plot_map"></block>
-    <block type="set_map_title"></block>
-    <block type="color_by_attribute"></block>
-    <block type="create_marker"></block>
-    <block type="create_polygon"></block>
-    <block type="create_circle"></block>
-    <block type="create_polyline"></block>
-    <block type="create_rectangle"></block>
-    <block type="choropleth_map"></block>
-    <block type="add_geojson"></block>
-  </category>y>
+<category name="Maps" colour="#67c761">
+  <label text="Map Creation" web-class="toolboxLabel"></label>
+  <block type="leaflet_map_advanced">
+    <statement name="SETTINGS">
+      <block type="map_center_setting">
+        <value name="LAT">
+          <block type="math_number">
+            <field name="NUM">40.7128</field>
+          </block>
+        </value>
+        <value name="LNG">
+          <block type="math_number">
+            <field name="NUM">-74.0060</field>
+          </block>
+        </value>
+        <next>
+          <block type="map_zoom_setting">
+            <value name="ZOOM">
+              <block type="math_number">
+                <field name="NUM">10</field>
+              </block>
+            </value>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+  
+  <label text="Map Settings" web-class="toolboxLabel"></label>
+  <block type="map_center_setting">
+    <value name="LAT">
+      <block type="math_number">
+        <field name="NUM">0</field>
+      </block>
+    </value>
+    <value name="LNG">
+      <block type="math_number">
+        <field name="NUM">0</field>
+      </block>
+    </value>
+  </block>
+  
+  <block type="map_zoom_setting">
+    <value name="ZOOM">
+      <block type="math_number">
+        <field name="NUM">10</field>
+      </block>
+    </value>
+  </block>
+  
+  <block type="map_bounds_setting">
+    <value name="SW_LAT">
+      <block type="math_number">
+        <field name="NUM">-10</field>
+      </block>
+    </value>
+    <value name="SW_LNG">
+      <block type="math_number">
+        <field name="NUM">-10</field>
+      </block>
+    </value>
+    <value name="NE_LAT">
+      <block type="math_number">
+        <field name="NUM">10</field>
+      </block>
+    </value>
+    <value name="NE_LNG">
+      <block type="math_number">
+        <field name="NUM">10</field>
+      </block>
+    </value>
+  </block>
+  
+  <block type="map_options_setting">
+    <statement name="OPTIONS">
+      <block type="min_zoom_option">
+        <field name="MIN_ZOOM">1</field>
+        <next>
+          <block type="max_zoom_option">
+            <field name="MAX_ZOOM">18</field>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+  
+  <label text="Tile Layers" web-class="toolboxLabel"></label>
+  <block type="add_tiles_advanced">
+    <field name="PROVIDER">osm</field>
+  </block>
+  
+  <label text="Map Elements" web-class="toolboxLabel"></label>
+  <block type="add_markers_advanced">
+    <statement name="SETTINGS">
+      <block type="marker_lat_lng_setting">
+        <value name="LAT_COL">
+          <block type="text">
+            <field name="TEXT">latitude</field>
+          </block>
+        </value>
+        <value name="LNG_COL">
+          <block type="text">
+            <field name="TEXT">longitude</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  
+  <block type="marker_lat_lng_setting">
+    <value name="LAT_COL">
+      <block type="text">
+        <field name="TEXT">lat</field>
+      </block>
+    </value>
+    <value name="LNG_COL">
+      <block type="text">
+        <field name="TEXT">lng</field>
+      </block>
+    </value>
+  </block>
+  
+  <block type="marker_popup_setting">
+    <value name="POPUP_COL">
+      <block type="text">
+        <field name="TEXT">name</field>
+      </block>
+    </value>
+  </block>
+  
+  <block type="marker_icon_setting">
+    <field name="WIDTH">25</field>
+    <field name="HEIGHT">25</field>
+    <value name="ICON_URL">
+      <block type="text">
+        <field name="TEXT">marker-icon.png</field>
+      </block>
+    </value>
+  </block>
+  
+  <block type="add_polygons_advanced">
+    <statement name="STYLE">
+      <block type="polygon_fill_style">
+        <field name="FILL_OPACITY">0.5</field>
+        <value name="FILL_COLOR">
+          <block type="text">
+            <field name="TEXT">blue</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  
+  <block type="polygon_fill_style">
+    <field name="FILL_OPACITY">0.5</field>
+    <value name="FILL_COLOR">
+      <block type="text">
+        <field name="TEXT">red</field>
+      </block>
+    </value>
+  </block>
+  
+  <block type="polygon_stroke_style">
+    <field name="WEIGHT">2</field>
+    <value name="STROKE_COLOR">
+      <block type="text">
+        <field name="TEXT">black</field>
+      </block>
+    </value>
+  </block>
+  
+  <label text="Legend" web-class="toolboxLabel"></label>
+  <block type="add_legend_advanced">
+    <field name="POSITION">topright</field>
+  </block>
+  
+  <label text="Export" web-class="toolboxLabel"></label>
+  <block type="save_leaflet_advanced">
+    <field name="FILENAME">interactive_map.html</field>
+    <field name="SELF_CONTAINED">TRUE</field>
+  </block>
+</category>
 
 <category name="Visualization" colour="#607D8B">
   <label text="Plot Types" web-class="toolboxLabel"></label>
