@@ -11,7 +11,7 @@ import { darkTheme, lightTheme } from "./../appTheme";
 import PackageLoadingDialog from "./PackageLoadingDialog";
 
 const webR = new WebR();
-const CANVAS_SIZE = 650;
+const CANVAS_SIZE = 550;
 
 const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
   const canvasRef = useRef(null);
