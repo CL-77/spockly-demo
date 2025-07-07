@@ -4,41 +4,51 @@ import { FieldColour } from '@blockly/field-colour';
 Blockly.fieldRegistry.register('field_colour', FieldColour);
 
 Blockly.defineBlocksWithJsonArray([
-    {
-        "type": "create_map_beginner",
-        "message0": "Create map at %1 location %2 zoom level %3",
-        "args0": [
-            {
-                "type": "input_dummy"
-            },
-            {
-                "type": "field_dropdown",
-                "name": "LOCATION",
-                "options": [
-                    ["New York", "new_york"],
-                    ["London", "london"],
-                    ["Paris", "paris"],
-                    ["Tokyo", "tokyo"],
-                    ["Sydney", "sydney"],
-                    ["Custom", "custom"]
-                ]
-            },
-            {
-                "type": "field_number",
-                "name": "ZOOM",
-                "value": 10,
-                "min": 1,
-                "max": 18,
-                "precision": 1
-            }
-        ],
-        "previousStatement": null,
-        "nextStatement": null,
-        "colour": "#4DB6AC",
-        "tooltip": "Create a simple map",
-        "helpUrl": "",
-        "extensions": ["location_mutator_beginner"]
-    },
+	{
+		"type": "create_map_beginner",
+		"message0": "Create map at %1 location %2 zoom level %3 style %4",
+		"args0": [
+			{
+				"type": "input_dummy"
+			},
+			{
+				"type": "field_dropdown",
+				"name": "LOCATION",
+				"options": [
+					["New York", "new_york"],
+					["London", "london"],
+					["Paris", "paris"],
+					["Tokyo", "tokyo"],
+					["Sydney", "sydney"],
+					["Custom", "custom"]
+				]
+			},
+			{
+				"type": "field_number",
+				"name": "ZOOM",
+				"value": 10,
+				"min": 1,
+				"max": 18,
+				"precision": 1
+			},
+			{
+				"type": "field_dropdown",
+				"name": "STYLE",
+				"options": [
+					["OpenStreetMap", "osm"],
+					["CartoDB Dark", "cartodb_dark"],
+					["CartoDB Light", "cartodb_light"],
+					["ESRI World", "esri_world"]
+				]
+			}
+		],
+		"previousStatement": null,
+		"nextStatement": null,
+		"colour": "#67c761",
+		"tooltip": "Create a simple map",
+		"helpUrl": "",
+		"extensions": ["location_mutator_beginner"]
+	},
     {
         "type": "add_marker_beginner",
         "message0": "Add marker %1 at latitude %2 longitude %3 %4 label %5",
@@ -67,7 +77,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": "#4DB6AC",
+        "colour": "#67c761",
         "tooltip": "Add a marker to the map",
         "helpUrl": ""
     },
@@ -110,7 +120,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": "#4DB6AC",
+        "colour": "#67c761",
         "tooltip": "Add a circle to the map",
         "helpUrl": ""
     },
@@ -126,7 +136,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": "#4DB6AC",
+        "colour": "#67c761",
         "tooltip": "Save the map as HTML file",
         "helpUrl": ""
     },
@@ -145,7 +155,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": "#26A69A",
+        "colour": "#67c761",
         "tooltip": "Create an advanced Leaflet map",
         "helpUrl": ""
     },
@@ -166,7 +176,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": "MapSetting",
         "nextStatement": "MapSetting",
-        "colour": "#00897B",
+        "colour": "#40a63a",
         "tooltip": "Set map center"
     },
     {
@@ -181,7 +191,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": "MapSetting",
         "nextStatement": "MapSetting",
-        "colour": "#00897B",
+        "colour": "#40a63a",
         "tooltip": "Set zoom level"
     },
     {
@@ -217,7 +227,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": "MapSetting",
         "nextStatement": "MapSetting",
-        "colour": "#00897B",
+        "colour": "#40a63a",
         "tooltip": "Fit map to bounds"
     },
     {
@@ -235,7 +245,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": "MapSetting",
         "nextStatement": "MapSetting",
-        "colour": "#00897B",
+        "colour": "#40a63a",
         "tooltip": "Set map options"
     },
     {
@@ -253,7 +263,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": "MapOption",
         "nextStatement": "MapOption",
-        "colour": "#00695C",
+        "colour": "#1f7d19",
         "tooltip": "Set minimum zoom level"
     },
     {
@@ -271,7 +281,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": "MapOption",
         "nextStatement": "MapOption",
-        "colour": "#00695C",
+        "colour": "#1f7d19",
         "tooltip": "Set maximum zoom level"
     },
 	{
@@ -300,7 +310,7 @@ Blockly.defineBlocksWithJsonArray([
 		],
 		"previousStatement": "MapSetting",
 		"nextStatement": "MapSetting",
-		"colour": "#00897B",
+		"colour": "#40a63a",
 		"tooltip": "Add tile layer",
 		"helpUrl": "",
 		"extensions": ["tile_provider_mutator"]
@@ -328,7 +338,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": "#26A69A",
+        "colour": "#40a63a",
         "tooltip": "Add multiple markers from data",
         "helpUrl": ""
     },
@@ -349,7 +359,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": "MarkerSetting",
         "nextStatement": "MarkerSetting",
-        "colour": "#00897B",
+        "colour": "#1f7d19",
         "tooltip": "Set latitude and longitude columns"
     },
     {
@@ -364,7 +374,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": "MarkerSetting",
         "nextStatement": "MarkerSetting",
-        "colour": "#00897B",
+        "colour": "#1f7d19",
         "tooltip": "Set popup content column"
     },
     {
@@ -395,7 +405,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": "MarkerSetting",
         "nextStatement": "MarkerSetting",
-        "colour": "#00897B",
+        "colour": "#1f7d19",
         "tooltip": "Set custom marker icon"
     },
     {
@@ -421,7 +431,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": "#26A69A",
+        "colour": "#40a63a",
         "tooltip": "Add polygons from spatial data",
         "helpUrl": ""
     },
@@ -445,7 +455,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": "PolygonStyle",
         "nextStatement": "PolygonStyle",
-        "colour": "#00897B",
+        "colour": "#1f7d19",
         "tooltip": "Set polygon fill style"
     },
     {
@@ -468,7 +478,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": "PolygonStyle",
         "nextStatement": "PolygonStyle",
-        "colour": "#00897B",
+        "colour": "#1f7d19",
         "tooltip": "Set polygon stroke style"
     },
     {
@@ -507,7 +517,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": "#26A69A",
+        "colour": "#40a63a",
         "tooltip": "Add legend to map",
         "helpUrl": ""
     },
@@ -531,7 +541,7 @@ Blockly.defineBlocksWithJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": "#26A69A",
+        "colour": "#40a63a",
         "tooltip": "Save map as HTML file",
         "helpUrl": ""
     }
@@ -585,6 +595,8 @@ Blockly.Generator.R.forBlock['create_map_beginner'] = function(block, generator)
     generator.requirePackage("htmlwidgets");
     const location = block.getFieldValue('LOCATION');
     const zoom = block.getFieldValue('ZOOM');
+    const style = block.getFieldValue('STYLE');
+    
     let lat, lng;
     switch(location) {
         case 'new_york':
@@ -607,10 +619,32 @@ Blockly.Generator.R.forBlock['create_map_beginner'] = function(block, generator)
             lng = generator.valueToCode(block, 'CUSTOM_LNG', Blockly.Generator.R.ORDER_ATOMIC) || '0';
             break;
     }
-    const code = `leaflet_map <- leaflet() %>%
+
+    let tileUrl = '';
+    let attribution = '';
+
+    switch(style) {
+        case 'osm':
+            return `leaflet_map <- leaflet() %>%
   addTiles() %>%
   setView(lat = ${lat}, lng = ${lng}, zoom = ${zoom})\n`;
-    return code;
+        case 'cartodb_dark':
+            tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+            attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+            break;
+        case 'cartodb_light':
+            tileUrl = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+            attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+            break;
+        case 'esri_world':
+            tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
+            attribution = 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012';
+            break;
+    }
+
+    return `leaflet_map <- leaflet() %>%
+  addTiles(urlTemplate = "${tileUrl}", attribution = "${attribution.replace(/"/g, '\\"')}") %>%
+  setView(lat = ${lat}, lng = ${lng}, zoom = ${zoom})\n`;
 };
 
 Blockly.Generator.R.forBlock['add_marker_beginner'] = function(block, generator) {

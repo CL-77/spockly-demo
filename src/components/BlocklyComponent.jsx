@@ -121,11 +121,12 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 	<block type="convert_to_dataframe"></block>
   </category>
 
-<category name="Maps" colour="#4DB6AC">
+<category name="Maps" colour="#67c761">
   <label text="Create Map" web-class="toolboxLabel"></label>
   <block type="create_map_beginner">
     <field name="LOCATION">new_york</field>
     <field name="ZOOM">10</field>
+	<field name="STYLE">osm</field>
   </block>
   
   <label text="Add to Map" web-class="toolboxLabel"></label>
@@ -315,7 +316,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <block type="slice_file"></block>
   </category>
 
-<category name="Maps" colour="#26A69A">
+<category name="Maps" colour="#67c761">
   <label text="Map Creation" web-class="toolboxLabel"></label>
   <block type="leaflet_map_advanced">
     <statement name="SETTINGS">
