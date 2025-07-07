@@ -49,12 +49,12 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
 
   const loadJsPDF = async () => {
     if (window.jspdf) return window.jspdf;
-    
+
     try {
       const script = document.createElement('script');
       script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
       document.head.appendChild(script);
-      
+
       return new Promise((resolve, reject) => {
         script.onload = () => resolve(window.jspdf);
         script.onerror = () => reject(new Error('Failed to load jsPDF'));
@@ -67,26 +67,25 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
   const exportPlotAsPDF = async (filename) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
     try {
       const jspdf = await loadJsPDF();
       const { jsPDF } = jspdf;
-      
+
       const imgData = canvas.toDataURL('image/png');
       const widthInMM = canvas.width * 0.264583;
       const heightInMM = canvas.height * 0.264583;
-      
+
       const pdf = new jsPDF({
         orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
         unit: 'mm',
         format: [widthInMM, heightInMM]
       });
-      
+
       pdf.addImage(imgData, 'PNG', 0, 0, widthInMM, heightInMM);
       pdf.save(filename);
-      
+
       setTextOutput(prev => prev + `\nPlot exported as ${filename}`);
-      
+
     } catch (error) {
       console.warn('PDF export failed, falling back to PNG:', error);
       canvas.toBlob((blob) => {
@@ -105,9 +104,8 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
         setTextOutput(prev => prev + `\nWaiting for WebR to be ready...`);
         return;
       }
-
       const webRForCSV = webRRef?.current || webR;
-      
+
       const result = await webRForCSV.evalR(`
         if (exists("${dataVarName}")) {
           write.csv(${dataVarName}, file = "", row.names = FALSE)
@@ -115,14 +113,14 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
           "Error: Variable '${dataVarName}' not found"
         }
       `);
-      
+
       const csvContent = await result.toString();
-      
+
       if (csvContent.includes("Error:")) {
         setTextOutput(prev => prev + `\n${csvContent}`);
         return;
       }
-      
+
       const blob = new Blob([csvContent], { type: 'text/csv' });
       downloadFile(blob, filename);
       setTextOutput(prev => prev + `\nCSV exported as ${filename}`);
@@ -138,15 +136,14 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
         setTextOutput(prev => prev + `\nWaiting for WebR to be ready...`);
         return;
       }
-
       const webRForWorkspace = webRRef?.current || webR;
-      
+
       const result = await webRForWorkspace.evalR(`
         temp_file <- tempfile()
         save.image(file = temp_file)
         readBin(temp_file, "raw", file.info(temp_file)$size)
       `);
-      
+
       const workspaceData = await result.toTypedArray();
       const blob = new Blob([workspaceData], { type: 'application/octet-stream' });
       downloadFile(blob, filename);
@@ -158,184 +155,176 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
   };
 
   const handleLeafletDisplay = async (code) => {
-	try {
-	  const webRForLeaflet = webRRef?.current || webR;
-	  
-	  const result = await webRForLeaflet.evalR(`
-		if (exists("leaflet_map")) {
-		  # Convert the leaflet map to its JSON representation, excluding problematic elements
-		  map_data <- leaflet_map$x
-		  
-		  # Remove the CRS object that causes issues
-		  if (!is.null(map_data$options$crs)) {
-			map_data$options$crs <- NULL
-		  }
-		  
-		  # Convert to JSON
-		  widget_json <- jsonlite::toJSON(map_data, auto_unbox = TRUE, digits = 16, null = "null")
-		  
-		  # Create complete HTML with Leaflet
-		  html_content <- paste0(
-			'<!DOCTYPE html>\\n',
-			'<html>\\n',
-			'<head>\\n',
-			'  <meta charset="utf-8">\\n',
-			'  <title>Leaflet Map</title>\\n',
-			'  <meta name="viewport" content="width=device-width, initial-scale=1.0">\\n',
-			'  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />\\n',
-			'  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>\\n',
-			'  <style>\\n',
-			'    html, body { width: 100%; height: 100%; margin: 0; padding: 0; }\\n',
-			'    #map { width: 100%; height: 100%; }\\n',
-			'  </style>\\n',
-			'</head>\\n',
-			'<body>\\n',
-			'  <div id="map"></div>\\n',
-			'  <script>\\n',
-			'    document.addEventListener("DOMContentLoaded", function() {\\n',
-			'      try {\\n',
-			'        var mapData = ', widget_json, ';\\n',
-			'        \\n',
-			'        // Initialize the map\\n',
-			'        var map = L.map("map");\\n',
-			'        \\n',
-			'        // Process setView if available\\n',
-			'        if (mapData.setView && mapData.setView.length >= 2) {\\n',
-			'          var coords = mapData.setView[0];\\n',
-			'          var zoom = mapData.setView[1];\\n',
-			'          map.setView([coords[0], coords[1]], zoom);\\n',
-			'        } else {\\n',
-			'          // Set default view\\n',
-			'          map.setView([0, 0], 2);\\n',
-			'        }\\n',
-			'        \\n',
-			'        // Process calls (layers, markers, etc.)\\n',
-			'        if (mapData.calls && Array.isArray(mapData.calls)) {\\n',
-			'          mapData.calls.forEach(function(call) {\\n',
-			'            try {\\n',
-			'              switch(call.method) {\\n',
-			'                case "addTiles":\\n',
-			'                  var tileUrl = call.args[0] || "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";\\n',
-			'                  var tileOptions = call.args[3] || {};\\n',
-			'                  L.tileLayer(tileUrl, tileOptions).addTo(map);\\n',
-			'                  break;\\n',
-			'                  \\n',
-			'                case "addMarkers":\\n',
-			'                  if (call.args && call.args.length >= 2) {\\n',
-			'                    var lng = call.args[0];\\n',
-			'                    var lat = call.args[1];\\n',
-			'                    if (Array.isArray(lat) && Array.isArray(lng)) {\\n',
-			'                      for (var i = 0; i < lat.length; i++) {\\n',
-			'                        L.marker([lat[i], lng[i]]).addTo(map);\\n',
-			'                      }\\n',
-			'                    } else if (typeof lat === "number" && typeof lng === "number") {\\n',
-			'                      L.marker([lat, lng]).addTo(map);\\n',
-			'                    }\\n',
-			'                  }\\n',
-			'                  break;\\n',
-			'                  \\n',
-			'                case "addCircles":\\n',
-			'                  if (call.args && call.args.length >= 2) {\\n',
-			'                    var lng = call.args[0];\\n',
-			'                    var lat = call.args[1];\\n',
-			'                    var options = {};\\n',
-			'                    if (call.args[2]) options.radius = call.args[2];\\n',
-			'                    if (call.args[3]) options.color = call.args[3];\\n',
-			'                    if (call.args[4]) options.fillColor = call.args[4];\\n',
-			'                    if (call.args[5]) options.fillOpacity = call.args[5];\\n',
-			'                    if (Array.isArray(lat) && Array.isArray(lng)) {\\n',
-			'                      for (var i = 0; i < lat.length; i++) {\\n',
-			'                        L.circle([lat[i], lng[i]], options).addTo(map);\\n',
-			'                      }\\n',
-			'                    } else if (typeof lat === "number" && typeof lng === "number") {\\n',
-			'                      L.circle([lat, lng], options).addTo(map);\\n',
-			'                    }\\n',
-			'                  }\\n',
-			'                  break;\\n',
-			'                  \\n',
-			'                case "addPolygons":\\n',
-			'                  if (call.args && call.args.length >= 1) {\\n',
-			'                    var coords = call.args[0];\\n',
-			'                    var options = call.args[1] || {};\\n',
-			'                    if (coords && coords.length > 0) {\\n',
-			'                      L.polygon(coords, options).addTo(map);\\n',
-			'                    }\\n',
-			'                  }\\n',
-			'                  break;\\n',
-			'              }\\n',
-			'            } catch (e) {\\n',
-			'              console.error("Error processing call:", call.method, e);\\n',
-			'            }\\n',
-			'          });\\n',
-			'        }\\n',
-			'        \\n',
-			'      } catch (error) {\\n',
-			'        console.error("Error creating map:", error);\\n',
-			'        document.body.innerHTML = "<h1>Error creating map</h1><p>" + error.message + "</p>";\\n',
-			'      }\\n',
-			'    });\\n',
-			'  </script>\\n',
-			'</body>\\n',
-			'</html>'
-		  )
-		  
-		  html_content
-		} else {
-		  "No leaflet map found"
-		}
-	  `);
-	  
-	  const htmlContent = await result.toString();
-	  
-	  if (htmlContent === "No leaflet map found") {
-		setTextOutput(prev => prev + `\nNo leaflet map found`);
-		return;
-	  }
-	  
-	  const blob = new Blob([htmlContent], { type: 'text/html' });
-	  const url = URL.createObjectURL(blob);
-	  
-	  const newTab = window.open(url, '_blank');
-	  
-	  if (newTab) {
-		setTextOutput(prev => prev + `\nLeaflet map opened in new tab`);
-		
-		setTimeout(() => {
-		  URL.revokeObjectURL(url);
-		}, 1000);
-	  } else {
-		setTextOutput(prev => prev + `\nPopup blocked - please allow popups for this site`);
-	  }
-	} catch (err) {
-	  console.error("Error displaying leaflet map:", err);
-	  setTextOutput(prev => prev + `\nError displaying leaflet map: ${err.message}`);
-	}
+    try {
+      const webRForLeaflet = webRRef?.current || webR;
+
+      const result = await webRForLeaflet.evalR(`
+        if (exists("leaflet_map")) {
+          map_data <- leaflet_map$x
+
+          if (!is.null(map_data$options$crs)) {
+            map_data$options$crs <- NULL
+          }
+
+          widget_json <- jsonlite::toJSON(map_data, auto_unbox = TRUE, digits = 16, null = "null")
+
+          html_content <- paste0(
+            '<!DOCTYPE html>\\n',
+            '<html>\\n',
+            '<head>\\n',
+            '  <meta charset="utf-8">\\n',
+            '  <title>Leaflet Map</title>\\n',
+            '  <meta name="viewport" content="width=device-width, initial-scale=1.0">\\n',
+            '  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />\\n',
+            '  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>\\n',
+            '  <style>\\n',
+            '    html, body { width: 100%; height: 100%; margin: 0; padding: 0; }\\n',
+            '    #map { width: 100%; height: 100%; }\\n',
+            '  </style>\\n',
+            '</head>\\n',
+            '<body>\\n',
+            '  <div id="map"></div>\\n',
+            '  <script>\\n',
+            '    document.addEventListener("DOMContentLoaded", function() {\\n',
+            '      try {\\n',
+            '        var mapData = ', widget_json, ';\\n',
+            '        \\n',
+            '        var map = L.map("map");\\n',
+            '        \\n',
+            '        if (mapData.setView && mapData.setView.length >= 2) {\\n',
+            '          var coords = mapData.setView[0];\\n',
+            '          var zoom = mapData.setView[1];\\n',
+            '          map.setView([coords[0], coords[1]], zoom);\\n',
+            '        } else {\\n',
+            '          map.setView([0, 0], 2);\\n',
+            '        }\\n',
+            '        \\n',
+            '        if (mapData.calls && Array.isArray(mapData.calls)) {\\n',
+            '          mapData.calls.forEach(function(call) {\\n',
+            '            try {\\n',
+            '              switch(call.method) {\\n',
+            '                case "addTiles":\\n',
+            '                  var tileUrl = call.args[0] || "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";\\n',
+            '                  var tileOptions = call.args[3] || {};\\n',
+            '                  L.tileLayer(tileUrl, tileOptions).addTo(map);\\n',
+            '                  break;\\n',
+            '                  \\n',
+            '                case "addMarkers":\\n',
+            '                  if (call.args && call.args.length >= 2) {\\n',
+            '                    var lat = call.args[0];\\n',
+            '                    var lng = call.args[1];\\n',
+            '                    if (Array.isArray(lat) && Array.isArray(lng)) {\\n',
+            '                      for (var i = 0; i < lat.length; i++) {\\n',
+            '                        L.marker([lat[i], lng[i]]).addTo(map);\\n',
+            '                      }\\n',
+            '                    } else if (typeof lat === "number" && typeof lng === "number") {\\n',
+            '                      L.marker([lat, lng]).addTo(map);\\n',
+            '                    }\\n',
+            '                  }\\n',
+            '                  break;\\n',
+            '                  \\n',
+            '                case "addCircles":\\n',
+            '                  if (call.args && call.args.length >= 2) {\\n',
+            '                    var lat = call.args[0];\\n',
+            '                    var lng = call.args[1];\\n',
+            '                    var options = {};\\n',
+            '                    if (call.args[2]) options.radius = call.args[2];\\n',
+            '                    if (call.args[3]) options.color = call.args[3];\\n',
+            '                    if (call.args[4]) options.fillColor = call.args[4];\\n',
+            '                    if (call.args[5]) options.fillOpacity = call.args[5];\\n',
+            '                    if (Array.isArray(lat) && Array.isArray(lng)) {\\n',
+            '                      for (var i = 0; i < lat.length; i++) {\\n',
+            '                        L.circle([lat[i], lng[i]], options).addTo(map);\\n',
+            '                      }\\n',
+            '                    } else if (typeof lat === "number" && typeof lng === "number") {\\n',
+            '                      L.circle([lat, lng], options).addTo(map);\\n',
+            '                    }\\n',
+            '                  }\\n',
+            '                  break;\\n',
+            '                  \\n',
+            '                case "addPolygons":\\n',
+            '                  if (call.args && call.args.length >= 1) {\\n',
+            '                    var coords = call.args[0];\\n',
+            '                    var options = call.args[1] || {};\\n',
+            '                    if (coords && coords.length > 0) {\\n',
+            '                      L.polygon(coords, options).addTo(map);\\n',
+            '                    }\\n',
+            '                  }\\n',
+            '                  break;\\n',
+            '              }\\n',
+            '            } catch (e) {\\n',
+            '              console.error("Error processing call:", call.method, e);\\n',
+            '            }\\n',
+            '          });\\n',
+            '        }\\n',
+            '        \\n',
+            '      } catch (error) {\\n',
+            '        console.error("Error creating map:", error);\\n',
+            '        document.body.innerHTML = "<h1>Error creating map</h1><p>" + error.message + "</p>";\\n',
+            '      }\\n',
+            '    });\\n',
+            '  </script>\\n',
+            '</body>\\n',
+            '</html>'
+          )
+
+          html_content
+        } else {
+          "No leaflet map found"
+        }
+      `);
+
+      const htmlContent = await result.toString();
+
+      if (htmlContent === "No leaflet map found") {
+        setTextOutput(prev => prev + `\nNo leaflet map found`);
+        return;
+      }
+
+      const blob = new Blob([htmlContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+
+      const newTab = window.open(url, '_blank');
+
+      if (newTab) {
+        setTextOutput(prev => prev + `\nLeaflet map opened in new tab`);
+
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+        }, 1000);
+      } else {
+        setTextOutput(prev => prev + `\nPopup blocked - please allow popups for this site`);
+      }
+    } catch (err) {
+      console.error("Error displaying leaflet map:", err);
+      setTextOutput(prev => prev + `\nError displaying leaflet map: ${err.message}`);
+    }
   };
 
   const processExportCommands = async (code) => {
     const lines = code.split('\n');
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
-      
+
       if (line.match(/png\s*\(\s*["']([^"']+)["']\s*\)/)) {
         const match = line.match(/png\s*\(\s*["']([^"']+)["']\s*\)/);
         const filename = match[1];
         setTimeout(() => exportPlotAsPNG(filename), 1000);
       }
-      
+
       if (line.match(/pdf\s*\(\s*["']([^"']+)["']\s*\)/)) {
         const match = line.match(/pdf\s*\(\s*["']([^"']+)["']\s*\)/);
         const filename = match[1];
         setTimeout(async () => await exportPlotAsPDF(filename), 1000);
       }
-      
+
       if (line.match(/write\.csv\s*\(\s*([^,]+)\s*,\s*file\s*=\s*["']([^"']+)["']/)) {
         const match = line.match(/write\.csv\s*\(\s*([^,]+)\s*,\s*file\s*=\s*["']([^"']+)["']/);
         const dataVar = match[1].trim();
         const filename = match[2];
         setTimeout(() => exportDataAsCSV(filename, dataVar), 600);
       }
-      
+
       if (line.match(/save\.image\s*\(\s*file\s*=\s*["']([^"']+)["']/)) {
         const match = line.match(/save\.image\s*\(\s*file\s*=\s*["']([^"']+)["']/);
         const filename = match[1];
@@ -435,7 +424,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
 
   const runCodeWithSfWorkaround = async (code) => {
     const webRForSf = webRRef?.current || webR;
-    
+
     if (
       code.includes('library("sf")') ||
       code.includes("library(sf)") ||
@@ -509,7 +498,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
       /require\s*\(\s*leaflet\s*\)/,
       /require\s*\(\s*"leaflet"\s*\)/
     ];
-    
+
     return leafletPatterns.some(pattern => pattern.test(code));
   };
 
@@ -547,20 +536,20 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
     }
     setCurrentPackageInternal("");
     setCurrentPackage("");
-    
+
     const isLeafletCode = detectLeafletCode(code);
-    
+
     try {
       await setupSfPackage();
       const webRForCanvas = webRRef?.current || webR;
-      
+
       if (!isLeafletCode) {
         await webRForCanvas.evalRVoid("options(device=webr::canvas)");
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
+
         (async () => {
           for (;;) {
             const output = await webR.read();
@@ -594,12 +583,9 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
           }
         })();
       }
-
       await processExportCommands(code);
-
       const cleanedCode = cleanCodeForExecution(code);
       const webRForExecution = webRRef?.current || webR;
-
       let result;
       try {
         if (
@@ -611,11 +597,11 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
         } else {
           result = await webRForExecution.evalR(cleanedCode);
         }
-        
+
         if (isLeafletCode) {
           setTimeout(() => handleLeafletDisplay(cleanedCode), 1000);
         }
-        
+
         if (result) {
           const values = await result.toArray();
           const filtered = values.filter(

@@ -40,7 +40,6 @@ Blockly.defineBlocksWithJsonArray([
         "helpUrl": "",
         "extensions": ["location_mutator_beginner"]
     },
-
     {
         "type": "add_marker_beginner",
         "message0": "Add marker %1 at latitude %2 longitude %3 %4 label %5",
@@ -73,7 +72,6 @@ Blockly.defineBlocksWithJsonArray([
         "tooltip": "Add a marker to the map",
         "helpUrl": ""
     },
-
     {
         "type": "add_circle_beginner",
         "message0": "Add circle %1 at latitude %2 longitude %3 %4 size %5 meters %6 color %7",
@@ -117,7 +115,6 @@ Blockly.defineBlocksWithJsonArray([
         "tooltip": "Add a circle to the map",
         "helpUrl": ""
     },
-
     {
         "type": "save_map_beginner",
         "message0": "Save map as %1",
@@ -134,7 +131,6 @@ Blockly.defineBlocksWithJsonArray([
         "tooltip": "Save the map as HTML file",
         "helpUrl": ""
     },
-
     // ADVANCED BLOCKS
     {
         "type": "leaflet_map_advanced",
@@ -155,7 +151,6 @@ Blockly.defineBlocksWithJsonArray([
         "tooltip": "Create an advanced Leaflet map",
         "helpUrl": ""
     },
-
     {
         "type": "map_center_setting",
         "message0": "center at lat %1 lng %2",
@@ -176,7 +171,6 @@ Blockly.defineBlocksWithJsonArray([
         "colour": "#00897B",
         "tooltip": "Set map center"
     },
-
     {
         "type": "map_zoom_setting",
         "message0": "zoom level %1",
@@ -192,7 +186,6 @@ Blockly.defineBlocksWithJsonArray([
         "colour": "#00897B",
         "tooltip": "Set zoom level"
     },
-
     {
         "type": "map_bounds_setting",
         "message0": "fit bounds %1 SW lat %2 lng %3 %4 NE lat %5 lng %6",
@@ -229,7 +222,6 @@ Blockly.defineBlocksWithJsonArray([
         "colour": "#00897B",
         "tooltip": "Fit map to bounds"
     },
-
     {
         "type": "map_options_setting",
         "message0": "options %1 %2",
@@ -248,7 +240,6 @@ Blockly.defineBlocksWithJsonArray([
         "colour": "#00897B",
         "tooltip": "Set map options"
     },
-
     {
         "type": "min_zoom_option",
         "message0": "min zoom %1",
@@ -267,7 +258,6 @@ Blockly.defineBlocksWithJsonArray([
         "colour": "#00695C",
         "tooltip": "Set minimum zoom level"
     },
-
     {
         "type": "max_zoom_option",
         "message0": "max zoom %1",
@@ -286,7 +276,6 @@ Blockly.defineBlocksWithJsonArray([
         "colour": "#00695C",
         "tooltip": "Set maximum zoom level"
     },
-
     {
         "type": "add_tiles_advanced",
         "message0": "Add %1 tiles %2 attribution %3",
@@ -319,7 +308,6 @@ Blockly.defineBlocksWithJsonArray([
         "helpUrl": "",
         "extensions": ["tile_provider_mutator"]
     },
-
     {
         "type": "add_markers_advanced",
         "message0": "Add markers %1 data %2 %3 settings %4",
@@ -347,7 +335,6 @@ Blockly.defineBlocksWithJsonArray([
         "tooltip": "Add multiple markers from data",
         "helpUrl": ""
     },
-
     {
         "type": "marker_lat_lng_setting",
         "message0": "lat column %1 lng column %2",
@@ -368,7 +355,6 @@ Blockly.defineBlocksWithJsonArray([
         "colour": "#00897B",
         "tooltip": "Set latitude and longitude columns"
     },
-
     {
         "type": "marker_popup_setting",
         "message0": "popup column %1",
@@ -384,7 +370,6 @@ Blockly.defineBlocksWithJsonArray([
         "colour": "#00897B",
         "tooltip": "Set popup content column"
     },
-
     {
         "type": "marker_icon_setting",
         "message0": "icon %1 size %2 x %3",
@@ -416,7 +401,6 @@ Blockly.defineBlocksWithJsonArray([
         "colour": "#00897B",
         "tooltip": "Set custom marker icon"
     },
-
     {
         "type": "add_polygons_advanced",
         "message0": "Add polygons %1 data %2 %3 style %4",
@@ -444,7 +428,6 @@ Blockly.defineBlocksWithJsonArray([
         "tooltip": "Add polygons from spatial data",
         "helpUrl": ""
     },
-
     {
         "type": "polygon_fill_style",
         "message0": "fill color %1 opacity %2",
@@ -468,7 +451,6 @@ Blockly.defineBlocksWithJsonArray([
         "colour": "#00897B",
         "tooltip": "Set polygon fill style"
     },
-
     {
         "type": "polygon_stroke_style",
         "message0": "stroke color %1 weight %2",
@@ -492,7 +474,6 @@ Blockly.defineBlocksWithJsonArray([
         "colour": "#00897B",
         "tooltip": "Set polygon stroke style"
     },
-
     {
         "type": "add_legend_advanced",
         "message0": "Add legend %1 position %2 %3 colors %4 %5 labels %6",
@@ -533,7 +514,6 @@ Blockly.defineBlocksWithJsonArray([
         "tooltip": "Add legend to map",
         "helpUrl": ""
     },
-
     {
         "type": "save_leaflet_advanced",
         "message0": "Save leaflet map as %1 %2 self contained %3",
@@ -608,12 +588,12 @@ Blockly.Extensions.register('tile_provider_mutator', function() {
 Blockly.Generator.R.forBlock['create_map_beginner'] = function(block, generator) {
     generator.requirePackage("leaflet");
     generator.requirePackage("htmlwidgets");
-    
+
     const location = block.getFieldValue('LOCATION');
     const zoom = block.getFieldValue('ZOOM');
-    
+
     let lat, lng;
-    
+
     switch(location) {
         case 'new_york':
             lat = 40.7128; lng = -74.0060;
@@ -635,11 +615,11 @@ Blockly.Generator.R.forBlock['create_map_beginner'] = function(block, generator)
             lng = generator.valueToCode(block, 'CUSTOM_LNG', Blockly.Generator.R.ORDER_ATOMIC) || '0';
             break;
     }
-    
+
     const code = `leaflet_map <- leaflet() %>%
   addTiles() %>%
-  setView(lng = ${lng}, lat = ${lat}, zoom = ${zoom})\n`;
-    
+  setView(lat = ${lat}, lng = ${lng}, zoom = ${zoom})\n`;
+
     return code;
 };
 
@@ -647,10 +627,10 @@ Blockly.Generator.R.forBlock['add_marker_beginner'] = function(block, generator)
     const lat = generator.valueToCode(block, 'LAT', Blockly.Generator.R.ORDER_ATOMIC) || '0';
     const lng = generator.valueToCode(block, 'LNG', Blockly.Generator.R.ORDER_ATOMIC) || '0';
     const label = generator.valueToCode(block, 'LABEL', Blockly.Generator.R.ORDER_ATOMIC) || '""';
-    
+
     const code = `leaflet_map <- leaflet_map %>%
-  addMarkers(lng = ${lng}, lat = ${lat}, popup = ${label})\n`;
-    
+  addMarkers(lat = ${lat}, lng = ${lng}, popup = ${label})\n`;
+
     return code;
 };
 
@@ -659,19 +639,19 @@ Blockly.Generator.R.forBlock['add_circle_beginner'] = function(block, generator)
     const lng = generator.valueToCode(block, 'LNG', Blockly.Generator.R.ORDER_ATOMIC) || '0';
     const radius = block.getFieldValue('RADIUS');
     const color = block.getFieldValue('COLOR');
-    
+
     const code = `leaflet_map <- leaflet_map %>%
-  addCircles(lng = ${lng}, lat = ${lat}, radius = ${radius}, color = "${color}", fillOpacity = 0.5)\n`;
-    
+  addCircles(lat = ${lat}, lng = ${lng}, radius = ${radius}, color = "${color}", fillOpacity = 0.5)\n`;
+
     return code;
 };
 
 Blockly.Generator.R.forBlock['save_map_beginner'] = function(block, generator) {
     const filename = block.getFieldValue('FILENAME');
-    
+
     const code = `htmlwidgets::saveWidget(leaflet_map, file = "${filename}", selfcontained = TRUE)
 message("Map saved as ${filename}")\n`;
-    
+
     return code;
 };
 
@@ -679,11 +659,11 @@ message("Map saved as ${filename}")\n`;
 Blockly.Generator.R.forBlock['leaflet_map_advanced'] = function(block, generator) {
     generator.requirePackage("leaflet");
     generator.requirePackage("htmlwidgets");
-    
+
     let mapOptions = [];
     let centerLat = null, centerLng = null, zoom = null;
     let fitBounds = null;
-    
+
     let settingBlock = block.getInputTargetBlock('SETTINGS');
     while (settingBlock) {
         switch(settingBlock.type) {
@@ -699,7 +679,7 @@ Blockly.Generator.R.forBlock['leaflet_map_advanced'] = function(block, generator
                 const swLng = generator.valueToCode(settingBlock, 'SW_LNG', Blockly.Generator.R.ORDER_ATOMIC);
                 const neLat = generator.valueToCode(settingBlock, 'NE_LAT', Blockly.Generator.R.ORDER_ATOMIC);
                 const neLng = generator.valueToCode(settingBlock, 'NE_LNG', Blockly.Generator.R.ORDER_ATOMIC);
-                fitBounds = `c(${swLng}, ${swLat}, ${neLng}, ${neLat})`;
+                fitBounds = `c(${swLat}, ${swLng}, ${neLat}, ${neLng})`;
                 break;
             case 'map_options_setting':
                 let optionBlock = settingBlock.getInputTargetBlock('OPTIONS');
@@ -718,31 +698,31 @@ Blockly.Generator.R.forBlock['leaflet_map_advanced'] = function(block, generator
         }
         settingBlock = settingBlock.getNextBlock();
     }
-    
+
     let code = 'leaflet_map <- leaflet(';
     if (mapOptions.length > 0) {
         code += `options = leafletOptions(${mapOptions.join(', ')})`;
     }
     code += ')';
-    
+
     if (centerLat && centerLng && zoom) {
         code += ` %>%\n  setView(lat = ${centerLat}, lng = ${centerLng}, zoom = ${zoom})`;
     } else if (fitBounds) {
         code += ` %>%\n  fitBounds(${fitBounds})`;
     }
-    
+
     code += '\n';
-    
+
     return code;
 };
 
 Blockly.Generator.R.forBlock['add_tiles_advanced'] = function(block, generator) {
     const provider = block.getFieldValue('PROVIDER');
     const attribution = generator.valueToCode(block, 'ATTRIBUTION', Blockly.Generator.R.ORDER_ATOMIC);
-    
+
     let tileUrl = '';
     let defaultAttribution = '';
-    
+
     switch(provider) {
         case 'osm':
             return 'leaflet_map <- leaflet_map %>% addTiles()\n';
@@ -767,20 +747,20 @@ Blockly.Generator.R.forBlock['add_tiles_advanced'] = function(block, generator) 
             tileUrl = tileUrl.replace(/^"|"$/g, '');
             break;
     }
-    
+
     const finalAttribution = attribution || `"${defaultAttribution}"`;
-    
+
     const code = `leaflet_map <- leaflet_map %>%
   addTiles(urlTemplate = "${tileUrl}", attribution = ${finalAttribution})\n`;
-    
+
     return code;
 };
 
 Blockly.Generator.R.forBlock['add_markers_advanced'] = function(block, generator) {
     const data = generator.valueToCode(block, 'DATA', Blockly.Generator.R.ORDER_ATOMIC) || 'NULL';
-    
+
     let latCol = 'lat', lngCol = 'lng', popupCol = null, iconUrl = null, iconWidth = 25, iconHeight = 25;
-    
+
     let settingBlock = block.getInputTargetBlock('SETTINGS');
     while (settingBlock) {
         switch(settingBlock.type) {
@@ -802,27 +782,27 @@ Blockly.Generator.R.forBlock['add_markers_advanced'] = function(block, generator
         }
         settingBlock = settingBlock.getNextBlock();
     }
-    
+
     let code = `leaflet_map <- leaflet_map %>%\n  addMarkers(data = ${data}, lat = ~${latCol}, lng = ~${lngCol}`;
-    
+
     if (popupCol) {
         code += `, popup = ~${popupCol}`;
     }
-    
+
     if (iconUrl) {
         code += `, icon = list(iconUrl = ${iconUrl}, iconSize = c(${iconWidth}, ${iconHeight}))`;
     }
-    
+
     code += ')\n';
-    
+
     return code;
 };
 
 Blockly.Generator.R.forBlock['add_polygons_advanced'] = function(block, generator) {
     const data = generator.valueToCode(block, 'DATA', Blockly.Generator.R.ORDER_ATOMIC) || 'NULL';
-    
+
     let fillColor = '"blue"', fillOpacity = 0.5, strokeColor = '"black"', weight = 2;
-    
+
     let styleBlock = block.getInputTargetBlock('STYLE');
     while (styleBlock) {
         switch(styleBlock.type) {
@@ -837,14 +817,14 @@ Blockly.Generator.R.forBlock['add_polygons_advanced'] = function(block, generato
         }
         styleBlock = styleBlock.getNextBlock();
     }
-    
+
     const code = `leaflet_map <- leaflet_map %>%
   addPolygons(data = ${data},
     fillColor = ${fillColor},
     fillOpacity = ${fillOpacity},
     color = ${strokeColor},
     weight = ${weight})\n`;
-    
+
     return code;
 };
 
@@ -852,24 +832,24 @@ Blockly.Generator.R.forBlock['add_legend_advanced'] = function(block, generator)
     const position = block.getFieldValue('POSITION');
     const colors = generator.valueToCode(block, 'COLORS', Blockly.Generator.R.ORDER_ATOMIC) || 'c()';
     const labels = generator.valueToCode(block, 'LABELS', Blockly.Generator.R.ORDER_ATOMIC) || 'c()';
-    
+
     const code = `leaflet_map <- leaflet_map %>%
   addLegend(position = "${position}",
     colors = ${colors},
     labels = ${labels})\n`;
-    
+
     return code;
 };
 
 Blockly.Generator.R.forBlock['save_leaflet_advanced'] = function(block, generator) {
     const filename = block.getFieldValue('FILENAME');
     const selfContained = block.getFieldValue('SELF_CONTAINED');
-    
-    const code = `htmlwidgets::saveWidget(leaflet_map, 
-  file = "${filename}", 
+
+    const code = `htmlwidgets::saveWidget(leaflet_map,
+  file = "${filename}",
   selfcontained = ${selfContained ? 'TRUE' : 'FALSE'})
 message("Leaflet map saved as ${filename}")\n`;
-    
+
     return code;
 };
 
