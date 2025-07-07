@@ -285,7 +285,6 @@ Blockly.defineBlocksWithJsonArray([
 					["OpenStreetMap", "osm"],
 					["CartoDB Dark", "cartodb_dark"],
 					["CartoDB Light", "cartodb_light"],
-					["Stamen Terrain", "stamen_terrain"],
 					["ESRI World", "esri_world"],
 					["Custom URL", "custom"]
 				]
@@ -714,36 +713,42 @@ Blockly.Generator.R.forBlock['leaflet_map_advanced'] = function(block, generator
 Blockly.Generator.R.forBlock['add_tiles_advanced'] = function(block, generator) {
     const provider = block.getFieldValue('PROVIDER');
     const attribution = generator.valueToCode(block, 'ATTRIBUTION', Blockly.Generator.R.ORDER_ATOMIC);
-    
+
     let tileUrl = '';
     let defaultAttribution = '';
-    
+
     switch(provider) {
         case 'osm':
             return 'addTiles()';
         case 'cartodb_dark':
-            tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
-            defaultAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+            tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+            defaultAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
             break;
         case 'cartodb_light':
-            tileUrl = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
-            defaultAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
-            break;
-        case 'stamen_terrain':
-            tileUrl = 'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png';
-            defaultAttribution = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>';
+            tileUrl = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+            defaultAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
             break;
         case 'esri_world':
             tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
-            defaultAttribution = 'Tiles &copy; Esri';
+            defaultAttribution = 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012';
             break;
         case 'custom':
             tileUrl = generator.valueToCode(block, 'CUSTOM_URL', Blockly.Generator.R.ORDER_ATOMIC) || '""';
             tileUrl = tileUrl.replace(/^"|"$/g, '');
             break;
     }
-    
-    const finalAttribution = attribution || `"${defaultAttribution}"`;
+
+    function escapeRString(str) {
+        return str.replace(/"/g, '\\"');
+    }
+
+    let finalAttribution;
+    if (attribution && attribution !== '""') {
+        finalAttribution = `"${escapeRString(attribution.replace(/^"|"$/g, ''))}"`;
+    } else {
+        finalAttribution = `"${escapeRString(defaultAttribution)}"`;
+    }
+
     return `addTiles(urlTemplate = "${tileUrl}", attribution = ${finalAttribution})`;
 };
 
