@@ -158,169 +158,158 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
   };
 
   const handleLeafletDisplay = async (code) => {
-    try {
-      const webRForLeaflet = webRRef?.current || webR;
-      
-      const result = await webRForLeaflet.evalR(`
-        if (exists("leaflet_map")) {
-          # Extract the leaflet data
-          widget_data <- leaflet_map$x
-          
-          # Convert to JSON string
-          json_data <- jsonlite::toJSON(widget_data, auto_unbox = TRUE, pretty = TRUE)
-          
-          # Return the JSON data
-          json_data
-        } else {
-          "No leaflet map found"
-        }
-      `);
-      
-      const jsonData = await result.toString();
-      
-      if (jsonData === "No leaflet map found") {
-        setTextOutput(prev => prev + `\nNo leaflet map found`);
-        return;
-      }
-      
-      // Create a complete HTML document with embedded Leaflet
-      const completeHTML = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <title>Leaflet Map</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
-                integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
-                crossorigin=""/>
-          <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
-                  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
-                  crossorigin=""></script>
-          <style>
-            body { 
-              margin: 0; 
-              padding: 0; 
-              font-family: Arial, sans-serif; 
-            }
-            #map { 
-              width: 100vw; 
-              height: 100vh; 
-            }
-          </style>
-        </head>
-        <body>
-          <div id="map"></div>
-          <script>
-            try {
-              const mapData = ${jsonData};
-              
-              // Create map with options
-              const map = L.map('map', mapData.options || {});
-              
-              // Set view if specified
-              if (mapData.setView && mapData.setView.length >= 2) {
-                const coords = mapData.setView[0];
-                const zoom = mapData.setView[1];
-                map.setView([coords[0], coords[1]], zoom);
-              }
-              
-              // Process calls (layers, tiles, etc.)
-              if (mapData.calls && Array.isArray(mapData.calls)) {
-                mapData.calls.forEach(call => {
-                  switch(call.method) {
-                    case 'addTiles':
-                      const tileUrl = call.args[0] || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-                      const tileOptions = call.args[3] || {};
-                      L.tileLayer(tileUrl, tileOptions).addTo(map);
-                      break;
-                      
-                    case 'addMarkers':
-                      if (call.args && call.args.length >= 2) {
-                        const lng = call.args[0];
-                        const lat = call.args[1];
-                        const options = call.args[2] || {};
-                        if (Array.isArray(lat) && Array.isArray(lng)) {
-                          for (let i = 0; i < lat.length; i++) {
-                            L.marker([lat[i], lng[i]], options).addTo(map);
-                          }
-                        } else {
-                          L.marker([lat, lng], options).addTo(map);
-                        }
-                      }
-                      break;
-                      
-                    case 'addCircles':
-                      if (call.args && call.args.length >= 2) {
-                        const lng = call.args[0];
-                        const lat = call.args[1];
-                        const options = call.args[2] || {};
-                        if (Array.isArray(lat) && Array.isArray(lng)) {
-                          for (let i = 0; i < lat.length; i++) {
-                            L.circle([lat[i], lng[i]], options).addTo(map);
-                          }
-                        } else {
-                          L.circle([lat, lng], options).addTo(map);
-                        }
-                      }
-                      break;
-                      
-                    case 'addPolygons':
-                      if (call.args && call.args.length >= 1) {
-                        const coordinates = call.args[0];
-                        const options = call.args[1] || {};
-                        if (coordinates && coordinates.length > 0) {
-                          L.polygon(coordinates, options).addTo(map);
-                        }
-                      }
-                      break;
-                      
-                    case 'fitBounds':
-                      if (call.args && call.args.length >= 1) {
-                        const bounds = call.args[0];
-                        if (bounds && bounds.length >= 4) {
-                          map.fitBounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]]);
-                        }
-                      }
-                      break;
-                  }
-                });
-              }
-              
-              // If no view was set and no bounds were fit, set a default view
-              if (!mapData.setView && !mapData.calls.some(call => call.method === 'fitBounds')) {
-                map.setView([0, 0], 2);
-              }
-              
-            } catch (error) {
-              console.error('Error creating map:', error);
-              document.body.innerHTML = '<h1>Error creating map</h1><p>' + error.message + '</p>';
-            }
-          </script>
-        </body>
-        </html>
-      `;
-      
-      const blob = new Blob([completeHTML], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      
-      // Open in new tab instead of new window
-      const newTab = window.open(url, '_blank');
-      
-      if (newTab) {
-        setTextOutput(prev => prev + `\nLeaflet map opened in new tab`);
-        
-        // Clean up the blob URL after a delay
-        setTimeout(() => {
-          URL.revokeObjectURL(url);
-        }, 1000);
-      } else {
-        setTextOutput(prev => prev + `\nPopup blocked - please allow popups for this site`);
-      }
-    } catch (err) {
-      console.error("Error displaying leaflet map:", err);
-      setTextOutput(prev => prev + `\nError displaying leaflet map: ${err.message}`);
-    }
+	try {
+	  const webRForLeaflet = webRRef?.current || webR;
+	  
+	  const result = await webRForLeaflet.evalR(`
+		if (exists("leaflet_map")) {
+		  # Convert the leaflet map to its JSON representation, excluding problematic elements
+		  map_data <- leaflet_map$x
+		  
+		  # Remove the CRS object that causes issues
+		  if (!is.null(map_data$options$crs)) {
+			map_data$options$crs <- NULL
+		  }
+		  
+		  # Convert to JSON
+		  widget_json <- jsonlite::toJSON(map_data, auto_unbox = TRUE, digits = 16, null = "null")
+		  
+		  # Create complete HTML with Leaflet
+		  html_content <- paste0(
+			'<!DOCTYPE html>\\n',
+			'<html>\\n',
+			'<head>\\n',
+			'  <meta charset="utf-8">\\n',
+			'  <title>Leaflet Map</title>\\n',
+			'  <meta name="viewport" content="width=device-width, initial-scale=1.0">\\n',
+			'  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />\\n',
+			'  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>\\n',
+			'  <style>\\n',
+			'    html, body { width: 100%; height: 100%; margin: 0; padding: 0; }\\n',
+			'    #map { width: 100%; height: 100%; }\\n',
+			'  </style>\\n',
+			'</head>\\n',
+			'<body>\\n',
+			'  <div id="map"></div>\\n',
+			'  <script>\\n',
+			'    document.addEventListener("DOMContentLoaded", function() {\\n',
+			'      try {\\n',
+			'        var mapData = ', widget_json, ';\\n',
+			'        \\n',
+			'        // Initialize the map\\n',
+			'        var map = L.map("map");\\n',
+			'        \\n',
+			'        // Process setView if available\\n',
+			'        if (mapData.setView && mapData.setView.length >= 2) {\\n',
+			'          var coords = mapData.setView[0];\\n',
+			'          var zoom = mapData.setView[1];\\n',
+			'          map.setView([coords[0], coords[1]], zoom);\\n',
+			'        } else {\\n',
+			'          // Set default view\\n',
+			'          map.setView([0, 0], 2);\\n',
+			'        }\\n',
+			'        \\n',
+			'        // Process calls (layers, markers, etc.)\\n',
+			'        if (mapData.calls && Array.isArray(mapData.calls)) {\\n',
+			'          mapData.calls.forEach(function(call) {\\n',
+			'            try {\\n',
+			'              switch(call.method) {\\n',
+			'                case "addTiles":\\n',
+			'                  var tileUrl = call.args[0] || "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";\\n',
+			'                  var tileOptions = call.args[3] || {};\\n',
+			'                  L.tileLayer(tileUrl, tileOptions).addTo(map);\\n',
+			'                  break;\\n',
+			'                  \\n',
+			'                case "addMarkers":\\n',
+			'                  if (call.args && call.args.length >= 2) {\\n',
+			'                    var lng = call.args[0];\\n',
+			'                    var lat = call.args[1];\\n',
+			'                    if (Array.isArray(lat) && Array.isArray(lng)) {\\n',
+			'                      for (var i = 0; i < lat.length; i++) {\\n',
+			'                        L.marker([lat[i], lng[i]]).addTo(map);\\n',
+			'                      }\\n',
+			'                    } else if (typeof lat === "number" && typeof lng === "number") {\\n',
+			'                      L.marker([lat, lng]).addTo(map);\\n',
+			'                    }\\n',
+			'                  }\\n',
+			'                  break;\\n',
+			'                  \\n',
+			'                case "addCircles":\\n',
+			'                  if (call.args && call.args.length >= 2) {\\n',
+			'                    var lng = call.args[0];\\n',
+			'                    var lat = call.args[1];\\n',
+			'                    var options = {};\\n',
+			'                    if (call.args[2]) options.radius = call.args[2];\\n',
+			'                    if (call.args[3]) options.color = call.args[3];\\n',
+			'                    if (call.args[4]) options.fillColor = call.args[4];\\n',
+			'                    if (call.args[5]) options.fillOpacity = call.args[5];\\n',
+			'                    if (Array.isArray(lat) && Array.isArray(lng)) {\\n',
+			'                      for (var i = 0; i < lat.length; i++) {\\n',
+			'                        L.circle([lat[i], lng[i]], options).addTo(map);\\n',
+			'                      }\\n',
+			'                    } else if (typeof lat === "number" && typeof lng === "number") {\\n',
+			'                      L.circle([lat, lng], options).addTo(map);\\n',
+			'                    }\\n',
+			'                  }\\n',
+			'                  break;\\n',
+			'                  \\n',
+			'                case "addPolygons":\\n',
+			'                  if (call.args && call.args.length >= 1) {\\n',
+			'                    var coords = call.args[0];\\n',
+			'                    var options = call.args[1] || {};\\n',
+			'                    if (coords && coords.length > 0) {\\n',
+			'                      L.polygon(coords, options).addTo(map);\\n',
+			'                    }\\n',
+			'                  }\\n',
+			'                  break;\\n',
+			'              }\\n',
+			'            } catch (e) {\\n',
+			'              console.error("Error processing call:", call.method, e);\\n',
+			'            }\\n',
+			'          });\\n',
+			'        }\\n',
+			'        \\n',
+			'      } catch (error) {\\n',
+			'        console.error("Error creating map:", error);\\n',
+			'        document.body.innerHTML = "<h1>Error creating map</h1><p>" + error.message + "</p>";\\n',
+			'      }\\n',
+			'    });\\n',
+			'  </script>\\n',
+			'</body>\\n',
+			'</html>'
+		  )
+		  
+		  html_content
+		} else {
+		  "No leaflet map found"
+		}
+	  `);
+	  
+	  const htmlContent = await result.toString();
+	  
+	  if (htmlContent === "No leaflet map found") {
+		setTextOutput(prev => prev + `\nNo leaflet map found`);
+		return;
+	  }
+	  
+	  const blob = new Blob([htmlContent], { type: 'text/html' });
+	  const url = URL.createObjectURL(blob);
+	  
+	  const newTab = window.open(url, '_blank');
+	  
+	  if (newTab) {
+		setTextOutput(prev => prev + `\nLeaflet map opened in new tab`);
+		
+		setTimeout(() => {
+		  URL.revokeObjectURL(url);
+		}, 1000);
+	  } else {
+		setTextOutput(prev => prev + `\nPopup blocked - please allow popups for this site`);
+	  }
+	} catch (err) {
+	  console.error("Error displaying leaflet map:", err);
+	  setTextOutput(prev => prev + `\nError displaying leaflet map: ${err.message}`);
+	}
   };
 
   const processExportCommands = async (code) => {
