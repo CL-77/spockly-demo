@@ -35,6 +35,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   <category name="Tests" colour="#5C81A6">
     <block type="head_print"></block>	
 	<block type="install_package"></block>
+	<block type="load_geojson_to_leaflet"></block>
+	<block type="load_csv_to_leaflet"></block>
   </category>
 
   <category name="Load Data" colour="#FFA726">
