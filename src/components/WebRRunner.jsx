@@ -730,6 +730,18 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
         await webR.init();
         setWebRReady(true);
         if (webRRef) webRRef.current = webR;
+
+        // load co2 csv for basic usecase tutorial
+        try {
+          const response = await fetch("/co2.csv");
+          const text = await response.text();
+          const encoded = new TextEncoder().encode(text);
+          await webR.FS.writeFile("/home/web_user/co2.csv", encoded);          
+          console.log("co2.csv loaded successfully");
+        } catch (err) {
+          console.error("error loading co2.csv:", err);
+        }
+
         await installAndLoadPackages();
         await setupSfPackage();
       } catch (err) {
