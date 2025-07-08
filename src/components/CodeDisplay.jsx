@@ -22,7 +22,7 @@ import {
   import DownloadCodeDialog from "./DownloadCodeDialog";
   import MiniPackageLoadingBar from "./MiniPackageLoadingBar";
   
-  const CODE_DISPLAY_SIZE = 650;
+  const CODE_DISPLAY_SIZE = 550;
   
   const CodeDisplay = ({ code, setCode, workspaceRef, isDarkMode, currentPackage }) => {
 	const theme = useTheme();

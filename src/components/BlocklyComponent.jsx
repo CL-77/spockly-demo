@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useMemo, useState } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 import * as Blockly from "blockly";
 import "./blockly/customBlocks"; // Import custom blocks
 import "./blockly/customGenerator"; // Import custom generator
 import "./blockly/rBlocks"; // Import R blocks
-import { Box, Fab, Typography, useTheme, Button } from "@mui/material";
+import { Box, useTheme, Button } from "@mui/material";
 import { lightTheme, darkTheme } from "./blockly/blocklyThemes";
-import { Upload, UploadFile } from "@mui/icons-material";
+import { Upload } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup, IconButton } from "@mui/material";
 import { FaBookOpen, FaMapMarkedAlt, FaQuestionCircle } from "react-icons/fa";
@@ -13,12 +13,16 @@ import { MdCo2 } from "react-icons/md";
 import { Toolbar } from "@mui/material";
 
 import CreateDataDialog from "./CreateDataDialog.jsx";
-import SimpleTutorialPanel from "./SimpleTutorialPanel.jsx"; 
+import SimpleTutorialPanel from "./SimpleTutorialPanel.jsx";
 
-const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) => {
+const BlocklyComponent = ({
+  setCode,
+  isDarkMode,
+  onUploadClick,
+  workspaceRef,
+}) => {
   const theme = useTheme();
   const blocklyDiv = useRef(null);
-  const linkRef = useRef(null);
 
   // State to toggle between beginner and advanced block toolboxes
   const [level, setLevel] = useState("level1");
@@ -26,7 +30,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   const [openCreateDataDialog, setOpenCreateDataDialog] = useState(false);
 
   const [showTutorial, setShowTutorial] = useState(false);
-
 
   // Blockly toolbox definition for Level 1 (Beginner)
   // Change content later
@@ -212,11 +215,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 </xml>
 `;
 
-
-
-
-// Blockly toolbox definition for Level 2 (Advanced)
-// Change content later
+  // Blockly toolbox definition for Level 2 (Advanced)
+  // Change content later
   const advancedToolbox = `
 <xml>
   <category name="Tests" colour="#5C81A6">
@@ -656,28 +656,28 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 
   // Initialize Blockly with the selected theme and toolbox whenever the theme or level changes
   useEffect(() => {
-  if (!blocklyDiv.current) return;
+    if (!blocklyDiv.current) return;
+    workspaceRef.current = Blockly.inject(blocklyDiv.current, {
+      media:"blockly/media/",
+      renderer: "zelos",
+      toolbox: toolboxXml,
+      theme: isDarkMode ? darkTheme : lightTheme,
+      grid: { spacing: 40, length: 4, colour: "#fff", snap: true },
+      zoom: { controls: true, wheel: true },
+      move: { drag: true, wheel: true },
+      trashcan: {},
+    });
 
-  workspaceRef.current = Blockly.inject(blocklyDiv.current, {
-    renderer: "zelos",
-    toolbox: toolboxXml,
-    theme: isDarkMode ? darkTheme : lightTheme,
-    grid: { spacing: 40, length: 4, colour: "#fff", snap: true },
-    zoom: { controls: true, wheel: true },
-    move: { drag: true, wheel: true },
-    trashcan: {},
-  });
-
-    return () => workspaceRef.current?.dispose();}, []);
-useEffect(() => {
-  if (workspaceRef.current) {
-    workspaceRef.current.setTheme(isDarkMode ? darkTheme : lightTheme);
-  }
-}, [isDarkMode]);
-useEffect(() => {
-  workspaceRef.current?.updateToolbox(toolboxXml);
-}, [toolboxXml]);
-
+    return () => workspaceRef.current?.dispose();
+  }, []);
+  useEffect(() => {
+    if (workspaceRef.current) {
+      workspaceRef.current.setTheme(isDarkMode ? darkTheme : lightTheme);
+    }
+  }, [isDarkMode]);
+  useEffect(() => {
+    workspaceRef.current?.updateToolbox(toolboxXml);
+  }, [toolboxXml]);
 
   return (
     <Box
@@ -697,7 +697,7 @@ useEffect(() => {
           mb: 2,
           borderRadius: 4,
         }}
-        >
+      >
         <Tooltip title="Upload your CSV, GeoJSON or TIF data." arrow>
           <Button
             id="uploadDataButton"
@@ -739,59 +739,67 @@ useEffect(() => {
           onClose={() => setOpenCreateDataDialog(false)}
         />
 
-        <Box display="flex" alignItems="center" gap={2} flex={1} justifyContent="flex-end" minWidth={0}>
-        <Tooltip
+        <Box
+          display="flex"
+          alignItems="center"
+          gap={2}
+          flex={1}
+          justifyContent="flex-end"
+          minWidth={0}
+        >
+          <Tooltip
             title={
               <Box>
-                Beginner: built-in datasets & simple blocks.<br />
-                Advanced: load files, model, visualize spatial data.<br />
+                Beginner: built-in datasets & simple blocks.
+                <br />
+                Advanced: load files, model, visualize spatial data.
+                <br />
                 See tutorials for more information.
               </Box>
             }
             arrow
             enterDelay={0}
           >
-          <ToggleButtonGroup
-            exclusive
-            value={level}
-            onChange={(e, newLevel) => newLevel && setLevel(newLevel)}
-            sx={{
-              bgcolor: "background.paper",
-              borderRadius: 2,
-              boxShadow: 1,
-            }}
-            id="switchLevelsButton"
-          >
-            <ToggleButton value="level1" sx={{ px: 2, py: 1, gap: 1 }}>
-              <FaBookOpen /> Beginner
-            </ToggleButton>
-            <ToggleButton value="level2" sx={{ px: 2, py: 1, gap: 1 }}>
-              <FaMapMarkedAlt /> Advanced
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Tooltip>
+            <ToggleButtonGroup
+              exclusive
+              value={level}
+              onChange={(e, newLevel) => newLevel && setLevel(newLevel)}
+              sx={{
+                bgcolor: "background.paper",
+                borderRadius: 2,
+                boxShadow: 1,
+              }}
+              id="switchLevelsButton"
+            >
+              <ToggleButton value="level1" sx={{ px: 2, py: 1, gap: 1 }}>
+                <FaBookOpen /> Beginner
+              </ToggleButton>
+              <ToggleButton value="level2" sx={{ px: 2, py: 1, gap: 1 }}>
+                <FaMapMarkedAlt /> Advanced
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Tooltip>
 
-         { /* Help button to start Spockly tour */}
-         <Tooltip title="Start Spockly Tour" arrow>
-          <IconButton
-            onClick={() => window?.__startSpocklyTour?.()}
-            sx={{ color: "inherit" }}
-          >
-            <FaQuestionCircle />
-          </IconButton>
-        </Tooltip>
+          {/* Help button to start Spockly tour */}
+          <Tooltip title="Start Spockly Tour" arrow>
+            <IconButton
+              onClick={() => window?.__startSpocklyTour?.()}
+              sx={{ color: "inherit" }}
+            >
+              <FaQuestionCircle />
+            </IconButton>
+          </Tooltip>
 
-        <Tooltip title="Show Simple CO₂ Tutorial" arrow>
-          <IconButton
-            onClick={() => setShowTutorial(prev => !prev)}
-            sx={{ color: showTutorial ? "green" : "inherit" }}
-          >
-            <MdCo2 />
-          </IconButton>
-        </Tooltip>
-
+          <Tooltip title="Show Simple CO₂ Tutorial" arrow>
+            <IconButton
+              onClick={() => setShowTutorial((prev) => !prev)}
+              sx={{ color: showTutorial ? "green" : "inherit" }}
+            >
+              <MdCo2 />
+            </IconButton>
+          </Tooltip>
         </Box>
-        </Toolbar>
+      </Toolbar>
 
       {/* Blockly rendering area */}
       <Box
@@ -805,7 +813,9 @@ useEffect(() => {
         }}
       />
 
-    {showTutorial && <SimpleTutorialPanel onClose={() => setShowTutorial(false)} />}
+      {showTutorial && (
+        <SimpleTutorialPanel onClose={() => setShowTutorial(false)} />
+      )}
     </Box>
   );
 };

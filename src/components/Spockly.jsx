@@ -7,8 +7,9 @@ import WebRRunner from "./WebRRunner";
 import FileUploadManager from "./FileUploadManager";
 import { MdOutlineOutput } from "react-icons/md";
 import { FaCode } from "react-icons/fa6";
-import useSpocklyTour from './useSpocklyTour';
+import useSpocklyTour from "./useSpocklyTour";
 import MiniPackageLoadingBar from "./MiniPackageLoadingBar";
+import BlockExplantions from "./BlockExplanations";
 
 function TabPanel({ children, value, index }) {
   return (
@@ -101,10 +102,23 @@ export default function SPOCKLY({ isDarkMode }) {
                 padding: 1,
                 backgroundColor: theme.palette.background.default,
                 borderRadius: 4,
-                display: 'flex',
-                alignItems: 'center',
+                display: "flex",
+                alignItems: "center",
               }}
             >
+              <Tab
+                id="helpTab"
+                label={
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <MdOutlineOutput /> Help
+                  </Box>
+                }
+                sx={{
+                  fontWeight: "bold",
+                  color: isDarkMode ? "lightgrey" : "darkgrey",
+                  textTransform: "none",
+                }}
+              />
               <Tab
                 id="codeTab"
                 label={
@@ -115,7 +129,7 @@ export default function SPOCKLY({ isDarkMode }) {
                 sx={{
                   fontWeight: "bold",
                   color: isDarkMode ? "lightgrey" : "darkgrey",
-                  textTransform: "none"
+                  textTransform: "none",
                 }}
               />
               <Tab
@@ -128,14 +142,22 @@ export default function SPOCKLY({ isDarkMode }) {
                 sx={{
                   fontWeight: "bold",
                   color: isDarkMode ? "lightgrey" : "darkgrey",
-                  textTransform: "none"
+                  textTransform: "none",
                 }}
               />
-              <Box sx={{ marginLeft: 'auto', marginRight: '50px' }}>
+              <Box sx={{ marginLeft: "auto", marginRight: "50px" }}>
                 <MiniPackageLoadingBar currentPackage={currentPackage} />
               </Box>
             </Tabs>
             <TabPanel value={value} index={0}>
+              <Box sx={{ height: "60%", p: 1 }}>
+                <BlockExplantions
+                  isDarkMode={isDarkMode}
+                  workspaceRef={workspaceRef}
+                />
+              </Box>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
               <Box sx={{ height: "60%", p: 1 }}>
                 <CodeDisplay
                   code={code}
@@ -145,7 +167,7 @@ export default function SPOCKLY({ isDarkMode }) {
                 />
               </Box>
             </TabPanel>
-            <TabPanel value={value} index={1}>
+            <TabPanel value={value} index={2}>
               <Box sx={{ height: "60%", p: 1 }}>
                 <WebRRunner
                   code={code}
