@@ -173,45 +173,61 @@ const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
         )}
 
         {uploadStatus === 'success' && (
-          <Alert 
-            severity="success" 
-            icon={<CheckCircle />}
-            sx={{ mb: 2 }}
-          >
-            <AlertTitle>Upload Successful!</AlertTitle>
-            <Box display="flex" alignItems="center" gap={1} sx={{ mt: 1, mb: 2 }}>
+          <Box sx={{ bgcolor: '#e8f5e9', p: 3, borderRadius: 2, mb: 2 }}>
+            <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
+              <CheckCircle color="success" />
+              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                File uploaded successfully
+              </Typography>
+            </Box>
+            <Box display="flex" alignItems="center" gap={1} sx={{ mb: 1 }}>
               {getFileIcon()}
               <Typography variant="body2">
-                File uploaded successfully to WebR filesystem.
+                {fileName}
               </Typography>
               {getFileTypeChip()}
             </Box>
-            <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>
-              {getUsageInstructions()}
-            </Typography>
-            <Box 
-              sx={{ 
-                bgcolor: '#f5f5f5', 
-                p: 1, 
-                borderRadius: 1, 
-                fontFamily: 'monospace',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}
-            >
-              <Typography variant="body2" sx={{ color: '#000' }}>
-                {fileName}
+
+            <Box mt={3}>
+              <Box display="flex" alignItems="center" gap={1} sx={{ mb: 1 }}>
+                <InsertDriveFile color="primary" />
+                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                  Next: Use the file in your analysis
+                </Typography>
+              </Box>
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                Use the block <strong>{(() => {
+                  const match = getUsageInstructions().match(/load_\w+/);
+                  return match ? match[0] : "load_block";
+                })()}</strong> from the <strong>Load Data</strong> category. 
               </Typography>
-              <Button 
-                size="small" 
-                onClick={copyToClipboard}
-                sx={{ ml: 1 }}
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                Then paste the filename below into the block:
+              </Typography>
+              <Box 
+                sx={{ 
+                  bgcolor: '#f5f5f5', 
+                  p: 1, 
+                  borderRadius: 1, 
+                  fontFamily: 'monospace',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
               >
-                Copy
-              </Button>
+                <Typography variant="body2" sx={{ color: '#000' }}>
+                  {fileName}
+                </Typography>
+                <Button 
+                  size="small" 
+                  onClick={copyToClipboard}
+                  sx={{ ml: 1 }}
+                >
+                  Copy
+                </Button>
+              </Box>
             </Box>
-          </Alert>
+          </Box>
         )}
 
         {uploadStatus === 'invalidtype' && (
