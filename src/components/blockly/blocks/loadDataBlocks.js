@@ -138,22 +138,20 @@ Blockly.defineBlocksWithJsonArray([
 
   // Load built-in dataset
   {
-    type: "load_builtin_dataset",
-    message0: "load built-in dataset %1",
-    args0: [
+    "type": "load_builtin_dataset",
+    "message0": "load built-in dataset %1",
+    "args0": [
       {
-        type: "field_dropdown",
-        name: "DATASET",
-        options: [["iris", "iris"], ["mtcars", "mtcars"], ["airquality", "airquality"], ["meuse", "meuse"]]
+        "type": "field_dropdown",
+        "name": "DATASET",
+        "options": [["iris", "iris"], ["mtcars", "mtcars"], ["airquality", "airquality"], ["meuse", "meuse"]]
       }
     ],
-    previousStatement: null,
-    nextStatement: null,
-    output: null,
-    colour: "#FFA726",
-    tooltip: "Load a built-in dataset like iris",
-    helpUrl: "https://www.rdocumentation.org/packages/datasets/versions/3.6.2/topics/iris"
-  },
+    "output": "Dataset",
+    "colour": "#FFA726",
+    "tooltip": "Load a built-in dataset like iris",
+    "helpUrl": "https://www.rdocumentation.org/packages/datasets/versions/3.6.2/topics/iris"
+},
 
   // Reference built-in dataset
   {
@@ -214,13 +212,13 @@ Blockly.Generator.R.forBlock['load_raster'] = function(block) {
 };
 
 Blockly.Generator.R.forBlock["load_builtin_dataset"] = function(block) {
-  const dataset = block.getFieldValue("DATASET");
-  if (dataset === "meuse") {
-    return `library(sp)\ndata(meuse)\ndata <- meuse\n`;
-  } else {
-    return `data <- ${dataset}\n`;
-  }
-};
+	const dataset = block.getFieldValue("DATASET");
+	if (dataset === "meuse") {
+	  return [`meuse`, Blockly.Generator.R.ORDER_ATOMIC];
+	} else {
+	  return [`${dataset}`, Blockly.Generator.R.ORDER_ATOMIC];
+	}
+  };
 
 // Generator for get_dataset block
 Blockly.Generator.R.forBlock['get_dataset'] = function(block) {
