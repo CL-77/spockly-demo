@@ -58,6 +58,19 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 	<block type="show_structure"></block>
 	<block type="show_tail"></block>
 	<block type="show_rows"></block>
+	<block type="access_column"></block>
+    <block type="rename_column">
+      <value name="COLUMN_NUMBER">
+        <block type="math_number">
+          <field name="NUM"></field>
+        </block>
+      </value>
+      <value name="NEW_NAME">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+    </block>
   </category>
 
   <category name="Variables" colour="#7d4561" custom="VARIABLE"></category>
@@ -245,6 +258,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 	<block type="show_structure"></block>
 	<block type="show_tail"></block>
 	<block type="show_rows"></block>
+	<block type="access_column"></block>
   </category>
 
   <category name="Variables" colour="#7d4561" custom="VARIABLE"></category>
