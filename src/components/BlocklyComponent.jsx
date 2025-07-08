@@ -116,6 +116,17 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 	<field name="STYLE">osm</field>
   </block>
   
+<label text="Load Your Data" web-class="toolboxLabel"></label>
+<block type="load_data_to_map_beginner">
+  <field name="DISPLAY_TYPE">markers</field>
+  <field name="POPUP_FIELD">auto</field>
+  <value name="DATA_FILE">
+    <block type="text">
+      <field name="TEXT">data.csv</field>
+    </block>
+  </value>
+</block>
+  
   <label text="Add to Map" web-class="toolboxLabel"></label>
   <block type="add_marker_beginner">
     <value name="LAT">
