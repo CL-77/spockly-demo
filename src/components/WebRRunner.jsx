@@ -332,197 +332,270 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
 
 
   const handleLeafletDisplay = async (code) => {
-    if (leafletDisplayed) {
-      return;
-    }
-
-    try {
-      const webRForLeaflet = webRRef?.current || webR;
-      const result = await webRForLeaflet.evalR(`
-        if (exists("leaflet_map")) {
-          map_data <- leaflet_map$x
-          if (!is.null(map_data$options$crs)) {
-            map_data$options$crs <- NULL
-          }
-          widget_json <- jsonlite::toJSON(map_data, auto_unbox = TRUE, digits = 16, null = "null")
-          html_content <- paste0(
-            '<!DOCTYPE html>\\n',
-            '<html>\\n',
-            '<head>\\n',
-            '  <meta charset="utf-8">\\n',
-            '  <title>Leaflet Map</title>\\n',
-            '  <meta name="viewport" content="width=device-width, initial-scale=1.0">\\n',
-            '  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />\\n',
-            '  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>\\n',
-            '  <style>\\n',
-            '    html, body { width: 100%; height: 100%; margin: 0; padding: 0; }\\n',
-            '    #map { width: 100%; height: 100%; }\\n',
-            '  </style>\\n',
-            '</head>\\n',
-            '<body>\\n',
-            '  <div id="map"></div>\\n',
-            '  <script>\\n',
-            '    document.addEventListener("DOMContentLoaded", function() {\\n',
-            '      try {\\n',
-            '        var mapData = ', widget_json, ';\\n',
-            '        console.log("Map data:", mapData);\\n',
-            '        \\n',
-            '        var map = L.map("map");\\n',
-            '        \\n',
-            '        if (mapData.setView && mapData.setView.length >= 2) {\\n',
-            '          var coords = mapData.setView[0];\\n',
-            '          var zoom = mapData.setView[1];\\n',
-            '          map.setView([coords[0], coords[1]], zoom);\\n',
-            '        } else {\\n',
-            '          map.setView([0, 0], 2);\\n',
-            '        }\\n',
-            '        \\n',
-            '        if (mapData.calls && Array.isArray(mapData.calls)) {\\n',
-            '          mapData.calls.forEach(function(call) {\\n',
-            '            console.log("Processing call:", call);\\n',
-            '            try {\\n',
-            '              switch(call.method) {\\n',
-            '                case "addTiles":\\n',
-            '                  var tileUrl = call.args[0] || "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";\\n',
-            '                  var tileOptions = call.args[3] || {};\\n',
-            '                  L.tileLayer(tileUrl, tileOptions).addTo(map);\\n',
-            '                  break;\\n',
-            '                \\n',
-            '                case "addMarkers":\\n',
-            '                  if (call.args && call.args.length >= 2) {\\n',
-            '                    var lat = call.args[0];\\n',
-            '                    var lng = call.args[1];\\n',
-            '                    var popup = null;\\n',
-            '                    console.log("addMarkers args:", call.args);\\n',
-            '                    if (call.args[2] && typeof call.args[2] === "string") {\\n',
-            '                      popup = call.args[2];\\n',
-            '                    } else {\\n',
-            '                      for (var i = 2; i < call.args.length; i++) {\\n',
-            '                        if (call.args[i]) {\\n',
-            '                          if (typeof call.args[i] === "string") {\\n',
-            '                            popup = call.args[i];\\n',
-            '                            break;\\n',
-            '                          } else if (typeof call.args[i] === "object") {\\n',
-            '                            if (call.args[i].popup !== undefined) {\\n',
-            '                              popup = call.args[i].popup;\\n',
-            '                              break;\\n',
-            '                            }\\n',
-            '                            var keys = Object.keys(call.args[i]);\\n',
-            '                            for (var j = 0; j < keys.length; j++) {\\n',
-            '                              if (keys[j].toLowerCase().includes("popup") || keys[j].toLowerCase().includes("label")) {\\n',
-            '                                popup = call.args[i][keys[j]];\\n',
-            '                                break;\\n',
-            '                              }\\n',
-            '                            }\\n',
-            '                          }\\n',
-            '                        }\\n',
-            '                      }\\n',
-            '                    }\\n',
-            '                    if (!popup && call.args.length > 9 && call.args[9]) {\\n',
-            '                      popup = call.args[9];\\n',
-            '                    }\\n',
-            '                    console.log("Found popup:", popup);\\n',
-            '                    if (Array.isArray(lat) && Array.isArray(lng)) {\\n',
-            '                      for (var i = 0; i < lat.length; i++) {\\n',
-            '                        var marker = L.marker([lat[i], lng[i]]).addTo(map);\\n',
-            '                        if (popup) {\\n',
-            '                          var popupContent = Array.isArray(popup) ? popup[i] : popup;\\n',
-            '                          marker.bindPopup(popupContent);\\n',
-            '                        }\\n',
-            '                      }\\n',
-            '                    } else if (typeof lat === "number" && typeof lng === "number") {\\n',
-            '                      var marker = L.marker([lat, lng]).addTo(map);\\n',
-            '                      if (popup) {\\n',
-            '                        marker.bindPopup(popup);\\n',
-            '                      }\\n',
-            '                    }\\n',
-            '                  }\\n',
-            '                  break;\\n',
-            '                \\n',
-            '                case "addCircles":\\n',
-            '                  if (call.args && call.args.length >= 2) {\\n',
-            '                    var lat = call.args[0];\\n',
-            '                    var lng = call.args[1];\\n',
-            '                    var options = {};\\n',
-            '                    if (call.args[2] && typeof call.args[2] === "number") {\\n',
-            '                      options.radius = call.args[2];\\n',
-            '                    }\\n',
-            '                    for (var i = 2; i < call.args.length; i++) {\\n',
-            '                      if (call.args[i] && typeof call.args[i] === "object") {\\n',
-            '                        if (call.args[i].radius !== undefined) options.radius = call.args[i].radius;\\n',
-            '                        if (call.args[i].color !== undefined) options.color = call.args[i].color;\\n',
-            '                        if (call.args[i].weight !== undefined) options.weight = call.args[i].weight;\\n',
-            '                        if (call.args[i].opacity !== undefined) options.opacity = call.args[i].opacity;\\n',
-            '                        if (call.args[i].fillColor !== undefined) options.fillColor = call.args[i].fillColor;\\n',
-            '                        if (call.args[i].fillOpacity !== undefined) options.fillOpacity = call.args[i].fillOpacity;\\n',
-            '                      }\\n',
-            '                    }\\n',
-            '                    console.log("Circle options:", options);\\n',
-            '                    if (Array.isArray(lat) && Array.isArray(lng)) {\\n',
-            '                      for (var i = 0; i < lat.length; i++) {\\n',
-            '                        L.circle([lat[i], lng[i]], options).addTo(map);\\n',
-            '                      }\\n',
-            '                    } else if (typeof lat === "number" && typeof lng === "number") {\\n',
-            '                      L.circle([lat, lng], options).addTo(map);\\n',
-            '                    }\\n',
-            '                  }\\n',
-            '                  break;\\n',
-            '                \\n',
-            '                case "addPolygons":\\n',
-            '                  if (call.args && call.args.length >= 1) {\\n',
-            '                    var coords = call.args[0];\\n',
-            '                    var options = call.args[1] || {};\\n',
-            '                    if (coords && coords.length > 0) {\\n',
-            '                      L.polygon(coords, options).addTo(map);\\n',
-            '                    }\\n',
-            '                  }\\n',
-            '                  break;\\n',
-            '              }\\n',
-            '            } catch (e) {\\n',
-            '              console.error("Error processing call:", call.method, e);\\n',
-            '            }\\n',
-            '          });\\n',
-            '        }\\n',
-            '        \\n',
-            '      } catch (error) {\\n',
-            '        console.error("Error creating map:", error);\\n',
-            '        document.body.innerHTML = "<h1>Error creating map</h1><p>" + error.message + "</p>";\\n',
-            '      }\\n',
-            '    });\\n',
-            '  </script>\\n',
-            '</body>\\n',
-            '</html>'
-          )
-          html_content
-        } else {
-          "No leaflet map found"
-        }
-      `);
-
-      const htmlContent = await result.toString();
-      if (htmlContent === "No leaflet map found") {
-        setTextOutput(prev => prev + `\nNo leaflet map found`);
-        return;
-      }
-
-      setLeafletDisplayed(true);
-
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      const newTab = window.open(url, '_blank');
-      if (newTab) {
-        setTextOutput(prev => prev + `\nLeaflet map opened in new tab`);
-        setTimeout(() => {
-          URL.revokeObjectURL(url);
-        }, 1000);
-      } else {
-        setTextOutput(prev => prev + `\nPopup blocked - please allow popups for this site`);
-      }
-    } catch (err) {
-      console.error("Error displaying leaflet map:", err);
-      setTextOutput(prev => prev + `\nError displaying leaflet map: ${err.message}`);
-    }
+	if (leafletDisplayed) {
+	  return;
+	}
+  
+	try {
+	  const webRForLeaflet = webRRef?.current || webR;
+	  const result = await webRForLeaflet.evalR(`
+		if (exists("leaflet_map")) {
+		  map_data <- leaflet_map$x
+		  if (!is.null(map_data$options$crs)) {
+			map_data$options$crs <- NULL
+		  }
+		  widget_json <- jsonlite::toJSON(map_data, auto_unbox = TRUE, digits = 16, null = "null")
+		  html_content <- paste0(
+			'<!DOCTYPE html>\\n',
+			'<html>\\n',
+			'<head>\\n',
+			'  <meta charset="utf-8">\\n',
+			'  <title>Leaflet Map</title>\\n',
+			'  <meta name="viewport" content="width=device-width, initial-scale=1.0">\\n',
+			'  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />\\n',
+			'  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>\\n',
+			'  <style>\\n',
+			'    html, body { width: 100%; height: 100%; margin: 0; padding: 0; }\\n',
+			'    #map { width: 100%; height: 100%; }\\n',
+			'  </style>\\n',
+			'</head>\\n',
+			'<body>\\n',
+			'  <div id="map"></div>\\n',
+			'  <script>\\n',
+			'    document.addEventListener("DOMContentLoaded", function() {\\n',
+			'      try {\\n',
+			'        var mapData = ', widget_json, ';\\n',
+			'        console.log("Map data:", mapData);\\n',
+			'\\n',
+			'        var map = L.map("map");\\n',
+			'\\n',
+			'        if (mapData.setView && mapData.setView.length >= 2) {\\n',
+			'          var coords = mapData.setView[0];\\n',
+			'          var zoom = mapData.setView[1];\\n',
+			'          map.setView([coords[0], coords[1]], zoom);\\n',
+			'        } else {\\n',
+			'          map.setView([0, 0], 2);\\n',
+			'        }\\n',
+			'\\n',
+			'        var tilesAdded = false;\\n',
+			'\\n',
+			'        if (mapData.calls && Array.isArray(mapData.calls)) {\\n',
+			'          mapData.calls.forEach(function(call) {\\n',
+			'            console.log("Processing call:", call);\\n',
+			'            try {\\n',
+			'              switch(call.method) {\\n',
+			'                case "addTiles":\\n',
+			'                  if (!tilesAdded) {\\n',
+			'                    var tileUrl = "https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png";\\n',
+			'                    var tileOptions = {\\n',
+			'                      attribution: "© OpenMapTiles © OpenStreetMap contributors",\\n',
+			'                      crossOrigin: true,\\n',
+			'                      maxZoom: 18\\n',
+			'                    };\\n',
+			'\\n',
+			'                    var fallbackUrl = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";\\n',
+			'                    var fallbackOptions = {\\n',
+			'                      attribution: "© Esri",\\n',
+			'                      crossOrigin: true,\\n',
+			'                      maxZoom: 18\\n',
+			'                    };\\n',
+			'\\n',
+			'                    var tileLayer = L.tileLayer(tileUrl, tileOptions);\\n',
+			'                    tileLayer.on("tileerror", function() {\\n',
+			'                      console.log("Primary tile server failed, trying fallback");\\n',
+			'                      map.removeLayer(tileLayer);\\n',
+			'                      L.tileLayer(fallbackUrl, fallbackOptions).addTo(map);\\n',
+			'                    });\\n',
+			'                    tileLayer.addTo(map);\\n',
+			'                    tilesAdded = true;\\n',
+			'                  }\\n',
+			'                  break;\\n',
+			'\\n',
+			'                case "addMarkers":\\n',
+			'                  if (call.args && call.args.length >= 2) {\\n',
+			'                    var lat = call.args[0];\\n',
+			'                    var lng = call.args[1];\\n',
+			'                    var popup = null;\\n',
+			'\\n',
+			'                    console.log("Full addMarkers call:", call);\\n',
+			'\\n',
+			'                    if (call.args.length > 2) {\\n',
+			'                      for (var i = 2; i < call.args.length; i++) {\\n',
+			'                        var arg = call.args[i];\\n',
+			'                        console.log("Checking arg", i, ":", arg);\\n',
+			'                        \\n',
+			'                        if (arg === null || arg === undefined) continue;\\n',
+			'                        \\n',
+			'                        if (typeof arg === "string") {\\n',
+			'                          popup = arg;\\n',
+			'                          break;\\n',
+			'                        }\\n',
+			'                        \\n',
+			'                        if (Array.isArray(arg) && arg.length > 0) {\\n',
+			'                          if (typeof arg[0] === "string") {\\n',
+			'                            popup = arg;\\n',
+			'                            break;\\n',
+			'                          }\\n',
+			'                        }\\n',
+			'                        \\n',
+			'                        if (typeof arg === "object" && arg !== null) {\\n',
+			'                          var possibleKeys = ["popup", "label", "title", "text", "content"];\\n',
+			'                          for (var j = 0; j < possibleKeys.length; j++) {\\n',
+			'                            if (arg.hasOwnProperty(possibleKeys[j])) {\\n',
+			'                              popup = arg[possibleKeys[j]];\\n',
+			'                              break;\\n',
+			'                            }\\n',
+			'                          }\\n',
+			'                          \\n',
+			'                          if (popup) break;\\n',
+			'                          \\n',
+			'                          var keys = Object.keys(arg);\\n',
+			'                          for (var k = 0; k < keys.length; k++) {\\n',
+			'                            var key = keys[k];\\n',
+			'                            var value = arg[key];\\n',
+			'                            \\n',
+			'                            if (Array.isArray(value) && value.length > 0) {\\n',
+			'                              if (typeof value[0] === "string") {\\n',
+			'                                popup = value;\\n',
+			'                                break;\\n',
+			'                              }\\n',
+			'                            } else if (typeof value === "string") {\\n',
+			'                              popup = value;\\n',
+			'                              break;\\n',
+			'                            }\\n',
+			'                          }\\n',
+			'                          \\n',
+			'                          if (popup) break;\\n',
+			'                        }\\n',
+			'                      }\\n',
+			'                    }\\n',
+			'\\n',
+			'                    console.log("Extracted popup:", popup);\\n',
+			'\\n',
+			'                    if (Array.isArray(lat) && Array.isArray(lng)) {\\n',
+			'                      for (var i = 0; i < lat.length; i++) {\\n',
+			'                        if (typeof lat[i] === "number" && typeof lng[i] === "number") {\\n',
+			'                          var marker = L.marker([lat[i], lng[i]]).addTo(map);\\n',
+			'                          \\n',
+			'                          if (popup) {\\n',
+			'                            var popupContent;\\n',
+			'                            if (Array.isArray(popup)) {\\n',
+			'                              popupContent = popup[i];\\n',
+			'                            } else {\\n',
+			'                              popupContent = popup;\\n',
+			'                            }\\n',
+			'                            \\n',
+			'                            if (popupContent !== null && popupContent !== undefined && popupContent !== "") {\\n',
+			'                              marker.bindPopup(String(popupContent));\\n',
+			'                            }\\n',
+			'                          }\\n',
+			'                        }\\n',
+			'                      }\\n',
+			'                    } else if (typeof lat === "number" && typeof lng === "number") {\\n',
+			'                      var marker = L.marker([lat, lng]).addTo(map);\\n',
+			'                      \\n',
+			'                      if (popup && popup !== null && popup !== undefined && popup !== "") {\\n',
+			'                        marker.bindPopup(String(popup));\\n',
+			'                      }\\n',
+			'                    }\\n',
+			'                  }\\n',
+			'                  break;\\n',
+			'\\n',
+			'                case "addCircles":\\n',
+			'                  if (call.args && call.args.length >= 2) {\\n',
+			'                    var lat = call.args[0];\\n',
+			'                    var lng = call.args[1];\\n',
+			'                    var options = {};\\n',
+			'                    if (call.args[2] && typeof call.args[2] === "number") {\\n',
+			'                      options.radius = call.args[2];\\n',
+			'                    }\\n',
+			'                    for (var i = 2; i < call.args.length; i++) {\\n',
+			'                      if (call.args[i] && typeof call.args[i] === "object") {\\n',
+			'                        if (call.args[i].radius !== undefined) options.radius = call.args[i].radius;\\n',
+			'                        if (call.args[i].color !== undefined) options.color = call.args[i].color;\\n',
+			'                        if (call.args[i].weight !== undefined) options.weight = call.args[i].weight;\\n',
+			'                        if (call.args[i].opacity !== undefined) options.opacity = call.args[i].opacity;\\n',
+			'                        if (call.args[i].fillColor !== undefined) options.fillColor = call.args[i].fillColor;\\n',
+			'                        if (call.args[i].fillOpacity !== undefined) options.fillOpacity = call.args[i].fillOpacity;\\n',
+			'                      }\\n',
+			'                    }\\n',
+			'                    console.log("Circle options:", options);\\n',
+			'                    if (Array.isArray(lat) && Array.isArray(lng)) {\\n',
+			'                      for (var i = 0; i < lat.length; i++) {\\n',
+			'                        L.circle([lat[i], lng[i]], options).addTo(map);\\n',
+			'                      }\\n',
+			'                    } else if (typeof lat === "number" && typeof lng === "number") {\\n',
+			'                      L.circle([lat, lng], options).addTo(map);\\n',
+			'                    }\\n',
+			'                  }\\n',
+			'                  break;\\n',
+			'\\n',
+			'                case "addPolygons":\\n',
+			'                  if (call.args && call.args.length >= 1) {\\n',
+			'                    var coords = call.args[0];\\n',
+			'                    var options = call.args[1] || {};\\n',
+			'                    if (coords && coords.length > 0) {\\n',
+			'                      L.polygon(coords, options).addTo(map);\\n',
+			'                    }\\n',
+			'                  }\\n',
+			'                  break;\\n',
+			'              }\\n',
+			'            } catch (e) {\\n',
+			'              console.error("Error processing call:", call.method, e);\\n',
+			'            }\\n',
+			'          });\\n',
+			'        }\\n',
+			'\\n',
+			'        if (!tilesAdded) {\\n',
+			'          var fallbackUrl = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";\\n',
+			'          var fallbackOptions = {\\n',
+			'            attribution: "© Esri",\\n',
+			'            crossOrigin: true,\\n',
+			'            maxZoom: 18\\n',
+			'          };\\n',
+			'          L.tileLayer(fallbackUrl, fallbackOptions).addTo(map);\\n',
+			'        }\\n',
+			'\\n',
+			'      } catch (error) {\\n',
+			'        console.error("Error creating map:", error);\\n',
+			'        document.body.innerHTML = "<h1>Error creating map</h1><p>" + error.message + "</p>";\\n',
+			'      }\\n',
+			'    });\\n',
+			'  </script>\\n',
+			'</body>\\n',
+			'</html>'
+		  )
+		  html_content
+		} else {
+		  "No leaflet map found"
+		}
+	  `);
+  
+	  const htmlContent = await result.toString();
+	  if (htmlContent === "No leaflet map found") {
+		setTextOutput(prev => prev + `\nNo leaflet map found`);
+		return;
+	  }
+  
+	  setLeafletDisplayed(true);
+  
+	  const blob = new Blob([htmlContent], { type: 'text/html' });
+	  const url = URL.createObjectURL(blob);
+	  const newTab = window.open(url, '_blank');
+	  if (newTab) {
+		setTextOutput(prev => prev + `\nLeaflet map opened in new tab`);
+		setTimeout(() => {
+		  URL.revokeObjectURL(url);
+		}, 1000);
+	  } else {
+		setTextOutput(prev => prev + `\nPopup blocked - please allow popups for this site`);
+	  }
+	} catch (err) {
+	  console.error("Error displaying leaflet map:", err);
+	  setTextOutput(prev => prev + `\nError displaying leaflet map: ${err.message}`);
+	}
   };
+  
 
   const processExportCommands = async (code) => {
 	const lines = code.split('\n');

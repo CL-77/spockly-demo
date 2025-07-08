@@ -6,7 +6,7 @@ Blockly.fieldRegistry.register('field_colour', FieldColour);
 Blockly.defineBlocksWithJsonArray([
 	{
 		"type": "create_map_beginner",
-		"message0": "Create map at %1 location %2 zoom level %3 style %4",
+		"message0": "Create map at %1 location %2 zoom level %3 with styling %4",
 		"args0": [
 			{
 				"type": "input_dummy"
@@ -123,6 +123,51 @@ Blockly.defineBlocksWithJsonArray([
         "colour": "#67c761",
         "tooltip": "Add a circle to the map",
         "helpUrl": ""
+    },
+    {
+        "type": "load_data_to_map_beginner",
+        "message0": "Load my data %1 file %2 %3 show as %4 %5 with popup showing %6",
+        "args0": [
+            {
+                "type": "input_dummy"
+            },
+            {
+                "type": "input_value",
+                "name": "DATA_FILE",
+                "check": ["String", "Variable"]
+            },
+            {
+                "type": "input_dummy"
+            },
+            {
+                "type": "field_dropdown",
+                "name": "DISPLAY_TYPE",
+                "options": [
+                    ["markers", "markers"],
+                    ["circles", "circles"],
+                    ["polygons", "polygons"]
+                ]
+            },
+            {
+                "type": "input_dummy"
+            },
+            {
+                "type": "field_dropdown",
+                "name": "POPUP_FIELD",
+                "options": [
+                    ["auto detect", "auto"],
+                    ["first column", "first"],
+                    ["all info", "all"],
+                    ["none", "none"]
+                ]
+            }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "#67c761",
+        "tooltip": "Load your CSV or GeoJSON data to the map",
+        "helpUrl": "",
+        "extensions": ["data_display_mutator"]
     },
     {
         "type": "save_map_beginner",
@@ -590,6 +635,35 @@ Blockly.Extensions.register('tile_provider_mutator', function() {
     this.setOnChange(updateShape.bind(this));
 });
 
+Blockly.Extensions.register('data_display_mutator', function() {
+    const updateShape = function() {
+        const displayType = this.getFieldValue('DISPLAY_TYPE');
+        if (displayType === 'circles') {
+            if (!this.getInput('CIRCLE_SIZE')) {
+                this.appendDummyInput('CIRCLE_SIZE')
+                    .appendField('size')
+                    .appendField(new Blockly.FieldNumber(500, 50, 5000, 50), 'CIRCLE_RADIUS')
+                    .appendField('meters');
+                this.moveInputBefore('CIRCLE_SIZE', 'POPUP_FIELD');
+            }
+            if (!this.getInput('CIRCLE_COLOR')) {
+                this.appendDummyInput('CIRCLE_COLOR')
+                    .appendField('color')
+                    .appendField(new FieldColour('#FF5252'), 'CIRCLE_COLOR_VALUE');
+                this.moveInputBefore('CIRCLE_COLOR', 'POPUP_FIELD');
+            }
+        } else {
+            if (this.getInput('CIRCLE_SIZE')) {
+                this.removeInput('CIRCLE_SIZE');
+            }
+            if (this.getInput('CIRCLE_COLOR')) {
+                this.removeInput('CIRCLE_COLOR');
+            }
+        }
+    };
+    this.setOnChange(updateShape.bind(this));
+});
+
 Blockly.Generator.R.forBlock['create_map_beginner'] = function(block, generator) {
     generator.requirePackage("leaflet");
     generator.requirePackage("htmlwidgets");
@@ -661,9 +735,147 @@ Blockly.Generator.R.forBlock['add_circle_beginner'] = function(block, generator)
     const lng = generator.valueToCode(block, 'LNG', Blockly.Generator.R.ORDER_ATOMIC) || '0';
     const radius = block.getFieldValue('RADIUS');
     const color = block.getFieldValue('COLOR');
-    // Fixed order of parameters for R leaflet addCircles function
     const code = `leaflet_map <- leaflet_map %>%
   addCircles(lat = ${lat}, lng = ${lng}, radius = ${radius}, color = "${color}", fillColor = "${color}", fillOpacity = 0.5)\n`;
+    return code;
+};
+
+Blockly.Generator.R.forBlock['load_data_to_map_beginner'] = function(block, generator) {
+    generator.requirePackage("leaflet");
+    generator.requirePackage("sf");
+    const dataFile = generator.valueToCode(block, 'DATA_FILE', Blockly.Generator.R.ORDER_ATOMIC) || '""';
+    const displayType = block.getFieldValue('DISPLAY_TYPE');
+    const popupField = block.getFieldValue('POPUP_FIELD');
+    
+    let circleRadius = 500;
+    let circleColor = '#FF5252';
+    
+    if (displayType === 'circles') {
+        circleRadius = block.getFieldValue('CIRCLE_RADIUS') || 500;
+        circleColor = block.getFieldValue('CIRCLE_COLOR_VALUE') || '#FF5252';
+    }
+
+    let code = `# Auto-detect file type and load data
+file_extension <- tolower(sub(".*\\\\.", "", ${dataFile}))
+
+if (file_extension == "geojson") {
+  Sys.setenv(UDUNITS2_XML_PATH=system.file("share/udunits/udunits2.xml", package="units"))
+  loaded_data <- st_read(${dataFile}, quiet = TRUE)
+  
+  # Extract coordinates from geometry
+  coords <- st_coordinates(loaded_data)
+  loaded_data$auto_lat <- coords[,2]
+  loaded_data$auto_lng <- coords[,1]
+  
+  # Convert to regular dataframe for markers/circles
+  loaded_data <- as.data.frame(loaded_data)
+  loaded_data$geometry <- NULL
+  
+} else if (file_extension == "csv") {
+  loaded_data <- read.csv(${dataFile}, stringsAsFactors = FALSE)
+  
+  # Auto-detect lat/lon columns
+  lat_cols <- grep("^(lat|latitude|y)$", names(loaded_data), ignore.case = TRUE)
+  lon_cols <- grep("^(lon|lng|long|longitude|x)$", names(loaded_data), ignore.case = TRUE)
+  
+  if (length(lat_cols) > 0 && length(lon_cols) > 0) {
+    loaded_data$auto_lat <- loaded_data[[lat_cols[1]]]
+    loaded_data$auto_lng <- loaded_data[[lon_cols[1]]]
+  } else {
+    stop("Could not find latitude/longitude columns in CSV")
+  }
+} else {
+  stop("Unsupported file type. Please use CSV or GeoJSON")
+}
+
+# Auto-fit map to data bounds
+data_bounds <- c(
+  min(loaded_data$auto_lat, na.rm = TRUE),
+  min(loaded_data$auto_lng, na.rm = TRUE),
+  max(loaded_data$auto_lat, na.rm = TRUE),
+  max(loaded_data$auto_lng, na.rm = TRUE)
+)
+
+leaflet_map <- leaflet_map %>%
+  fitBounds(lng1 = data_bounds[2], lat1 = data_bounds[1], 
+            lng2 = data_bounds[4], lat2 = data_bounds[3])
+
+`;
+
+    // Add display elements based on type
+    if (displayType === 'markers') {
+        code += `# Add markers
+leaflet_map <- leaflet_map %>%
+  addMarkers(data = loaded_data, lat = ~auto_lat, lng = ~auto_lng`;
+    } else if (displayType === 'circles') {
+        code += `# Add circles
+leaflet_map <- leaflet_map %>%
+  addCircles(data = loaded_data, lat = ~auto_lat, lng = ~auto_lng, 
+             radius = ${circleRadius}, color = "${circleColor}", 
+             fillColor = "${circleColor}", fillOpacity = 0.5`;
+    } else if (displayType === 'polygons') {
+        code = `# Load spatial data for polygons
+file_extension <- tolower(sub(".*\\\\.", "", ${dataFile}))
+
+if (file_extension == "geojson") {
+  Sys.setenv(UDUNITS2_XML_PATH=system.file("share/udunits/udunits2.xml", package="units"))
+  spatial_data <- st_read(${dataFile}, quiet = TRUE)
+  
+  leaflet_map <- leaflet_map %>%
+    addPolygons(data = spatial_data, 
+                fillColor = "#FF5252", fillOpacity = 0.5,
+                color = "#000000", weight = 2`;
+    }
+
+    // Add popup logic
+    if (popupField === 'auto') {
+        if (displayType !== 'polygons') {
+            code += `,
+             popup = ~{
+               # Auto-detect best popup field
+               non_coord_cols <- names(loaded_data)[!names(loaded_data) %in% c("auto_lat", "auto_lng")]
+               if (length(non_coord_cols) > 0) {
+                 as.character(loaded_data[[non_coord_cols[1]]])
+               } else {
+                 paste("Lat:", auto_lat, "Lng:", auto_lng)
+               }
+             }`;
+        } else {
+            code += `,
+                popup = ~{
+                  # Use first property as popup
+                  prop_names <- names(spatial_data)[!names(spatial_data) == "geometry"]
+                  if (length(prop_names) > 0) {
+                    as.character(spatial_data[[prop_names[1]]])
+                  } else {
+                    "Feature"
+                  }
+                }`;
+        }
+    } else if (popupField === 'first') {
+        if (displayType !== 'polygons') {
+            code += `,
+             popup = ~as.character(loaded_data[[1]])`;
+        } else {
+            code += `,
+                popup = ~as.character(spatial_data[[1]])`;
+        }
+    } else if (popupField === 'all') {
+        if (displayType !== 'polygons') {
+            code += `,
+             popup = ~{
+               paste(names(loaded_data), loaded_data, sep = ": ", collapse = "<br>")
+             }`;
+        } else {
+            code += `,
+                popup = ~{
+                  non_geom <- names(spatial_data)[names(spatial_data) != "geometry"]
+                  paste(non_geom, spatial_data[non_geom], sep = ": ", collapse = "<br>")
+                }`;
+        }
+    }
+
+    code += `)\n`;
     return code;
 };
 

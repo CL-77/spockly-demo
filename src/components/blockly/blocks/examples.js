@@ -400,5 +400,104 @@ Blockly.defineBlocksWithJsonArray([
   };
   
   
-  
-  
+  // Test Block for Loading GeoJSON Date into a Leaflet Map
+  /**
+   * library(leaflet)
+library(geojsonsf)
+library(sf)
+
+# Lade die GeoJSON-Datei
+geojson_data <- geojson_sf("C:/Users/kgalb/Downloads/Spockly/traindata_rlp.geojson")
+
+# Erstelle eine Leaflet-Karte
+leaflet(data = geojson_data) |>
+  addTiles() |>
+  addMarkers()
+   */
+
+Blockly.defineBlocksWithJsonArray([
+	{
+		type: "load_geojson_to_leaflet",
+		message0: "load GeoJSON %1 to Leaflet map",
+		args0: [
+			{
+				type: "input_value",
+				name: "GEOJSON_FILE",
+				check: "String"
+			}
+		],
+		previousStatement: null,
+		nextStatement: null,
+		colour: 160,
+		tooltip: "Load a GeoJSON file into a Leaflet map.",
+		helpUrl: ""
+	}
+
+]);
+
+Blockly.Generator.R.forBlock["load_geojson_to_leaflet"] = function (block, generator) {
+	const geojsonFile = generator.valueToCode(block, "GEOJSON_FILE", Blockly.Generator.R.ORDER_NONE) || '"path/to/your/file.geojson"';
+	return `
+webr::install("leaflet")
+webr::install("sf")
+
+library(leaflet)
+library(sf)
+
+Sys.setenv(UDUNITS2_XML_PATH=system.file("share/udunits/udunits2.xml", package="units"))
+
+# Load the GeoJSON file
+geojson_data <- st_read(${geojsonFile})
+# Create a Leaflet map
+leaflet_map <- leaflet(data = geojson_data) %>%
+addTiles() %>%
+addMarkers()
+`;
+}
+
+// Test Block for Loading CSV file
+/**
+ * library(leaflet)
+library(readr)
+
+# Lade die CSV-Datei
+csv_data <- read_csv("C:/Users/kgalb/Downloads/Spockly/beispiel_abfall_schulhof.csv")
+
+# Erstelle eine Leaflet-Karte
+leaflet(data = csv_data) |>
+  addTiles() |>
+  addMarkers(lng = ~lon, lat = ~lat, popup = ~abfall_art)
+ * 
+ */
+
+Blockly.defineBlocksWithJsonArray([
+	{
+		type: "load_csv_to_leaflet",
+		message0: "load CSV %1 to Leaflet map",
+		args0: [
+			{
+				type: "input_value",
+				name: "CSV_FILE",
+				check: "String"
+			}
+		],
+		previousStatement: null,
+		nextStatement: null,
+		colour: 160,
+		tooltip: "Load a CSV file into a Leaflet map.",
+		helpUrl: ""
+	}
+]);
+
+Blockly.Generator.R.forBlock["load_csv_to_leaflet"] = function (block, generator) {
+	const csvFile = generator.valueToCode(block, "CSV_FILE", Blockly.Generator.R.ORDER_NONE) || '"path/to/your/file.csv"';
+	return `
+webr::install("leaflet")
+library(leaflet)
+
+csv_data <- read.csv(${csvFile})
+leaflet_map <- leaflet(data = csv_data) %>%
+addTiles() %>%
+addMarkers(lng = ~lon, lat = ~lat, popup = ~abfall_art)
+`;
+}

@@ -35,6 +35,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   <category name="Tests" colour="#5C81A6">
     <block type="head_print"></block>	
 	<block type="install_package"></block>
+	<block type="load_geojson_to_leaflet"></block>
+	<block type="load_csv_to_leaflet"></block>
   </category>
 
   <category name="Load Data" colour="#FFA726">
@@ -56,6 +58,19 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 	<block type="show_structure"></block>
 	<block type="show_tail"></block>
 	<block type="show_rows"></block>
+	<block type="access_column"></block>
+    <block type="rename_column">
+      <value name="COLUMN_NUMBER">
+        <block type="math_number">
+          <field name="NUM"></field>
+        </block>
+      </value>
+      <value name="NEW_NAME">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+    </block>
   </category>
 
   <category name="Variables" colour="#7d4561" custom="VARIABLE"></category>
@@ -113,6 +128,17 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     <field name="ZOOM">10</field>
 	<field name="STYLE">osm</field>
   </block>
+  
+<label text="Load Your Data" web-class="toolboxLabel"></label>
+<block type="load_data_to_map_beginner">
+  <field name="DISPLAY_TYPE">markers</field>
+  <field name="POPUP_FIELD">auto</field>
+  <value name="DATA_FILE">
+    <block type="text">
+      <field name="TEXT">data.csv</field>
+    </block>
+  </value>
+</block>
   
   <label text="Add to Map" web-class="toolboxLabel"></label>
   <block type="add_marker_beginner">
@@ -232,6 +258,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 	<block type="show_structure"></block>
 	<block type="show_tail"></block>
 	<block type="show_rows"></block>
+	<block type="access_column"></block>
   </category>
 
   <category name="Variables" colour="#7d4561" custom="VARIABLE"></category>
