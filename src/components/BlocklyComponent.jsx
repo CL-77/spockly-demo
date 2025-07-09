@@ -718,6 +718,7 @@ const BlocklyComponent = ({
 
         <Tooltip title="Create CSV data manually">
           <Button
+            id="createDataButton"
             variant="outlined"
             onClick={() => setOpenCreateDataDialog(true)}
             sx={{ ml: 2 }}
@@ -784,6 +785,7 @@ const BlocklyComponent = ({
 
           <Tooltip title="Show Simple CO₂ Tutorial" arrow>
             <IconButton
+              id="showTutorialButton"
               onClick={() => setShowTutorial((prev) => !prev)}
               sx={{ color: showTutorial ? "green" : "inherit" }}
             >
