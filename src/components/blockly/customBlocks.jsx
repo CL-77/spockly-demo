@@ -167,12 +167,12 @@ pythonGenerator.forBlock['consts'] = function(block) {
 Blockly.Blocks['load_csv'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField('Load data from CSV:')
+        .appendField('Load data from CSV or TXT file:')
         .appendField(new Blockly.FieldTextInput('file.csv'), 'CSV');
     this.appendDummyInput()
         .appendField('with separator')
         .appendField(new Blockly.FieldTextInput(','), 'sep');
-    this.setTooltip('Loads a given CSV dataset');
+    this.setTooltip('Loads a given CSV or TXT dataset');
     this.appendEndRowInput();
     this.setOutput(true, 'Array');
     this.setHelpUrl('https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html');
@@ -1262,12 +1262,11 @@ pythonGenerator.forBlock['reshape'] = function(block, generator) {
 };
 
 //**load from txt */
-Blockly.Blocks['load_txt'] = {
+/* Blockly.Blocks['load_txt'] = {
   init: function(){
     this.appendDummyInput()
         .appendField('Load data from txt')
-        .appendField(new Blockly.FieldTextInput(''), 'txt')
-        .appendField('.txt');
+        .appendField(new Blockly.FieldTextInput(''), 'txt');
     this.appendDummyInput()
         .appendField('with separator')
         .appendField(new Blockly.FieldTextInput(','), 'sep');
@@ -1275,7 +1274,7 @@ Blockly.Blocks['load_txt'] = {
         .appendField('(only include columns numbered')
         .appendField(new Blockly.FieldTextInput(''), 'usecols')
         .appendField(')');
-    this.setTooltip('Loads a given txt dataset (leave usecols empty to load all)');
+    this.setTooltip('Loads a given txt dataset (leave columns empty to load all, e.g (0,1,4))');
     this.appendEndRowInput();
     this.setOutput(true, 'Array');
     this.setInputsInline(false);
@@ -1287,8 +1286,8 @@ pythonGenerator.forBlock['load_txt'] = function(block) {
   const dataset = block.getFieldValue('txt') || '0';
   const sep = block.getFieldValue('sep') || ',';
   const usecols = block.getFieldValue('usecols') || '';
-  return [`np.loadtxt('${dataset}.txt', delimiter='${sep}'${usecols ? ', usecols=' + usecols : ''})`, pythonGenerator.ORDER_ATOMIC];
-};
+  return [`np.loadtxt('${dataset}', delimiter='${sep}'${usecols ? ', usecols=' + usecols : ''})`, pythonGenerator.ORDER_ATOMIC];
+}; */
 
 //**load from a json file */
 Blockly.Blocks['load_json'] = {
@@ -1307,22 +1306,22 @@ pythonGenerator.forBlock['load_json'] = function(block) {
   return [`pd.read_json('${dataset}')`, pythonGenerator.ORDER_ATOMIC];
 };
 
-//**load from a shapefile */
-Blockly.Blocks['load_shapefile'] = {
+//**load from a raster */
+Blockly.Blocks['load_raster'] = {
   init: function(){
     this.appendDummyInput()
-        .appendField('Load data from shapefile:')
-        .appendField(new Blockly.FieldTextInput(''), 'shp')
-        .appendField('.shp');
-    this.setTooltip('Loads a given shapefile');
+        .appendField('Load a raster image from tif:')
+        .appendField(new Blockly.FieldTextInput(''), 'tif');
+    this.setTooltip('Load a raster image. It is converted into an array of pixel values.');
+    this.setHelpUrl('https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.imread.html');
     this.appendEndRowInput();
     this.setOutput(true, 'Array');
     this.setColour(200);
   },
 };
-pythonGenerator.forBlock['load_shapefile'] = function(block) {
-  const dataset = block.getFieldValue('shp') || '0';
-  return [`gpd.read_file('${dataset}.shp')`, pythonGenerator.ORDER_ATOMIC];
+pythonGenerator.forBlock['load_raster'] = function(block) {
+  const dataset = block.getFieldValue('tif') || '0';
+  return [`plt.imread('${dataset}')`, pythonGenerator.ORDER_ATOMIC];
 };
 
 Blockly.Blocks['arange'] = {

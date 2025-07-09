@@ -97,6 +97,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           </category>
 
           <category name="${Blockly.Msg.Categories["VISUALISATION"]}" colour="#90A4AE">
+            <block type="create_list_XCoords"></block>
+            <block type="create_list_YCoords"></block>
             <block type="plot">
               <value name="Legend">
                 <block type="list_create">
@@ -216,10 +218,9 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
               <block type="read_file"></block>
               <block type="listdir"></block>  
               <block type="load_csv"></block>
-              <block type="load_txt"></block>
               <block type="load_json"></block>
               <block type="request_json_data"></block>
-              <block type="load_shapefile"></block>
+              <block type="load_raster"></block>
             </category>
             <category name="${Blockly.Msg.Categories["DATA_MANIPULATION"]}">
               <block type="convert_column"></block>

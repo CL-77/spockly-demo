@@ -41,6 +41,9 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
         await writeFile(targetPath, fileData);
         globalThis.fileColumns.push('---');
         globalThis.fileColumns.push(...fileData.split('\n')[0].split(','));
+      } else if(extension === "txt") {
+        const fileData = await file.text();
+        await writeFile(targetPath, fileData);
       } else if(extension === "json" || extension === "geojson") {
         const fileData = await file.text();
         await writeFile(targetPath, fileData);
@@ -84,6 +87,8 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
   const getFileTypeChip = () => {
     if (fileType === 'csv') {
       return <Chip label="CSV" size="small" color="primary" />;
+    } else if (fileType === 'txt') {
+      return <Chip label="txt" size="small" color="secondary" />;
     } else if (fileType === 'geojson' || fileType === 'json') {
       return <Chip label="GeoJSON" size="small" color="secondary" />;
     }
@@ -96,6 +101,8 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
   const getUsageInstructions = () => {
     if (fileType === 'csv') {
       return "Use this filename in your load_csv block:";
+    } else if (fileType === 'txt') {
+      return "Use this filename in your load_txt block:";
     } else if (fileType === 'geojson' || fileType === 'json') {
       return "Use this filename in your load_json block:";
     }
@@ -126,7 +133,7 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
         { !uploadStatus && !isUploading && (
           <Box>
             <Typography variant="body1" sx={{ mb: 2, color: isDarkMode ? '#ffffff' : '#000000' }}>
-              Select a CSV, TIF or GeoJSON file to upload to Pyodide:
+              Select a CSV, TXT, TIF or GeoJSON file to upload to Pyodide:
             </Typography>
             <Box
               onDragOver={(e) => e.preventDefault()}
@@ -135,7 +142,7 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
                 const file = e.dataTransfer.files[0];
                 if (!file) return;
               
-                const allowedExtensions = ['csv', 'geojson', 'tif', 'json', 'tiff'];
+                const allowedExtensions = ['csv', 'txt', 'geojson', 'tif', 'json', 'tiff'];
                 const extension = file.name.toLowerCase().split('.').pop();
               
                 if (!allowedExtensions.includes(extension)) {
@@ -158,13 +165,13 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
               }}
             >
               <Typography variant="body2">
-                Drag & drop your CSV, GeoJSON or TIF file here or{ " " }
+                Drag & drop your CSV, TXT, GeoJSON or TIF file here or{ " " }
                 <label htmlFor="file-upload" style={{ color: '#1976d2', cursor: 'pointer', textDecoration: 'underline' }}>
                   choose a data file
                 </label>.
               </Typography>
               <input
-                accept=".csv, .geojson, .tif, .json, .tiff"
+                accept=".csv, .geojson, .txt, .tif, .json, .tiff"
                 style={{ display: 'none' }}
                 id="file-upload"
                 type="file"
@@ -230,7 +237,7 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
             <AlertTitle>Unsupported File Format</AlertTitle>
             <Typography variant="body2">
               The file <strong>{ fileName }</strong> is not supported.<br />
-              Please upload a CSV, GeoJSON or TIF file.
+              Please upload a CSV, TXT, GeoJSON or TIF file.
             </Typography>
           </Alert>
 ) }
