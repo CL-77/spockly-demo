@@ -13,6 +13,7 @@ import { MdCo2 } from "react-icons/md";
 import { Toolbar } from "@mui/material";
 
 import CreateDataDialog from "./CreateDataDialog.jsx";
+import CheckUploadedDataDialog from "./CheckUploadedDataDialog.jsx";
 import SimpleTutorialPanel from "./SimpleTutorialPanel.jsx";
 
 const BlocklyComponent = ({
@@ -30,6 +31,7 @@ const BlocklyComponent = ({
   const [openCreateDataDialog, setOpenCreateDataDialog] = useState(false);
 
   const [showTutorial, setShowTutorial] = useState(false);
+  const [showCheckDataDialog, setShowCheckDataDialog] = useState(false);
 
   // Blockly toolbox definition for Level 1 (Beginner)
   // Change content later
@@ -714,6 +716,21 @@ const BlocklyComponent = ({
           >
             <Upload fontSize="medium" />
           </Button>
+        </Tooltip>
+
+        <Tooltip title="Check uploaded data">
+            <Button
+              id="checkDataButton"
+              variant="outlined"
+              onClick={() => setShowCheckDataDialog(true)}
+              sx={{ ml: 2 }}
+            >
+              Check Uploads
+            </Button>
+            <CheckUploadedDataDialog
+              open={showCheckDataDialog}
+              onClose={() => setShowCheckDataDialog(false)}
+            />
         </Tooltip>
 
         <Tooltip title="Create CSV data manually">
