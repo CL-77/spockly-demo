@@ -88,9 +88,7 @@ const BlocklyComponent = ({
   <category name="Statistics" colour="#BA68C8">
     <block type="calculate_mean"></block>
     <block type="calculate_sd"></block>
-    <block type="quantile_column"></block>
-    <block type="sorted_element_at"></block>
-    <block type="summarize_data"></block>
+    <block type="calculate_quantile"></block>
     <block type="calculate_median"></block>
     <block type="calculate_max"></block>
     <block type="calculate_min"></block>
@@ -278,13 +276,10 @@ const BlocklyComponent = ({
   </category>
 
   <category name="Statistics" colour="#BA68C8">
-    <block type="summary_statistics"></block>
     <block type="calculate_mean"></block>
     <block type="calculate_sd"></block>
-    <block type="quantile_column"></block>
-    <block type="sorted_element_at"></block>
+    <block type="calculate_quantile"></block>
     <block type="calculate_median"></block>
-    <block type="calculate_mse"></block>
     <block type="calculate_max"></block>
     <block type="calculate_min"></block>
     <block type="calculate_sum"></block>
