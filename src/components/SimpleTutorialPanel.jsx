@@ -7,33 +7,35 @@ const tutorialSteps = {
   de: [
     {
       title: "Einführung",
-      content: `In diesem Tutorial lernst du, wie du die CO₂-Daten vom Vulkan Mauna Loa auf Hawaii analysieren und visualisieren kannst. Dort wird seit 1958 kontinuierlich die CO₂-Konzentration in der Atmosphäre gemessen. Diese Daten sind besonders wichtig, weil sie den langfristigen Anstieg von Treibhausgasen zeigen und damit zentrale Hinweise auf den Klimawandel geben. 
+      content: `In diesem Tutorial lernen Sie, wie Sie grundlegende Daten zur Iris analysieren und visualisieren können.
 
-Mit Hilfe von Blockly-Blöcken wirst du lernen, wie man die Daten lädt, untersucht und visualisiert.`
+Mit Blockly-Blöcken lernen Sie, wie Sie die Daten laden, untersuchen und visualisieren können.`
     },
     {
       title: "1. CSV-Datei laden",
-      content: `Öffne in der linken Toolbox die Kategorie **Load Data** und ziehe den Block **load CSV file** in den Editor.
-Gehe anschließend zur Kategorie **Variables**, erstelle eine neue Variable mit dem Namen **co2** und verwende den Block **set VARIABLE to**. Setze den CSV-Block in diesen hinein.
-Gib im CSV-Block den Dateinamen **co2.csv** an.`
+      content: `Öffnen Sie die Kategorie **Download Data** in der Toolbox auf der linken Seite und ziehen Sie den Block **Download sample data** mit der ausgewählten Datei iris.csv hinein.
+Gehen Sie dann zur Kategorie **Variables**, erstellen Sie eine neue Variable mit dem Namen **iris** und verwenden Sie den Block **set Variable to**. Fügen Sie den Block **read file** ein.
+In den CSV-Block geben Sie den Dateinamen **iris.csv** ein.`
     },
     {
       title: "2. Vorschau anzeigen",
-      content: `Nutze den Block **summary of** aus der **Data Inspection** Kategorie und ziehe die Variable **co2** hinein, um dir die Struktur der Daten anzusehen.`
+      content: `Verwenden Sie den Block **print** aus der Kategorie **Basic Functions** und fügen Sie die Variable **iris** ein, um die Struktur des Datensatzes zu untersuchen.`
     },
     {
       title: "3. Durchschnitt berechnen",
-      content: `Ziehe den Block **calculate_mean** aus der **Statistics** Kategorie in den Editor und verwende ihn mit der CO₂-Spalte aus **co2**, z. B. **co2$average**.`
+      content: `Konvertieren Sie zunächst mit dem Block **convert column** , schreiben Sie **petal.length** in den Spaltennamen, wählen Sie den Namen Ihres Datenrahmens und wählen Sie den Typ **Float**.\n`+
+ `Ziehen Sie den Block **Mean_of** aus der Kategorie **Statistics** in den Block **print**. Wenden Sie ihn mit Hilfe des Blocks **Access element** aus der Kategorie **Basic Functions** auf die Spalte **petal.length** an.\n`+
+ `Fügen Sie den String-Block hinzu und schreiben Sie den Spaltennamen in **petal.length**.`
     },
     {
       title: "4. Visualisieren",
-      content: `Zeichne ein Liniendiagramm mit dem Block **plot** aus der **Visualization** Kategorie. X-Achse: **decimal_date**, Y-Achse: **average**.
+      content: `Verwenden Sie den Block **plot** aus der Kategorie **Visualization**, um ein Liniendiagramm zu zeichnen. X-Achse und Y-Achse: Nehmen Sie eine Spalte wie im vorherigen Schritt.
 
-Was fällt dir auf? Gibt es bestimmte Jahre oder Monate mit besonders hohen Werten? Wie hat sich der Durchschnitt über die Zeit verändert?`
+Sie können auch alle Parameter wie Farbe, Punktgröße... ändern. Was fällt Ihnen auf?`
     },
     {
       title: "5. Code generieren",
-      content: `Klicke auf den Button **Generate Code**, um den zugehörigen R-Code zu erzeugen. Überprüfe, ob alle Blöcke korrekt verbunden sind.`
+      content: `Klicke auf den Button **Generate Code**, um den zugehörigen Python-Code zu erzeugen. Überprüfe, ob alle Blöcke korrekt verbunden sind.`
     },
     {
       title: "6. Output anzeigen",
@@ -43,33 +45,35 @@ Was fällt dir auf? Gibt es bestimmte Jahre oder Monate mit besonders hohen Wert
   en: [
     {
       title: "Introduction",
-      content: `In this tutorial, you will learn how to analyze and visualize CO₂ data from the Mauna Loa volcano in Hawaii. Since 1958, atmospheric CO₂ concentrations have been continuously recorded there. These data are especially important as they reveal the long-term increase in greenhouse gases, providing key evidence for climate change.
+      content: `In this tutorial, you will learn how to analyze and visualize basic datas on iris.
 
 With Blockly blocks, you will learn how to load, examine, and visualize the data.`
     },
     {
       title: "1. Load CSV File",
-      content: `Open the **Load Data** category in the toolbox on the left and drag the **load CSV file** block into the editor.
-Then go to the **Variables** category, create a new variable named **co2**, and use the **set VARIABLE to** block. Place the CSV block into it.
-In the CSV block, enter the filename **co2.csv**.`
+      content: `Open the **Download Data** category in the toolbox on the left and drag the **Download sample data** block with iris.csv selected into it.
+Then go to the **Variables** category, create a new variable named **iris**, and use the **set VARIABLE to** block. Place the **read file** block into it.
+In the CSV block, enter the filename **iris.csv**.`
     },
     {
       title: "2. Show Preview",
-      content: `Use the **summary of** block from the **Data Inspection** category and insert the **co2** variable to inspect the structure of the dataset.`
+      content: `Use the **print** block from the **Basic Functions** category and insert the **iris** variable to inspect the structure of the dataset.`
     },
     {
       title: "3. Calculate Mean",
-      content: `Drag the **calculate_mean** block from the **Statistics** category into the editor and apply it to the CO₂ column from **co2**, e.g., **co2$average**.`
+      content: `Firstly, convert with the **convert column** block, write **petal.length** in column name, select your dataframe name and select the type **Float**.\n`+
+      `Drag the **Mean_of** block from the **Statistics** category into the **print** block. Apply it to the column **petal.length** with the help of **access element** bloc from the **Basic Functions** category.\n`+
+      `Add into it the string block and write the column name so **petal.length**.`
     },
     {
       title: "4. Visualize",
-      content: `Use the **plot** block from the **Visualization** category to draw a line chart. X-axis: **decimal_date**, Y-axis: **average**.
+      content: `Use the **plot** block from the **Visualization** category to draw a line chart. X-axis and Y-axis: take a column as in the previous step.
 
-What do you notice? Are there specific years or months with particularly high values? How has the average changed over time?`
+You can change also all parameters as color, points size... What do you notice?`
     },
     {
       title: "5. Generate Code",
-      content: `Click the **Generate Code** button to produce the corresponding R code. Make sure all blocks are properly connected.`
+      content: `Click the **Generate Code** button to produce the corresponding Python code. Make sure all blocks are properly connected.`
     },
     {
       title: "6. Show Output",

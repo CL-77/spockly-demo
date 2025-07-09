@@ -679,6 +679,7 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
           bgcolor: isDarkMode ? "#150e31" : "#f5f5f5",
           mb: 2,
           borderRadius: 4,
+          maxHeight: 88,
         }}
         >
         <Tooltip title="Upload your CSV, GeoJSON or TIF data." arrow>
@@ -711,7 +712,10 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
           <Button
             variant="outlined"
             onClick={ () => setOpenCreateDataDialog(true) }
-            sx={{ ml: 2 }}
+            sx={{ ml: 1,
+              color: isDarkMode ? "#FFFFFF" : "#44A1A0",
+              bgcolor: isDarkMode ? "#4F3C88" : "#FFFFFF",
+             }}
           >
             Create Data
           </Button>
@@ -722,7 +726,7 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
           onClose={ () => setOpenCreateDataDialog(false) }
         />
 
-        <Box id="uploadFileNames" sx={{ ml: 2 }} gap={ 2 } alignItems="center" minWidth={ 0 } width="30%">
+        <Box id="uploadFileNames" sx={{ ml: 2 }} gap={ 2 } alignItems="center" minWidth={ 0 } width="10%">
           { globalThis.files[0] ? `Uploaded file${globalThis.files.length !== 1 ? 's' : ''}: ${globalThis.files.join(', ')}.` : '' }
         </Box>
 
@@ -749,10 +753,10 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
             }}
             id="switchLevelsButton"
           >
-            <ToggleButton value="level1" sx={{ px: 2, py: 1, gap: 1 }}>
+            <ToggleButton value="level1" sx={{ px: 1.5, py: 1, gap: 1 }}>
               <FaBookOpen /> Beginner
             </ToggleButton>
-            <ToggleButton value="level2" sx={{ px: 2, py: 1, gap: 1 }}>
+            <ToggleButton value="level2" sx={{ px: 1.5, py: 1, gap: 1 }}>
               <FaMapMarkedAlt /> Advanced
             </ToggleButton>
           </ToggleButtonGroup>
@@ -762,7 +766,7 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
          <Tooltip title="Start Spockly Tour" arrow>
           <IconButton
             onClick={ () => window?.__startSpocklyTour?.() }
-            sx={{ color: "inherit" }}
+            sx={{ ml: 0, color: "inherit" }}
           >
             <FaQuestionCircle />
           </IconButton>
@@ -771,7 +775,7 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
         <Tooltip title="Show Simple CO₂ Tutorial" arrow>
           <IconButton
             onClick={ () => setShowTutorial(prev => !prev) }
-            sx={{ color: showTutorial ? "green" : "inherit" }}
+            sx={{ ml: 0, color: showTutorial ? "green" : "inherit" }}
           >
             <MdCo2 />
           </IconButton>
