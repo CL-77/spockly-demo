@@ -147,6 +147,8 @@ Blockly.defineBlocksWithJsonArray([
         "options": [["iris", "iris"], ["mtcars", "mtcars"], ["airquality", "airquality"], ["meuse", "meuse"]]
       }
     ],
+	"previousStatement": null,
+	"nextStatement": null,
     "output": "Dataset",
     "colour": "#FFA726",
     "tooltip": "Load a built-in dataset like iris",

@@ -38,42 +38,26 @@ const BlocklyComponent = ({
   <category name="Tests" colour="#5C81A6">
     <block type="head_print"></block>	
 	<block type="install_package"></block>
+	<block type="plot_vector"></block>
 	<block type="load_geojson_to_leaflet"></block>
 	<block type="load_csv_to_leaflet"></block>
   </category>
 
   <category name="Load Data" colour="#FFA726">
     <block type="load_builtin_dataset"></block>
-    <block type="get_dataset"></block>
-	  <block type="load_csv"></block>
-	  <block type="load_geojson"></block>
-	  <block type="load_tif"></block>
+	<block type="load_csv"></block>
+	<block type="load_geojson"></block>
+	<block type="load_tif"></block>
   </category>
 
   <category name="Data Inspection" colour="#FF7043">
-  	<block type="data_summary"></block>
-    <block type="structure_overview"></block>
-    <block type="preview_head_n"></block>
-	<block type="data_table"></block>
+  	<block type="access_column"></block>
+	<block type="structure_overview"></block>
+    <block type="data_summary"></block>
+    <block type="data_table"></block>
 	<block type="length_data"></block>
-	<block type="preview_data"></block>
-	<block type="print_data"></block>
-	<block type="show_structure"></block>
 	<block type="show_tail"></block>
 	<block type="show_rows"></block>
-	<block type="access_column"></block>
-    <block type="rename_column">
-      <value name="COLUMN_NUMBER">
-        <block type="math_number">
-          <field name="NUM"></field>
-        </block>
-      </value>
-      <value name="NEW_NAME">
-        <block type="text">
-          <field name="TEXT"></field>
-        </block>
-      </value>
-    </block>
   </category>
 
   <category name="Variables" colour="#7d4561" custom="VARIABLE"></category>
@@ -93,14 +77,12 @@ const BlocklyComponent = ({
     <block type="divide_values"></block>
     <block type="exp_of"></block>
     <block type="log_of"></block>
-	<block type="x_to_y_mapping"></block>
 	<block type="rnorm_block"></block>
   </category>
   
   <category name="Text" colour="#0f45a3">
     <block type="text"></block>
 	<block type="text_print"></block>
-	<block type="plot_vector"></block>
   </category>
 
   <category name="Statistics" colour="#BA68C8">
@@ -120,6 +102,18 @@ const BlocklyComponent = ({
     <block type="select_columns"></block>
     <block type="subset_rows"></block>
     <block type="subset_column_range"></block>
+	    <block type="rename_column">
+      <value name="COLUMN_NUMBER">
+        <block type="math_number">
+          <field name="NUM"></field>
+        </block>
+      </value>
+      <value name="NEW_NAME">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+    </block>
 	<block type="convert_to_sf"></block>
 	<block type="convert_to_dataframe"></block>
   </category>
@@ -222,40 +216,33 @@ const BlocklyComponent = ({
   <category name="Tests" colour="#5C81A6">
     <block type="head_print"></block>	
 	<block type="install_package"></block>
+	<block type="plot_vector"></block>
+	<block type="load_geojson_to_leaflet"></block>
+	<block type="load_csv_to_leaflet"></block>
   </category>
 
   <category name="Load Data" colour="#FFA726">
     <block type="load_builtin_dataset"></block>
-    <block type="get_dataset"></block>
     <block type="load_csv"></block>
     <block type="load_shapefile"></block>
     <block type="load_raster"></block>
     <block type="load_txt"></block>
     <block type="load_json"></block>
     <block type="load_geojson"></block>
-	  <block type="load_tif"></block>
+	<block type="load_tif"></block>
     <block type="load_csv_url"></block>
     <block type="load_api_data"></block>
 	<block type="load_csv"></block>
 	<block type="load_geojson"></block>
-	<block type="load_tif"></block>
   </category>
 
   <category name="Data Inspection" colour="#FF7043">
   	<block type="data_summary"></block>
     <block type="structure_overview"></block>
-    <block type="preview_head_n"></block>
     <block type="data_shape"></block>
-    <block type="filter_rows"></block>
-    <block type="select_columns"></block>
     <block type="group_by_summarise"></block>
-    <block type="subset_rows"></block>
-    <block type="subset_column_range"></block>
 	<block type="data_table"></block>
 	<block type="length_data"></block>
-	<block type="preview_data"></block>
-	<block type="print_data"></block>
-	<block type="show_structure"></block>
 	<block type="show_tail"></block>
 	<block type="show_rows"></block>
 	<block type="access_column"></block>
@@ -282,14 +269,12 @@ const BlocklyComponent = ({
     <block type="round_value"></block>
     <block type="modulo_values"></block>
     <block type="math_arithmetic"></block>
-	<block type="x_to_y_mapping"></block>
 	<block type="rnorm_block"></block>
   </category>
 
   <category name="Text" colour="#0f45a3">
     <block type="text"></block>
 	<block type="text_print"></block>
-	<block type="plot_vector"></block>
   </category>
 
   <category name="Statistics" colour="#BA68C8">
@@ -306,13 +291,17 @@ const BlocklyComponent = ({
   </category>
 
   <category name="Transformations" colour="#FFD54F">
-	<block type="convert_to_sf"></block>
-	<block type="convert_to_dataframe"></block>
+	<block type="select_columns"></block>
     <block type="sort_array"></block>
     <block type="stack_data"></block>
     <block type="append_array"></block>
     <block type="create_array"></block>
     <block type="slice_file"></block>
+	<block type="filter_rows"></block>
+	<block type="subset_rows"></block>
+    <block type="subset_column_range"></block>
+	<block type="convert_to_sf"></block>
+	<block type="convert_to_dataframe"></block>
   </category>
 
 <category name="Maps" colour="#67c761">
