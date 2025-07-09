@@ -201,6 +201,7 @@ const BlocklyComponent = ({
 
   <category name="Export" colour="#FFB74D">
     <block type="export_plot_png"></block>
+	<block type="export_plot_pdf"></block>
     <block type="export_data_csv"></block>
     <block type="save_workspace"></block>
   </category>
@@ -630,6 +631,13 @@ const BlocklyComponent = ({
   <category name="Raster" colour="#64B5F6">
     <block type="crop_raster"></block>
     <block type="aggregate_raster"></block>
+  </category>
+
+  <category name="Export" colour="#FFB74D">
+    <block type="export_plot_png"></block>
+	<block type="export_plot_pdf"></block>
+    <block type="export_data_csv"></block>
+    <block type="save_workspace"></block>
   </category>
 </xml>
 `;
