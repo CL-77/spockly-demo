@@ -20,6 +20,8 @@ import {
   Paper,
   Snackbar
 } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import { CheckCircle, Error, InsertDriveFile, Map, Forward } from '@mui/icons-material';
 
 // Component for managing file uploads to WebR, including validation, preview, and usage instructions.
@@ -167,18 +169,19 @@ const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
         }}
       >
         Upload Data File
-        <Button
+        <IconButton
+          aria-label="close"
           onClick={handleClose}
           sx={{
-            minWidth: 'auto',
             position: 'absolute',
-            top: 8,
             right: 12,
+            top: 8,
             color: isDarkMode ? '#ffffff' : '#333333'
           }}
+          size="small"
         >
-          ×
-        </Button>
+          <CloseIcon fontSize="small" />
+        </IconButton>
       </DialogTitle>
       
       <DialogContent>

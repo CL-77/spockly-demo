@@ -801,6 +801,7 @@ const WebRRunner = ({ code, isDarkMode, webRRef, setCurrentPackage }) => {
     const initWebR = async () => {
       try {
         await webR.init();
+		window.webR = webR;
         setWebRReady(true);
         if (webRRef) webRRef.current = webR;
 
