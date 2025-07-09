@@ -62,7 +62,7 @@ const FileUploadManager = ({ webRInstance, isDarkMode, open, onClose }) => {
       setFilePath(targetPath);
       setUploadStatus('success');
 
-      // Generate preview for CSV, GeoJSON, or TIF files
+      // Generate preview for CSV files
       if (extension === 'csv') {
         const text = await file.text();
         const rows = text.split('\n').slice(0, 6).map(row => row.split(','));
