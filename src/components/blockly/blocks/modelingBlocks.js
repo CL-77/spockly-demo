@@ -27,28 +27,6 @@ Blockly.defineBlocksWithJsonArray([
     "helpUrl": ""
   },
   {
-    type: "print_block",
-    message0: "print %1",
-    args0: [{ type: "input_value", name: "INPUT" }],
-    previousStatement: null,
-    nextStatement: null,
-    output: null,
-    colour: "#4CAF50",
-    tooltip: "Print an R object",
-    helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/print"
-  },
-  {
-    type: "plot_block",
-    message0: "plot %1",
-    args0: [{ type: "input_value", name: "INPUT" }],
-    previousStatement: null,
-    nextStatement: null,
-    output: null,
-    colour: "#2196F3",
-    tooltip: "Plot an R object",
-    helpUrl: "https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/plot"
-  },
-  {
     "type": "semivariogram",
     "message0": "compute semivariogram of %1 analyzing column %2 with X column %3 and Y column %4",
     "args0": [
@@ -196,6 +174,9 @@ Blockly.Generator.R.forBlock['kriging_interpolation'] = function(block, generato
 `, Blockly.Generator.R.ORDER_ATOMIC];
 };
 
+
+
+
 Blockly.Generator.R.forBlock['idw_interpolation'] = function(block, generator) {
   const data = generator.valueToCode(block, 'DATA', Blockly.Generator.R.ORDER_ATOMIC) || 'NULL';
   const valueCol = generator.valueToCode(block, 'VALUE_COL', Blockly.Generator.R.ORDER_ATOMIC) || '""';
@@ -265,19 +246,16 @@ Blockly.Generator.R.forBlock['kmeans_block'] = function(block, generator) {
   const colsString = selectColumns.length
     ? `c(${selectColumns.map(c => `"${c}"`).join(', ')})`
     : 'NULL';
+
   const rCode = `
 {
   data_df <- ${data}
   km <- kmeans(data_df[, ${colsString}], centers = ${clusters})
-  plot(data_df[, ${colsString}], col = km$cluster, pch = 19,
-       xlab = "${selectColumns[0]}", ylab = "${selectColumns[1]}",
-       main = "K-means Clustering with ${clusters} Clusters")
-  points(km$centers[, 1], km$centers[, 2], col = 1:${clusters},
-         pch = 4, cex = 3, lwd = 3)
-  km 
+  km
 }
 `.trim();
 
   return [rCode, Blockly.Generator.R.ORDER_ATOMIC];
 };
+
 
