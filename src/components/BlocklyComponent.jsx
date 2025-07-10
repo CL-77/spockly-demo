@@ -643,6 +643,35 @@ const BlocklyComponent = ({
     <block type="st_geometry_type"></block>
   </category>
 
+  <category name="Modeling & Interpolation" colour="#A1887F">
+    <label text="Linear Model" web-class="toolboxLabel"></label>
+    <block type="linear_model_block"></block>
+
+    <label text="Logistic Regression" web-class="toolboxLabel"></label>
+    <block type="logistic_regression_block"></block>
+
+    <label text="Semivariogram" web-class="toolboxLabel"></label>
+    <block type="semivariogram"></block>
+
+    <label text="Kriging Interpolation-Ordinary" web-class="toolboxLabel"></label>
+    <block type="kriging_interpolation"></block>
+
+    <label text="IDW Interpolation" web-class="toolboxLabel"></label>
+    <block type="idw_interpolation"></block>
+
+    <label text="K-Means Clustering" web-class="toolboxLabel"></label>
+    <block type="kmeans_block">
+      <value name="COLUMNS">
+        <shadow type="text">
+          <field name="TEXT">x col, y col</field>
+        </shadow>
+      </value>
+    </block>
+
+    <label text="Random Forest" web-class="toolboxLabel"></label>
+    <block type="random_forest_block"></block>-->
+  </category>
+
   <category name="Raster" colour="#64B5F6">
     <block type="crop_raster"></block>
     <block type="aggregate_raster"></block>
