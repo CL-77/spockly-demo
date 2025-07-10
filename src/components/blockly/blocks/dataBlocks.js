@@ -8,8 +8,6 @@ Blockly.defineBlocksWithJsonArray([
 		{ type: "field_input", name: "COLUMN", text: "column_name" },
 		{ type: "input_value", name: "DATA", check: ["DataFrame", "Variable"] }
 	  ],
-	  previousStatement: null,
-	  nextStatement: null,
 	  output: "Vector",
 	  colour: "#FF7043",
 	  tooltip: "Access a specific column from a dataset",
