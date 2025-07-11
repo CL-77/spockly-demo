@@ -63,7 +63,9 @@ const CheckUploadedDataDialog = ({ open, onClose }) => {
           }));
           setFilePreviews(previews);
           const initialExpanded = {};
-          previews.forEach(p => { initialExpanded[p.filename] = false; });
+          previews.forEach(p => {
+            initialExpanded[p.filename] = previews.length === 1;
+          });
           setExpandedPreviews(initialExpanded);
         }
       } catch (error) {
