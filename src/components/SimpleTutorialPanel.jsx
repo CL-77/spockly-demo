@@ -308,11 +308,14 @@ const SimpleTutorialPanel = ({ onClose }) => {
         borderRadius: 4,
         boxShadow: 3,
         maxWidth: 400,
+        maxHeight: '80vh',
         position: "fixed",
         top: 100,
         right: 20,
         zIndex: 1000,
-        cursor: "grab"
+        cursor: "grab",
+        display: 'flex',
+        flexDirection: 'column'
       }}
     >
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={1} className="tutorial-header">
@@ -325,7 +328,7 @@ const SimpleTutorialPanel = ({ onClose }) => {
         </Box>
       </Box>
 
-      <Box sx={{ mb: 2 }}>
+      <Box sx={{ flexGrow: 1, overflowY: 'auto', mb: 2 }}>
         <ReactMarkdown children={step.content} />
       </Box>
 
