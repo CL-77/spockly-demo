@@ -34,106 +34,6 @@ pythonGenerator.forBlock["math_square"] = function (block, generator) {
   return [`(${num} ** 2)`, pythonGenerator.ORDER_EXPONENTIATION];
 };
 
-/**
- * Statement Input Block (loop)
- */
-Blockly.Blocks["repeat_times"] = {
-  init: function () {
-    this.appendValueInput("TIMES")
-        .setCheck("Number")
-        .appendField("repeat");
-    this.appendStatementInput("DO")
-        .appendField("do");
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour(120);
-    this.setTooltip("Repeat N times");
-  },
-};
-pythonGenerator.forBlock["repeat_times"] = function (block, generator) {
-  const times =
-    generator.valueToCode(block, "TIMES", pythonGenerator.ORDER_NONE) || "0";
-  const branch = generator.statementToCode(block, "DO");
-  return `for i in range(${times}):\n${branch}`;
-};
-
-/**
- * Length of str (returns int)
- */
-Blockly.Blocks["length_of_str"] = {
-  init: function(){
-    this.appendValueInput('STR')
-    .appendField('length of')
-    .setCheck('String');
-    this.appendDummyInput();
-    this.appendEndRowInput();
-    this.setOutput(true, 'Number');
-    this.setColour(90);
-    this.setTooltip('Returns the length of a given string');
-  },
-};
-pythonGenerator.forBlock["length_of_str"] = function(block, generator) {
-  const length = generator.valueToCode(block, 'STR', pythonGenerator.ORDER_NONE) || '0';
-  return [`len(${length})`, pythonGenerator.ORDER_ATOMIC];
-};
-
-/**Block modulo**/
-Blockly.Blocks['modulo'] = {
-  init: function() {
-    this.appendValueInput('NAME')
-    .setAlign(Blockly.inputs.Align.RIGHT)
-      .appendField(new Blockly.FieldNumber(0), 'a')
-      .appendField('modulo')
-      .appendField(new Blockly.FieldNumber(0), 'b');
-    this.setOutput(true, 'Number');
-    this.setTooltip('Module: returns the remainder of a division');
-    this.setColour(230);
-  }
-};
-pythonGenerator.forBlock['modulo'] = function(block) {
-  const number_a = block.getFieldValue('a');
-  const number_b = block.getFieldValue('b');
-  return [`(${number_a} % ${number_b})`, pythonGenerator.ORDER_MULTIPLICATIVE];
-}
-
-/**
- * Operators block
- */
-Blockly.Blocks['operators'] = {
-  init: function() {
-    this.appendValueInput('VALUE')
-        .setCheck(['Boolean', 'Number']);
-    this.appendValueInput('VALUE2')
-        .setCheck(['Boolean', 'Number'])
-        .appendField(new Blockly.FieldDropdown([
-          ['XOR', 'XOR'],
-          ['AND', 'AND'],
-          ['OR', 'OR'],
-          ['NOT', 'NOT']
-        ]), 'NAME');
-    this.setInputsInline(true)
-    this.setOutput(true, 'Boolean');
-    this.setTooltip('All the basic logical operators');
-    this.setColour(0);
-  }
-};
-pythonGenerator.forBlock['operators'] = function(block, generator) {
-  
-  const dropdown_name = block.getFieldValue('NAME');
-  const valu = generator.valueToCode(block, 'VALUE', pythonGenerator.ORDER_ATOMIC);
-  const valu2 = generator.valueToCode(block, 'VALUE2', pythonGenerator.ORDER_ATOMIC);
-
-  switch (dropdown_name) {
-    case 'AND':
-      return [`(${valu} & ${valu2})`, pythonGenerator.ORDER_LOGICAL_AND];
-    case 'OR':
-      return [`(${valu} | ${valu2})`, pythonGenerator.ORDER_LOGICAL_OR];
-    case 'XOR':
-      return [`(${valu} ^ ${valu2})`, pythonGenerator.ORDER_BITWISE_XOR];
-    case 'NOT':
-      return [`(not ${valu2})`, pythonGenerator.ORDER_LOGICAL_NOT];
-  }
-}
 
 /** Mathematical constants */
 Blockly.Blocks['consts'] = {
@@ -156,35 +56,6 @@ pythonGenerator.forBlock['consts'] = function(block) {
   return [`np.${dropdown_name}`, pythonGenerator.ORDER_ATOMIC];
 }
 
-/************************
- * 
- * LOADING BLOCKS
- * 
- ************************/
-/**
- * Load csv file
- */
-Blockly.Blocks['load_csv'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Load data from CSV or TXT file:')
-        .appendField(new Blockly.FieldTextInput('file.csv'), 'CSV');
-    this.appendDummyInput()
-        .appendField('with separator')
-        .appendField(new Blockly.FieldTextInput(','), 'sep');
-    this.setTooltip('Loads a given CSV or TXT dataset');
-    this.appendEndRowInput();
-    this.setOutput(true, 'Array');
-    this.setHelpUrl('https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html');
-    this.setColour(200);
-  },
-};
-pythonGenerator.forBlock['load_csv'] = function(block) {
-  const dataset = block.getFieldValue('CSV') || '';
-  const separator = block.getFieldValue('sep') || ',';
-  return [`pd.read_csv('${dataset}', sep = '${separator}')`, pythonGenerator.ORDER_ATOMIC];
-};
-      
 /** sqrt block**/
 Blockly.Blocks["sqrt_of"] = {
   init: function () {
@@ -274,6 +145,25 @@ pythonGenerator.forBlock["round"] = function (block, generator) {
   return [`np.round(${num})`, pythonGenerator.ORDER_ATOMIC];
 };
 
+/**Block modulo**/
+Blockly.Blocks['modulo'] = {
+  init: function() {
+    this.appendValueInput('NAME')
+    .setAlign(Blockly.inputs.Align.RIGHT)
+      .appendField(new Blockly.FieldNumber(0), 'a')
+      .appendField('modulo')
+      .appendField(new Blockly.FieldNumber(0), 'b');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Module: returns the remainder of a division');
+    this.setColour(230);
+  }
+};
+pythonGenerator.forBlock['modulo'] = function(block) {
+  const number_a = block.getFieldValue('a');
+  const number_b = block.getFieldValue('b');
+  return [`(${number_a} % ${number_b})`, pythonGenerator.ORDER_MULTIPLICATIVE];
+}
+
 //** boolean blocks*/
 Blockly.Blocks['bool'] = {
   init: function() {
@@ -284,7 +174,7 @@ Blockly.Blocks['bool'] = {
         ]), 'drop');
     this.setOutput(true, 'Boolean');
     this.setTooltip('Boolean value');
-    this.setColour(230);
+    this.setColour(95);
   }
 };
 pythonGenerator.forBlock['bool'] = function(block) {
@@ -297,9 +187,9 @@ Blockly.Blocks['bool1'] = {
     this.appendDummyInput('')
         .appendField('True');
     this.setOutput(true, 'Boolean');
-    this.setTooltip('Boolean value');
+    this.setTooltip('Boolean value: True');
     this.setHelpUrl('');
-    this.setColour(230);
+    this.setColour(95);
   }
 };
 pythonGenerator.forBlock['bool1'] = function(block) {
@@ -313,13 +203,293 @@ Blockly.Blocks['bool2'] = {
     this.setOutput(true, 'Boolean');
     this.setTooltip('Boolean value False');
     this.setHelpUrl('');
-    this.setColour(230);
+    this.setColour(95);
   }
 };
 pythonGenerator.forBlock['bool2'] = function() {
   return ['False', pythonGenerator.ORDER_ATOMIC];
 }
 
+/**
+ * Value to boolean
+ */
+Blockly.Blocks['to_bool'] = {
+  init: function() {
+    this.appendValueInput('NAME')
+      .appendField('convert to boolean');
+    this.setInputsInline(true)
+    this.setOutput(true, 'Boolean');
+    this.setTooltip('Transform a value into a boolean: False for 0 or empty elements, else True');
+    this.setHelpUrl('https://www.geeksforgeeks.org/python/bool-in-python/');
+    this.setColour(95);
+  }
+};
+pythonGenerator.forBlock['to_bool'] = function(block, generator) {
+  const value_name = generator.valueToCode(block, 'NAME', pythonGenerator.ORDER_ATOMIC);
+  return [`bool(${value_name})`, pythonGenerator.ORDER_ATOMIC];
+}
+
+/************************
+ * 
+ * LOADING BLOCKS
+ * 
+ ************************/
+/**
+ * Load csv file
+ */
+Blockly.Blocks['load_csv'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Load data from CSV or TXT file:')
+        .appendField(new Blockly.FieldTextInput('file.csv'), 'CSV');
+    this.appendDummyInput()
+        .appendField('with separator')
+        .appendField(new Blockly.FieldTextInput(','), 'sep');
+    this.setTooltip('Loads a given CSV or TXT dataset');
+    this.appendEndRowInput();
+    this.setOutput(true, 'Array');
+    this.setTooltip('Load a CSV or TXT file. Write the name of the uploaded file previously.')
+    this.setHelpUrl('https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html');
+    this.setColour(210);
+  },
+};
+pythonGenerator.forBlock['load_csv'] = function(block) {
+  const dataset = block.getFieldValue('CSV') || '';
+  const separator = block.getFieldValue('sep') || ',';
+  return [`pd.read_csv('${dataset}', sep = '${separator}')`, pythonGenerator.ORDER_ATOMIC];
+};
+      
+//**load from txt */
+/* Blockly.Blocks['load_txt'] = {
+  init: function(){
+    this.appendDummyInput()
+        .appendField('Load data from txt')
+        .appendField(new Blockly.FieldTextInput(''), 'txt');
+    this.appendDummyInput()
+        .appendField('with separator')
+        .appendField(new Blockly.FieldTextInput(','), 'sep');
+    this.appendDummyInput()
+        .appendField('(only include columns numbered')
+        .appendField(new Blockly.FieldTextInput(''), 'usecols')
+        .appendField(')');
+    this.setTooltip('Loads a given txt dataset (leave columns empty to load all, e.g (0,1,4))');
+    this.appendEndRowInput();
+    this.setOutput(true, 'Array');
+    this.setInputsInline(false);
+    this.setHelpUrl('https://numpy.org/doc/2.2/reference/generated/numpy.loadtxt.html');
+    this.setColour(210);
+  },
+};
+pythonGenerator.forBlock['load_txt'] = function(block) {
+  const dataset = block.getFieldValue('txt') || '0';
+  const sep = block.getFieldValue('sep') || ',';
+  const usecols = block.getFieldValue('usecols') || '';
+  return [`np.loadtxt('${dataset}', delimiter='${sep}'${usecols ? ', usecols=' + usecols : ''})`, pythonGenerator.ORDER_ATOMIC];
+}; */
+
+//**load from a json file */
+Blockly.Blocks['load_json'] = {
+  init: function(){
+    this.appendDummyInput()
+        .appendField('Load data from json:')
+        .appendField(new Blockly.FieldTextInput(''), 'json')
+    this.setTooltip('Loads a given json file');
+    this.setHelpUrl('https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_json.html')
+    this.appendEndRowInput();
+    this.setOutput(true, 'Array');
+    this.setColour(210);
+  },
+};
+pythonGenerator.forBlock['load_json'] = function(block) {
+  const dataset = block.getFieldValue('json') || 'file.json';
+  return [`pd.read_json('${dataset}')`, pythonGenerator.ORDER_ATOMIC];
+};
+
+//**load from a raster */
+Blockly.Blocks['load_raster'] = {
+  init: function(){
+    this.appendDummyInput()
+        .appendField('Load a raster image from tif:')
+        .appendField(new Blockly.FieldTextInput(''), 'tif');
+    this.setTooltip('Load a raster image. It is converted into an array of pixel values.');
+    this.setHelpUrl('https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.imread.html');
+    this.appendEndRowInput();
+    this.setOutput(true, 'Array');
+    this.setColour(210);
+  },
+};
+pythonGenerator.forBlock['load_raster'] = function(block) {
+  const dataset = block.getFieldValue('tif') || '0';
+  return [`plt.imread('${dataset}')`, pythonGenerator.ORDER_ATOMIC];
+};
+
+Blockly.Blocks['request_json_data'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Request JSON data')
+        .appendField(new Blockly.FieldTextInput('http://example.com/file.json', (url) => url.match(/^[a-z]{4,5}:\/\/[A-Za-zÀ-ÖØ-öø-ÿ0-9./:_-]*?\.[a-z]{2,6}/) ? url : 'ERROR!'), 'url');
+    this.setOutput(true, '');
+    this.setHelpUrl('https://python-visualization.github.io/folium/latest/user_guide/geojson/choropleth.html');
+    this.setTooltip('Request JSON data from a given URL');
+    this.setColour('210');
+  }
+}
+pythonGenerator.forBlock['request_json_data'] = function(block) {
+  const url = block.getFieldValue('url') || '';
+  return [`requests.get('${url}').json()\n`, pythonGenerator.ORDER_ATOMIC];
+};
+
+// Blockly.Blocks['create_folder'] = {
+//   init: function() {
+//     this.appendDummyInput('')
+//         .appendField('Create folder')
+//         .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER');
+//     this.setPreviousStatement(true);
+//     this.setNextStatement(true);
+//     this.setColour(210);
+//     this.setTooltip('Create a folder to store files.');
+//   }
+// };
+// pythonGenerator.forBlock['create_folder'] = function(block) {
+//   const folder = block.getFieldValue('FOLDER') || 'data';
+//   return '' +
+//     `if not os.path.exists('${folder}'):\n` +
+//         `\tos.mkdir('${folder}')\n`;
+// };
+
+Blockly.Blocks['func_download'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Download (from URL)')
+        .appendField(new Blockly.FieldTextInput('http://file.csv'), 'NAME');
+    this.setTooltip('Use function to download file from URL.');
+    this.setNextStatement(true);
+    this.setPreviousStatement(true);
+    this.setColour(210);
+  }
+}
+pythonGenerator.forBlock['func_download'] = function(block) {
+  const url = block.getFieldValue('NAME') || 'http://file.csv';
+  return `download('${url}')\n`
+}
+
+Blockly.Blocks['read_file'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Read file')
+        .appendField(new Blockly.FieldTextInput('file.csv'), 'NAME');
+    this.setTooltip('Use function to read file with GeoPandas.');
+    this.setOutput(true)
+    this.setColour(210);
+  }
+};
+pythonGenerator.forBlock['read_file'] = function(block,generator) {
+  const fileName = block.getFieldValue('NAME');
+  return [`gpd.read_file('${fileName}')`, pythonGenerator.ORDER_ATOMIC];
+}
+
+// Blockly.Blocks['write_file'] = {
+//   init: function() {
+//     this.appendDummyInput()
+//         .appendField('Create GeoPackage')
+//         .appendField(new Blockly.FieldTextInput('file_name'), 'NAME')
+//         .appendField('.gpkg');
+//     this.appendValueInput('RES')
+//         .appendField('With data');
+//     this.setTooltip('Write to given output folder. The format of this file is GeoPackage (.gpkg). A variable is expected as input.');
+//     this.setNextStatement(true);
+//     this.setPreviousStatement(true);
+//     this.setColour(210);
+//   }
+// }
+// pythonGenerator.forBlock['write_file'] = function(block, generator) {
+//   const fileName = block.getFieldValue('NAME');
+//   const res = generator.valueToCode(block, 'RES', pythonGenerator.ORDER_ATOMIC);
+//   return `${res}.to_file(driver='GPKG', filename='${fileName}.gpkg')\n`
+// }
+
+// Blockly.Blocks['chdir'] = {
+//   init: function() {
+//     this.appendDummyInput()
+//         .appendField('Change current directory to')
+//         .appendField(new Blockly.FieldTextInput('path'), 'PATH');
+//     this.setTooltip('Change directory to given path');
+//     this.setNextStatement(true);
+//     this.setPreviousStatement(true);
+//     this.setColour(210); 
+//   }
+// }
+// pythonGenerator.forBlock['chdir'] = function(block) {
+//   const path = block.getFieldValue('PATH');
+//   return `\nos.chdir('${path}')`;
+// }
+
+// Blockly.Blocks['getDir'] = {
+//   init: function() {
+//     this.appendDummyInput()
+//         .appendField('Get current directory');
+//     this.setTooltip('Get the current working directory')
+//     this.setOutput(true, 'String');
+//     this.setColour(210);
+//   }
+// }
+// pythonGenerator.forBlock['getDir'] = function() {
+//   return [`os.path.abspath(os.getcwd())`, pythonGenerator.ORDER_ATOMIC];
+// }
+
+Blockly.Blocks['sampleDataA'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Download sample data')
+        .appendField(new Blockly.FieldDropdown([
+          ['iris.csv', 'https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv'],
+          ['zinc_dataset.csv', 'https://gist.githubusercontent.com/KSR2001/7c4937e0ec8a7eb6e146d9e8f3e052cd/raw/b9d450220ce0e11b732a99a02a5dc1107583bec9/zinc_dataset.csv'],
+          ['grid.csv', 'https://gist.githubusercontent.com/vivien789/cc1072281ccc542affbc0676cc852615/raw/3559558e3690b1962a83b2191f3943ec18813b79/grid.csv'],
+          ['litter.csv', 'https://gist.githubusercontent.com/MatteoBRGR/ef8230eed8a33d6febb5c4399582b161/raw/d2b0164b295e2e8055e449a07109a64c6f5bc877/litter.csv'],
+          ['trashCans.csv', 'https://gist.githubusercontent.com/MatteoBRGR/d0b377baabc494ab9de1edba2c2dd893/raw/3d5cefe34ff669d399da2f42c8b7e19f501658a3/trashCans.csv']
+        ]), 'NAME');
+    this.setTooltip('Download sample data from GitHub Gist.');
+    this.setNextStatement(true);
+    this.setPreviousStatement(true);
+    this.setColour(210); 
+  }
+}
+pythonGenerator.forBlock['sampleDataA'] = function(block) {
+  const dataset = block.getFieldValue('NAME') ||  'https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv';
+  return `download('${dataset}')\n`;
+}
+
+Blockly.Blocks['sampleDataB'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Download sample data (iris.csv)');
+    this.setTooltip('Download Iris sample data from the Internet.');
+    this.setNextStatement(true);
+    this.setPreviousStatement(true);
+    this.setColour(210); 
+  }
+}
+pythonGenerator.forBlock['sampleDataB'] = function(block) {
+  return `download('https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv')\n`;
+}
+
+Blockly.Blocks['listdir'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('List all directories in path')
+        .appendField(new Blockly.FieldTextInput('name'), 'PATH');
+    this.setTooltip('List directory of given path');
+    this.setOutput(true);
+    this.setColour(210); 
+  }
+}
+pythonGenerator.forBlock['listdir'] = function(block) {
+  const path = block.getFieldValue('PATH') || '';
+  return [`os.listdir(${path ? '"' + path + '"' : ''})`, pythonGenerator.ORDER_ATOMIC];
+}
+
+
+//  STATISTICS BLOCKS
 /** 
  * Mean of array of numbers
  */
@@ -330,7 +500,7 @@ Blockly.Blocks["mean"] = {
     .appendField("Mean of");
     this.setOutput(true, "Number");
     this.setColour(150);
-    this.setTooltip("Returns the mean of an array of numbers");
+    this.setTooltip("Returns the mean of an array of numbers. To be used mainly on a column.");
   },
 };
 pythonGenerator.forBlock["mean"] = function(block, generator) {
@@ -349,7 +519,7 @@ Blockly.Blocks["median"] = {
     .appendField("Median of");
     this.setOutput(true, "Number");
     this.setColour(150);
-    this.setTooltip("Returns the median of an array of numbers");
+    this.setTooltip("Returns the median of an array of numbers. To be used mainly on a column.");
   },
 };
 pythonGenerator.forBlock["median"] = function(block, generator) {
@@ -368,7 +538,7 @@ Blockly.Blocks["sum"] = {
     .appendField("Sum of");
     this.setOutput(true, "Number");
     this.setColour(150);
-    this.setTooltip("Returns the sum of an array of numbers");
+    this.setTooltip("Returns the sum of an array of numbers. To be used mainly on a column.");
   },
 };
 pythonGenerator.forBlock["sum"] = function(block, generator) {
@@ -387,7 +557,7 @@ Blockly.Blocks["std"] = {
     .appendField("Standard deviation of");
     this.setOutput(true, "Number");
     this.setColour(150);
-    this.setTooltip("Returns the standard deviation of an array of numbers");
+    this.setTooltip("Returns the standard deviation of an array of numbers. To be used mainly on a column.");
   },
 };
 pythonGenerator.forBlock["std"] = function(block, generator) {
@@ -406,7 +576,7 @@ Blockly.Blocks["mean_squared"] = {
     .appendField("Mean squared error of");
     this.setOutput(true, "Number");
     this.setColour(150);
-    this.setTooltip("Returns the mean squared error of an array of numbers");
+    this.setTooltip("Returns the mean squared error of an array of numbers. To be used mainly on a column.");
   },
 };
 pythonGenerator.forBlock["mean_squared"] = function(block, generator) {
@@ -424,7 +594,7 @@ Blockly.Blocks['max'] = {
         .setCheck('Array')
         .appendField('Maximum of');
     this.setOutput(true, 'Number');
-    this.setTooltip('"Returns the maximum of an array of numbers"');
+    this.setTooltip("Returns the maximum of an array of numbers. To be used mainly on a column.");
     this.setHelpUrl('');
     this.setColour(150);
   }
@@ -444,7 +614,7 @@ Blockly.Blocks['min'] = {
     .setCheck('Array')
       .appendField('Minimum of');
     this.setOutput(true, 'Number');
-    this.setTooltip('Returns the minimum of an array of numbers');
+    this.setTooltip('Returns the minimum of an array of numbers. To be used mainly on a column.');
     this.setColour(150);
   }
 };
@@ -453,6 +623,10 @@ pythonGenerator.forBlock["min"] = function(block, generator) {
     generator.valueToCode(block, "minimum", pythonGenerator.ORDER_NONE) || "0";
   return [`np.min(${mini})`, pythonGenerator.ORDER_ATOMIC];
 };
+
+/**
+ * Manipulation data blocks
+ */
                 
 /* Slice iterable */
 Blockly.Blocks['slice'] = {
@@ -465,7 +639,7 @@ Blockly.Blocks['slice'] = {
         .appendField(':')
         .appendField(new Blockly.FieldNumber("0"), "VAL2");
     this.setOutput(true);
-    this.setTooltip('Slice a variable according to given indexes.')
+    this.setTooltip('Slice a variable (list, array) according to given indexes.')
     this.setColour(200);
   }
 };
@@ -500,136 +674,6 @@ pythonGenerator.forBlock['slice_file'] = function(block, generator) {
   return [`${Var}[${cond}]`, pythonGenerator.ORDER_COLLECTION]
 };
 
-Blockly.Blocks['list_access'] = {
-  init: function() {
-    this.appendDummyInput('NAME')
-        .appendField(new Blockly.FieldVariable("VAR_NAME"), "LIST")
-        .appendField('[');
-    this.appendValueInput('CNAME');
-    this.appendEndRowInput()
-        .appendField(']');
-    this.setInputsInline(true);
-    this.setOutput(true);
-    this.setTooltip('Access an element in a given list');
-    this.setColour(200);
-  }
-};
-pythonGenerator.forBlock['list_access'] = function(block, generator) {
-  const varName = block.getFieldValue('LIST') || '0';
-  const getVar = block.workspace.getVariableById(varName);
-  const listName = getVar ? getVar.name : 'undefined';
-  const elem = generator.valueToCode(block, 'CNAME', pythonGenerator.ORDER_ATOMIC);
-  return [`${listName}[${elem}]`, pythonGenerator.ORDER_ATOMIC]
-};
-
-/**
- * Block for creating a list
- */
-
-Blockly.Blocks['list_create'] = {
-  init: function() {
-    this.itemCount_ = 1;
-    this.appendValueInput('element_0')
-        .appendField('create list');
-    this.setInputsInline(false);
-    const appendFieldPlusIcon = new Blockly.FieldImage(
-      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='icon icon-tabler icon-tabler-plus' width='60' height='60' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath stroke='none' d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M12 5l0 14' /%3E%3Cpath d='M5 12l14 0' /%3E%3C/svg%3E",
-      16,
-      16,
-      'Add',
-      function (block) {
-        block.sourceBlock_.appendArrayElementInput()
-      }
-    )
-    this.appendDummyInput('close').appendField(appendFieldPlusIcon);
-    this.setColour(230);
-    this.setOutput(true, 'List');
-    this.setTooltip('Create a Python list');
-  },
-
-  saveExtraState: function() {
-    return {
-      itemCount: this.itemCount_,
-    }
-  },
-
-  loadExtraState: function(state) {
-    this.itemCount_ = state['itemCount']
-    this.updateShape()
-  },
-
-  appendArrayElementInput: function() {
-    Blockly.Events.setGroup(true)
-    const oldExtraState = getExtraBlockState(this)
-    this.itemCount_ += 1
-    const newExtraState = getExtraBlockState(this)
-    Blockly.Events.fire(new Blockly.Events.BlockChange(this, 'mutation', null, oldExtraState, newExtraState))
-    Blockly.Events.setGroup(false)
-    this.updateShape()
-  },
-
-  deleteArrayElementInput: function(inputToDelete) {
-    const oldExtraState = getExtraBlockState(this)
-    Blockly.Events.setGroup(true)
-    var inputNameToDelete = inputToDelete.name
-    var inputIndexToDelete = Number(inputNameToDelete.match(/\d+/)[0])
-    var substructure = this.getInputTargetBlock(inputNameToDelete)
-    if (substructure) substructure.dispose(true, true)
-    this.removeInput(inputNameToDelete)
-    this.itemCount_ -= 1
-    for (var i = inputIndexToDelete + 1; i <= this.itemCount_; i++) {
-      var input = this.getInput('element_' + i)
-      input.name = 'element_' + (i - 1)
-    }
-
-    const newExtraState = getExtraBlockState(this)
-    Blockly.Events.fire(new Blockly.Events.BlockChange(this, 'mutation', null, oldExtraState, newExtraState))
-    Blockly.Events.setGroup(false)
-  },
-
-  updateShape: function() {
-    for (let i = 1; i < this.itemCount_; i++) {
-      if (!this.getInput('element_' + i)) {
-        const appended_input = this.appendValueInput('element_' + i)
-
-        var deleteArrayElementIcon = new Blockly.FieldImage(
-          `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='icon icon-tabler icon-tabler-minus' width='60' height='60' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath stroke='none' d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M5 12l14 0' /%3E%3C/svg%3E`,
-          16,
-          16,
-          'Remove',
-          function (block) {
-            block.sourceBlock_.deleteArrayElementInput(appended_input)
-          }
-        )
-        appended_input.appendField(deleteArrayElementIcon, 'delete_' + i)
-
-        this.moveInputBefore('element_' + i, 'close')
-      }
-    }
-  },
-}
-pythonGenerator.forBlock['list_create'] = function(block, generator) {
-  const elements = [];
-  for (let i = 0; i < block.itemCount_; i++) {
-    elements.push(generator.valueToCode(block, 'element_' + i, pythonGenerator.ORDER_NONE) || 'None');
-  }
-  return [`[${elements.join(', ')}]`, pythonGenerator.ORDER_ATOMIC];
-};
-function getExtraBlockState(block) {
-  if (block.saveExtraState) {
-    const state = block.saveExtraState()
-    return state ? JSON.stringify(state) : ''
-  } else if (block.mutationToDom) {
-    const state = block.mutationToDom()
-    return state ? Blockly.Xml.domToText(state) : ''
-  }
-  return ''
-}
-
-/**
- * Statistical blocks
- */
-
 //**Shape of data */
 Blockly.Blocks['data_shape'] = {
   init: function() {
@@ -638,7 +682,7 @@ Blockly.Blocks['data_shape'] = {
         .appendField('Data shape');
     this.setInputsInline(true)
     this.setOutput(true, 'tuple');
-    this.setTooltip('Find shape of data');
+    this.setTooltip('Find shape of a data array.');
     this.setHelpUrl('https://numpy.org/devdocs/reference/generated/numpy.shape.html');
     this.setColour(200);
   }
@@ -646,6 +690,32 @@ Blockly.Blocks['data_shape'] = {
 pythonGenerator.forBlock['data_shape'] = function(block, generator) {
   const data = generator.valueToCode(block, 'data', pythonGenerator.ORDER_ATOMIC);
   return [`np.shape(${data})`, pythonGenerator.ORDER_COLLECTION];
+};
+
+//**reshape an array */
+Blockly.Blocks['reshape'] = {
+  init: function() {
+    this.appendValueInput('NAME')
+    .setCheck('Array')
+      .appendField('Reshape array', 'DATA');
+    this.appendValueInput('rows')
+        .setCheck('Number')
+        .appendField('Number of arrays');
+    this.appendValueInput('columns')
+        .setCheck('Number')
+        .appendField('Elements per array');
+    this.setInputsInline(false)
+    this.setOutput(true, 'Array');
+    this.setTooltip('Reshape an array. Write the rows number and the colmuns number that you want.');
+    this.setHelpUrl('https://www.w3schools.com/python/numpy/numpy_array_reshape.asp');
+    this.setColour(200);
+  }
+};
+pythonGenerator.forBlock['reshape'] = function(block, generator) {
+  const value_array = generator.valueToCode(block, 'NAME', pythonGenerator.ORDER_COLLECTION);
+  const value_rows = generator.valueToCode(block, 'rows', pythonGenerator.ORDER_ATOMIC);
+  const value_columns = generator.valueToCode(block, 'columns', pythonGenerator.ORDER_ATOMIC);
+  return [`np.reshape(${value_array}, (${value_rows},${value_columns}))`, pythonGenerator.ORDER_ATOMIC];
 };
 
 //**stacking data */
@@ -662,7 +732,8 @@ Blockly.Blocks['stacking'] = {
     .setCheck('Array');
     this.setInputsInline(true)
     this.setOutput(true, 'Array');
-    this.setTooltip('Stack the data by rows or columns');
+    this.setTooltip('Stack the data by rows or columns.');
+    this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.hstack.html')
     this.setColour(200);
   }
 };
@@ -678,6 +749,27 @@ pythonGenerator.forBlock['stacking'] = function(block, generator) {
   }
 }
 
+/**
+ * Sort a list
+ */
+
+Blockly.Blocks['sort'] = {
+  init: function() {
+    this.appendValueInput('CNAME')
+      .appendField('list to sort')
+      .setCheck('List');
+    this.setInputsInline(true)
+    this.setOutput(true, 'List');
+    this.setTooltip('Sort an array (one- or multidimensionl)');
+    this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.sort.html');
+    this.setColour(95);
+  }
+};
+pythonGenerator.forBlock['sort'] = function(block, generator) {
+  const value_name = generator.valueToCode(block, 'CNAME', pythonGenerator.ORDER_ATOMIC);
+  return [`np.sort(np.array(${value_name}))`, pythonGenerator.ORDER_ATOMIC];
+}
+
 //** create an array*/
 Blockly.Blocks['create_array'] = {
   init: function() {
@@ -686,6 +778,7 @@ Blockly.Blocks['create_array'] = {
         .appendField('Create array with');
     this.setOutput(true, 'Array');
     this.setTooltip('Create an array with np.array()');
+    this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.array.html');
     this.setColour(200);
   }
 };
@@ -734,7 +827,8 @@ Blockly.Blocks['delete_object'] = {
         .appendField('in');
     this.setInputsInline(true);
     this.setOutput(true, 'Array');
-    this.setTooltip('Delete an object in an array');
+    this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.delete.html')
+    this.setTooltip('Delete an object (columns, values) in an array');
     this.setColour(195);
   }
 };
@@ -755,8 +849,8 @@ Blockly.Blocks['add_object'] = {
         .appendField('in');
     this.setInputsInline(true);
     this.setOutput(true, 'Array');
-    this.setTooltip('Add an object in an array');
-    this.setHelpUrl('');
+    this.setTooltip('Add an object (columns, values) in an array');
+    this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.append.html');
     this.setColour(200);
   }
 };
@@ -766,103 +860,150 @@ pythonGenerator.forBlock['add_object'] = function(block, generator) {
   return [`np.append(${value_array}, ${value_object})`, pythonGenerator.ORDER_COLLECTION];
 }
 
-/**
- * Value to boolean
- */
-Blockly.Blocks['to_bool'] = {
+Blockly.Blocks['del_col'] = {
   init: function() {
-    this.appendValueInput('NAME')
-      .appendField('convert to boolean');
-    this.setInputsInline(true)
-    this.setOutput(true, 'Boolean');
-    this.setTooltip('Transform a value into a boolean');
-    this.setHelpUrl('');
-    this.setColour(95);
+    this.appendValueInput('array')
+      .setCheck(['Array'])
+      .appendField('Delete columns');
+    this.appendValueInput('columns')
+      .appendField('Name of columns');
+    this.setOutput(true, 'Array');
+    this.setTooltip('');
+    this.setColour(200);
   }
 };
-pythonGenerator.forBlock['to_bool'] = function(block, generator) {
-  const value_name = generator.valueToCode(block, 'NAME', pythonGenerator.ORDER_ATOMIC);
-  return [`bool(${value_name})`, pythonGenerator.ORDER_ATOMIC];
+pythonGenerator.forBlock['del_col'] = function(block, generator) {
+  const array = generator.valueToCode(block, 'array', pythonGenerator.ORDER_ATOMIC);
+  const columns = generator.valueToCode(block, 'columns', pythonGenerator.ORDER_ATOMIC);
+  return [`${array} = ${array}.drop(columns=${columns}, axis = 1)`, pythonGenerator.ORDER_COLLECTION];
 }
 
-/**
- * Line-break
- */
 
-Blockly.Blocks['line_break'] = {
-  init: function() {
-    this.appendDummyInput('')
-        .appendField('Line-break');
-    this.setTooltip('Enter a line-break in code');
-    this.setNextStatement(true, null);
-    this.setPreviousStatement(true, null);
-    this.setColour('#888');
-  }
-};
-pythonGenerator.forBlock['line_break'] = function() {
-  return '\n'
-}
-
-/**
- * Sort a list
- */
-
-Blockly.Blocks['sort'] = {
-  init: function() {
-    this.appendValueInput('CNAME')
-      .appendField('list to sort')
-      .setCheck('List');
-    this.setInputsInline(true)
-    this.setOutput(true, 'List');
-    this.setTooltip('Sort an array (one- or multidimensionl)');
-    this.setHelpUrl('');
-    this.setColour(95);
-  }
-};
-pythonGenerator.forBlock['sort'] = function(block, generator) {
-  const value_name = generator.valueToCode(block, 'CNAME', pythonGenerator.ORDER_ATOMIC);
-  return [`np.sort(np.array(${value_name}))`, pythonGenerator.ORDER_ATOMIC];
-}
-
-/** Lambda func block */
-Blockly.Blocks['lambda'] = {
-  init: function() {
-    this.appendValueInput('EXPR')
-        .appendField('lambda')
-        .appendField(new Blockly.FieldTextInput('x', (txt) => txt.match(/^[A-Za-z_][A-Za-z0-9_]*$/) ? txt : 'ERROR!'), 'LAMBDA')
-        .appendField(':');
-    this.setTooltip('Python lambda function. You can use multiple arguments by separating them with a comma.');
-    this.setColour(120);
-    this.setHelpUrl('https://www.w3schools.com/python/python_lambda.asp');
-    this.setOutput(true);
-  }
-}
-
-pythonGenerator.forBlock['lambda'] = function(block, generator) {
-  const VAR = block.getFieldValue('LAMBDA') || '0';
-  const EXPR = generator.valueToCode(block, 'EXPR', pythonGenerator.ORDER_NONE)
-  return [`lambda ${VAR}: ${EXPR}`, pythonGenerator.ORDER_LAMBDA];
-}
-
-/**
- * Temporary variables
- * 
- * As these could represent a dangerous security
- * threat when compiling, they are limited to
- * one character so as to protect the compiler
- * from malware.
- */
-Blockly.Blocks['temp_var'] = {
+Blockly.Blocks['convert_column'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldTextInput('VAR_NAME', (txt) => txt.slice(0, 1)), 'var');
+        .appendField('Convert column')
+        .appendField(new Blockly.FieldTextInput('column_name'), 'column_name');
+    this.appendDummyInput()
+        .appendField('of DataFrame')
+        .appendField(new Blockly.FieldVariable('df'), 'df_name');
+    this.appendDummyInput()
+        .appendField('to type')
+        .appendField(new Blockly.FieldDropdown([['String', 'str'], ['Integer', 'int'], ['Float', 'float'], ['Boolean', 'bool']]), 'type');
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Convert a column of a DataFrame to a different type. Use this block in case of unforseen errors e.g. in maps.');
+    this.setHelpUrl('https://www.geeksforgeeks.org/python/python-pandas-dataframe-astype/')
+    this.setColour(200);
+  }
+}
+pythonGenerator.forBlock['convert_column'] = function(block) {
+  const column_name = block.getFieldValue('column_name') || 'column_name';
+  const df_name = block.getFieldValue('df_name') || 'df';
+  const type = block.getFieldValue('type') || 'float';
+  const getVar = block.workspace.getVariableById(df_name);
+  const Var = getVar ? getVar.name : 'undefined';  
+  return `${Var}['${column_name}'] = ${Var}['${column_name}'].astype(${type})\n`;
+}
+
+//** converte numpy to pandas
+Blockly.Blocks['convert_np_to_pd'] = {
+  init: function() {
+    this.appendValueInput('array')
+    .setCheck(['Array'])
+      .appendField('Convert to DataFrame');
+    this.appendValueInput('columns')
+      .appendField('Name of columns');
     this.setOutput(true);
-    this.setColour(15);
+    this.setTooltip('Convert to DataFrame');
+    this.setColour(200);
   }
 };
-pythonGenerator.forBlock['temp_var'] = function(block) {
-  const varName = block.getFieldValue('var') || '0';
-  return [varName, pythonGenerator.ORDER_ATOMIC];
+pythonGenerator.forBlock['convert_np_to_pd'] = function(block, generator) {
+  const array = generator.valueToCode(block, 'array', pythonGenerator.ORDER_ATOMIC);
+  const columns = generator.valueToCode(block, 'columns', pythonGenerator.ORDER_ATOMIC);
+  return [`pd.DataFrame(${array}, columns=${columns})`, pythonGenerator.ORDER_COLLECTION];
+}
+
+//**indices in array */
+/** 
+ * Minimum indices of array of numbers
+ */
+Blockly.Blocks['ind_min'] = {
+  init: function() {
+    this.appendValueInput('minimum')
+        .setCheck('Array')
+        .appendField('Indice of minimum of');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Returns the indice of the minimum of an array of numbers');
+    this.setColour(150);
+    this.setHelpUrl('https://numpy.org/doc/2.1/reference/generated/numpy.argmin.html');
+  }
+};
+pythonGenerator.forBlock["ind_min"] = function(block, generator) {
+  const ind_mini =
+    generator.valueToCode(block, "minimum", pythonGenerator.ORDER_NONE) || "0";
+  return [`np.argmin(${ind_mini})`, pythonGenerator.ORDER_ATOMIC];
+};
+
+/** 
+ * Maximum indices of array of numbers
+ */
+Blockly.Blocks['ind_max'] = { 
+  init: function() {
+    this.appendValueInput('maximum')
+        .setCheck('Array')
+        .appendField('Indice of maximum of');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Returns the indice of the maximum of an array of numbers');
+    this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.argmax.html');
+    this.setColour(150);
+  }
+};
+pythonGenerator.forBlock["ind_max"] = function(block, generator) {
+  const ind_maxi =
+    generator.valueToCode(block, "maximum", pythonGenerator.ORDER_NONE) || "0";
+  return [`np.argmax(${ind_maxi})`, pythonGenerator.ORDER_ATOMIC];
+};
+
+/** 
+ * Sorting indices of array of numbers
+ */
+Blockly.Blocks['ind_sort'] = { 
+  init: function() {
+    this.appendValueInput('sort')
+        .setCheck('Array')
+        .appendField('Sorted array of indices of');
+    this.setOutput(true, 'Array');
+    this.setTooltip('Returns an array of indices of an array of numbers according to their values');
+    this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.argsort.html');
+    this.setColour(150);
+  }
+};
+pythonGenerator.forBlock["ind_sort"] = function(block, generator) {
+  const ind_sort =
+    generator.valueToCode(block, "sort", pythonGenerator.ORDER_NONE) || "0";
+  return [`np.argsort(${ind_sort})`, pythonGenerator.ORDER_COLLECTION];
+};
+
+/** 
+ * Finding the indice of array of numbers
+ */
+Blockly.Blocks['ind_find'] = { 
+  init: function() {
+    this.appendValueInput('find')
+        .appendField('Find indices');
+    this.setOutput(true, 'Array');
+    this.setTooltip('Returns the found indices of an array of numbers, given a condition');
+    this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.argwhere.html');
+    this.setColour(150);
+  }
+};
+pythonGenerator.forBlock["ind_find"] = function(block, generator) {
+  const ind_find =
+    generator.valueToCode(block, "find", pythonGenerator.ORDER_NONE) || "0";
+  return [`np.argwhere(${ind_find})`, pythonGenerator.ORDER_COLLECTION];
 };
 
 /** Import blocks */
@@ -875,6 +1016,7 @@ Blockly.Blocks['import0'] = {
     this.setColour('#888');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
+    this.setTooltip('Import modules if it is not imported in code generator.')
   }
 };
 pythonGenerator.forBlock['import0'] = function(block) {
@@ -942,172 +1084,10 @@ pythonGenerator.forBlock['import3'] = function(block) {
   return `from ${module} import ${func} as ${alias}\n`;
 };
 
+
 /*****************
  * DATA VIZ BLOCKS
  *****************/
-
-// Blockly.Blocks['create_folder'] = {
-//   init: function() {
-//     this.appendDummyInput('')
-//         .appendField('Create folder')
-//         .appendField(new Blockly.FieldTextInput('data', txt => txt.replace(/[/<>:?*\\"|]/g, '')), 'FOLDER');
-//     this.setPreviousStatement(true);
-//     this.setNextStatement(true);
-//     this.setColour(200);
-//     this.setTooltip('Create a folder to store files.');
-//   }
-// };
-// pythonGenerator.forBlock['create_folder'] = function(block) {
-//   const folder = block.getFieldValue('FOLDER') || 'data';
-//   return '' +
-//     `if not os.path.exists('${folder}'):\n` +
-//         `\tos.mkdir('${folder}')\n`;
-// };
-
-Blockly.Blocks['func_download'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Download (from URL)')
-        .appendField(new Blockly.FieldTextInput('http://file.csv'), 'NAME');
-    this.setTooltip('Use function to download file from URL.');
-    this.setNextStatement(true);
-    this.setPreviousStatement(true);
-    this.setColour(200);
-  }
-}
-pythonGenerator.forBlock['func_download'] = function(block) {
-  const url = block.getFieldValue('NAME') || 'http://file.csv';
-  return `download('${url}')\n`
-}
-
-Blockly.Blocks['read_file'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Read file')
-        .appendField(new Blockly.FieldTextInput('file.csv'), 'NAME');
-    this.setTooltip('Use function to read file with GeoPandas.');
-    this.setOutput(true)
-    this.setColour(200);
-  }
-};
-pythonGenerator.forBlock['read_file'] = function(block,generator) {
-  const fileName = block.getFieldValue('NAME');
-  return [`gpd.read_file('${fileName}')`, pythonGenerator.ORDER_ATOMIC];
-}
-
-// Blockly.Blocks['write_file'] = {
-//   init: function() {
-//     this.appendDummyInput()
-//         .appendField('Create GeoPackage')
-//         .appendField(new Blockly.FieldTextInput('file_name'), 'NAME')
-//         .appendField('.gpkg');
-//     this.appendValueInput('RES')
-//         .appendField('With data');
-//     this.setTooltip('Write to given output folder. The format of this file is GeoPackage (.gpkg). A variable is expected as input.');
-//     this.setNextStatement(true);
-//     this.setPreviousStatement(true);
-//     this.setColour(200);
-//   }
-// }
-// pythonGenerator.forBlock['write_file'] = function(block, generator) {
-//   const fileName = block.getFieldValue('NAME');
-//   const res = generator.valueToCode(block, 'RES', pythonGenerator.ORDER_ATOMIC);
-//   return `${res}.to_file(driver='GPKG', filename='${fileName}.gpkg')\n`
-// }
-
-// Blockly.Blocks['chdir'] = {
-//   init: function() {
-//     this.appendDummyInput()
-//         .appendField('Change current directory to')
-//         .appendField(new Blockly.FieldTextInput('path'), 'PATH');
-//     this.setTooltip('Change directory to given path');
-//     this.setNextStatement(true);
-//     this.setPreviousStatement(true);
-//     this.setColour(200); 
-//   }
-// }
-// pythonGenerator.forBlock['chdir'] = function(block) {
-//   const path = block.getFieldValue('PATH');
-//   return `\nos.chdir('${path}')`;
-// }
-
-// Blockly.Blocks['getDir'] = {
-//   init: function() {
-//     this.appendDummyInput()
-//         .appendField('Get current directory');
-//     this.setTooltip('Get the current working directory')
-//     this.setOutput(true, 'String');
-//     this.setColour(200);
-//   }
-// }
-// pythonGenerator.forBlock['getDir'] = function() {
-//   return [`os.path.abspath(os.getcwd())`, pythonGenerator.ORDER_ATOMIC];
-// }
-
-Blockly.Blocks['sampleDataA'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Download sample data')
-        .appendField(new Blockly.FieldDropdown([
-          ['iris.csv', 'https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv'],
-          ['zinc_dataset.csv', 'https://gist.githubusercontent.com/KSR2001/7c4937e0ec8a7eb6e146d9e8f3e052cd/raw/b9d450220ce0e11b732a99a02a5dc1107583bec9/zinc_dataset.csv'],
-          ['grid.csv', 'https://gist.githubusercontent.com/vivien789/cc1072281ccc542affbc0676cc852615/raw/3559558e3690b1962a83b2191f3943ec18813b79/grid.csv'],
-          ['litter.csv', 'https://gist.githubusercontent.com/MatteoBRGR/ef8230eed8a33d6febb5c4399582b161/raw/d2b0164b295e2e8055e449a07109a64c6f5bc877/litter.csv'],
-          ['trashCans.csv', 'https://gist.githubusercontent.com/MatteoBRGR/d0b377baabc494ab9de1edba2c2dd893/raw/3d5cefe34ff669d399da2f42c8b7e19f501658a3/trashCans.csv']
-        ]), 'NAME');
-    this.setTooltip('Download sample data from GitHub Gist.');
-    this.setNextStatement(true);
-    this.setPreviousStatement(true);
-    this.setColour(200); 
-  }
-}
-pythonGenerator.forBlock['sampleDataA'] = function(block) {
-  const dataset = block.getFieldValue('NAME') ||  'https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv';
-  return `download('${dataset}')\n`;
-}
-
-Blockly.Blocks['sampleDataB'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Download sample data (iris.csv)');
-    this.setTooltip('Download Iris sample data from the Internet.');
-    this.setNextStatement(true);
-    this.setPreviousStatement(true);
-    this.setColour(200); 
-  }
-}
-pythonGenerator.forBlock['sampleDataB'] = function(block) {
-  return `download('https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv')\n`;
-}
-
-Blockly.Blocks['listdir'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('List all directories in path')
-        .appendField(new Blockly.FieldTextInput('name'), 'PATH');
-    this.setTooltip('List directory of given path');
-    this.setOutput(true);
-    this.setColour(200); 
-  }
-}
-pythonGenerator.forBlock['listdir'] = function(block) {
-  const path = block.getFieldValue('PATH') || '';
-  return [`os.listdir(${path ? '"' + path + '"' : ''})`, pythonGenerator.ORDER_ATOMIC];
-}
-
-Blockly.Blocks['type'] = {
-  init: function() {
-    this.appendValueInput('TYPE')
-        .appendField('check type of');
-    this.setTooltip('Find the type of another block');
-    this.setOutput(true, 'Type');
-    this.setColour(200);
-  }
-}
-pythonGenerator.forBlock['type'] = function(block, generator) {
-  const type = generator.valueToCode(block, 'TYPE', pythonGenerator.ORDER_ATOMIC);
-  return [`type(${type})`, pythonGenerator.ORDER_ATOMIC];
-}
 
 /** Show data **/
 Blockly.Blocks['plot'] = {
@@ -1235,221 +1215,198 @@ pythonGenerator.forBlock['scatter'] = function(block, generator) {
   `plt.legend(${legend})\n`
 }
 
-//**reshape an array */
-Blockly.Blocks['reshape'] = {
+
+Blockly.Blocks['pie_chart'] = {
   init: function() {
-    this.appendValueInput('NAME')
-    .setCheck('Array')
-      .appendField('Reshape array', 'DATA');
-    this.appendValueInput('rows')
-        .setCheck('Number')
-        .appendField('Number of arrays');
-    this.appendValueInput('columns')
-        .setCheck('Number')
-        .appendField('Elements per array');
-    this.setInputsInline(false)
-    this.setOutput(true, 'Array');
-    this.setTooltip('Reshape an array');
-    this.setHelpUrl('https://www.w3schools.com/python/numpy/numpy_array_reshape.asp');
-    this.setColour(200);
+    this.appendDummyInput()
+        .appendField('Pie chart');
+    this.appendValueInput('sizes')
+        .setCheck('List')
+        .appendField('Sizes');
+    this.appendValueInput('labels')
+        .setCheck('List')
+        .appendField('Labels');
+    this.appendDummyInput()
+        .appendField('Title')
+        .appendField(new Blockly.FieldTextInput('Title'), 'title');
+    this.appendDummyInput()
+        .appendField('Percentages')
+        .appendField(new Blockly.FieldCheckbox('TRUE'), 'percent');
+    this.setInputsInline(false);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('Plot a pie chart');
+    this.setHelpUrl('https://matplotlib.org/stable/gallery/pie_and_polar_charts/pie_features.html');
+    this.setColour(325);
+  }
+}
+pythonGenerator.forBlock['pie_chart'] = function(block, generator) {
+  const sizes = generator.valueToCode(block, 'sizes', pythonGenerator.ORDER_NONE) || "[100]";
+  const labels = generator.valueToCode(block, 'labels', pythonGenerator.ORDER_NONE) || "['Label']";
+  const percent = block.getFieldValue('percent') || 'TRUE';
+  const title = block.getFieldValue('title') || "Title";
+  return `plt.pie(${sizes}, labels=${labels}, autopct=${percent === 'TRUE' ? '\'%1.1f%%\'':'None'})\n`
+      + `plt.title('${title}')\n`
+}
+
+Blockly.Blocks['create_list_XCoords'] = {
+  init: function() {
+    this.appendDummyInput('')
+        .appendField('Create list with X coords')
+        .appendField(new Blockly.FieldVariable('df'), 'VAR');
+    this.setOutput(true);
+    this.setTooltip('Attach an array. This array should be an array of points with X and Y coordinates. This blocks creates a list of all X coordinates of the points.');
+    this.setColour(100);
+    this.setHelpUrl('https://stackoverflow.com/questions/59417997/how-to-plot-a-list-of-shapely-points');
+  }
+}
+pythonGenerator.forBlock['create_list_XCoords'] = function (block) {
+  const varID = block.getFieldValue('VAR') || '0';
+  const getVar = block.workspace.getVariableById(varID);
+  const Var = getVar ? getVar.name : 'undefined';
+  return [`[point.x for point in ${Var}]`, pythonGenerator.ORDER_ATOMIC];
+}
+
+Blockly.Blocks['create_list_YCoords'] = {
+  init: function() {
+    this.appendDummyInput('')
+        .appendField('Create list with Y coords')
+        .appendField(new Blockly.FieldVariable('df'), 'VAR');
+    this.setOutput(true);
+    this.setTooltip('Attach an array. This array should be an array of points with X and Y coordinates. This blocks creates a list of all Y coordinates of the points.');
+    this.setColour(100);
+    this.setHelpUrl('https://stackoverflow.com/questions/59417997/how-to-plot-a-list-of-shapely-points');
+  }
+}
+pythonGenerator.forBlock['create_list_YCoords'] = function (block) {
+  const varID = block.getFieldValue('VAR') || '0';
+  const getVar = block.workspace.getVariableById(varID);
+  const Var = getVar ? getVar.name : 'undefined';
+  return [`[point.y for point in ${Var}]`, pythonGenerator.ORDER_ATOMIC];
+}
+
+Blockly.Blocks['bar_chart'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Bar chart');
+    this.appendValueInput('heights')
+        .setCheck('List')
+        .appendField('Heights');
+    this.appendValueInput('sizes')
+        .setCheck('List')
+        .appendField('Labels');
+    this.appendDummyInput()
+        .appendField('Title')
+        .appendField(new Blockly.FieldTextInput('Title'), 'title');
+    this.appendDummyInput()
+        .appendField('X-axis label')
+        .appendField(new Blockly.FieldTextInput('Label'), 'XLabel');
+    this.appendDummyInput()
+        .appendField('Y-axis label')
+        .appendField(new Blockly.FieldTextInput('Label'), 'YLabel');
+    this.setInputsInline(false);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('Plot a bar chart');
+    this.setHelpUrl('https://matplotlib.org/stable/gallery/pie_and_polar_charts/pie_features.html');
+    this.setColour(325);
+  }
+}
+pythonGenerator.forBlock['bar_chart'] = function(block, generator) {
+  const sizes = generator.valueToCode(block, 'sizes', pythonGenerator.ORDER_NONE) || "[5]";
+  const labels = [block.getFieldValue('XLabel') || "X", block.getFieldValue('YLabel') || "Y"];
+  const title = block.getFieldValue('title') || "Title";
+  const heights = generator.valueToCode(block, 'heights', pythonGenerator.ORDER_NONE) || "[10]";
+  return '' +
+  `plt.bar(${sizes}, ${heights})\n` +
+  `plt.title('${title}')\n` +
+  `plt.xlabel('${labels[0]}')\n` + 
+  `plt.ylabel('${labels[1]}')\n`
+}
+
+Blockly.Blocks['boxplot'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Boxplot');
+    this.appendValueInput('data')
+        .setCheck('List')
+        .appendField('Data');
+    this.appendValueInput('label_group')
+        .setCheck('List')
+        .appendField('Labels');
+    this.appendDummyInput()
+        .appendField('Vertical')
+        .appendField(new Blockly.FieldCheckbox('TRUE'), 'orientation');
+    this.appendDummyInput()
+        .appendField('Add notches')
+        .appendField(new Blockly.FieldCheckbox('FALSE'), 'notches');
+    this.appendDummyInput()
+        .appendField('Title')
+        .appendField(new Blockly.FieldTextInput('Title'), 'title');
+    this.appendDummyInput()
+        .appendField('X-axis label')
+        .appendField(new Blockly.FieldTextInput('Label'), 'XLabel');
+    this.appendDummyInput()
+        .appendField('Y-axis label')
+        .appendField(new Blockly.FieldTextInput('Label'), 'YLabel');
+    this.setInputsInline(false);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('Plot a boxplot');
+    this.setHelpUrl('https://en.wikipedia.org/wiki/Box_plot');
+    this.setColour(325);
+  }
+}
+pythonGenerator.forBlock['boxplot'] = function(block, generator) {
+  const orientation = block.getFieldValue('orientation') === 'TRUE';
+  const notches = block.getFieldValue('notches') === 'TRUE';
+  const data = generator.valueToCode(block, 'data', pythonGenerator.ORDER_NONE) || "[0]";
+  const label_group = generator.valueToCode(block, 'label_group', pythonGenerator.ORDER_NONE) || "['null']";
+  const labels = [block.getFieldValue('XLabel') || "X", block.getFieldValue('YLabel') || "Y"];
+  const title = block.getFieldValue('title') || "Title";
+  return `plt.boxplot(${data}, labels = ${label_group}, vert = ${orientation ? 'True' : 'False'}, notch = ${notches ? 'True' : 'False'})\n` +
+  `plt.title('${title}')\n` +
+  `plt.xlabel('${labels[0]}')\n` + 
+  `plt.ylabel('${labels[1]}')\n`
+}
+
+//**GEOMETRY BLOCKS */
+Blockly.Blocks['create_point'] = { 
+  init: function() {
+    this.appendValueInput('point')
+        .setCheck('Coords')
+        .appendField('Create point with coordinates');
+    this.setOutput(true)
+    this.setTooltip('Returns a Point() object with given coordinates');
+    this.setHelpUrl('https://shapely.readthedocs.io/en/stable/reference/shapely.Point.html')
+    this.setColour(150);
   }
 };
-pythonGenerator.forBlock['reshape'] = function(block, generator) {
-  const value_array = generator.valueToCode(block, 'NAME', pythonGenerator.ORDER_COLLECTION);
-  const value_rows = generator.valueToCode(block, 'rows', pythonGenerator.ORDER_ATOMIC);
-  const value_columns = generator.valueToCode(block, 'columns', pythonGenerator.ORDER_ATOMIC);
-  return [`np.reshape(${value_array}, (${value_rows},${value_columns}))`, pythonGenerator.ORDER_ATOMIC];
+pythonGenerator.forBlock['create_point'] = function(block, generator) {
+  const coordinates = generator.valueToCode(block, 'point', pythonGenerator.ORDER_ATOMIC) || '(0, 0)';
+  return [`Point${coordinates}`, pythonGenerator.ORDER_ATOMIC];
 };
 
-//**load from txt */
-/* Blockly.Blocks['load_txt'] = {
-  init: function(){
+Blockly.Blocks['coords'] = { 
+  init: function() {
     this.appendDummyInput()
-        .appendField('Load data from txt')
-        .appendField(new Blockly.FieldTextInput(''), 'txt');
-    this.appendDummyInput()
-        .appendField('with separator')
-        .appendField(new Blockly.FieldTextInput(','), 'sep');
-    this.appendDummyInput()
-        .appendField('(only include columns numbered')
-        .appendField(new Blockly.FieldTextInput(''), 'usecols')
+        .appendField('(')
+        .appendField(new Blockly.FieldNumber('0'), 'XCoord')
+        .appendField(',')
+        .appendField(new Blockly.FieldNumber('0'), 'YCoord')
         .appendField(')');
-    this.setTooltip('Loads a given txt dataset (leave columns empty to load all, e.g (0,1,4))');
-    this.appendEndRowInput();
-    this.setOutput(true, 'Array');
-    this.setInputsInline(false);
-    this.setHelpUrl('https://numpy.org/doc/2.2/reference/generated/numpy.loadtxt.html');
-    this.setColour(200);
-  },
-};
-pythonGenerator.forBlock['load_txt'] = function(block) {
-  const dataset = block.getFieldValue('txt') || '0';
-  const sep = block.getFieldValue('sep') || ',';
-  const usecols = block.getFieldValue('usecols') || '';
-  return [`np.loadtxt('${dataset}', delimiter='${sep}'${usecols ? ', usecols=' + usecols : ''})`, pythonGenerator.ORDER_ATOMIC];
-}; */
-
-//**load from a json file */
-Blockly.Blocks['load_json'] = {
-  init: function(){
-    this.appendDummyInput()
-        .appendField('Load data from json:')
-        .appendField(new Blockly.FieldTextInput(''), 'json')
-    this.setTooltip('Loads a given json file');
-    this.appendEndRowInput();
-    this.setOutput(true, 'Array');
-    this.setColour(200);
-  },
-};
-pythonGenerator.forBlock['load_json'] = function(block) {
-  const dataset = block.getFieldValue('json') || 'file.json';
-  return [`pd.read_json('${dataset}')`, pythonGenerator.ORDER_ATOMIC];
-};
-
-//**load from a raster */
-Blockly.Blocks['load_raster'] = {
-  init: function(){
-    this.appendDummyInput()
-        .appendField('Load a raster image from tif:')
-        .appendField(new Blockly.FieldTextInput(''), 'tif');
-    this.setTooltip('Load a raster image. It is converted into an array of pixel values.');
-    this.setHelpUrl('https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.imread.html');
-    this.appendEndRowInput();
-    this.setOutput(true, 'Array');
-    this.setColour(200);
-  },
-};
-pythonGenerator.forBlock['load_raster'] = function(block) {
-  const dataset = block.getFieldValue('tif') || '0';
-  return [`plt.imread('${dataset}')`, pythonGenerator.ORDER_ATOMIC];
-};
-
-Blockly.Blocks['arange'] = {
-  init: function(){
-    this.appendValueInput('start')
-        .appendField('Generate values between');
-    this.appendValueInput('stop')
-        .appendField('and')
-    this.appendValueInput('step')
-        .appendField('with step');
-    this.setTooltip('Generate a range of values between two numbers');
-    this.setInputsInline(false);
-    this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.arange.html');
-    this.setOutput(true, 'Array');
-    this.setColour(200);
-  },
-};
-pythonGenerator.forBlock['arange'] = function(block, generator) {
-  const start = generator.valueToCode(block, 'start', pythonGenerator.ORDER_ATOMIC);
-  const stop = generator.valueToCode(block, 'stop', pythonGenerator.ORDER_ATOMIC);
-  const step = generator.valueToCode(block, 'step', pythonGenerator.ORDER_ATOMIC);
-  return [`np.arange(${start}, ${stop}, ${step})`, pythonGenerator.ORDER_ATOMIC];
-};
-
-Blockly.Blocks['linspace'] = {
-  init: function(){
-    this.appendValueInput('number')
-        .appendField('Generate');
-    this.appendValueInput('start')
-        .appendField('values between');
-    this.appendValueInput('stop')
-        .appendField('and');
-    this.setTooltip('Generate a number of values between two numbers');
-    this.setInputsInline(false);
-    this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.linspace.html');
-    this.setOutput(true, 'Array');
-    this.setColour(200);
-  },
-};
-pythonGenerator.forBlock['linspace'] = function(block, generator) {
-  const start = generator.valueToCode(block, 'start', pythonGenerator.ORDER_ATOMIC);
-  const stop = generator.valueToCode(block, 'stop', pythonGenerator.ORDER_ATOMIC);
-  const number = generator.valueToCode(block, 'number', pythonGenerator.ORDER_ATOMIC);
-  return [`np.linspace(${start}, ${stop}, num=${number})`, pythonGenerator.ORDER_ATOMIC];
-};
-
-//**indices in array */
-
-/** 
- * Minimum indices of array of numbers
- */
-Blockly.Blocks['ind_min'] = {
-  init: function() {
-    this.appendValueInput('minimum')
-        .setCheck('Array')
-        .appendField('Indice of minimum of');
-    this.setOutput(true, 'Number');
-    this.setTooltip('Returns the indice of the minimum of an array of numbers');
-    this.setColour(150);
-    this.setHelpUrl('https://numpy.org/doc/2.1/reference/generated/numpy.argmin.html');
-  }
-};
-pythonGenerator.forBlock["ind_min"] = function(block, generator) {
-  const ind_mini =
-    generator.valueToCode(block, "minimum", pythonGenerator.ORDER_NONE) || "0";
-  return [`np.argmin(${ind_mini})`, pythonGenerator.ORDER_ATOMIC];
-};
-
-/** 
- * Maximum indices of array of numbers
- */
-Blockly.Blocks['ind_max'] = { 
-  init: function() {
-    this.appendValueInput('maximum')
-        .setCheck('Array')
-        .appendField('Indice of maximum of');
-    this.setOutput(true, 'Number');
-    this.setTooltip('Returns the indice of the maximum of an array of numbers');
-    this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.argmax.html');
+    this.setOutput(true, ['Coords']);
+    this.setTooltip('Returns a pair of coordinates');
     this.setColour(150);
   }
 };
-pythonGenerator.forBlock["ind_max"] = function(block, generator) {
-  const ind_maxi =
-    generator.valueToCode(block, "maximum", pythonGenerator.ORDER_NONE) || "0";
-  return [`np.argmax(${ind_maxi})`, pythonGenerator.ORDER_ATOMIC];
+pythonGenerator.forBlock["coords"] = function(block) {
+  const X_Coord = block.getFieldValue('XCoord') || '0';
+  const Y_Coord = block.getFieldValue('YCoord') || '0';
+  return [`(${X_Coord}, ${Y_Coord})`, pythonGenerator.ORDER_ATOMIC]
 };
 
-/** 
- * Sorting indices of array of numbers
- */
-Blockly.Blocks['ind_sort'] = { 
-  init: function() {
-    this.appendValueInput('sort')
-        .setCheck('Array')
-        .appendField('Sorted array of indices of');
-    this.setOutput(true, 'Array');
-    this.setTooltip('Returns an array of indices of an array of numbers according to their values');
-    this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.argsort.html');
-    this.setColour(150);
-  }
-};
-pythonGenerator.forBlock["ind_sort"] = function(block, generator) {
-  const ind_sort =
-    generator.valueToCode(block, "sort", pythonGenerator.ORDER_NONE) || "0";
-  return [`np.argsort(${ind_sort})`, pythonGenerator.ORDER_COLLECTION];
-};
 
-/** 
- * Finding the indice of array of numbers
- */
-Blockly.Blocks['ind_find'] = { 
-  init: function() {
-    this.appendValueInput('find')
-        .appendField('Find indices');
-    this.setOutput(true, 'Array');
-    this.setTooltip('Returns the found indices of an array of numbers, given a condition');
-    this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.argwhere.html');
-    this.setColour(150);
-  }
-};
-pythonGenerator.forBlock["ind_find"] = function(block, generator) {
-  const ind_find =
-    generator.valueToCode(block, "find", pythonGenerator.ORDER_NONE) || "0";
-  return [`np.argwhere(${ind_find})`, pythonGenerator.ORDER_COLLECTION];
-};
-
-//**GEOMETRY BLOCKS*/
 Blockly.Blocks['buffer'] = {
   init: function() {
     this.appendDummyInput()
@@ -1462,6 +1419,7 @@ Blockly.Blocks['buffer'] = {
     this.setOutput(true, 'Polygon');
     this.setInputsInline(false);
     this.setTooltip('Create a circle with its center and its radius');
+    this.setHelpUrl('https://shapely.readthedocs.io/en/stable/reference/shapely.buffer.html')
     this.setColour(150);
   }
 };
@@ -1494,6 +1452,7 @@ Blockly.Blocks['line_segment'] = {
     this.setColour(150);
     this.setOutput(true);
     this.setTooltip('Creates a line segment with given coordinates');
+    this.setHelpUrl('https://shapely.readthedocs.io/en/stable/reference/shapely.LineString.html')
   },
 
   saveExtraState: function() {
@@ -1566,59 +1525,6 @@ pythonGenerator.forBlock['line_segment'] = function(block, generator) {
   return [`LineString([${elements.join(', ')}])`, pythonGenerator.ORDER_ATOMIC];
 };
 
-Blockly.Blocks['var_to_func'] = {
-  init: function() {
-    this.appendValueInput('var')
-        .appendField('Use variable');
-    this.appendDummyInput()
-        .appendField('with argument(s)')
-        .appendField(new Blockly.FieldTextInput(''), 'val');
-    this.setInputsInline(true);
-    this.setColour(230);
-    this.setOutput(true);
-    this.setTooltip('Use a variable as a function. This can be used with lambda functions.');
-  }
-};
-pythonGenerator.forBlock['var_to_func'] = function(block, generator) {
-  const variable = generator.valueToCode(block, 'var', pythonGenerator.ORDER_ATOMIC);
-  const value = block.getFieldValue('val')
-  return [`${variable}(${value})`, pythonGenerator.ORDER_ATOMIC];
-};
-
-Blockly.Blocks['create_point'] = { 
-  init: function() {
-    this.appendValueInput('point')
-        .setCheck('Coords')
-        .appendField('Create point with coordinates');
-    this.setOutput(true)
-    this.setTooltip('Returns a Point() object with given coordinates');
-    this.setColour(150);
-  }
-};
-pythonGenerator.forBlock['create_point'] = function(block, generator) {
-  const coordinates = generator.valueToCode(block, 'point', pythonGenerator.ORDER_ATOMIC) || '(0, 0)';
-  return [`Point${coordinates}`, pythonGenerator.ORDER_ATOMIC];
-};
-
-Blockly.Blocks['coords'] = { 
-  init: function() {
-    this.appendDummyInput()
-        .appendField('(')
-        .appendField(new Blockly.FieldNumber('0'), 'XCoord')
-        .appendField(',')
-        .appendField(new Blockly.FieldNumber('0'), 'YCoord')
-        .appendField(')');
-    this.setOutput(true, ['Coords']);
-    this.setTooltip('Returns a pair of coordinates');
-    this.setColour(150);
-  }
-};
-pythonGenerator.forBlock["coords"] = function(block) {
-  const X_Coord = block.getFieldValue('XCoord') || '0';
-  const Y_Coord = block.getFieldValue('YCoord') || '0';
-  return [`(${X_Coord}, ${Y_Coord})`, pythonGenerator.ORDER_ATOMIC]
-};
-
 //**Polygon area */
 Blockly.Blocks['polygon_area'] = {
   init: function() {
@@ -1627,7 +1533,7 @@ Blockly.Blocks['polygon_area'] = {
         .appendField('Polygon area');
     this.setOutput(true, 'Number');
     this.setTooltip('Compute the polygon area');
-    this.setHelpUrl('');
+    this.setHelpUrl('https://shapely.readthedocs.io/en/stable/reference/shapely.area.html');
     this.setColour(150);
   }
 };
@@ -1668,27 +1574,6 @@ pythonGenerator.forBlock['geometry_type'] = function(block, generator) {
   return [`${geome}.geom_type`, pythonGenerator.ORDER_ATOMIC];
 }
 
-Blockly.Blocks['distance_calc'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Distance');
-    this.appendValueInput('point1')
-        .appendField('Point 1')
-        .setCheck('Coords');
-    this.appendValueInput('point2')
-        .appendField('Point 2')
-        .setCheck('Coords');
-    this.setOutput(true, 'Number');
-    this.setTooltip('Find the distance between points');
-    this.setHelpUrl('https://shapely.readthedocs.io/en/stable/reference/shapely.distance.html');
-    this.setColour(60);
-  }
-};
-pythonGenerator.forBlock['distance_calc'] = function(block, generator) {
-  const coord1 = generator.valueToCode(block, 'point1', pythonGenerator.ORDER_ATOMIC);
-  const coord2 = generator.valueToCode(block, 'point2', pythonGenerator.ORDER_ATOMIC);
-  return [`Point${coord1}.distance(Point${coord2})`, pythonGenerator.ORDER_ATOMIC];
-}
 
 //**Multipolygon */
 Blockly.Blocks['multipolygon'] = {
@@ -1772,6 +1657,7 @@ Blockly.Blocks['polygon'] = {
     this.setColour(150);
     this.setOutput(true, 'Polygon');
     this.setTooltip('Creates a polygon with given coordinates');
+    this.setHelpUrl('https://shapely.readthedocs.io/en/stable/reference/shapely.Polygon.html')
   },
 
   saveExtraState: function() {
@@ -1861,6 +1747,167 @@ pythonGenerator.forBlock["centroid"] = function(block, generator) {
   return [`${centroide}.centroid`, pythonGenerator.ORDER_ATOMIC];
 };
 
+//** Distance blocks */
+//Distance Vincenty
+Blockly.Blocks['distance_vinc'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Vincenty distance');
+    this.appendValueInput('point1')
+        .appendField('Point 1')
+        .setCheck('GeoCoords');
+    this.appendValueInput('point2')
+        .appendField('Point 2')
+        .setCheck('GeoCoords');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Find the Vincenty distance: Geo coordinates in input. This distance is computed on a ellipsoid');
+    this.setHelpUrl('https://geopy.readthedocs.io/en/stable/index.html?highlight=geodesic#geopy.distance.geodesic');
+    this.setColour(60);
+  }
+};
+pythonGenerator.forBlock['distance_vinc'] = function(block, generator) {
+  const coord1 = generator.valueToCode(block, 'point1', pythonGenerator.ORDER_ATOMIC);
+  const coord2 = generator.valueToCode(block, 'point2', pythonGenerator.ORDER_ATOMIC);
+  return [`geodesic(${coord1}, ${coord2}).meters`, pythonGenerator.ORDER_ATOMIC];
+}
+
+Blockly.Blocks['distance_calc'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Distance');
+    this.appendValueInput('point1')
+        .appendField('Point 1')
+        .setCheck('Coords');
+    this.appendValueInput('point2')
+        .appendField('Point 2')
+        .setCheck('Coords');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Find the distance between points');
+    this.setHelpUrl('https://shapely.readthedocs.io/en/stable/reference/shapely.distance.html');
+    this.setColour(60);
+  }
+};
+pythonGenerator.forBlock['distance_calc'] = function(block, generator) {
+  const coord1 = generator.valueToCode(block, 'point1', pythonGenerator.ORDER_ATOMIC);
+  const coord2 = generator.valueToCode(block, 'point2', pythonGenerator.ORDER_ATOMIC);
+  return [`Point${coord1}.distance(Point${coord2})`, pythonGenerator.ORDER_ATOMIC];
+}
+
+//Distance on a sphere
+Blockly.Blocks['distance_sph'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Distance on a sphere');
+    this.appendDummyInput()
+        .appendField('Point 1: Lat:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat1')
+        .appendField(', Lon:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon1');
+    this.appendDummyInput()
+        .appendField('Point 2: Lat:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat2')
+        .appendField(', Lon:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon2');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Find the distance on a sphere with latitude and longitude. Different of haversine distance');
+    this.setHelpUrl('https://www.walter-fendt.de/html5/men/distancesphere_en.htm');
+    this.setColour(60);
+  }
+};
+pythonGenerator.forBlock['distance_sph'] = function(block) {
+  const lat1 = block.getFieldValue('Lat1') || '0';
+  const lat2 = block.getFieldValue('Lat2') || '0';
+  const lon1 = block.getFieldValue('Lon1') || '0';
+  const lon2 = block.getFieldValue('Lon2') || '0';
+  return [`np.acos(np.sin(np.radians(${lat1})) * np.sin(np.radians(${lat2})) + np.cos(np.radians(${lat1})) * np.cos(np.radians(${lat2})) * np.cos(np.radians(${lon2} - ${lon1}))) * 6371e3`, pythonGenerator.ORDER_ATOMIC];
+}
+
+//Distance with rectangular approximation
+Blockly.Blocks['distance_rect'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Distance with rectangular approximation');
+    this.appendDummyInput()
+        .appendField('Point 1: Lat:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat1')
+        .appendField(', Lon:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon1');
+    this.appendDummyInput()
+        .appendField('Point 2: Lat:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat2')
+        .appendField(', Lon:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon2');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Find the distance with rectangular approximation with lat and lon');
+    this.setHelpUrl('');
+    this.setColour(60);
+  }
+};
+pythonGenerator.forBlock['distance_rect'] = function(block) {
+  const lat1 = block.getFieldValue('Lat1') || '0';
+  const lat2 = block.getFieldValue('Lat2') || '0';
+  const lon1 = block.getFieldValue('Lon1') || '0';
+  const lon2 = block.getFieldValue('Lon2') || '0';
+  return [`6371e3 * np.sqrt((np.radians(${lon2} - ${lon1}) * np.cos(np.radians((${lat1} + ${lat2}) / 2)))**2 + (np.radians(${lat2} - ${lat1}))**2)`, pythonGenerator.ORDER_ATOMIC];
+}
+
+Blockly.Blocks['distance_manhattan'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Manhattan distance');
+    this.appendDummyInput()
+        .appendField('Point 1: Lat:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat1')
+        .appendField(', Lon:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon1');
+    this.appendDummyInput()
+        .appendField('Point 2: Lat:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat2')
+        .appendField(', Lon:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon2');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Find the manhattan distance with lat and lon. Only for very short distances, maximum difference between coordinates in hundredths of degrees');
+    this.setHelpUrl('');
+    this.setColour(60);
+  }
+};
+pythonGenerator.forBlock['distance_manhattan'] = function(block) {
+  const lat1 = block.getFieldValue('Lat1') || '0';
+  const lat2 = block.getFieldValue('Lat2') || '0';
+  const lon1 = block.getFieldValue('Lon1') || '0';
+  const lon2 = block.getFieldValue('Lon2') || '0';
+  return [`(abs(${lat2} - ${lat1}) * 111320) + (abs(${lon2} - ${lon1}) * 40075000 * np.cos(np.radians((${lat2} + ${lat1}) / 2)) / 360)`, pythonGenerator.ORDER_ATOMIC];
+}
+
+//Distance haversine
+Blockly.Blocks['distance_haversine'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Haversine distance');
+    this.appendDummyInput()
+        .appendField('Point 1: Lat:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat1')
+        .appendField(', Lon:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon1');
+    this.appendDummyInput()
+        .appendField('Point 2: Lat:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lat2')
+        .appendField(', Lon:')
+        .appendField(new Blockly.FieldNumber('0'), 'Lon2');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Find the distance haversine with lat and lon on a sphere');
+    this.setHelpUrl('');
+    this.setColour(60);
+  }
+};
+pythonGenerator.forBlock['distance_haversine'] = function(block) {
+  const lat1 = block.getFieldValue('Lat1') || '0';
+  const lat2 = block.getFieldValue('Lat2') || '0';
+  const lon1 = block.getFieldValue('Lon1') || '0';
+  const lon2 = block.getFieldValue('Lon2') || '0';
+  return [`6371e3 * 2 * np.atan2(np.sqrt((np.sin(np.radians(${lat2} - ${lat1}) / 2) ** 2 + np.cos(np.radians(${lat1})) * np.cos(np.radians(${lat2})) * np.sin(np.radians(${lon2} - ${lon1}) / 2) ** 2)), np.sqrt(1 - (np.sin(np.radians(${lat2} - ${lat1}) / 2) ** 2 + np.cos(np.radians(${lat1})) * np.cos(np.radians(${lat2})) * np.sin(np.radians(${lon2} - ${lon1}) / 2) ** 2)))`, pythonGenerator.ORDER_ATOMIC];
+}
+
 /****************
  * MAPS
  ****************/
@@ -1900,7 +1947,7 @@ Blockly.Blocks['folium_map'] = {
         ]), 'DROP');
     this.setNextStatement(true, null);
     this.setInputsInline(false);
-    this.setTooltip('Use this block to initialise a map.');
+    this.setTooltip('Use this block to initialise a map. You can choose the tiles type.');
     this.setHelpUrl('https://python-visualization.github.io/folium/latest/getting_started.html');
     this.setColour(230);
   }
@@ -1927,7 +1974,7 @@ Blockly.Blocks['folium_marker'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setInputsInline(false);
-    this.setTooltip('');
+    this.setTooltip('Add a marker point on map. You can define an icon for this marker.');
     this.setHelpUrl('https://python-visualization.github.io/folium/latest/reference.html#folium.map.Marker');
     this.setColour(270);
   }
@@ -2239,360 +2286,6 @@ pythonGenerator.forBlock['Choropleth_map'] = function(block, generator) {
 ).add_to(m)\n`;
 }
 
-Blockly.Blocks['request_json_data'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Request JSON data')
-        .appendField(new Blockly.FieldTextInput('http://example.com/file.json', (url) => url.match(/^[a-z]{4,5}:\/\/[A-Za-zÀ-ÖØ-öø-ÿ0-9./:_-]*?\.[a-z]{2,6}/) ? url : 'ERROR!'), 'url');
-    this.setOutput(true, '');
-    this.setHelpUrl('https://python-visualization.github.io/folium/latest/user_guide/geojson/choropleth.html');
-    this.setTooltip('Request JSON data from a given URL');
-    this.setColour(270);
-  }
-}
-pythonGenerator.forBlock['request_json_data'] = function(block) {
-  const url = block.getFieldValue('url') || '';
-  return [`requests.get('${url}').json()\n`, pythonGenerator.ORDER_ATOMIC];
-};
-
-Blockly.Blocks['convert_column'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Convert column')
-        .appendField(new Blockly.FieldTextInput('column_name'), 'column_name');
-    this.appendDummyInput()
-        .appendField('of DataFrame')
-        .appendField(new Blockly.FieldVariable('df'), 'df_name');
-    this.appendDummyInput()
-        .appendField('to type')
-        .appendField(new Blockly.FieldDropdown([['String', 'str'], ['Integer', 'int'], ['Float', 'float'], ['Boolean', 'bool']]), 'type');
-    this.setInputsInline(false);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setTooltip('Convert a column of a DataFrame to a different type. Use this block in case of unforseen errors e.g. in maps.');
-    this.setColour(270);
-  }
-}
-pythonGenerator.forBlock['convert_column'] = function(block) {
-  const column_name = block.getFieldValue('column_name') || 'column_name';
-  const df_name = block.getFieldValue('df_name') || 'df';
-  const type = block.getFieldValue('type') || 'float';
-  const getVar = block.workspace.getVariableById(df_name);
-  const Var = getVar ? getVar.name : 'undefined';  
-  return `${Var}['${column_name}'] = ${Var}['${column_name}'].astype(${type})\n`;
-}
-
-Blockly.Blocks['pie_chart'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Pie chart');
-    this.appendValueInput('sizes')
-        .setCheck('List')
-        .appendField('Sizes');
-    this.appendValueInput('labels')
-        .setCheck('List')
-        .appendField('Labels');
-    this.appendDummyInput()
-        .appendField('Percentages')
-        .appendField(new Blockly.FieldCheckbox('TRUE'), 'percent');
-    this.setInputsInline(false);
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setTooltip('Plot a pie chart');
-    this.setHelpUrl('https://matplotlib.org/stable/gallery/pie_and_polar_charts/pie_features.html');
-    this.setColour(325);
-  }
-}
-pythonGenerator.forBlock['pie_chart'] = function(block, generator) {
-  const sizes = generator.valueToCode(block, 'sizes', pythonGenerator.ORDER_NONE) || "[100]";
-  const labels = generator.valueToCode(block, 'labels', pythonGenerator.ORDER_NONE) || "['Label']";
-  const percent = block.getFieldValue('percent') || 'TRUE';
-  return `plt.pie(${sizes}, labels=${labels}, autopct=${percent === 'TRUE' ? '\'%1.1f%%\'':'None'})\n`
-}
-
-Blockly.Blocks['create_list_XCoords'] = {
-  init: function() {
-    this.appendDummyInput('')
-        .appendField('Create list with X coords')
-        .appendField(new Blockly.FieldVariable('df'), 'VAR');
-    this.setOutput(true);
-    this.setTooltip('Attach an array. This array should be an array of points with X and Y coordinates. This blocks creates a list of all X coordinates of the points.');
-    this.setColour(100);
-    this.setHelpUrl('https://stackoverflow.com/questions/59417997/how-to-plot-a-list-of-shapely-points');
-  }
-}
-pythonGenerator.forBlock['create_list_XCoords'] = function (block) {
-  const varID = block.getFieldValue('VAR') || '0';
-  const getVar = block.workspace.getVariableById(varID);
-  const Var = getVar ? getVar.name : 'undefined';
-  return [`[point.x for point in ${Var}]`, pythonGenerator.ORDER_ATOMIC];
-}
-
-Blockly.Blocks['create_list_YCoords'] = {
-  init: function() {
-    this.appendDummyInput('')
-        .appendField('Create list with Y coords')
-        .appendField(new Blockly.FieldVariable('df'), 'VAR');
-    this.setOutput(true);
-    this.setTooltip('Attach an array. This array should be an array of points with X and Y coordinates. This blocks creates a list of all Y coordinates of the points.');
-    this.setColour(100);
-    this.setHelpUrl('https://stackoverflow.com/questions/59417997/how-to-plot-a-list-of-shapely-points');
-  }
-}
-pythonGenerator.forBlock['create_list_YCoords'] = function (block) {
-  const varID = block.getFieldValue('VAR') || '0';
-  const getVar = block.workspace.getVariableById(varID);
-  const Var = getVar ? getVar.name : 'undefined';
-  return [`[point.y for point in ${Var}]`, pythonGenerator.ORDER_ATOMIC];
-}
-
-Blockly.Blocks['bar_chart'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Bar chart');
-    this.appendValueInput('heights')
-        .setCheck('List')
-        .appendField('Heights');
-    this.appendValueInput('sizes')
-        .setCheck('List')
-        .appendField('Labels');
-    this.appendDummyInput()
-        .appendField('Title')
-        .appendField(new Blockly.FieldTextInput('Title'), 'title');
-    this.appendDummyInput()
-        .appendField('X-axis label')
-        .appendField(new Blockly.FieldTextInput('Label'), 'XLabel');
-    this.appendDummyInput()
-        .appendField('Y-axis label')
-        .appendField(new Blockly.FieldTextInput('Label'), 'YLabel');
-    this.setInputsInline(false);
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setTooltip('Plot a bar chart');
-    this.setHelpUrl('https://matplotlib.org/stable/gallery/pie_and_polar_charts/pie_features.html');
-    this.setColour(325);
-  }
-}
-pythonGenerator.forBlock['bar_chart'] = function(block, generator) {
-  const sizes = generator.valueToCode(block, 'sizes', pythonGenerator.ORDER_NONE) || "[5]";
-  const labels = [block.getFieldValue('XLabel') || "X", block.getFieldValue('YLabel') || "Y"];
-  const title = block.getFieldValue('title') || "Title";
-  const heights = generator.valueToCode(block, 'heights', pythonGenerator.ORDER_NONE) || "[10]";
-  return '' +
-  `plt.bar(${sizes}, ${heights})\n` +
-  `plt.title('${title}')\n` +
-  `plt.xlabel('${labels[0]}')\n` + 
-  `plt.ylabel('${labels[1]}')\n`
-}
-
-Blockly.Blocks['boxplot'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Boxplot');
-    this.appendValueInput('data')
-        .setCheck('List')
-        .appendField('Data');
-    this.appendValueInput('label_group')
-        .setCheck('List')
-        .appendField('Labels');
-    this.appendDummyInput()
-        .appendField('Vertical')
-        .appendField(new Blockly.FieldCheckbox('TRUE'), 'orientation');
-    this.appendDummyInput()
-        .appendField('Add notches')
-        .appendField(new Blockly.FieldCheckbox('FALSE'), 'notches');
-    this.appendDummyInput()
-        .appendField('Title')
-        .appendField(new Blockly.FieldTextInput('Title'), 'title');
-    this.appendDummyInput()
-        .appendField('X-axis label')
-        .appendField(new Blockly.FieldTextInput('Label'), 'XLabel');
-    this.appendDummyInput()
-        .appendField('Y-axis label')
-        .appendField(new Blockly.FieldTextInput('Label'), 'YLabel');
-    this.setInputsInline(false);
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setTooltip('Plot a boxplot');
-    this.setHelpUrl('https://en.wikipedia.org/wiki/Box_plot');
-    this.setColour(325);
-  }
-}
-pythonGenerator.forBlock['boxplot'] = function(block, generator) {
-  const orientation = block.getFieldValue('orientation') === 'TRUE';
-  const notches = block.getFieldValue('notches') === 'TRUE';
-  const data = generator.valueToCode(block, 'data', pythonGenerator.ORDER_NONE) || "[0]";
-  const label_group = generator.valueToCode(block, 'label_group', pythonGenerator.ORDER_NONE) || "['null']";
-  const labels = [block.getFieldValue('XLabel') || "X", block.getFieldValue('YLabel') || "Y"];
-  const title = block.getFieldValue('title') || "Title";
-  return `plt.boxplot(${data}, labels = ${label_group}, vert = ${orientation ? 'True' : 'False'}, notch = ${notches ? 'True' : 'False'})\n` +
-  `plt.title('${title}')\n` +
-  `plt.xlabel('${labels[0]}')\n` + 
-  `plt.ylabel('${labels[1]}')\n`
-}
-
-//Distance Vincenty
-Blockly.Blocks['distance_vinc'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Vincenty distance');
-    this.appendValueInput('point1')
-        .appendField('Point 1')
-        .setCheck('GeoCoords');
-    this.appendValueInput('point2')
-        .appendField('Point 2')
-        .setCheck('GeoCoords');
-    this.setOutput(true, 'Number');
-    this.setTooltip('Find the Vincenty distance: Geo coordinates in input. This distance is computed on a ellipsoid');
-    this.setHelpUrl('https://geopy.readthedocs.io/en/stable/index.html?highlight=geodesic#geopy.distance.geodesic');
-    this.setColour(60);
-  }
-};
-pythonGenerator.forBlock['distance_vinc'] = function(block, generator) {
-  const coord1 = generator.valueToCode(block, 'point1', pythonGenerator.ORDER_ATOMIC);
-  const coord2 = generator.valueToCode(block, 'point2', pythonGenerator.ORDER_ATOMIC);
-  return [`geodesic(${coord1}, ${coord2}).meters`, pythonGenerator.ORDER_ATOMIC];
-}
-
-//Distance on a sphere
-Blockly.Blocks['distance_sph'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Distance on a sphere');
-    this.appendDummyInput()
-        .appendField('Point 1: Lat:')
-        .appendField(new Blockly.FieldNumber('0'), 'Lat1')
-        .appendField(', Lon:')
-        .appendField(new Blockly.FieldNumber('0'), 'Lon1');
-    this.appendDummyInput()
-        .appendField('Point 2: Lat:')
-        .appendField(new Blockly.FieldNumber('0'), 'Lat2')
-        .appendField(', Lon:')
-        .appendField(new Blockly.FieldNumber('0'), 'Lon2');
-    this.setOutput(true, 'Number');
-    this.setTooltip('Find the distance on a sphere with latitude and longitude. Different of haversine distance');
-    this.setHelpUrl('');
-    this.setColour(60);
-  }
-};
-pythonGenerator.forBlock['distance_sph'] = function(block) {
-  const lat1 = block.getFieldValue('Lat1') || '0';
-  const lat2 = block.getFieldValue('Lat2') || '0';
-  const lon1 = block.getFieldValue('Lon1') || '0';
-  const lon2 = block.getFieldValue('Lon2') || '0';
-  return [`np.acos(np.sin(np.radians(${lat1})) * np.sin(np.radians(${lat2})) + np.cos(np.radians(${lat1})) * np.cos(np.radians(${lat2})) * np.cos(np.radians(${lon2} - ${lon1}))) * 6371e3`, pythonGenerator.ORDER_ATOMIC];
-}
-
-//Distance with rectangular approximation
-Blockly.Blocks['distance_rect'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Distance with rectangular approximation');
-    this.appendDummyInput()
-        .appendField('Point 1: Lat:')
-        .appendField(new Blockly.FieldNumber('0'), 'Lat1')
-        .appendField(', Lon:')
-        .appendField(new Blockly.FieldNumber('0'), 'Lon1');
-    this.appendDummyInput()
-        .appendField('Point 2: Lat:')
-        .appendField(new Blockly.FieldNumber('0'), 'Lat2')
-        .appendField(', Lon:')
-        .appendField(new Blockly.FieldNumber('0'), 'Lon2');
-    this.setOutput(true, 'Number');
-    this.setTooltip('Find the distance with rectangular approximation with lat and lon');
-    this.setHelpUrl('');
-    this.setColour(60);
-  }
-};
-pythonGenerator.forBlock['distance_rect'] = function(block) {
-  const lat1 = block.getFieldValue('Lat1') || '0';
-  const lat2 = block.getFieldValue('Lat2') || '0';
-  const lon1 = block.getFieldValue('Lon1') || '0';
-  const lon2 = block.getFieldValue('Lon2') || '0';
-  return [`6371e3 * np.sqrt((np.radians(${lon2} - ${lon1}) * np.cos(np.radians((${lat1} + ${lat2}) / 2)))**2 + (np.radians(${lat2} - ${lat1}))**2)`, pythonGenerator.ORDER_ATOMIC];
-}
-
-
-Blockly.Blocks['distance_manhattan'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Manhattan distance');
-    this.appendDummyInput()
-        .appendField('Point 1: Lat:')
-        .appendField(new Blockly.FieldNumber('0'), 'Lat1')
-        .appendField(', Lon:')
-        .appendField(new Blockly.FieldNumber('0'), 'Lon1');
-    this.appendDummyInput()
-        .appendField('Point 2: Lat:')
-        .appendField(new Blockly.FieldNumber('0'), 'Lat2')
-        .appendField(', Lon:')
-        .appendField(new Blockly.FieldNumber('0'), 'Lon2');
-    this.setOutput(true, 'Number');
-    this.setTooltip('Find the manhattan distance with lat and lon. Only for very short distances, maximum difference between coordinates in hundredths of degrees');
-    this.setHelpUrl('');
-    this.setColour(60);
-  }
-};
-pythonGenerator.forBlock['distance_manhattan'] = function(block) {
-  const lat1 = block.getFieldValue('Lat1') || '0';
-  const lat2 = block.getFieldValue('Lat2') || '0';
-  const lon1 = block.getFieldValue('Lon1') || '0';
-  const lon2 = block.getFieldValue('Lon2') || '0';
-  return [`(abs(${lat2} - ${lat1}) * 111320) + (abs(${lon2} - ${lon1}) * 40075000 * np.cos(np.radians((${lat2} + ${lat1}) / 2)) / 360)`, pythonGenerator.ORDER_ATOMIC];
-}
-
-
-//Distance haversine
-Blockly.Blocks['distance_haversine'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Haversine distance');
-    this.appendDummyInput()
-        .appendField('Point 1: Lat:')
-        .appendField(new Blockly.FieldNumber('0'), 'Lat1')
-        .appendField(', Lon:')
-        .appendField(new Blockly.FieldNumber('0'), 'Lon1');
-    this.appendDummyInput()
-        .appendField('Point 2: Lat:')
-        .appendField(new Blockly.FieldNumber('0'), 'Lat2')
-        .appendField(', Lon:')
-        .appendField(new Blockly.FieldNumber('0'), 'Lon2');
-    this.setOutput(true, 'Number');
-    this.setTooltip('Find the distance haversine with lat and lon on a sphere');
-    this.setHelpUrl('');
-    this.setColour(60);
-  }
-};
-pythonGenerator.forBlock['distance_haversine'] = function(block) {
-  const lat1 = block.getFieldValue('Lat1') || '0';
-  const lat2 = block.getFieldValue('Lat2') || '0';
-  const lon1 = block.getFieldValue('Lon1') || '0';
-  const lon2 = block.getFieldValue('Lon2') || '0';
-  return [`6371e3 * 2 * np.atan2(np.sqrt((np.sin(np.radians(${lat2} - ${lat1}) / 2) ** 2 + np.cos(np.radians(${lat1})) * np.cos(np.radians(${lat2})) * np.sin(np.radians(${lon2} - ${lon1}) / 2) ** 2)), np.sqrt(1 - (np.sin(np.radians(${lat2} - ${lat1}) / 2) ** 2 + np.cos(np.radians(${lat1})) * np.cos(np.radians(${lat2})) * np.sin(np.radians(${lon2} - ${lon1}) / 2) ** 2)))`, pythonGenerator.ORDER_ATOMIC];
-}
-
-Blockly.Blocks['while_loop'] = {
-  init: function() {
-    this.appendValueInput("CONDITION")
-        .setCheck("Boolean")
-        .appendField("while");
-    this.appendStatementInput("DO")
-        .setCheck(null)
-        .appendField("do");
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour(210);
-    this.setTooltip("Repeat while the condition is true");
-    this.setHelpUrl("");
-  }
-};
-pythonGenerator.forBlock['while_loop'] = function(block, generator) {
-  const condition = generator.valueToCode(block, 'CONDITION', pythonGenerator.ORDER_NONE) || 'False';
-  const statements = generator.statementToCode(block, 'DO');
-  return `while ${condition}:\n${statements}`;
-};
-
-
 // Plotly Scatter Mapbox Block
 
 Blockly.Blocks['plotly_scatter_mapbox'] = {
@@ -2676,6 +2369,7 @@ fig = px.scatter_map(
 )\nfig.write_html('${path}.html')\n${saveMap ? '' : '###DISPLAYONLY###\n'}`;
 };
 
+// Interpolation blocks
 
 Blockly.Blocks['idw_interpolation'] = {
   init: function() {
@@ -2702,7 +2396,7 @@ Blockly.Blocks['idw_interpolation'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(230);
+    this.setColour(20);
     this.setTooltip("Perform IDW interpolation on missing values in a dataset");
     this.setHelpUrl("");
   }
@@ -2761,7 +2455,7 @@ Blockly.Blocks['ppv_interpolation'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(230);
+    this.setColour(20);
     this.setTooltip("Perform PPV interpolation on missing values in a dataset");
     this.setHelpUrl("");
   }
@@ -2796,39 +2490,374 @@ for a in ax:
   return code;
 };
 
-Blockly.Blocks['del_col'] = {
+//**BASIC FUNCTIONS */
+/** Lambda func block */
+Blockly.Blocks['lambda'] = {
   init: function() {
-    this.appendValueInput('array')
-      .setCheck(['Array'])
-      .appendField('Delete columns');
-    this.appendValueInput('columns')
-      .appendField('Name of columns');
-    this.setOutput(true, 'Array');
-    this.setTooltip('');
-    this.setColour(200);
+    this.appendValueInput('EXPR')
+        .appendField('lambda')
+        .appendField(new Blockly.FieldTextInput('x', (txt) => txt.match(/^[A-Za-z_][A-Za-z0-9_]*$/) ? txt : 'ERROR!'), 'LAMBDA')
+        .appendField(':');
+    this.setTooltip('Python lambda function. You can use multiple arguments by separating them with a comma.');
+    this.setColour(120);
+    this.setHelpUrl('https://www.w3schools.com/python/python_lambda.asp');
+    this.setOutput(true);
   }
-};
-pythonGenerator.forBlock['del_col'] = function(block, generator) {
-  const array = generator.valueToCode(block, 'array', pythonGenerator.ORDER_ATOMIC);
-  const columns = generator.valueToCode(block, 'columns', pythonGenerator.ORDER_ATOMIC);
-  return [`${array} = ${array}.drop(columns=${columns}, axis = 1)`, pythonGenerator.ORDER_COLLECTION];
 }
 
-//** converte numpy to pandas
-Blockly.Blocks['convert_np_to_pd'] = {
+pythonGenerator.forBlock['lambda'] = function(block, generator) {
+  const VAR = block.getFieldValue('LAMBDA') || '0';
+  const EXPR = generator.valueToCode(block, 'EXPR', pythonGenerator.ORDER_NONE)
+  return [`lambda ${VAR}: ${EXPR}`, pythonGenerator.ORDER_LAMBDA];
+}
+
+/**
+ * Length of str (returns int)
+ */
+Blockly.Blocks["length_of_str"] = {
+  init: function(){
+    this.appendValueInput('STR')
+    .appendField('length of')
+    .setCheck('String');
+    this.appendDummyInput();
+    this.appendEndRowInput();
+    this.setOutput(true, 'Number');
+    this.setColour(90);
+    this.setTooltip('Returns the length of a given string');
+  },
+};
+pythonGenerator.forBlock["length_of_str"] = function(block, generator) {
+  const length = generator.valueToCode(block, 'STR', pythonGenerator.ORDER_NONE) || '0';
+  return [`len(${length})`, pythonGenerator.ORDER_ATOMIC];
+};
+
+Blockly.Blocks['list_access'] = {
   init: function() {
-    this.appendValueInput('array')
-    .setCheck(['Array'])
-      .appendField('Convert to DataFrame');
-    this.appendValueInput('columns')
-      .appendField('Name of columns');
+    this.appendDummyInput('NAME')
+        .appendField(new Blockly.FieldVariable("VAR_NAME"), "LIST")
+        .appendField('[');
+    this.appendValueInput('CNAME');
+    this.appendEndRowInput()
+        .appendField(']');
+    this.setInputsInline(true);
     this.setOutput(true);
-    this.setTooltip('Convert to DataFrame');
+    this.setTooltip('Access an element in a given list');
     this.setColour(200);
   }
 };
-pythonGenerator.forBlock['convert_np_to_pd'] = function(block, generator) {
-  const array = generator.valueToCode(block, 'array', pythonGenerator.ORDER_ATOMIC);
-  const columns = generator.valueToCode(block, 'columns', pythonGenerator.ORDER_ATOMIC);
-  return [`pd.DataFrame(${array}, columns=${columns})`, pythonGenerator.ORDER_COLLECTION];
+pythonGenerator.forBlock['list_access'] = function(block, generator) {
+  const varName = block.getFieldValue('LIST') || '0';
+  const getVar = block.workspace.getVariableById(varName);
+  const listName = getVar ? getVar.name : 'undefined';
+  const elem = generator.valueToCode(block, 'CNAME', pythonGenerator.ORDER_ATOMIC);
+  return [`${listName}[${elem}]`, pythonGenerator.ORDER_ATOMIC]
+};
+
+/**
+ * Block for creating a list
+ */
+
+Blockly.Blocks['list_create'] = {
+  init: function() {
+    this.itemCount_ = 1;
+    this.appendValueInput('element_0')
+        .appendField('create list');
+    this.setInputsInline(false);
+    const appendFieldPlusIcon = new Blockly.FieldImage(
+      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='icon icon-tabler icon-tabler-plus' width='60' height='60' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath stroke='none' d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M12 5l0 14' /%3E%3Cpath d='M5 12l14 0' /%3E%3C/svg%3E",
+      16,
+      16,
+      'Add',
+      function (block) {
+        block.sourceBlock_.appendArrayElementInput()
+      }
+    )
+    this.appendDummyInput('close').appendField(appendFieldPlusIcon);
+    this.setColour(230);
+    this.setOutput(true, 'List');
+    this.setTooltip('Create a Python list');
+  },
+
+  saveExtraState: function() {
+    return {
+      itemCount: this.itemCount_,
+    }
+  },
+
+  loadExtraState: function(state) {
+    this.itemCount_ = state['itemCount']
+    this.updateShape()
+  },
+
+  appendArrayElementInput: function() {
+    Blockly.Events.setGroup(true)
+    const oldExtraState = getExtraBlockState(this)
+    this.itemCount_ += 1
+    const newExtraState = getExtraBlockState(this)
+    Blockly.Events.fire(new Blockly.Events.BlockChange(this, 'mutation', null, oldExtraState, newExtraState))
+    Blockly.Events.setGroup(false)
+    this.updateShape()
+  },
+
+  deleteArrayElementInput: function(inputToDelete) {
+    const oldExtraState = getExtraBlockState(this)
+    Blockly.Events.setGroup(true)
+    var inputNameToDelete = inputToDelete.name
+    var inputIndexToDelete = Number(inputNameToDelete.match(/\d+/)[0])
+    var substructure = this.getInputTargetBlock(inputNameToDelete)
+    if (substructure) substructure.dispose(true, true)
+    this.removeInput(inputNameToDelete)
+    this.itemCount_ -= 1
+    for (var i = inputIndexToDelete + 1; i <= this.itemCount_; i++) {
+      var input = this.getInput('element_' + i)
+      input.name = 'element_' + (i - 1)
+    }
+
+    const newExtraState = getExtraBlockState(this)
+    Blockly.Events.fire(new Blockly.Events.BlockChange(this, 'mutation', null, oldExtraState, newExtraState))
+    Blockly.Events.setGroup(false)
+  },
+
+  updateShape: function() {
+    for (let i = 1; i < this.itemCount_; i++) {
+      if (!this.getInput('element_' + i)) {
+        const appended_input = this.appendValueInput('element_' + i)
+
+        var deleteArrayElementIcon = new Blockly.FieldImage(
+          `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='icon icon-tabler icon-tabler-minus' width='60' height='60' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath stroke='none' d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M5 12l14 0' /%3E%3C/svg%3E`,
+          16,
+          16,
+          'Remove',
+          function (block) {
+            block.sourceBlock_.deleteArrayElementInput(appended_input)
+          }
+        )
+        appended_input.appendField(deleteArrayElementIcon, 'delete_' + i)
+
+        this.moveInputBefore('element_' + i, 'close')
+      }
+    }
+  },
 }
+pythonGenerator.forBlock['list_create'] = function(block, generator) {
+  const elements = [];
+  for (let i = 0; i < block.itemCount_; i++) {
+    elements.push(generator.valueToCode(block, 'element_' + i, pythonGenerator.ORDER_NONE) || 'None');
+  }
+  return [`[${elements.join(', ')}]`, pythonGenerator.ORDER_ATOMIC];
+};
+function getExtraBlockState(block) {
+  if (block.saveExtraState) {
+    const state = block.saveExtraState()
+    return state ? JSON.stringify(state) : ''
+  } else if (block.mutationToDom) {
+    const state = block.mutationToDom()
+    return state ? Blockly.Xml.domToText(state) : ''
+  }
+  return ''
+}
+
+
+Blockly.Blocks['type'] = {
+  init: function() {
+    this.appendValueInput('TYPE')
+        .appendField('check type of');
+    this.setTooltip('Find the type of another block');
+    this.setOutput(true, 'Type');
+    this.setHelpUrl('https://www.w3schools.com/python/ref_func_type.asp')
+    this.setColour(320);
+  }
+}
+pythonGenerator.forBlock['type'] = function(block, generator) {
+  const type = generator.valueToCode(block, 'TYPE', pythonGenerator.ORDER_ATOMIC);
+  return [`type(${type})`, pythonGenerator.ORDER_ATOMIC];
+}
+
+//**OTHER BLOCKS */
+
+Blockly.Blocks['while_loop'] = {
+  init: function() {
+    this.appendValueInput("CONDITION")
+        .setCheck("Boolean")
+        .appendField("while");
+    this.appendStatementInput("DO")
+        .setCheck(null)
+        .appendField("do");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(120);
+    this.setTooltip("Repeat while the condition is true");
+    this.setHelpUrl("");
+  }
+};
+pythonGenerator.forBlock['while_loop'] = function(block, generator) {
+  const condition = generator.valueToCode(block, 'CONDITION', pythonGenerator.ORDER_NONE) || 'False';
+  const statements = generator.statementToCode(block, 'DO');
+  return `while ${condition}:\n${statements}`;
+};
+
+/**
+ * Statement Input Block (loop)
+ */
+Blockly.Blocks["repeat_times"] = {
+  init: function () {
+    this.appendValueInput("TIMES")
+        .setCheck("Number")
+        .appendField("repeat");
+    this.appendStatementInput("DO")
+        .appendField("do");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(120);
+    this.setTooltip("Repeat N times");
+  },
+};
+pythonGenerator.forBlock["repeat_times"] = function (block, generator) {
+  const times =
+    generator.valueToCode(block, "TIMES", pythonGenerator.ORDER_NONE) || "0";
+  const branch = generator.statementToCode(block, "DO");
+  return `for i in range(${times}):\n${branch}`;
+};
+
+/**
+ * Operators block
+ */
+Blockly.Blocks['operators'] = {
+  init: function() {
+    this.appendValueInput('VALUE')
+        .setCheck(['Boolean', 'Number']);
+    this.appendValueInput('VALUE2')
+        .setCheck(['Boolean', 'Number'])
+        .appendField(new Blockly.FieldDropdown([
+          ['XOR', 'XOR'],
+          ['AND', 'AND'],
+          ['OR', 'OR'],
+          ['NOT', 'NOT']
+        ]), 'NAME');
+    this.setInputsInline(true)
+    this.setOutput(true, 'Boolean');
+    this.setTooltip('All the basic logical operators');
+    this.setColour(0);
+  }
+};
+pythonGenerator.forBlock['operators'] = function(block, generator) {
+  
+  const dropdown_name = block.getFieldValue('NAME');
+  const valu = generator.valueToCode(block, 'VALUE', pythonGenerator.ORDER_ATOMIC);
+  const valu2 = generator.valueToCode(block, 'VALUE2', pythonGenerator.ORDER_ATOMIC);
+
+  switch (dropdown_name) {
+    case 'AND':
+      return [`(${valu} & ${valu2})`, pythonGenerator.ORDER_LOGICAL_AND];
+    case 'OR':
+      return [`(${valu} | ${valu2})`, pythonGenerator.ORDER_LOGICAL_OR];
+    case 'XOR':
+      return [`(${valu} ^ ${valu2})`, pythonGenerator.ORDER_BITWISE_XOR];
+    case 'NOT':
+      return [`(not ${valu2})`, pythonGenerator.ORDER_LOGICAL_NOT];
+  }
+}
+
+/**
+ * Temporary variables
+ * 
+ * As these could represent a dangerous security
+ * threat when compiling, they are limited to
+ * one character so as to protect the compiler
+ * from malware.
+ */
+Blockly.Blocks['temp_var'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField(new Blockly.FieldTextInput('VAR_NAME', (txt) => txt.slice(0, 1)), 'var');
+    this.setOutput(true);
+    this.setTooltip('Use for temporary variables, oftenly one time.')
+    this.setColour(315);
+  }
+};
+pythonGenerator.forBlock['temp_var'] = function(block) {
+  const varName = block.getFieldValue('var') || '0';
+  return [varName, pythonGenerator.ORDER_ATOMIC];
+};
+
+Blockly.Blocks['var_to_func'] = {
+  init: function() {
+    this.appendValueInput('var')
+        .appendField('Use variable');
+    this.appendDummyInput()
+        .appendField('with argument(s)')
+        .appendField(new Blockly.FieldTextInput(''), 'val');
+    this.setInputsInline(true);
+    this.setColour(230);
+    this.setOutput(true);
+    this.setTooltip('Use a variable as a function. This can be used with lambda functions.');
+  }
+};
+pythonGenerator.forBlock['var_to_func'] = function(block, generator) {
+  const variable = generator.valueToCode(block, 'var', pythonGenerator.ORDER_ATOMIC);
+  const value = block.getFieldValue('val')
+  return [`${variable}(${value})`, pythonGenerator.ORDER_ATOMIC];
+};
+
+/**
+ * Line-break
+ */
+
+Blockly.Blocks['line_break'] = {
+  init: function() {
+    this.appendDummyInput('')
+        .appendField('Line-break');
+    this.setTooltip('Enter a line-break in code');
+    this.setNextStatement(true, null);
+    this.setPreviousStatement(true, null);
+    this.setTooltip('Jump a line in the code')
+    this.setColour('#888');
+  }
+};
+pythonGenerator.forBlock['line_break'] = function() {
+  return '\n'
+}
+
+Blockly.Blocks['arange'] = {
+  init: function(){
+    this.appendValueInput('start')
+        .appendField('Generate values between');
+    this.appendValueInput('stop')
+        .appendField('and')
+    this.appendValueInput('step')
+        .appendField('with step');
+    this.setTooltip('Generate a range of values between two numbers');
+    this.setInputsInline(false);
+    this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.arange.html');
+    this.setOutput(true, 'Array');
+    this.setColour(100);
+  },
+};
+pythonGenerator.forBlock['arange'] = function(block, generator) {
+  const start = generator.valueToCode(block, 'start', pythonGenerator.ORDER_ATOMIC);
+  const stop = generator.valueToCode(block, 'stop', pythonGenerator.ORDER_ATOMIC);
+  const step = generator.valueToCode(block, 'step', pythonGenerator.ORDER_ATOMIC);
+  return [`np.arange(${start}, ${stop}, ${step})`, pythonGenerator.ORDER_ATOMIC];
+};
+
+Blockly.Blocks['linspace'] = {
+  init: function(){
+    this.appendValueInput('number')
+        .appendField('Generate');
+    this.appendValueInput('start')
+        .appendField('values between');
+    this.appendValueInput('stop')
+        .appendField('and');
+    this.setTooltip('Generate a number of regular values between two numbers');
+    this.setInputsInline(false);
+    this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.linspace.html');
+    this.setOutput(true, 'Array');
+    this.setColour(100);
+  },
+};
+pythonGenerator.forBlock['linspace'] = function(block, generator) {
+  const start = generator.valueToCode(block, 'start', pythonGenerator.ORDER_ATOMIC);
+  const stop = generator.valueToCode(block, 'stop', pythonGenerator.ORDER_ATOMIC);
+  const number = generator.valueToCode(block, 'number', pythonGenerator.ORDER_ATOMIC);
+  return [`np.linspace(${start}, ${stop}, num=${number})`, pythonGenerator.ORDER_ATOMIC];
+};

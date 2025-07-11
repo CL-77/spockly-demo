@@ -41,7 +41,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   // Blockly toolbox definition for Level 1 (Beginner)
   const beginnerToolbox = `
         <xml>
-          <category name="${Blockly.Msg.Categories["MATH"]}" colour="#FF8A65">
+          <category name="${Blockly.Msg.Categories["MATH"]}" colour="#253dc7">
             <block type="math_number"></block>
             <block type="consts"></block>
             <block type="math_arithmetic">
@@ -73,15 +73,16 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="bool2"></block>
           </category>
 
-          <category name="${Blockly.Msg.Categories["DATA"]}" colour="#FA2">
-            <category name="${Blockly.Msg.Categories["DOWNLOAD_DATA"]}">
+          <category name="${Blockly.Msg.Categories["DATA"]}" colour="#0396c1">
+            <category name="${Blockly.Msg.Categories["DOWNLOAD_DATA"]}" colour="#0396c1">
                 <block type="func_download"></block>
                 <block type="sampleDataB"></block>
             </category>
-            <category name="${Blockly.Msg.Categories["DATA_MANIPULATION"]}">
+            <category name="${Blockly.Msg.Categories["DATA_MANIPULATION"]}" colour="#0396c1">
               <block type="convert_column"></block>
               <block type="read_file"></block>
               <block type="data_shape"></block>
+              <block type="slice"></block>
               <block type="add_object"></block>
               <block type="delete_object"></block>
               <block type="sort"></block>
@@ -96,7 +97,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             </category>
           </category>
 
-          <category name="${Blockly.Msg.Categories["VISUALISATION"]}" colour="#90A4AE">
+          <category name="${Blockly.Msg.Categories["VISUALISATION"]}" colour="#b12222">
             <block type="create_list_XCoords"></block>
             <block type="create_list_YCoords"></block>
             <block type="plot">
@@ -112,7 +113,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             </block>
           </category>
 
-          <category name="${Blockly.Msg.Categories["STATISTICS"]}" colour="#BA68C8">
+          <category name="${Blockly.Msg.Categories["STATISTICS"]}" colour="#05a219"">
             <block type="mean"></block>
             <block type="median"></block>
             <block type="std"></block>
@@ -125,14 +126,14 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           <category name="${Blockly.Msg.Categories["VARIABLES"]}" custom="VARIABLE" colour="#A65E2E"></category>
 
           <category name="${Blockly.Msg.Categories["BASIC_FUNCTIONS"]}" colour="#123456">
-            <block type="slice"></block>
             <block type="text_print"></block>
             <block type="length_of_str"></block>
+            <block type="list_create"></block>
             <block type="list_access"></block>
             <block type="type"></block>
           </category>
 
-          <category name="${Blockly.Msg.Categories["GEOMETRY"]}" colour="#4DD0E1">
+          <category name="${Blockly.Msg.Categories["GEOMETRY"]}" colour="#99a700">
             <block type="coords"></block>
             <block type="create_point"></block>
             <block type="buffer"></block>
@@ -147,12 +148,11 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 
           <category name="${Blockly.Msg.Categories["OTHER"]}" colour="#5C81A6">
             <block type="controls_if"></block>
-            <block type="operators"></block>
             <block type="repeat_times"></block>
+            <block type="operators"></block>
             <block type="temp_var"></block>
             <block type="text"></block>
             <block type="line_break"></block>
-            <block type="list_create"></block>
             <block type="arange">
               <value name="start">
                 <shadow type="math_number">
@@ -183,7 +183,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 
       const advancedToolbox = `
         <xml>
-          <category name="${Blockly.Msg.Categories["MATH"]}" colour="#FF8A65">
+          <category name="${Blockly.Msg.Categories["MATH"]}" colour="#253dc7">
             <block type="math_number"></block>
             <block type="consts"></block>
             <block type="math_arithmetic">
@@ -211,8 +211,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="modulo"></block>
           </category>
 
-          <category name="${Blockly.Msg.Categories["DATA"]}" colour="#FA2">
-            <category name="${Blockly.Msg.Categories["DOWNLOAD_DATA"]}">
+          <category name="${Blockly.Msg.Categories["DATA"]}" colour="#0396c1">
+            <category name="${Blockly.Msg.Categories["DOWNLOAD_DATA"]}" colour="#0396c1">
               <block type="sampleDataA"></block>
               <block type="func_download"></block>
               <block type="read_file"></block>
@@ -222,10 +222,11 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
               <block type="request_json_data"></block>
               <block type="load_raster"></block>
             </category>
-            <category name="${Blockly.Msg.Categories["DATA_MANIPULATION"]}">
+            <category name="${Blockly.Msg.Categories["DATA_MANIPULATION"]}" colour="#0396c1">
               <block type="convert_column"></block>
               <block type="convert_np_to_pd"></block>          
-                <block type="data_shape"></block>
+              <block type="data_shape"></block>
+              <block type="slice"></block>
               <block type="stacking"></block>
               <block type="add_object"></block>
               <block type="del_col"></block>
@@ -268,7 +269,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             </category>
           </category>
 
-          <category name="${Blockly.Msg.Categories["VISUALISATION"]}" colour="#90A4AE">
+          <category name="${Blockly.Msg.Categories["VISUALISATION"]}" colour="#b12222">
             <block type="create_list_XCoords"></block>
             <block type="create_list_YCoords"></block>
             <block type="plot">
@@ -355,7 +356,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             </block>
           </category>
 
-          <category name="${Blockly.Msg.Categories["STATISTICS"]}" colour="#BA68C8">
+          <category name="${Blockly.Msg.Categories["STATISTICS"]}" colour="#05a219"">
             <block type="mean"></block>
             <block type="median"></block>
             <block type="std"></block>
@@ -367,7 +368,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
 
           <category name="${Blockly.Msg.Categories["VARIABLES"]}" custom="VARIABLE" colour="#A65E2E"></category>
 
-          <category name="${Blockly.Msg.Categories["IMPORTS"]}" colour="#888">
+          <category name="${Blockly.Msg.Categories["IMPORTS"]}" colour="#90A4AE">
             <block type="import0"></block>
             <block type="import1"></block>
             <block type="import2"></block>
@@ -375,18 +376,18 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           </category>
 
           <category name="${Blockly.Msg.Categories["BASIC_FUNCTIONS"]}" colour="#123456">
-            <block type="slice"></block>
             <block type="lambda"></block>
             <block type="text_print"></block>
             <block type="length_of_str"></block>
+            <block type="list_create"></block>
             <block type="list_access"></block>
             <block type="type"></block>
           </category>
 
-          <category name="${Blockly.Msg.Categories["PROCEDURES"]}" custom="PROCEDURE" colour="#05a219"></category>
+          <category name="${Blockly.Msg.Categories["PROCEDURES"]}" custom="PROCEDURE" colour="#8e0079"></category>
 
-          <category name="${Blockly.Msg.Categories["GEOMETRY"]}" colour="#4DD0E1">
-            <category name="${Blockly.Msg.Categories["DISTANCE"]}">
+          <category name="${Blockly.Msg.Categories["GEOMETRY"]}" colour="#99a700">
+            <category name="${Blockly.Msg.Categories["DISTANCE"]}" colour="#99a700">
               <block type="distance_calc"></block>
               <block type="distance_vinc"></block>
               <block type="distance_sph"></block>
@@ -394,7 +395,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
               <block type="distance_manhattan"></block>
               <block type="distance_haversine"></block>
             </category>
-            <category name="${Blockly.Msg.Categories["POINTS"]}">
+            <category name="${Blockly.Msg.Categories["POINTS"]}" colour="#99a700">
               <block type="coords"></block>
               <block type="create_point"></block>
               <block type="buffer"></block>
@@ -409,12 +410,12 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             </category>
           </category>
 
-          <category name="${Blockly.Msg.Categories["INTERPOLATION"]}" colour="#BA68C8">
+          <category name="${Blockly.Msg.Categories["INTERPOLATION"]}" colour="#de6c00">
             <block type="idw_interpolation"></block>
             <block type="ppv_interpolation"></block>
           </category>
 
-          <category name="${Blockly.Msg.Categories["MAPS"]}" colour="#3E65F8">
+          <category name="${Blockly.Msg.Categories["MAPS"]}" colour="#8803c1">
             <block type="GeoCoords"></block>
             <block type="folium_map">
               <value name="center">
@@ -506,13 +507,12 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           <category name="${Blockly.Msg.Categories["OTHER"]}" colour="#5C81A6">
             <block type="while_loop"></block>
             <block type="controls_if"></block>
-            <block type="operators"></block>
             <block type="repeat_times"></block>
+            <block type="operators"></block>
             <block type="temp_var"></block>
             <block type="var_to_func"></block>
             <block type="text"></block>
             <block type="line_break"></block>
-            <block type="list_create"></block>
             <block type="arange">
               <value name="start">
                 <shadow type="math_number">
