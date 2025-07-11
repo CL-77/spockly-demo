@@ -542,76 +542,89 @@ const SimpleTutorialPanel = ({ onClose }) => {
   }, [steps.length]);
 
   return (
-    <Card
+    <Box
       ref={dragRef}
       sx={{
-        p: 2,
-        m: 2,
-        backgroundColor: "#fff",
-        borderRadius: 4,
-        boxShadow: 3,
-        width: 700,
-        maxHeight: '80vh',
         position: "fixed",
         top: 180,
         right: 800,
+        width: 700,
+        maxHeight: "80vh",
+        minWidth: 360,
+        minHeight: 300,
+        resize: "both",
+        overflow: "auto",
         zIndex: 1000,
+        borderRadius: 2,
+        boxShadow: 3,
+        backgroundColor: "white",
+        display: "flex",
+        flexDirection: "column",
         cursor: "grab",
-        display: 'flex',
-        flexDirection: 'column'
+        border: "1px solid #ddd",
+        padding: 1.5,
       }}
     >
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={1} className="tutorial-header">
-        <Box display="flex" alignItems="center">
-          <Typography variant="h6">{step.title}</Typography>
-        </Box>
-        <Box>
-          <Button size="small" onClick={() => setLang(lang === "de" ? "en" : "de")}>{lang === "de" ? "EN" : "DE"}</Button>
-          <IconButton onClick={onClose} size="small">
-            <CloseIcon />
-          </IconButton>
-        </Box>
-      </Box>
-
-      <Box sx={{ flexGrow: 1, overflowY: 'auto', mb: 2 }}>
-        <ReactMarkdown
-          components={{
-            a: ({ node, ...props }) => (
-              <MuiLink {...props} target="_blank" rel="noopener noreferrer" />
-            )
-          }}
+      <Card sx={{ boxShadow: "none", flexGrow: 1, display: "flex", flexDirection: "column", backgroundColor: "white"}}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={1}
+          className="tutorial-header"
+          sx={{ cursor: "move" }}
         >
-          {step.content}
-        </ReactMarkdown>
-      </Box>
+          <Box display="flex" alignItems="center">
+            <Typography variant="h6">{step.title}</Typography>
+          </Box>
+          <Box>
+            <Button size="small" onClick={() => setLang(lang === "de" ? "en" : "de")}>{lang === "de" ? "EN" : "DE"}</Button>
+            <IconButton onClick={onClose} size="small">
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </Box>
 
-      <Box display="flex" justifyContent="space-between">
-        <Button
-          variant="outlined"
-          onClick={() => setStepIndex(i => Math.max(0, i - 1))}
-          disabled={stepIndex === 0}
-        >
-          {lang === "de" ? "Zurück" : "Back"}
-        </Button>
+        <Box sx={{ flexGrow: 1, overflowY: 'auto', mb: 2 }}>
+          <ReactMarkdown
+            components={{
+              a: ({ node, ...props }) => (
+                <MuiLink {...props} target="_blank" rel="noopener noreferrer" />
+              )
+            }}
+          >
+            {step.content}
+          </ReactMarkdown>
+        </Box>
 
-        {stepIndex === steps.length - 1 ? (
+        <Box display="flex" justifyContent="space-between">
           <Button
-            variant="contained"
-            color="success"
-            onClick={onClose}
+            variant="outlined"
+            onClick={() => setStepIndex(i => Math.max(0, i - 1))}
+            disabled={stepIndex === 0}
           >
-            {lang === "de" ? "Fertig" : "Finish"}
+            {lang === "de" ? "Zurück" : "Back"}
           </Button>
-        ) : (
-          <Button
-            variant="contained"
-            onClick={() => setStepIndex(i => Math.min(steps.length - 1, i + 1))}
-          >
-            {lang === "de" ? "Weiter" : "Next"}
-          </Button>
-        )}
-      </Box>
-    </Card>
+
+          {stepIndex === steps.length - 1 ? (
+            <Button
+              variant="contained"
+              color="success"
+              onClick={onClose}
+            >
+              {lang === "de" ? "Fertig" : "Finish"}
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              onClick={() => setStepIndex(i => Math.min(steps.length - 1, i + 1))}
+            >
+              {lang === "de" ? "Weiter" : "Next"}
+            </Button>
+          )}
+        </Box>
+      </Card>
+    </Box>
   );
 };
 
