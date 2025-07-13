@@ -19,7 +19,7 @@ Mit SPOCKLY kannst du Daten analysieren und visualisieren – ganz ohne Programm
 - Selbst Datensätze erstellen
 - Statistiken berechnen
 - Diagramme oder Karten anzeigen
-- R-Code anzeigen und ausführen
+- R-Code* anzeigen und ausführen
 
 ---
 
@@ -40,6 +40,12 @@ Mit SPOCKLY kannst du Daten analysieren und visualisieren – ganz ohne Programm
 
 ---
 
+🧠 ***Was ist R-Code?**  
+R ist eine Programmiersprache für Statistik und Datenanalyse.  
+SPOCKLY erzeugt automatisch R-Code aus deinen Blöcken – du brauchst ihn nicht selbst schreiben, aber kannst ihn dir anschauen, verändern und ausführen.
+
+---
+
 ℹ️ SPOCKLY basiert auf [**Blockly**](https://developers.google.com/blockly), einer Baustein-Technik von Google.`
     },
     {
@@ -48,7 +54,21 @@ Mit SPOCKLY kannst du Daten analysieren und visualisieren – ganz ohne Programm
 
 📅 Die Messungen reichen **bis ins Jahr 1958** zurück – aber wir arbeiten hier **nur mit den Daten ab dem Jahr 2000**.
 
-Diese Daten zeigen:
+---
+
+📁 **Was sind Daten – und warum?**
+
+Daten helfen uns, Fragen zu beantworten: z. B. „Wie stark ist das CO₂ gestiegen?“  
+Sie können in verschiedenen Formaten gespeichert sein – z. B.:
+- **CSV** = einfache Tabelle mit Texten und Zahlen
+- **GeoJSON** = geografische Daten (z. B. Standorte)
+- **TIFF** = Bild mit Messwerten (z. B. Temperaturverteilung)
+
+SPOCKLY kann mit vielen Formaten umgehen – du brauchst sie nur hochladen oder auswählen.
+
+---
+
+Mit unseren CO₂-Daten kannst du herausfinden:
 - wie viel CO₂ in der Atmosphäre war (in ppm = „parts per million“),
 - wie sich der Wert über die Jahre verändert hat,
 - und ob es regelmäßige Schwankungen gibt.
@@ -57,7 +77,8 @@ Mit Hilfe von Spockly-Blöcken wirst du lernen:
 
 ✅ wie man die Daten lädt,  
 ✅ wie man sie anschaut und versteht,  
-✅ und wie man sie grafisch darstellt.`
+✅ und wie man sie grafisch darstellt.
+`
     },
     {
       title: "1. Daten ansehen",
@@ -102,7 +123,6 @@ In unserem Fall nennen wir die Variable **co2**.
 
 5. 👉 Ziehe den Block mit der Aufschrift:  
    **set co2 to …** in den Editor.  
-   ➕ Das ist ein lila Block mit einem kleinen Dropdown.
 
 6. 👉 Jetzt nimm den Block **load CSV file** und  
    setze ihn **in das rechte Feld** von „set co2 to …“
@@ -114,7 +134,17 @@ In unserem Fall nennen wir die Variable **co2**.
 
 ✅ Damit hast du die CO₂-Daten aus der Datei in deine Variable **co2** geladen.
 
-📦 Ab jetzt kannst du mit dieser Variable weiterarbeiten, um dir die Daten anzusehen oder zu analysieren.`
+🧩 **Was macht welcher Block?**
+- **load CSV file** liest die Datei ein
+- **set co2 to ...** speichert das Ergebnis in einer Variable, damit du später darauf zugreifen kannst
+
+📦 Ab jetzt kannst du mit dieser Variable weiterarbeiten, um dir die Daten anzusehen oder zu analysieren.
+
+💡 **Was du daraus lernst:**  
+- Wie du Daten lädst und in Variablen speicherst  
+- Wie du Blöcke miteinander kombinierst  
+- Warum Variablen praktisch sind, um immer wieder auf Daten zuzugreifen
+`
     },
     {
       title: "3. Vorschau anzeigen",
@@ -133,10 +163,13 @@ In unserem Fall nennen wir die Variable **co2**.
 
 4. 
 - Wechsle vom Help-Tab zum **Code-Tab** oben rechts.
-- 🟢 Klicke auf den grünen Knopf **Generate R Code** im **Code-Tab** rechts.
+- 🟢 Klicke auf den grünen Knopf **Generate R Code** im **Code-Tab** rechts. Jetzt kannst du den R-Code sehen, der aus deinen Blöcken generiert wurde.
 - Wechsle vom Code-Tab zum **Output-Tab** rechts daneben.
-- 🔵 Dann auf den blauen Knopf **Run R Code** im Output-Tab, um das Ergebnis zu sehen.
+- 🔵 Dann auf den blauen Knopf **Run R Code** im Output-Tab, um das Ergebnis deines generierten Codes zu sehen.
+---
 
+🧩 **Was macht welcher Block?**
+- **summary of** zeigt dir eine Übersicht über alle Spalten und deren Werte – das hilft dir, die Struktur der Daten zu verstehen
 ---
 
 📄 **Das kommt dabei heraus (gekürzt):**
@@ -170,6 +203,11 @@ In unserem Fall nennen wir die Variable **co2**.
 - Welche Spalten enthalten Zahlen, die sich besonders stark unterscheiden?
 - Was sagt dir der Unterschied zwischen Minimum und Maximum über die Entwicklung des CO₂-Gehalts?
 - Gibt es Spalten, deren Bedeutung du dir erst erschließen musst?
+
+💡 **Was du daraus lernst:**  
+- Wie du dir schnell einen Überblick über einen Datensatz verschaffst  
+- Was typische statistische Kennzahlen bedeuten  
+- Wie du Variablen und Blöcke kombinierst, um Daten zu untersuchen
 `
     },
     {
@@ -187,12 +225,13 @@ In unserem Fall nennen wir die Variable **co2**.
 1. 👉 Öffne links die Kategorie **Data Inspection**  
    und ziehe den Block **select column** in den Editor.
 
-2. ✏️ Stelle ihn so ein:
-   - **Spalte:** \`decimal.date\`  
-   - **aus Tabelle:** \`co2\`
+2. ✏️ Trage im Block die richtigen Werte ein:  
+   - Klicke auf das weiße Textfeld und \`decimal.date\` hinein, um die Spalte für die Zeit auszuwählen. 
+   - Ziehe in die Lücke dahinter die Variable \`co2\` hinein, um den Datensatz auszuwählen.
 
 3. 🟣 Öffne die Kategorie **Variables**  
-   und erstelle eine neue Variable namens \`decimal_date\`.  
+   und erstelle eine neue Variable namens \`decimal_date\`, so wie wir vorhin die Variable \`co2\` erstellt haben. 
+   Ziehe den **set decimal_date to**-Block in den Editor.
    Setze dann den **select column**-Block in das Feld des **set decimal_date to**-Blocks.
 
    ✅ Jetzt sind die Zeitangaben in einer eigenen Variable gespeichert.
@@ -201,26 +240,34 @@ In unserem Fall nennen wir die Variable **co2**.
 
 4. 👉 Wiederhole das Ganze für die Spalte \`average\`:
    - Ziehe einen weiteren **select column**-Block in den Editor.
-   - Wähle Spalte: \`average\`, Tabelle: \`co2\`
+   - Klicke auf das Textfeld und schreibe: \`average\`, um die Spalte für den durchschnittlichen CO₂-Wert auszuwählen.
+   - Ziehe wieder in die Lücke dahinter die Variable \`co2\` hinein, um den Datensatz auszuwählen.
    - Erstelle eine neue Variable namens \`co2_avg\`
    - Setze den **select column**-Block in den **set co2_avg to**-Block
 
 ---
 
 5. 📊 Öffne die Kategorie **Visualization**  
-   und ziehe den Block in den Editor, mit dem man x- und y-Daten festlegt.
+   und ziehe den Block in den Editor, mit dem man x- und y-Daten festlegen kann.
 
 6. 🖱 Stelle den Block so ein:
-   - Diagrammtyp: **Line Chart**
+   - Diagrammtyp: **Line Chart** -> das ist ein Liniendiagramm
    - **x data**: \`decimal_date\`  (Zeitachse)
    - **y data**: \`co2_avg\`       (CO₂-Werte)
    - Wähle eine schöne Farbe für die Linie :)
 
----
-🧩 Verbinde die Blöcke miteinander 
+✏️ Um x und y-Achse festzulegen, ziehst du die entsprechenden Variablen (z. B. \`decimal_date\`) in die passenden Felder im Visualisierungs-Block.
 
-🟢 Klicke auf **Generate R Code**  
-🔵 Dann auf **Run R Code**
+---
+🧩 **Was macht welcher Block?**
+- **select column** wählt gezielt eine Spalte aus einer Tabelle aus
+- **set ... to** speichert das Ergebnis in einer neuen Variable, damit du sie für die Visualisierung nutzen kannst
+- Der Visualisierungs-Block erstellt ein Diagramm aus den gewählten Daten
+
+🧩 Verbinde die Blöcke miteinander (auch mit den Blöcken aus den vorherigen Schritten, sodass alle Blöcke miteinander verknüpft sind)
+
+🟢 Klicke auf **Generate R Code** im Code-Tab    
+🔵 Dann auf **Run R Code** im Output-Tab
 
 ---
 
@@ -230,18 +277,27 @@ In unserem Fall nennen wir die Variable **co2**.
 - Wie gleichmäßig ist der Verlauf?
 - Wie stark schwankt der CO₂-Wert im Laufe eines Jahres?
 - Gibt es jedes Jahr ein ähnliches Muster?
-- Was könnte den regelmäßigen Anstieg und Abfall verursachen?`
+- Was könnte den regelmäßigen Anstieg und Abfall verursachen?
+
+💡 **Was du daraus lernst:**  
+- Wie du gezielt Spalten aus Datensätzen auswählst  
+- Wie du Variablen erstellst, um Daten weiterzuverwenden  
+- Wie du einfache Diagramme erstellst, um Trends sichtbar zu machen
+`
     },
     {
       title: "5. Plot exportieren",
-      content: `Wenn du den erstellten Plot abspeichern möchtest, kannst du den Block **export plot to file** aus der Kategorie **Export** verwenden.
+      content: `Wenn du den erstellten Plot* abspeichern möchtest, kannst du den Block **export plot to file** aus der Kategorie **Export** verwenden.
 
 Du kannst auswählen, ob du ihn als **Bild** (.png) oder **.pdf** abspeichern möchtest.
 
 🟢 Klicke auf **Generate R Code**  
 🔵 Dann auf **Run R Code**, um dein Diagramm zu sehen!
 
-📌 So kannst du deine Ergebnisse teilen oder dokumentieren.`
+📌 So kannst du deine Ergebnisse teilen oder dokumentieren.
+
+--- 
+*Plot ist der Begriff, der für eine grafische Darstellung von Daten steht – also z. B. ein Liniendiagramm, Balkendiagramm oder Punktdiagramm. `
     },
   ],
   en: [
@@ -258,7 +314,7 @@ With SPOCKLY you can analyze and visualize data – no programming required. Jus
 - Create your own datasets
 - Calculate statistics
 - Show diagrams or maps
-- View and run R code
+- View and run R code*
 
 ---
 
@@ -279,30 +335,51 @@ With SPOCKLY you can analyze and visualize data – no programming required. Jus
 
 ---
 
+🧠 ***What is R code?**  
+R is a programming language for statistics and data analysis.  
+SPOCKLY automatically generates R code from your blocks – you don’t need to write it yourself, but you can view, edit, and run it.
+
+---
+
 ℹ️ SPOCKLY is based on [**Blockly**](https://developers.google.com/blockly), a block-based technique from Google.`
     },
     {
       title: "Introduction",
-      content: `In this tutorial, you'll learn how to analyze and visualize CO₂ data from the volcano Mauna Loa 🌋.
+      content: `In this tutorial you’ll learn how to analyze and visualize CO₂ data from the volcano Mauna Loa 🌋.
 
-📅 The measurements go **all the way back to 1958** – but here we'll only use **the data from the year 2000 onwards**.
+📅 The measurements go **all the way back to 1958** – but here we’ll work **only with the data from the year 2000 onwards**.
 
-This data shows:
+---
+
+📁 **What is data – and why?**
+
+Data helps us answer questions: for example, “How much has CO₂ increased?”  
+It can be stored in different formats – for example:
+- **CSV** = simple table with text and numbers
+- **GeoJSON** = geographic data (e.g. locations)
+- **TIFF** = image with measurement values (e.g. temperature distribution)
+
+SPOCKLY can handle many formats – you just need to upload or select them.
+
+---
+
+With our CO₂ data you can find out:
 - how much CO₂ was in the atmosphere (in ppm = “parts per million”),
-- how the value changed over the years,
+- how the value has changed over the years,
 - and whether there are regular fluctuations.
 
-With the help of Spockly blocks, you will learn:
+With the help of Spockly blocks you will learn:
 
 ✅ how to load the data,  
 ✅ how to view and understand it,  
-✅ and how to visualize it.`
+✅ and how to visualize it.
+`
     },
     {
       title: "1. View the data",
       content: `Go to **Check Uploads** on the left and look at the preview of the CO₂ dataset.
 
-📄 The file is called **co2.csv**. This is a **CSV file** – which stands for *Comma-Separated Values*.
+📄 The file is called **co2.csv**. This is a so-called **CSV file** – which stands for *Comma-Separated Values*.
 
 A CSV file is like a **table**:
 - Each **row** is a data entry (e.g. a month).
@@ -311,18 +388,18 @@ A CSV file is like a **table**:
 🔍 **Reflection questions:**
 - Which columns do you see?
 - What do the column names mean?
-- What information can you already recognize?`
+- What information can you recognize directly?`
     },
     {
       title: "2. Load CSV file",
-      content: `📥 In this step, you'll load the CO₂ data into SPOCKLY and store it in a **variable**.
+      content: `📥 In this step you’ll load the CO₂ data into SPOCKLY and store it in a so-called **variable**.
 
 ---
 
 🔹 **What is a variable?**
 
-A variable is a **container with a name** in which you store data. This way, you don't have to load the data again and again – you can simply refer to it by its name.  
-In our case, we'll call the variable **co2**.
+A variable is a **container with a name** in which you store data. This way you don’t have to load the data again and again, but can simply access it by name.  
+In our case, we’ll call the variable **co2**.
 
 ---
 
@@ -332,32 +409,41 @@ In our case, we'll call the variable **co2**.
    and drag the **load CSV file** block into the large turquoise editor area.
 
 2. 👉 Now open the **Variables** category  
-   and click at the top on **Create variable...**
+   and click at the very top on **Create variable...**
 
 3. ✏️ Enter the name: \`co2\`
 
 4. ⚠️ The window closes.  
-   Open the **Variables** category **again** – now you'll find new blocks there.
+   Open the **Variables** category **again** – now you’ll find new blocks there.
 
 5. 👉 Drag the block:  
    **set co2 to ...** into the editor.  
-   ➕ This is a purple block with a small dropdown.
 
 6. 👉 Now take the **load CSV file** block and  
    place it **in the right field** of “set co2 to ...”
 
-7. ✍️ In the **load CSV file** block, there's a field for the filename.  
-   Enter: \`co2.csv\`
+7. ✍️ In the **load CSV file** block there’s a field for the filename.  
+   Write: \`co2.csv\`
 
 ---
 
-✅ You have now loaded the CO₂ data from the file into your variable **co2**.
+✅ This way you have loaded the CO₂ data from the file into your variable **co2**.
 
-📦 From now on, you can use this variable to view or analyze the data.`
+🧩 **What does each block do?**
+- **load CSV file** reads the file
+- **set co2 to ...** stores the result in a variable so you can access it later
+
+📦 From now on you can continue working with this variable to view or analyze the data.
+
+💡 **What you’ll learn:**  
+- How to load data and store it in variables  
+- How to combine blocks  
+- Why variables are practical for accessing data repeatedly
+`
     },
     {
       title: "3. Show preview",
-      content: `📊 Now let's look at the structure of the data – what columns there are and what values they contain.
+      content: `📊 Now we’ll look at the structure of the data – that is, which columns there are and what values they contain.
 
 ---
 
@@ -366,19 +452,22 @@ In our case, we'll call the variable **co2**.
 1. 👉 Open the **Data Inspection** category on the left  
    and drag the **summary of** block into the editor.
 
-2. 👉 Drag your variable **co2** from the **Variables** category and place it into the field on the right in the **summary of** block.
+2. 👉 Drag your variable **co2** from the **Variables** category and place it in the field on the right in the **summary of** block.
 
 3. Attach the summary-of block below the set co2 to ... block.
 
 4. 
 - Switch from the Help tab to the **Code** tab at the top right.
-- 🟢 Click the green button **Generate R Code** in the **Code** tab on the right.
+- 🟢 Click the green button **Generate R Code** in the **Code** tab on the right. Now you can see the R code generated from your blocks.
 - Switch from the Code tab to the **Output** tab next to it.
-- 🔵 Then click the blue button **Run R Code** in the Output tab to see the result.
-
+- 🔵 Then click the blue button **Run R Code** in the Output tab to see the result of your generated code.
 ---
 
-📄 **Here's what you'll see (shortened):**
+🧩 **What does each block do?**
+- **summary of** shows you an overview of all columns and their values – this helps you understand the structure of the data
+---
+
+📄 **Here’s what you’ll see (shortened):**
 
 \`\`\`
       year          month         decimal.date     average      deseasonalized 
@@ -394,8 +483,8 @@ In our case, we'll call the variable **co2**.
 
 🔍 **What does this mean?**
 
-- Each **column** contains information about a feature (e.g. month, CO₂ value, uncertainty).
-- Each row in the result shows a statistical value:
+- Each **column** contains info about a feature (e.g. month, CO₂ value, uncertainty).
+- Each row in the result shows a statistical measure:
   - **Min.** = smallest value
   - **1st Qu.** = lower quarter of the data
   - **Median** = middle value
@@ -406,14 +495,19 @@ In our case, we'll call the variable **co2**.
 ---
 
 🔍 **Reflection questions:**
-- Which columns contain numbers that differ the most?
-- What does the difference between minimum and maximum tell you about the development of CO₂?
-- Are there columns whose meaning you need to figure out first?
+- Which columns contain numbers that differ especially strongly?
+- What does the difference between minimum and maximum tell you about the development of the CO₂ content?
+- Are there columns whose meaning you first have to figure out?
+
+💡 **What you’ll learn:**  
+- How to quickly get an overview of a dataset  
+- What typical statistical measures mean  
+- How to combine variables and blocks to explore data
 `
     },
     {
       title: "4. Visualize",
-      content: `📈 Now let's create a **visualization** of the CO₂ data.
+      content: `📈 Now we’ll create a **visualization** of the CO₂ data.
 
 ---
 
@@ -426,12 +520,13 @@ In our case, we'll call the variable **co2**.
 1. 👉 Open the **Data Inspection** category on the left  
    and drag the **select column** block into the editor.
 
-2. ✏️ Set it like this:
-   - **column:** \`decimal.date\`  
-   - **from table:** \`co2\`
+2. ✏️ In the block, enter the correct values:  
+   - Click on the white text field and write: \`decimal.date\` to select the column for time. 
+   - Drag your variable \`co2\` into the gap behind it to select the dataset.
 
 3. 🟣 Open the **Variables** category  
-   and create a new variable called \`decimal_date\`.  
+   and create a new variable called \`decimal_date\`, just as you created the variable \`co2\` before. 
+   Drag the **set decimal_date to** block into the editor.
    Then place the **select column** block into the field of the **set decimal_date to** block.
 
    ✅ Now the time values are stored in their own variable.
@@ -440,36 +535,50 @@ In our case, we'll call the variable **co2**.
 
 4. 👉 Repeat the same for the column \`average\`:
    - Drag another **select column** block into the editor.
-   - Select column: \`average\`, table: \`co2\`
+   - Click on the text field and write: \`average\` to select the column for the average CO₂ value.
+   - Drag your variable \`co2\` into the gap behind it to select the dataset.
    - Create a new variable called \`co2_avg\`
    - Place the **select column** block into the **set co2_avg to** block
 
 ---
 
 5. 📊 Open the **Visualization** category  
-   and drag the block for setting x and y data into the editor.
+   and drag the block into the editor that lets you set x and y data.
 
 6. 🖱 Set up the block like this:
-   - Chart type: **Line Chart**
+   - Chart type: **Line Chart** -> that’s a line chart
    - **x data**: \`decimal_date\`  (time axis)
    - **y data**: \`co2_avg\`       (CO₂ values)
    - Choose a nice color for the line :)
 
----
-🧩 Connect the blocks together 
+✏️ To set the x and y axes, drag the corresponding variables (e.g. \`decimal_date\`) into the appropriate fields in the visualization block.
 
-🟢 Click **Generate R Code**  
-🔵 Then click **Run R Code**
+---
+🧩 **What does each block do?**
+- **select column** selects a specific column from a table
+- **set ... to** stores the result in a new variable so you can use it for visualization
+- The visualization block creates a chart from the selected data
+
+🧩 Connect the blocks together (also with the blocks from previous steps, so that all blocks are linked together)
+
+🟢 Click **Generate R Code** in the Code tab    
+🔵 Then **Run R Code** in the Output tab
 
 ---
 
 🔍 **Reflection questions:**
-- Is the CO₂ value increasing overall?
+- Is the CO₂ value rising overall?
 - Is the increase rather slow or fast?
 - How even is the trend?
-- How much does CO₂ fluctuate throughout a year?
+- How much does the CO₂ value fluctuate during a year?
 - Is there a similar pattern every year?
-- What could cause the regular rise and fall?`
+- What could cause the regular rise and fall?
+
+💡 **What you’ll learn:**  
+- How to select columns from datasets  
+- How to create variables to reuse data  
+- How to create simple charts to make trends visible
+`
     },
     {
       title: "5. Export plot",
@@ -478,9 +587,12 @@ In our case, we'll call the variable **co2**.
 You can choose to save it as an **image** (.png) or **.pdf**.
 
 🟢 Click **Generate R Code**  
-🔵 Then click **Run R Code** to see your diagram!
+🔵 Then **Run R Code** to see your chart!
 
-📌 This way you can share or document your results.`
+📌 This way you can share or document your results.
+
+--- 
+*Plot is the term for a graphical representation of data – e.g. a line chart, bar chart, or scatter plot. `
     },
   ]
 };
