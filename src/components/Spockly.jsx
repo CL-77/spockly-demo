@@ -10,6 +10,7 @@ import { FaCode } from "react-icons/fa6";
 import useSpocklyTour from "./useSpocklyTour";
 import MiniPackageLoadingBar from "./MiniPackageLoadingBar";
 import BlockExplantions from "./BlockExplanations";
+import { FaHandsHelping } from "react-icons/fa";
 
 function TabPanel({ children, value, index }) {
   return (
@@ -110,7 +111,7 @@ export default function SPOCKLY({ isDarkMode }) {
                 id="helpTab"
                 label={
                   <Box display="flex" alignItems="center" gap={1}>
-                    <MdOutlineOutput /> Help
+                    <FaHandsHelping /> Help
                   </Box>
                 }
                 sx={{

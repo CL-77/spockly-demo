@@ -8,9 +8,11 @@ import { lightTheme, darkTheme } from "./blockly/blocklyThemes";
 import { Upload } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup, IconButton } from "@mui/material";
-import { FaBookOpen, FaMapMarkedAlt, FaQuestionCircle } from "react-icons/fa";
+import { FaSchool, FaUniversity, FaQuestionCircle, FaGamepad } from "react-icons/fa";
 import { MdCo2 } from "react-icons/md";
+import { MdSpeed } from "react-icons/md";
 import { Toolbar } from "@mui/material";
+import { MdChecklist, MdCreate } from "react-icons/md";
 
 import CreateDataDialog from "./CreateDataDialog.jsx";
 import CheckUploadedDataDialog from "./CheckUploadedDataDialog.jsx";
@@ -699,8 +701,8 @@ const BlocklyComponent = ({
               variant="contained"
               onClick={onUploadClick}
               sx={{
-                width: 48,
-                height: 48,
+                width: 40,
+                height: 40,
                 minWidth: 0,
                 borderRadius: "50%",
                 bgcolor: theme.palette.secondary.main,
@@ -732,7 +734,8 @@ const BlocklyComponent = ({
                 textTransform: "none"
               }}
             >
-              Check Uploads
+              <MdChecklist style={{ marginRight: 4 }} />
+              <Box sx={{ display: { xs: "none", lg: "inline" } }}>Check Uploads</Box>
             </Button>
           </Tooltip>
           <CheckUploadedDataDialog
@@ -753,7 +756,8 @@ const BlocklyComponent = ({
                 textTransform: "none"
               }}
             >
-              Create Data
+              <MdCreate style={{ marginRight: 4 }} />
+              <Box sx={{ display: { xs: "none", lg: "inline" } }}>Create Data</Box>
             </Button>
           </Tooltip>
           <CreateDataDialog
@@ -761,68 +765,89 @@ const BlocklyComponent = ({
             onClose={() => setOpenCreateDataDialog(false)}
           />
 
-          <Select
-            value={level}
-            onChange={(e) => setLevel(e.target.value)}
-            size="small"
-            sx={{
-              minWidth: 100,
-              fontSize: "0.75rem",
-              height: 32,
-              px: 1,
-              borderRadius: 1,
-              bgcolor: level === "level1" ? "#E3F2FD" : "#E8F5E9",
-              color: level === "level1" ? "#1565C0" : "#2E7D32",
-              boxShadow: 1,
-              "& .MuiSelect-select": {
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                py: 0,
-              },
-            }}
-            id="switchLevelsDropdown"
-            renderValue={() => (
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Tooltip
-                  title={
-                    <Box>
-                      Beginner: built-in datasets & simple blocks.
-                      <br />
-                      Advanced: load files, model, visualize spatial data.
-                      <br />
-                      See tutorials for more information.
-                    </Box>
-                  }
-                  arrow
-                  enterDelay={0}
+          <Box sx={{ display: "inline-flex", alignItems: "center" }}>
+            <Tooltip
+              title={
+                <Box>
+                  <div><strong>Beginner:</strong> simple blocks & built-in data</div>
+                  <div><strong>Advanced:</strong> external files, spatial modeling</div>
+                  <div>Check out the tutorials to get started!</div>
+                </Box>
+              }
+              arrow
+              enterDelay={300}
+              placement="right"
+            >
+              <span>
+                <Select
+                  value={level}
+                  onChange={(e) => setLevel(e.target.value)}
+                  size="small"
+                  sx={{
+                    height: 32,
+                    fontSize: "0.75rem",
+                    px: 0.5,
+                    textTransform: "none",
+                    backgroundColor: level === "level1" ? "#E8F5E9" : "#FFEBEE",
+                    color: level === "level1" ? "#2E7D32" : "#C62828",
+                    minWidth: "auto",
+                    width: "fit-content",
+                    borderColor: "#BDBDBD",
+                    "& .MuiSelect-select": {
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      py: 0,
+                    },
+                    "&:hover, &:focus, &.Mui-focused": {
+                      borderColor: "#BDBDBD",
+                      boxShadow: "none",
+                    },
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#BDBDBD",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#BDBDBD",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#BDBDBD",
+                    },
+                  }}
+                  id="switchLevelsDropdown"
+                  renderValue={() => (
+                    <>
+                      <Box sx={{ display: { xs: "none", sm: "none", md: "none", lg: "inline" }, fontSize: "0.75rem", letterSpacing: 0.5 }}>
+                        Choose Level
+                      </Box>
+                      <Box sx={{ display: { xs: "none", sm: "none", md: "inline", lg: "none" }, fontSize: "0.75rem", letterSpacing: 0.5 }}>
+                        Level
+                      </Box>
+                      <Box sx={{ display: { xs: "inline", sm: "inline", md: "none" } }}>
+                        <MdSpeed />
+                      </Box>
+                    </>
+                  )}
                 >
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    {level === "level1" ? (
-                      <>
-                        <FaBookOpen style={{ marginRight: 8 }} />
+                  <MenuItem value="level1" sx={{ fontSize: "0.85rem", color: "#2E7D32" }}>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <FaSchool style={{ marginRight: 6 }} />
+                      <Box sx={{ fontSize: "0.75rem", letterSpacing: 0.5, fontWeight: 500 }}>
                         Beginner
-                      </>
-                    ) : (
-                      <>
-                        <FaMapMarkedAlt style={{ marginRight: 8 }} />
+                      </Box>
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value="level2" sx={{ fontSize: "0.85rem", color: "#C62828" }}>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <FaUniversity style={{ marginRight: 6 }} />
+                      <Box sx={{ fontSize: "0.75rem", letterSpacing: 0.5, fontWeight: 500 }}>
                         Advanced
-                      </>
-                    )}
-                  </Box>
-                </Tooltip>
-              </Box>
-            )}
-          >
-            <MenuItem value="level1" sx={{ fontSize: "0.75rem", color: "#1565C0" }}>
-              <FaBookOpen style={{ marginRight: 6, fontSize: 18 }} />
-              Beginner
-            </MenuItem>
-            <MenuItem value="level2" sx={{ fontSize: "0.75rem", color: "#2E7D32" }}>
-              <FaMapMarkedAlt style={{ marginRight: 6, fontSize: 18 }} />
-              Advanced
-            </MenuItem>
-          </Select>
+                      </Box>
+                    </Box>
+                  </MenuItem>
+                </Select>
+              </span>
+            </Tooltip>
+          </Box>
 
           {/* Help button to start Spockly tour */}
           <Tooltip title="Start Spockly Tour" arrow>
