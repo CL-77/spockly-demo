@@ -3,7 +3,7 @@ import * as Blockly from "blockly";
 import "./blockly/customBlocks"; // Import custom blocks
 import "./blockly/customGenerator"; // Import custom generator
 import "./blockly/rBlocks"; // Import R blocks
-import { Box, useTheme, Button } from "@mui/material";
+import { Box, useTheme, Button, Select, MenuItem } from "@mui/material";
 import { lightTheme, darkTheme } from "./blockly/blocklyThemes";
 import { Upload } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
@@ -692,103 +692,137 @@ const BlocklyComponent = ({
           borderRadius: 4,
         }}
       >
-        <Tooltip title="Upload your CSV, GeoJSON or TIF data." arrow>
-          <Button
-            id="uploadDataButton"
-            variant="contained"
-            onClick={onUploadClick}
-            sx={{
-              width: 48,
-              height: 48,
-              minWidth: 0,
-              borderRadius: "50%",
-              bgcolor: theme.palette.secondary.main,
-              color: isDarkMode ? "#FFFFFA" : "#000000",
-              "&:hover": {
-                bgcolor: theme.palette.secondary.dark,
-                color: "#fff",
-              },
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              p: 0,
-            }}
-          >
-            <Upload fontSize="medium" />
-          </Button>
-        </Tooltip>
+        <Box display="flex" alignItems="center" gap={1.5} flexWrap="wrap">
+          <Tooltip title="Upload your CSV, GeoJSON or TIF data." arrow>
+            <Button
+              id="uploadDataButton"
+              variant="contained"
+              onClick={onUploadClick}
+              sx={{
+                width: 48,
+                height: 48,
+                minWidth: 0,
+                borderRadius: "50%",
+                bgcolor: theme.palette.secondary.main,
+                color: isDarkMode ? "#FFFFFA" : "#000000",
+                "&:hover": {
+                  bgcolor: theme.palette.secondary.dark,
+                  color: "#fff",
+                },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                p: 0,
+              }}
+            >
+              <Upload fontSize="medium" />
+            </Button>
+          </Tooltip>
 
-        <Tooltip title="Check uploaded data">
+          <Tooltip title="Check uploaded data">
             <Button
               id="checkDataButton"
               variant="outlined"
+              size="small"
               onClick={() => setShowCheckDataDialog(true)}
-              sx={{ ml: 2 }}
+              sx={{
+                height: 32,
+                fontSize: "0.75rem",
+                px: 1.5,
+                textTransform: "none"
+              }}
             >
               Check Uploads
             </Button>
-            <CheckUploadedDataDialog
-              open={showCheckDataDialog}
-              onClose={() => setShowCheckDataDialog(false)}
-            />
-        </Tooltip>
-
-        <Tooltip title="Create CSV data manually">
-          <Button
-            id="createDataButton"
-            variant="outlined"
-            onClick={() => setOpenCreateDataDialog(true)}
-            sx={{ ml: 2 }}
-          >
-            Create Data
-          </Button>
-        </Tooltip>
-
-        <CreateDataDialog
-          open={openCreateDataDialog}
-          onClose={() => setOpenCreateDataDialog(false)}
-        />
-
-        <Box
-          display="flex"
-          alignItems="center"
-          gap={2}
-          flex={1}
-          justifyContent="flex-end"
-          minWidth={0}
-        >
-          <Tooltip
-            title={
-              <Box>
-                Beginner: built-in datasets & simple blocks.
-                <br />
-                Advanced: load files, model, visualize spatial data.
-                <br />
-                See tutorials for more information.
-              </Box>
-            }
-            arrow
-            enterDelay={0}
-          >
-            <ToggleButtonGroup
-              exclusive
-              value={level}
-              onChange={(e, newLevel) => newLevel && setLevel(newLevel)}
-              sx={{
-                bgcolor: "background.paper",
-                borderRadius: 2,
-                boxShadow: 1,
-              }}
-              id="switchLevelsButton"
-            >
-              <ToggleButton value="level1" sx={{ px: 2, py: 1, gap: 1 }}>
-                <FaBookOpen /> Beginner
-              </ToggleButton>
-              <ToggleButton value="level2" sx={{ px: 2, py: 1, gap: 1 }}>
-                <FaMapMarkedAlt /> Advanced
-              </ToggleButton>
-            </ToggleButtonGroup>
           </Tooltip>
+          <CheckUploadedDataDialog
+            open={showCheckDataDialog}
+            onClose={() => setShowCheckDataDialog(false)}
+          />
+
+          <Tooltip title="Create CSV data manually">
+            <Button
+              id="createDataButton"
+              variant="outlined"
+              size="small"
+              onClick={() => setOpenCreateDataDialog(true)}
+              sx={{
+                height: 32,
+                fontSize: "0.75rem",
+                px: 1.5,
+                textTransform: "none"
+              }}
+            >
+              Create Data
+            </Button>
+          </Tooltip>
+          <CreateDataDialog
+            open={openCreateDataDialog}
+            onClose={() => setOpenCreateDataDialog(false)}
+          />
+
+          <Select
+            value={level}
+            onChange={(e) => setLevel(e.target.value)}
+            size="small"
+            sx={{
+              minWidth: 100,
+              fontSize: "0.75rem",
+              height: 32,
+              px: 1,
+              borderRadius: 1,
+              bgcolor: level === "level1" ? "#E3F2FD" : "#E8F5E9",
+              color: level === "level1" ? "#1565C0" : "#2E7D32",
+              boxShadow: 1,
+              "& .MuiSelect-select": {
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                py: 0,
+              },
+            }}
+            id="switchLevelsDropdown"
+            renderValue={() => (
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Tooltip
+                  title={
+                    <Box>
+                      Beginner: built-in datasets & simple blocks.
+                      <br />
+                      Advanced: load files, model, visualize spatial data.
+                      <br />
+                      See tutorials for more information.
+                    </Box>
+                  }
+                  arrow
+                  enterDelay={0}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    {level === "level1" ? (
+                      <>
+                        <FaBookOpen style={{ marginRight: 8 }} />
+                        Beginner
+                      </>
+                    ) : (
+                      <>
+                        <FaMapMarkedAlt style={{ marginRight: 8 }} />
+                        Advanced
+                      </>
+                    )}
+                  </Box>
+                </Tooltip>
+              </Box>
+            )}
+          >
+            <MenuItem value="level1" sx={{ fontSize: "0.75rem", color: "#1565C0" }}>
+              <FaBookOpen style={{ marginRight: 6, fontSize: 18 }} />
+              Beginner
+            </MenuItem>
+            <MenuItem value="level2" sx={{ fontSize: "0.75rem", color: "#2E7D32" }}>
+              <FaMapMarkedAlt style={{ marginRight: 6, fontSize: 18 }} />
+              Advanced
+            </MenuItem>
+          </Select>
 
           {/* Help button to start Spockly tour */}
           <Tooltip title="Start Spockly Tour" arrow>

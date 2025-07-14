@@ -7,6 +7,20 @@ import { Link as MuiLink } from '@mui/material';
 const tutorialSteps = {
   de: [
     {
+      title: "Willkommen im SPOCKLY-Tutorial",
+      content: `📚 Dieses Tutorial hilft dir, SPOCKLY Schritt für Schritt zu verstehen.
+
+📊 Am Beispiel eines CO₂-Datensatzes lernst du alle wichtigen Funktionen Schritt für Schritt kennen.
+
+➡️ Klicke unten auf **Weiter**, um die Tour zu starten.
+
+🖱 Du kannst dieses Fenster **verschieben**, indem du den oberen Bereich anklickst und ziehst.
+
+📏 Du kannst es außerdem in der Ecke unten rechts größer oder kleiner ziehen – am besten platzierst du es so, dass du daneben mitarbeiten kannst.
+
+Viel Spaß beim Ausprobieren!`
+    },
+    {
       title: "So funktioniert SPOCKLY",
       content: `**Willkommen bei SPOCKLY!**
 
@@ -301,6 +315,18 @@ Du kannst auswählen, ob du ihn als **Bild** (.png) oder **.pdf** abspeichern m�
     },
   ],
   en: [
+    {
+      title: "Welcome to the SPOCKLY Tutorial",
+      content: `📚 This tutorial guides you step by step through SPOCKLY.
+
+➡️ Click **Next** below to begin the tour.
+
+🖱 You can **drag this window** by clicking and holding the top bar.
+
+📏 You can also resize it in the bottom right corner – ideally place it so you can work alongside it.
+
+Have fun exploring!`
+    },
     {
       title: "How SPOCKLY works",
       content: `**Welcome to SPOCKLY!**
@@ -658,8 +684,9 @@ const SimpleTutorialPanel = ({ onClose }) => {
       ref={dragRef}
       sx={{
         position: "fixed",
-        top: 180,
-        right: 800,
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
         width: 700,
         maxHeight: "80vh",
         minWidth: 360,
@@ -674,7 +701,8 @@ const SimpleTutorialPanel = ({ onClose }) => {
         flexDirection: "column",
         cursor: "grab",
         border: "1px solid #ddd",
-        padding: 1.5,
+        p: 1,
+        fontSize: "0.8rem",
       }}
     >
       <Card sx={{ boxShadow: "none", flexGrow: 1, display: "flex", flexDirection: "column", backgroundColor: "white"}}>
@@ -687,7 +715,7 @@ const SimpleTutorialPanel = ({ onClose }) => {
           sx={{ cursor: "move" }}
         >
           <Box display="flex" alignItems="center">
-            <Typography variant="h6">{step.title}</Typography>
+            <Typography variant="subtitle1" fontWeight="bold">{step.title}</Typography>
           </Box>
           <Box>
             <Button size="small" onClick={() => setLang(lang === "de" ? "en" : "de")}>{lang === "de" ? "EN" : "DE"}</Button>
@@ -697,7 +725,7 @@ const SimpleTutorialPanel = ({ onClose }) => {
           </Box>
         </Box>
 
-        <Box sx={{ flexGrow: 1, overflowY: 'auto', mb: 2 }}>
+        <Box sx={{ flexGrow: 1, overflowY: 'auto', mb: 1 }}>
           <ReactMarkdown
             components={{
               a: ({ node, ...props }) => (
@@ -712,6 +740,7 @@ const SimpleTutorialPanel = ({ onClose }) => {
         <Box display="flex" justifyContent="space-between">
           <Button
             variant="outlined"
+            size="small"
             onClick={() => setStepIndex(i => Math.max(0, i - 1))}
             disabled={stepIndex === 0}
           >
@@ -722,6 +751,7 @@ const SimpleTutorialPanel = ({ onClose }) => {
             <Button
               variant="contained"
               color="success"
+              size="small"
               onClick={onClose}
             >
               {lang === "de" ? "Fertig" : "Finish"}
@@ -729,6 +759,7 @@ const SimpleTutorialPanel = ({ onClose }) => {
           ) : (
             <Button
               variant="contained"
+              size="small"
               onClick={() => setStepIndex(i => Math.min(steps.length - 1, i + 1))}
             >
               {lang === "de" ? "Weiter" : "Next"}
