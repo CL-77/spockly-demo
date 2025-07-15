@@ -206,8 +206,6 @@ idw_result <- idw(${updateValue} ~ 1, data_df, newdata = grid)
   ];
 };
 
-
-
 Blockly.Generator.R.forBlock['logistic_regression_block'] = function(block, generator) {
   const data = generator.valueToCode(block, 'DATA', Blockly.Generator.R.ORDER_ATOMIC) || 'NULL';
   const dependentVar = generator.valueToCode(block, 'DEPENDENT_VAR', Blockly.Generator.R.ORDER_ATOMIC) || '""';
@@ -222,7 +220,6 @@ Blockly.Generator.R.forBlock['logistic_regression_block'] = function(block, gene
   ];
 };
 
-
 Blockly.Generator.R.forBlock['random_forest_block'] = function(block, generator) {
   const data = generator.valueToCode(block, 'DATA', Blockly.Generator.R.ORDER_ATOMIC) || 'NULL';
   const dependentVar = generator.valueToCode(block, 'DEPENDENT_VAR', Blockly.Generator.R.ORDER_ATOMIC) || '""';
@@ -235,25 +232,4 @@ Blockly.Generator.R.forBlock['random_forest_block'] = function(block, generator)
     `randomForest(${updateDependentVar} ~ ${updateIndependentVar}, data = ${data})`,
     Blockly.Generator.R.ORDER_ATOMIC
   ];
-};
-
-Blockly.Generator.R.forBlock['kmeans_block'] = function(block, generator) {
-  const data = generator.valueToCode(block, 'DATA', Blockly.Generator.R.ORDER_ATOMIC) || 'NULL';
-  const columns = generator.valueToCode(block, 'COLUMNS', Blockly.Generator.R.ORDER_ATOMIC) || '""';
-  const clusters = generator.valueToCode(block, 'CLUSTERS', Blockly.Generator.R.ORDER_ATOMIC) || '3';
-
-  const selectColumns = columns.replace(/^["']|["']$/g, '').split(',').map(s => s.trim());
-  const colsString = selectColumns.length
-    ? `c(${selectColumns.map(c => `"${c}"`).join(', ')})`
-    : 'NULL';
-
-  const rCode = `
-{
-  data_df <- ${data}
-  km <- kmeans(data_df[, ${colsString}], centers = ${clusters})
-  km
-}
-`.trim();
-
-  return [rCode, Blockly.Generator.R.ORDER_ATOMIC];
 };

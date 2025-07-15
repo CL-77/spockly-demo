@@ -659,15 +659,6 @@ const BlocklyComponent = ({
     <label text="IDW Interpolation" web-class="toolboxLabel"></label>
     <block type="idw_interpolation"></block>
 
-    <label text="K-Means Clustering" web-class="toolboxLabel"></label>
-    <block type="kmeans_block">
-      <value name="COLUMNS">
-        <shadow type="text">
-          <field name="TEXT">x col, y col</field>
-        </shadow>
-      </value>
-    </block>
-
     <label text="Random Forest" web-class="toolboxLabel"></label>
     <block type="random_forest_block"></block>-->
   </category>
