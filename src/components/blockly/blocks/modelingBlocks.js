@@ -257,5 +257,3 @@ Blockly.Generator.R.forBlock['kmeans_block'] = function(block, generator) {
 
   return [rCode, Blockly.Generator.R.ORDER_ATOMIC];
 };
-
-
