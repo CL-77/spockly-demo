@@ -100,6 +100,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           <category name="${Blockly.Msg.Categories["VISUALISATION"]}" colour="#b12222">
             <block type="create_list_XCoords"></block>
             <block type="create_list_YCoords"></block>
+            <block type="select_column"></block>
             <block type="plot">
               <value name="Legend">
                 <block type="list_create">

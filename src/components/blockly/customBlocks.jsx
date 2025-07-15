@@ -378,7 +378,7 @@ Blockly.Blocks['read_file'] = {
     this.appendDummyInput()
         .appendField('Read file')
         .appendField(new Blockly.FieldTextInput('file.csv'), 'NAME');
-    this.setTooltip('Use function to read file with GeoPandas.');
+    this.setTooltip('Use function to read file. Use this block just after a download block.');
     this.setOutput(true)
     this.setColour(210);
   }
@@ -1896,7 +1896,7 @@ Blockly.Blocks['distance_haversine'] = {
         .appendField(new Blockly.FieldNumber('0'), 'Lon2');
     this.setOutput(true, 'Number');
     this.setTooltip('Find the distance haversine with lat and lon on a sphere');
-    this.setHelpUrl('');
+    this.setHelpUrl('https://en.wikipedia.org/wiki/Haversine_formula');
     this.setColour(60);
   }
 };
@@ -2336,6 +2336,7 @@ Blockly.Blocks['plotly_scatter_mapbox'] = {
   generateOptions: function() {
     var options = [];
     try {
+      console.log(globalThis.fileColumns)
       for(var x of globalThis.fileColumns) {
         options.push([x, x]);
       }
@@ -2380,13 +2381,13 @@ Blockly.Blocks['idw_interpolation'] = {
         .appendField("Dataset with missing values");
     this.appendDummyInput()
         .appendField("X axis")
-        .appendField(new Blockly.FieldTextInput("X"), "X");
+        .appendField(this.generateOptions(), "X");
     this.appendDummyInput()
         .appendField("Y axis")
-        .appendField(new Blockly.FieldTextInput("Y"), "Y");
+        .appendField(this.generateOptions(), "Y");
     this.appendDummyInput()
         .appendField("Column")
-        .appendField(new Blockly.FieldTextInput("pop_density"), "COLUMN");
+        .appendField(this.generateOptions(), "COLUMN");
     this.appendDummyInput()
         .appendField("Power of the distance")
         .appendField(new Blockly.FieldNumber(2), "POWER");
@@ -2397,8 +2398,21 @@ Blockly.Blocks['idw_interpolation'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(20);
-    this.setTooltip("Perform IDW interpolation on missing values in a dataset");
-    this.setHelpUrl("");
+    this.setTooltip("Perform Inverse Distance Weighting interpolation on missing values in a dataset");
+    this.setHelpUrl("https://www.geo.fu-berlin.de/en/v/soga-r/Advances-statistics/Geostatistics/Inverse-Distance-Weighting-IDW/index.html")
+  },
+
+  generateOptions: function() {
+    var options = [];
+    try {
+      console.log(globalThis.fileColumns)
+      for(var x of globalThis.fileColumns) {
+        options.push([x, x]);
+      }
+      return (new Blockly.FieldDropdown(options));
+    } catch (e) {
+      return (new Blockly.FieldTextInput('Latitude'));
+    }
   }
 };
 
@@ -2439,25 +2453,38 @@ for a in ax:
 Blockly.Blocks['ppv_interpolation'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("PPV Interpolation");
+        .appendField("NN Interpolation");
     this.appendValueInput("DATASET")
         .setCheck('Array')
         .appendField("Dataset with missing values");
     this.appendDummyInput()
         .appendField("X axis")
-        .appendField(new Blockly.FieldTextInput("X"), "X");
+        .appendField(this.generateOptions(), "X");
     this.appendDummyInput()
         .appendField("Y axis")
-        .appendField(new Blockly.FieldTextInput("Y"), "Y");
+        .appendField(this.generateOptions(), "Y");
     this.appendDummyInput()
         .appendField("Column")
-        .appendField(new Blockly.FieldTextInput("pop_density"), "COLUMN");
+        .appendField(this.generateOptions(), "COLUMN");
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(20);
-    this.setTooltip("Perform PPV interpolation on missing values in a dataset");
-    this.setHelpUrl("");
+    this.setTooltip("Perform Nearest-Neighbor interpolation on missing values in a dataset");
+    this.setHelpUrl("https://en.wikipedia.org/wiki/Nearest-neighbor_interpolation");
+  },
+
+  generateOptions: function() {
+    var options = [];
+    try {
+      console.log(globalThis.fileColumns)
+      for(var x of globalThis.fileColumns) {
+        options.push([x, x]);
+      }
+      return (new Blockly.FieldDropdown(options));
+    } catch (e) {
+      return (new Blockly.FieldTextInput('Latitude'));
+    }
   }
 };
 
@@ -2687,7 +2714,7 @@ Blockly.Blocks['while_loop'] = {
     this.setNextStatement(true, null);
     this.setColour(120);
     this.setTooltip("Repeat while the condition is true");
-    this.setHelpUrl("");
+    this.setHelpUrl("https://www.w3schools.com/python/python_while_loops.asp");
   }
 };
 pythonGenerator.forBlock['while_loop'] = function(block, generator) {
