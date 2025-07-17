@@ -100,7 +100,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           <category name="${Blockly.Msg.Categories["VISUALISATION"]}" colour="#b12222">
             <block type="create_list_XCoords"></block>
             <block type="create_list_YCoords"></block>
-            <block type="select_column"></block>
             <block type="plot">
               <value name="Legend">
                 <block type="list_create">
@@ -229,6 +228,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
               <block type="data_shape"></block>
               <block type="slice"></block>
               <block type="stacking"></block>
+              <block type="group_by"></block>
               <block type="add_object"></block>
               <block type="del_col"></block>
               <block type="delete_object"></block>

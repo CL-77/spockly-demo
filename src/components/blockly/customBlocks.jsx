@@ -749,6 +749,33 @@ pythonGenerator.forBlock['stacking'] = function(block, generator) {
   }
 }
 
+//**Group data by one column */
+Blockly.Blocks['group_by'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Group by')
+        .appendField(new Blockly.FieldTextInput('column_name'), 'columnName');
+    this.appendValueInput("NUM")
+        .setCheck("Array")
+        .appendField("of DataFrame");
+    this.appendDummyInput()
+        .appendField('with operation')
+        .appendField(new Blockly.FieldDropdown([['mean', 'mean'], ['sum', 'sum'], ['count', 'count'], ['min', 'min'], ['max', 'max']]), 'operation');
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Group the data by one column. Choose one way to group data: mean, sum...');
+    this.setHelpUrl('https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html')
+    this.setColour(200);
+  }
+};
+pythonGenerator.forBlock['group_by'] = function(block, generator) {
+  const columnName = block.getFieldValue('columnName') || 'columnName';
+  const dfName = generator.valueToCode(block, "NUM", pythonGenerator.ORDER_NONE) || "0";
+  const operation = block.getFieldValue('operation') || 'mean';
+  return `${dfName} = ${dfName}.groupby(by = '${columnName}').${operation}()\n`;  
+}
+
 /**
  * Sort a list
  */
