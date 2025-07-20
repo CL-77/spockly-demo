@@ -628,7 +628,6 @@ const BlocklyComponent = ({
     <block type="create_list"></block>
     <block type="list_item"></block>
     <block type="epsg_code"></block>
-    <block type="crs_string"></block>
     <block type="st_within"></block>
     <block type="st_sfc"></block>
     <block type="st_centroid"></block>

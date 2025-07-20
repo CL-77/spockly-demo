@@ -282,7 +282,7 @@ Blockly.defineBlocksWithJsonArray([
       { type: "field_number", name: "Y", value: 0 }
     ],
     output: "Geometry",
-    colour: "#A5D6A7",
+    colour: "#4DD0E1",
     tooltip: "Create a point from literal coordinates"
   },
   {
@@ -290,7 +290,7 @@ Blockly.defineBlocksWithJsonArray([
     message0: "linestring from coordinates %1",
     args0: [{ type: "field_input", name: "COORDS", text: "0,0; 1,1; 2,0" }],
     output: "Geometry",
-    colour: "#A5D6A7",
+    colour: "#4DD0E1",
     tooltip: "Create linestring from coordinate pairs (x1,y1; x2,y2; ...)"
   },
   {
@@ -298,7 +298,7 @@ Blockly.defineBlocksWithJsonArray([
     message0: "polygon from coordinates %1",
     args0: [{ type: "field_input", name: "COORDS", text: "0,0; 1,0; 1,1; 0,1; 0,0" }],
     output: "Geometry",
-    colour: "#A5D6A7",
+    colour: "#4DD0E1",
     tooltip: "Create polygon from coordinate pairs (must be closed)"
   },
   {
@@ -308,7 +308,6 @@ Blockly.defineBlocksWithJsonArray([
     output: ["Array", "Matrix"],
     colour: "#4DD0E1",
     tooltip: "Build a coordinate matrix from coordinate pairs",
-    mutator: "coord_array_mutator"
   },
   {
     type: "coord_pair",
@@ -352,7 +351,6 @@ Blockly.defineBlocksWithJsonArray([
     output: "Array",
     colour: "#4DD0E1",
     tooltip: "Create an R list from items",
-    mutator: "list_mutator"
   },
   {
     type: "list_item",
@@ -394,7 +392,7 @@ Blockly.defineBlocksWithJsonArray([
       { type: "input_dummy" },
       { type: "input_statement", name: "STACK" }
     ],
-    colour: "#A5D6A7",
+    colour: "#4DD0E1",
     tooltip: "Container for coordinate pairs"
   },
   {
@@ -404,7 +402,7 @@ Blockly.defineBlocksWithJsonArray([
       { type: "input_dummy" },
       { type: "input_statement", name: "STACK" }
     ],
-    colour: "#A5D6A7",
+    colour: "#4DD0E1",
     tooltip: "Container for list items"
   },
   {
@@ -540,15 +538,6 @@ const listMutator = {
 Blockly.Extensions.registerMutator('coord_array_mutator', coordArrayMutator, null, ['coord_pair']);
 Blockly.Extensions.registerMutator('list_mutator', listMutator, null, ['list_item']);
 
-// Generator functions
-Blockly.Generator.R.forBlock["load_sf_package"] = function(block, generator) {
-  generator.requirePackage("sf", 'Sys.setenv(UDUNITS2_XML_PATH=system.file("share/udunits/udunits2.xml", package="units"))');
-  return "";
-};
-
-Blockly.Generator.R.forBlock["set_udunits_path"] = function(block, generator) {
-  return 'Sys.setenv(UDUNITS2_XML_PATH=system.file("share/udunits/udunits2.xml", package="units"))\n';
-};
 
 Blockly.Generator.R.forBlock["st_centroid"] = function(block, generator) {
   generator.requirePackage("sf", 'Sys.setenv(UDUNITS2_XML_PATH=system.file("share/udunits/udunits2.xml", package="units"))');
