@@ -1,14 +1,29 @@
 import { useEffect, useRef, useMemo, useState } from "react";
 import * as Blockly from "blockly";
-import "./blockly/customBlocks"; // Import custom blocks
-import "./blockly/customGenerator"; // Import custom generator
-import "./blockly/rBlocks"; // Import R blocks
-import { Box, useTheme, Button, Select, MenuItem } from "@mui/material";
+import "./blockly/customBlocks";
+import "./blockly/customGenerator";
+import ReactMarkdown from "react-markdown";
+import "./blockly/rBlocks";
+import co2Tutorial from "../data/co2Tutorial";
+import {
+  Box,
+  useTheme,
+  Button,
+  Select,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+  Paper,
+  Link,
+} from "@mui/material";
 import { lightTheme, darkTheme } from "./blockly/blocklyThemes";
-import { Upload } from "@mui/icons-material";
+import { AddCircle, Upload } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
-import { ToggleButton, ToggleButtonGroup, IconButton } from "@mui/material";
-import { FaSchool, FaUniversity, FaQuestionCircle, FaGamepad } from "react-icons/fa";
+import { IconButton } from "@mui/material";
+import { FaSchool, FaUniversity, FaQuestionCircle } from "react-icons/fa";
 import { MdCo2 } from "react-icons/md";
 import { MdSpeed } from "react-icons/md";
 import { Toolbar } from "@mui/material";
@@ -17,6 +32,8 @@ import { MdChecklist, MdCreate } from "react-icons/md";
 import CreateDataDialog from "./CreateDataDialog.jsx";
 import CheckUploadedDataDialog from "./CheckUploadedDataDialog.jsx";
 import SimpleTutorialPanel from "./SimpleTutorialPanel.jsx";
+import Draggable from "react-draggable";
+import CO2Tutorial from "./Co2Tutorial.jsx";
 
 const BlocklyComponent = ({
   setCode,
@@ -29,11 +46,20 @@ const BlocklyComponent = ({
 
   // State to toggle between beginner and advanced block toolboxes
   const [level, setLevel] = useState("level1");
-
+  const [open, setOpen] = useState(false);
   const [openCreateDataDialog, setOpenCreateDataDialog] = useState(false);
-
   const [showTutorial, setShowTutorial] = useState(false);
   const [showCheckDataDialog, setShowCheckDataDialog] = useState(false);
+  const [step, setStep] = useState(0);
+
+  const handleOpen = () => {
+    setStep(0);
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
+
+  const nextStep = () => setStep((prev) => prev + 1);
+  const prevStep = () => setStep((prev) => prev - 1);
 
   // Blockly toolbox definition for Level 1 (Beginner)
   // Change content later
@@ -674,7 +700,7 @@ const BlocklyComponent = ({
   useEffect(() => {
     if (!blocklyDiv.current) return;
     workspaceRef.current = Blockly.inject(blocklyDiv.current, {
-      media:"blockly/media/",
+      media: "blockly/media/",
       renderer: "zelos",
       toolbox: toolboxXml,
       theme: isDarkMode ? darkTheme : lightTheme,
@@ -751,11 +777,13 @@ const BlocklyComponent = ({
                 height: 32,
                 fontSize: "0.75rem",
                 px: 1.5,
-                textTransform: "none"
+                textTransform: "none",
               }}
             >
               <MdChecklist style={{ marginRight: 4 }} />
-              <Box sx={{ display: { xs: "none", lg: "inline" } }}>Check Uploads</Box>
+              <Box sx={{ display: { xs: "none", lg: "inline" } }}>
+                Check Uploads
+              </Box>
             </Button>
           </Tooltip>
           <CheckUploadedDataDialog
@@ -773,11 +801,13 @@ const BlocklyComponent = ({
                 height: 32,
                 fontSize: "0.75rem",
                 px: 1.5,
-                textTransform: "none"
+                textTransform: "none",
               }}
             >
               <MdCreate style={{ marginRight: 4 }} />
-              <Box sx={{ display: { xs: "none", lg: "inline" } }}>Create Data</Box>
+              <Box sx={{ display: { xs: "none", lg: "inline" } }}>
+                Create Data
+              </Box>
             </Button>
           </Tooltip>
           <CreateDataDialog
@@ -789,8 +819,12 @@ const BlocklyComponent = ({
             <Tooltip
               title={
                 <Box>
-                  <div><strong>Beginner:</strong> simple blocks & built-in data</div>
-                  <div><strong>Advanced:</strong> external files, spatial modeling</div>
+                  <div>
+                    <strong>Beginner:</strong> simple blocks & built-in data
+                  </div>
+                  <div>
+                    <strong>Advanced:</strong> external files, spatial modeling
+                  </div>
                   <div>Check out the tutorials to get started!</div>
                 </Box>
               }
@@ -836,30 +870,74 @@ const BlocklyComponent = ({
                   id="switchLevelsDropdown"
                   renderValue={() => (
                     <>
-                      <Box sx={{ display: { xs: "none", sm: "none", md: "none", lg: "inline" }, fontSize: "0.75rem", letterSpacing: 0.5 }}>
+                      <Box
+                        sx={{
+                          display: {
+                            xs: "none",
+                            sm: "none",
+                            md: "none",
+                            lg: "inline",
+                          },
+                          fontSize: "0.75rem",
+                          letterSpacing: 0.5,
+                        }}
+                      >
                         Choose Level
                       </Box>
-                      <Box sx={{ display: { xs: "none", sm: "none", md: "inline", lg: "none" }, fontSize: "0.75rem", letterSpacing: 0.5 }}>
+                      <Box
+                        sx={{
+                          display: {
+                            xs: "none",
+                            sm: "none",
+                            md: "inline",
+                            lg: "none",
+                          },
+                          fontSize: "0.75rem",
+                          letterSpacing: 0.5,
+                        }}
+                      >
                         Level
                       </Box>
-                      <Box sx={{ display: { xs: "inline", sm: "inline", md: "none" } }}>
+                      <Box
+                        sx={{
+                          display: { xs: "inline", sm: "inline", md: "none" },
+                        }}
+                      >
                         <MdSpeed />
                       </Box>
                     </>
                   )}
                 >
-                  <MenuItem value="level1" sx={{ fontSize: "0.85rem", color: "#2E7D32" }}>
+                  <MenuItem
+                    value="level1"
+                    sx={{ fontSize: "0.85rem", color: "#2E7D32" }}
+                  >
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       <FaSchool style={{ marginRight: 6 }} />
-                      <Box sx={{ fontSize: "0.75rem", letterSpacing: 0.5, fontWeight: 500 }}>
+                      <Box
+                        sx={{
+                          fontSize: "0.75rem",
+                          letterSpacing: 0.5,
+                          fontWeight: 500,
+                        }}
+                      >
                         Beginner
                       </Box>
                     </Box>
                   </MenuItem>
-                  <MenuItem value="level2" sx={{ fontSize: "0.85rem", color: "#C62828" }}>
+                  <MenuItem
+                    value="level2"
+                    sx={{ fontSize: "0.85rem", color: "#C62828" }}
+                  >
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       <FaUniversity style={{ marginRight: 6 }} />
-                      <Box sx={{ fontSize: "0.75rem", letterSpacing: 0.5, fontWeight: 500 }}>
+                      <Box
+                        sx={{
+                          fontSize: "0.75rem",
+                          letterSpacing: 0.5,
+                          fontWeight: 500,
+                        }}
+                      >
                         Advanced
                       </Box>
                     </Box>
@@ -888,6 +966,15 @@ const BlocklyComponent = ({
               <MdCo2 />
             </IconButton>
           </Tooltip>
+          <Tooltip title="Show Simple CO₂ Tutorial" arrow>
+            <IconButton
+              id="showTutorialButton"
+              onClick={handleOpen}
+              sx={{ color: showTutorial ? "green" : "inherit" }}
+            >
+              <AddCircle />
+            </IconButton>
+          </Tooltip>
         </Box>
       </Toolbar>
 
@@ -906,6 +993,14 @@ const BlocklyComponent = ({
       {showTutorial && (
         <SimpleTutorialPanel onClose={() => setShowTutorial(false)} />
       )}
+
+      <CO2Tutorial
+        open={open}
+        onClose={handleClose}
+        step={step}
+        nextStep={nextStep}
+        prevStep={prevStep}
+      />
     </Box>
   );
 };
