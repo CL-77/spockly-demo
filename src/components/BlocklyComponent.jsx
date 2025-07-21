@@ -77,10 +77,10 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <category name="${Blockly.Msg.Categories["DOWNLOAD_DATA"]}" colour="#0396c1">
                 <block type="func_download"></block>
                 <block type="sampleDataB"></block>
+                <block type="read_file"></block>
             </category>
             <category name="${Blockly.Msg.Categories["DATA_MANIPULATION"]}" colour="#0396c1">
-              <block type="convert_column"></block>
-              <block type="read_file"></block>
+              <block type="convert_column"></block>        
               <block type="data_shape"></block>
               <block type="slice"></block>
               <block type="add_object"></block>

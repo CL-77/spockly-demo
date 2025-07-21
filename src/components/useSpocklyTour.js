@@ -72,7 +72,7 @@ const useSpocklyTour = () => {
     // Python code tab view
     tour.addStep({
       id: 'code-output',
-      title: 'R Code View',
+      title: 'Python Code View',
       text: 'This tab shows the Python code automatically generated from your blocks.',
       attachTo: { element: '#codeTab', on: 'top' },
       buttons: [
