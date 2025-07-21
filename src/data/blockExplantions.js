@@ -569,6 +569,35 @@ const blockDescriptions = {
     infoText: "Set advanced layout for multiple plots.",
     functions: ["par()", "c()"],
   },
-};
 
+  //modelling and interpolation blocks
+  linear_model_block: {
+    infoText: "Create a linear regression model using the specified formula and dataset.",
+    functions: ["lm()"],
+  },
+  logistic_regression_block: {
+    infoText: "Fit a logistic regression model with a binomial response.",
+    functions: ["glm(family = binomial)"],
+  },
+  kmeans_block: {
+    infoText: "Perform K-means clustering on selected columns of the dataset.",
+    functions: ["kmeans()"],
+  },
+  semivariogram: {
+    infoText: "Compute an empirical semivariogram from spatial data.",
+    functions: ["variogram()"],
+  },
+  kriging_interpolation: {
+    infoText: "Interpolate values using ordinary kriging on a spatial grid.",
+    functions: ["krige()", "variogram()", "fit.variogram()", "vgm()"],
+  },
+  idw_interpolation: {
+    infoText: "Estimate spatial values using Inverse Distance Weighting (IDW).",
+    functions: ["idw()", "coordinates()", "expand.grid()", "gridded()"],
+  },
+  random_forest_block: {
+    infoText: "Train a random forest model for classification or regression.",
+    functions: ["randomForest()"],
+  },
+};
 export default blockDescriptions;
