@@ -174,6 +174,7 @@ Blockly.Blocks['bool'] = {
         ]), 'drop');
     this.setOutput(true, 'Boolean');
     this.setTooltip('Boolean value');
+    this.setHelpUrl('https://en.wikipedia.org/wiki/Boolean_data_type');
     this.setColour(95);
   }
 };
@@ -188,7 +189,7 @@ Blockly.Blocks['bool1'] = {
         .appendField('True');
     this.setOutput(true, 'Boolean');
     this.setTooltip('Boolean value: True');
-    this.setHelpUrl('');
+    this.setHelpUrl('https://en.wikipedia.org/wiki/Boolean_data_type');
     this.setColour(95);
   }
 };
@@ -202,7 +203,7 @@ Blockly.Blocks['bool2'] = {
         .appendField('False');
     this.setOutput(true, 'Boolean');
     this.setTooltip('Boolean value False');
-    this.setHelpUrl('');
+    this.setHelpUrl('https://en.wikipedia.org/wiki/Boolean_data_type');
     this.setColour(95);
   }
 };
@@ -379,7 +380,8 @@ Blockly.Blocks['read_file'] = {
         .appendField('Read file')
         .appendField(new Blockly.FieldTextInput('file.csv'), 'NAME');
     this.setTooltip('Use function to read file. Use this block just after a download block.');
-    this.setOutput(true)
+    this.setOutput(true);
+    this.setHelpUrl('https://geopandas.org/en/stable/docs/reference/api/geopandas.read_file.html');
     this.setColour(210);
   }
 };
@@ -595,7 +597,6 @@ Blockly.Blocks['max'] = {
         .appendField('Maximum of');
     this.setOutput(true, 'Number');
     this.setTooltip("Returns the maximum of an array of numbers. To be used mainly on a column.");
-    this.setHelpUrl('');
     this.setColour(150);
   }
 };
@@ -639,7 +640,8 @@ Blockly.Blocks['slice'] = {
         .appendField(':')
         .appendField(new Blockly.FieldNumber("0"), "VAL2");
     this.setOutput(true);
-    this.setTooltip('Slice a variable (list, array) according to given indexes.')
+    this.setTooltip('Slice a variable (list, array) according to given indexes.');
+    this.setHelpUrl('https://stackoverflow.com/questions/9027862/what-does-listxy-do')
     this.setColour(200);
   }
 };
@@ -682,7 +684,7 @@ Blockly.Blocks['data_shape'] = {
         .appendField('Data shape');
     this.setInputsInline(true)
     this.setOutput(true, 'tuple');
-    this.setTooltip('Find shape of a data array.');
+    this.setTooltip('Find shape of a data array. Return parenthesis with two integers.');
     this.setHelpUrl('https://numpy.org/devdocs/reference/generated/numpy.shape.html');
     this.setColour(200);
   }
@@ -749,6 +751,33 @@ pythonGenerator.forBlock['stacking'] = function(block, generator) {
   }
 }
 
+//**Group data by one column */
+Blockly.Blocks['group_by'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Group by')
+        .appendField(new Blockly.FieldTextInput('column_name'), 'columnName');
+    this.appendValueInput("NUM")
+        .setCheck("Array")
+        .appendField("of DataFrame");
+    this.appendDummyInput()
+        .appendField('with operation')
+        .appendField(new Blockly.FieldDropdown([['mean', 'mean'], ['sum', 'sum'], ['count', 'count'], ['min', 'min'], ['max', 'max']]), 'operation');
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Group the data by one column. Choose one way to group data: mean, sum...');
+    this.setHelpUrl('https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html')
+    this.setColour(200);
+  }
+};
+pythonGenerator.forBlock['group_by'] = function(block, generator) {
+  const columnName = block.getFieldValue('columnName') || 'columnName';
+  const dfName = generator.valueToCode(block, "NUM", pythonGenerator.ORDER_NONE) || "0";
+  const operation = block.getFieldValue('operation') || 'mean';
+  return `${dfName} = ${dfName}.groupby(by = '${columnName}').${operation}()\n`;  
+}
+
 /**
  * Sort a list
  */
@@ -777,7 +806,7 @@ Blockly.Blocks['create_array'] = {
         .setCheck(['Number', 'Boolean', 'String', 'List', 'Array', 'Matrix'])
         .appendField('Create array with');
     this.setOutput(true, 'Array');
-    this.setTooltip('Create an array with np.array()');
+    this.setTooltip('Create an array with np.array(). Input a list, a number, a string...');
     this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.array.html');
     this.setColour(200);
   }
@@ -868,7 +897,8 @@ Blockly.Blocks['del_col'] = {
     this.appendValueInput('columns')
       .appendField('Name of columns');
     this.setOutput(true, 'Array');
-    this.setTooltip('');
+    this.setTooltip('Remove one column. Enter the column name and the corresponding dataframe.');
+    this.setHelpUrl('https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.drop.html')
     this.setColour(200);
   }
 };
@@ -916,7 +946,8 @@ Blockly.Blocks['convert_np_to_pd'] = {
     this.appendValueInput('columns')
       .appendField('Name of columns');
     this.setOutput(true);
-    this.setTooltip('Convert to DataFrame');
+    this.setTooltip('Convert to DataFrame. Write the number of columns name that corresponds to the column number of the dataframe.');
+    this.setHelpUrl('https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html')
     this.setColour(200);
   }
 };
@@ -1016,7 +1047,8 @@ Blockly.Blocks['import0'] = {
     this.setColour('#888');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setTooltip('Import modules if it is not imported in code generator.')
+    this.setTooltip('Import modules if it is not imported in code generator.');
+    this.setHelpUrl('https://realpython.com/python-import/');
   }
 };
 pythonGenerator.forBlock['import0'] = function(block) {
@@ -1032,6 +1064,7 @@ Blockly.Blocks['import1'] = {
         .appendField('as')
         .appendField(new Blockly.FieldTextInput('alias'), 'ALIAS')
     this.setTooltip('Import library to code, with alias');
+    this.setHelpUrl('https://realpython.com/python-import/');
     this.setColour('#888');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
@@ -1051,6 +1084,7 @@ Blockly.Blocks['import2'] = {
         .appendField('import')
         .appendField(new Blockly.FieldTextInput('function'), 'FUNCTION');
     this.setTooltip('Import functions from library to code. You can also use \'*\' and specify more functions separating them with commas.');
+    this.setHelpUrl('https://realpython.com/python-import/');
     this.setColour('#888');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
@@ -1072,6 +1106,7 @@ Blockly.Blocks['import3'] = {
         .appendField('as')
         .appendField(new Blockly.FieldTextInput('alias'), 'ALIAS');
     this.setTooltip('Import library to code.');
+    this.setHelpUrl('https://realpython.com/python-import/');
     this.setColour('#888');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
@@ -1867,7 +1902,7 @@ Blockly.Blocks['distance_manhattan'] = {
         .appendField(new Blockly.FieldNumber('0'), 'Lon2');
     this.setOutput(true, 'Number');
     this.setTooltip('Find the manhattan distance with lat and lon. Only for very short distances, maximum difference between coordinates in hundredths of degrees');
-    this.setHelpUrl('');
+    this.setHelpUrl('https://en.wikipedia.org/wiki/Taxicab_geometry');
     this.setColour(60);
   }
 };
@@ -1921,6 +1956,7 @@ Blockly.Blocks['GeoCoords'] = {
         .appendField('°E');
     this.setOutput(true, 'GeoCoords');
     this.setTooltip('Returns a pair of geo coordinates');
+    this.setHelpUrl('https://en.wikipedia.org/wiki/Geographic_coordinate_system')
     this.setColour(300);
   }
 };
@@ -2213,7 +2249,7 @@ Blockly.Blocks['saveAndDisplayMap'] = {
         .appendField('.html');
     this.setPreviousStatement(true);
     this.setColour(230);
-    this.setHelpUrl('');
+    this.setHelpUrl('https://stackoverflow.com/questions/66140534/how-to-save-a-map-section-in-python-using-folium');
     this.setTooltip('Save and display map with a given name');
   }
 };
@@ -2550,7 +2586,8 @@ Blockly.Blocks["length_of_str"] = {
     this.appendEndRowInput();
     this.setOutput(true, 'Number');
     this.setColour(90);
-    this.setTooltip('Returns the length of a given string');
+    this.setTooltip('Returns the length of a given string.');
+    this.setHelpUrl('https://www.w3schools.com/python/ref_func_len.asp')
   },
 };
 pythonGenerator.forBlock["length_of_str"] = function(block, generator) {
@@ -2737,6 +2774,7 @@ Blockly.Blocks["repeat_times"] = {
     this.setNextStatement(true, null);
     this.setColour(120);
     this.setTooltip("Repeat N times");
+    this.setHelpUrl('https://www.w3schools.com/python/ref_func_range.asp');
   },
 };
 pythonGenerator.forBlock["repeat_times"] = function (block, generator) {
@@ -2764,6 +2802,7 @@ Blockly.Blocks['operators'] = {
     this.setInputsInline(true)
     this.setOutput(true, 'Boolean');
     this.setTooltip('All the basic logical operators');
+    this.setHelpUrl('https://www.w3schools.com/python/gloss_python_logical_operators.asp')
     this.setColour(0);
   }
 };
@@ -2798,7 +2837,7 @@ Blockly.Blocks['temp_var'] = {
     this.appendDummyInput()
         .appendField(new Blockly.FieldTextInput('VAR_NAME', (txt) => txt.slice(0, 1)), 'var');
     this.setOutput(true);
-    this.setTooltip('Use for temporary variables, oftenly one time.')
+    this.setTooltip('Use for temporary variables, oftenly one time.');
     this.setColour(315);
   }
 };
@@ -2853,7 +2892,7 @@ Blockly.Blocks['arange'] = {
         .appendField('and')
     this.appendValueInput('step')
         .appendField('with step');
-    this.setTooltip('Generate a range of values between two numbers');
+    this.setTooltip('Generate a range of values between two numbers. Precise the step.');
     this.setInputsInline(false);
     this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.arange.html');
     this.setOutput(true, 'Array');
@@ -2875,7 +2914,7 @@ Blockly.Blocks['linspace'] = {
         .appendField('values between');
     this.appendValueInput('stop')
         .appendField('and');
-    this.setTooltip('Generate a number of regular values between two numbers');
+    this.setTooltip('Generate a number of regular values between two numbers.');
     this.setInputsInline(false);
     this.setHelpUrl('https://numpy.org/doc/stable/reference/generated/numpy.linspace.html');
     this.setOutput(true, 'Array');

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, Box, Typography, Button, IconButton } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import ReactMarkdown from 'react-markdown';
