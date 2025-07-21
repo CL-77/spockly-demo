@@ -100,7 +100,6 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
           <category name="${Blockly.Msg.Categories["VISUALISATION"]}" colour="#b12222">
             <block type="create_list_XCoords"></block>
             <block type="create_list_YCoords"></block>
-            <block type="select_column"></block>
             <block type="plot">
               <value name="Legend">
                 <block type="list_create">
@@ -555,7 +554,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     return level === "level1" ? beginnerToolbox : advancedToolbox;
   }, [level, beginnerToolbox, advancedToolbox]);
 
-  // Initialize Blockly with the selected theme and toolbox whenever the theme or level changes
+  // Initialise Blockly with the selected theme and toolbox whenever the theme or level changes
   useEffect(() => {
     if (!blocklyDiv.current) {
       console.error("blocklyDiv is not available.");

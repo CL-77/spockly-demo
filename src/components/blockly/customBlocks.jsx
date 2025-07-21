@@ -1895,7 +1895,7 @@ Blockly.Blocks['distance_haversine'] = {
         .appendField(', Lon:')
         .appendField(new Blockly.FieldNumber('0'), 'Lon2');
     this.setOutput(true, 'Number');
-    this.setTooltip('Find the distance haversine with lat and lon on a sphere');
+    this.setTooltip('Find the Haversine distance with lat and lon on a sphere.');
     this.setHelpUrl('https://en.wikipedia.org/wiki/Haversine_formula');
     this.setColour(60);
   }

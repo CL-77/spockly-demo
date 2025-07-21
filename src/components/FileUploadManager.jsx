@@ -41,10 +41,7 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
         await writeFile(targetPath, fileData);
         globalThis.fileColumns.push('---');
         globalThis.fileColumns.push(...fileData.split('\n')[0].split(','));
-      } else if(extension === "txt") {
-        const fileData = await file.text();
-        await writeFile(targetPath, fileData);
-      } else if(extension === "json" || extension === "geojson") {
+      } else if(extension === "json" || extension === "geojson" || extension === "txt") {
         const fileData = await file.text();
         await writeFile(targetPath, fileData);
       } else if (extension === "tif") {
@@ -99,10 +96,8 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
   };
 
   const getUsageInstructions = () => {
-    if (fileType === 'csv') {
+    if (fileType === 'csv' || fileType === 'txt') {
       return "Use this filename in your load_csv block:";
-    } else if (fileType === 'txt') {
-      return "Use this filename in your load_txt block:";
     } else if (fileType === 'geojson' || fileType === 'json') {
       return "Use this filename in your load_json block:";
     }
