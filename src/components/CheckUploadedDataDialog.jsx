@@ -22,26 +22,23 @@ const CheckUploadedDataDialog = ({ open, onClose }) => {
   const [expandedPreviews, setExpandedPreviews] = useState({});
   const [copySuccess, setCopySuccess] = useState(false);
 
-  // Fetch the list of files from WebR's file system when the dialog is opened
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const result = await webR.evalR(`list.files("/home/web_user")`);
-        const jsResult = await result.toJs();
-        const fileList = jsResult?.values || [];
+        const result = globalThis.files;
+        const fileList = result || [];
         setFiles(fileList);
 
         if (fileList.length > 0) {
           const previews = await Promise.all(fileList.map(async (filename) => {
             const ext = filename.split('.').pop().toLowerCase();
             try {
-              const fileRead = await webR.FS.readFile(`/home/web_user/${filename}`, { encoding: 'utf8' });
-              const text = new TextDecoder().decode(fileRead);
+              const text = globalThis.fileContents[filename] || '';
 
               if (ext === 'csv') {
                 const rows = text.split('\n').slice(0, 6).map(row => row.split(','));
                 return { filename, table: rows };
-              } else if (ext === 'geojson') {
+              } else if (ext === 'geojson' || ext === 'json') {
                 const geojson = JSON.parse(text);
                 const features = geojson.features?.slice(0, 5) || [];
                 const preview = features.map(f => ({
@@ -51,7 +48,7 @@ const CheckUploadedDataDialog = ({ open, onClose }) => {
                 }));
                 const table = [['Geometry Type', 'Coordinates', 'Properties'], ...preview.map(p => [p.type, p.coords, p.props])];
                 return { filename, table };
-              } else if (ext === 'tif') {
+              } else if (ext === 'tif' || ext === 'tiff') {
                 return { filename, table: [['Raster preview not available.']] };
               } else {
                 return { filename, table: [] };

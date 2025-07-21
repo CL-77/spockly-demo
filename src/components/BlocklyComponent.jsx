@@ -723,7 +723,7 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
               id="checkDataButton"
               variant="outlined"
               size="small"
-              onClick={() => setShowCheckDataDialog(true)}
+              onClick={ () => setShowCheckDataDialog(true) }
               sx={{
                 height: 32,
                 fontSize: "0.75rem",
@@ -736,8 +736,8 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
             </Button>
           </Tooltip>
           <CheckUploadedDataDialog
-            open={showCheckDataDialog}
-            onClose={() => setShowCheckDataDialog(false)}
+            open={ showCheckDataDialog }
+            onClose={ () => setShowCheckDataDialog(false) }
           />
 
           <Tooltip title="Create CSV data manually">
@@ -745,7 +745,7 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
               id="createDataButton"
               variant="outlined"
               size="small"
-              onClick={() => setOpenCreateDataDialog(true)}
+              onClick={ () => setOpenCreateDataDialog(true) }
               sx={{
                 height: 32,
                 fontSize: "0.75rem",
@@ -758,14 +758,13 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
             </Button>
           </Tooltip>
           <CreateDataDialog
-            open={openCreateDataDialog}
-            onClose={() => setOpenCreateDataDialog(false)}
+            open={ openCreateDataDialog }
+            onClose={ () => setOpenCreateDataDialog(false) }
           />
-
+{/* 
           <Box id="uploadFileNames" sx={{ ml: 2 }} gap={ 2 } alignItems="center" minWidth={ 0 } width="10%">
-          { globalThis.files[0] ? `Uploaded file${globalThis.files.length !== 1 ? 's' : ''}: ${globalThis.files.join(', ')}.` : '' }
-        </Box>
-
+            { globalThis.files[0] ? `Uploaded file${globalThis.files.length !== 1 ? 's' : ''}: ${globalThis.files.join(', ')}.` : '' }
+          </Box> */}
           <Box sx={{ display: "inline-flex", alignItems: "center" }}>
             <Tooltip
               title={
@@ -776,13 +775,13 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
                 </Box>
               }
               arrow
-              enterDelay={300}
+              enterDelay={ 300 }
               placement="right"
             >
               <span>
                 <Select
-                  value={level}
-                  onChange={(e) => setLevel(e.target.value)}
+                  value={ level }
+                  onChange={ (e) => setLevel(e.target.value) }
                   size="small"
                   sx={{
                     height: 32,
@@ -815,7 +814,7 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
                     },
                   }}
                   id="switchLevelsDropdown"
-                  renderValue={() => (
+                  renderValue={ () => (
                     <>
                       <Box sx={{ display: { xs: "none", sm: "none", md: "none", lg: "inline" }, fontSize: "0.75rem", letterSpacing: 0.5 }}>
                         Choose Level
@@ -827,7 +826,7 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
                         <MdSpeed />
                       </Box>
                     </>
-                  )}
+                  ) }
                 >
                   <MenuItem value="level1" sx={{ fontSize: "0.85rem", color: "#2E7D32" }}>
                     <Box sx={{ display: "flex", alignItems: "center" }}>

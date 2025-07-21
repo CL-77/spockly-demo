@@ -153,41 +153,41 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
                 alignItems: "center",
               }}
             >
-              <Tooltip title="Ctrl + Alt + C">
-            <Tab
-                  id="helpTab"
-                label={
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <FaHandsHelping /> Help
-                  </Box>
-                }
-                sx={{
-                  fontWeight: "bold",
-                  color: isDarkMode ? "lightgrey" : "darkgrey",
-                  textTransform: "none",
-                }}
-              />
-              <Tab
-                id="codeTab"
-                label={
-                    <Box display="flex" alignItems="center" gap={ 1 }>
-                      <FaCode /> Code
-                    </Box>
-                  }
-                  sx={{
-                    fontWeight: "bold",
-                    color: isDarkMode ? "lightgrey" : "darkgrey",
-                    textTransform: "none",
-                  }}
-                />
-              </Tooltip>
-          <Tooltip title="Ctrl + Alt + O">
-            <Tab
+              {/* <Tooltip title="Ctrl + Alt + C"> */}
+                <Tab
+                      id="helpTab"
+                    label={
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <FaHandsHelping /> Help
+                      </Box>
+                    }
+                    sx={{
+                      fontWeight: "bold",
+                      color: isDarkMode ? "lightgrey" : "darkgrey",
+                      textTransform: "none",
+                    }}
+                  />
+                  <Tab
+                    id="codeTab"
+                    label={
+                        <Box display="flex" alignItems="center" gap={ 1 }>
+                          <FaCode /> Code
+                        </Box>
+                      }
+                      sx={{
+                        fontWeight: "bold",
+                        color: isDarkMode ? "lightgrey" : "darkgrey",
+                        textTransform: "none",
+                      }}
+                    />
+              {/* </Tooltip> */}
+              {/* <Tooltip title="Ctrl + Alt + O"> */}
+                <Tab
                   id="outputTab"
-                label={
-                    <Box display="flex" alignItems="center" gap={ 1 }>
-                      <MdOutlineOutput /> Output
-                    </Box>
+                  label={
+                      <Box display="flex" alignItems="center" gap={ 1 }>
+                        <MdOutlineOutput /> Output
+                      </Box>
                   }
                   sx={{
                     fontWeight: "bold",
@@ -195,11 +195,11 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
                     textTransform: "none",
                   }}
                 />
-              <Box sx={{ marginLeft: "auto", marginRight: "50px" }}>
-                <MiniPackageLoadingBar currentPackage={currentPackage} />
-              </Box>
-              </Tooltip>
-        </Tabs>
+                {/* <Box sx={{ marginLeft: "auto", marginRight: "50px" }}> */}
+                  <MiniPackageLoadingBar currentPackage={ currentPackage } />
+                {/* </Box> */}
+              {/* </Tooltip> */}
+            </Tabs>
             <TabPanel value={ value } index={ 0 }>
               <Box sx={{ height: "60%", p: 1 }}>
                 <BlockExplantions
@@ -208,7 +208,7 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
                 />
               </Box>
             </TabPanel>
-            <TabPanel value={value} index={1}>
+            <TabPanel value={ value } index={ 1 }>
               <Box sx={{ height: "60%", p: 1 }}>
                 <CodeDisplay
                   code={ code }

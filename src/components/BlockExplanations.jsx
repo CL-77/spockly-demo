@@ -53,7 +53,7 @@ const BlockExplantions = ({ isDarkMode, workspaceRef }) => {
               <IconButton
                 id="openRDocumentationButton"
                 component="a"
-                href="https://www.rdocumentation.org"
+                href="https://docs.python.org/3/"
                 target="_blank"
                 rel="noopener noreferrer"
                 sx={{
@@ -93,7 +93,7 @@ const BlockExplantions = ({ isDarkMode, workspaceRef }) => {
           zIndex: 1,
         }}
       >
-        <Typography
+        <Box
           sx={{
             color: isDarkMode ? "#FFFFFA" : "#000000",
             padding: 3,
@@ -190,7 +190,7 @@ const BlockExplantions = ({ isDarkMode, workspaceRef }) => {
               )}
             </Box>
           </Box>
-        </Typography>
+        </Box>
       </Box>
     </Box>
   );

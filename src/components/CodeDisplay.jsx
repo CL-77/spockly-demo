@@ -183,7 +183,7 @@ import {
 		  sx={{
 			position: "relative",
 			borderRadius: "5px",
-			height: CODE_DISPLAY_SIZE,
+			height: 550,
 			bgcolor: theme.palette.background.paper,
 			zIndex: 1,
 			overflowY: "auto",

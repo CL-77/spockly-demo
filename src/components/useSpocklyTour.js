@@ -37,7 +37,7 @@ const useSpocklyTour = () => {
     tour.addStep({
       id: 'category',
       title: 'Block Categories',
-      text: 'Choose a category to start your SPOCKLY workflow. Each category contains blocks related to specific tasks such as data loading and -manipulation.',
+      text: 'Choose a category to start your SPOCKLY workflow. Each category contains blocks related to specific tasks such as data loading and manipulation.',
       attachTo: { element: '.blocklyToolbox', on: 'right' },
       buttons: [
         { text: 'Back', action: tour.back },

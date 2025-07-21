@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  server: {host: true}
   build: {
     rollupOptions: {
       output: {
@@ -23,6 +22,7 @@ export default defineConfig({
       'Cross-Origin-Embedder-Policy': 'require-corp',
       'Cross-Origin-Opener-Policy': 'same-origin',
     },
+    host: true,
   },
   preview: {
     // Enable COOP/COEP headers for preview mode

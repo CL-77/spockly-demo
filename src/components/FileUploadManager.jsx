@@ -27,6 +27,7 @@ import { writeFile } from './workerApi.mjs';
 
 globalThis.files = [];
 globalThis.fileColumns = [];
+globalThis.fileContents = {};
 
 // Component for managing file uploads to WebR, including validation, preview, and usage instructions.
 const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
@@ -55,16 +56,19 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
     try {
       if (extension === "csv") {
         const fileData = await file.text();
+        globalThis.fileContents[file.name] = fileData;
         await writeFile(targetPath, fileData);
         globalThis.fileColumns.push('---');
         globalThis.fileColumns.push(...fileData.split('\n')[0].split(','));
       } else if(extension === "json" || extension === "geojson" || extension === "txt") {
         const fileData = await file.text();
+        globalThis.fileContents[file.name] = fileData;
         await writeFile(targetPath, fileData);
       } else if (extension === "tif") {
         const arrayBuffer = await file.arrayBuffer();
         const uint8Array = new Uint8Array(arrayBuffer);
         await writeFile(targetPath, uint8Array);
+        globalThis.fileContents[targetPath] = uint8Array;
       } else {
         setUploadStatus('invalidtype');
         return;
@@ -185,7 +189,7 @@ const FileUploadManager = ({ workspaceRef, isDarkMode, open, onClose }) => {
         Upload Data File
         <IconButton
           aria-label="close"
-          onClick={handleClose}
+          onClick={ handleClose }
           sx={{
             position: 'absolute',
             right: 12,
