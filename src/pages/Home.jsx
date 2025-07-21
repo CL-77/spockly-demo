@@ -5,6 +5,8 @@ import { Box, Typography, Fab } from "@mui/material";
 import { Rocket, ImportContacts } from "@mui/icons-material";
 import { FaGlobe, FaCube, FaCodeBranch, FaCompass } from "react-icons/fa";
 import logo from "../assets/spockly_logo.png";
+import PythonLogo from "../assets/python-logo-only.svg";
+import RLogo from "../assets/Rlogo.svg";
 import { useTheme } from "@emotion/react";
 import HoverGrowButton from "../components/HoverGrowButton";
 
@@ -68,11 +70,11 @@ const Home = ({ isDarkMode }) => {
           },
         }}
         transition={{ duration: 1.2, ease: "easeOut" }}
-        style={centeredFlexColumn}
+        style={ centeredFlexColumn }
       >
-        <Box sx={sectionBoxStyle(theme, isDarkMode)}>
+        <Box sx={ sectionBoxStyle(theme, isDarkMode) }>
           <motion.img
-            src={logo}
+            src={ logo }
             alt="SPOCKLY Logo"
             style={{ width: "min(80vw, 380px)", marginBottom: "1.8rem" }}
           />
@@ -189,7 +191,7 @@ const Home = ({ isDarkMode }) => {
               icon={ <FaCube size={ 32 } /> }
               text="Blockly Interface"
             />
-            <HoverGrowButton icon={ <FaCodeBranch size={ 32 } /> } text="Using R" />
+            <HoverGrowButton icon={ <FaCodeBranch size={ 32 } /> } text="Using R or Python" />
           </Box>
         </Box>
       </motion.section>
@@ -239,7 +241,7 @@ const Home = ({ isDarkMode }) => {
               paddingTop: 5,
             }}
           >
-            <FaCompass size={40} style={{ marginBottom: "1rem" }} />
+            <FaCompass size={ 40 } style={{ marginBottom: "1rem" }} />
             <Typography
               variant="h2"
               sx={{
@@ -253,7 +255,7 @@ const Home = ({ isDarkMode }) => {
           </Box>
         </motion.div>
         <Box sx={ buttonWrapperStyle(theme, isDarkMode) }>
-          <Link to="/SPOCKLY">
+          <Link to="/RSPOCKLY">
             <Fab
               variant="extended"
               sx={{
@@ -265,9 +267,36 @@ const Home = ({ isDarkMode }) => {
               }}
             >
               <Box display="flex" alignItems="center" gap={0.5}>
-                <Rocket fontSize="small" />
+                <motion.img
+                  src={ RLogo }
+                  alt="R Logo"
+                  style={{ width: "20px", marginBottom: "0" }}
+                />
                 <Typography sx={{ fontWeight: "bold" }}>
-                  Start SPOCKLY Editor
+                  Start R SPOCKLY Editor
+                </Typography>
+              </Box>
+            </Fab>
+          </Link>
+          <Link to="/PythonSPOCKLY">
+            <Fab
+              variant="extended"
+              sx={{
+                boxShadow: "none",
+                "&:hover": {
+                  bgcolor: theme.palette.secondary.main,
+                  color: isDarkMode ? "#FFFFFA" : "#000000",
+                },
+              }}
+            >
+              <Box display="flex" alignItems="center" gap={0.5}>
+                <motion.img
+                  src={ PythonLogo }
+                  alt="Python Logo"
+                  style={{ width: "20px", marginBottom: "0" }}
+                />
+                <Typography sx={{ fontWeight: "bold" }}>
+                  Start Python SPOCKLY Editor
                 </Typography>
               </Box>
             </Fab>

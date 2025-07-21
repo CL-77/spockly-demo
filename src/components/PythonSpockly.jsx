@@ -2,14 +2,14 @@ import { useEffect, useState, useRef } from "react";
 import BlocklyComponent from "./BlocklyComponent";
 import CodeDisplay from "./CodeDisplay";
 import { Card, Box, Grid, Tab, Tabs, Tooltip } from "@mui/material";
-import { darkTheme, lightTheme } from "./../appTheme";
+import { darkTheme, lightTheme } from "../appTheme";
 import FileUploadManager from "./FileUploadManager";
 import CodeOutput from "./CodeOutput"
 import { MdOutlineOutput } from "react-icons/md";
 import { FaCode } from "react-icons/fa6";
 import main from "./init";
 import useSpocklyTour from "./useSpocklyTour";
-import MiniPackageLoadingBar from "./MiniPackageLoadingBar";
+// import MiniPackageLoadingBar from "./MiniPackageLoadingBar";
 import BlockExplantions from "./BlockExplanations";
 import { FaHandsHelping } from "react-icons/fa";
 
@@ -77,7 +77,7 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
     }
       if ((ev.ctrlKey || ev.metaKey) && ev.altKey && keyName === 'o') {
         ev.preventDefault();
-        setValue(1);
+        setValue(2);
       }
     },
     false,
@@ -90,6 +90,20 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
         return;
     }
       if ((ev.ctrlKey || ev.metaKey) && ev.altKey && keyName === 'c') {
+        ev.preventDefault();
+        setValue(1);
+      }
+    },
+    false,
+  );
+  document.addEventListener(
+    "keydown",
+    (ev) => {
+    const keyName = ev.key;
+        if (keyName === "Control") {
+        return;
+    }
+      if ((ev.ctrlKey || ev.metaKey) && ev.altKey && keyName === 'h') {
         ev.preventDefault();
         setValue(0);
       }
@@ -153,12 +167,27 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
                 alignItems: "center",
               }}
             >
-              {/* <Tooltip title="Ctrl + Alt + C"> */}
+              <Tooltip title="Ctrl + Alt + H">
                 <Tab
-                      id="helpTab"
+                  id="helpTab"
+                  label={
+                    <Box display="flex" alignItems="center" gap={ 1 }>
+                      <FaHandsHelping /> Help
+                    </Box>
+                  }
+                  sx={{
+                    fontWeight: "bold",
+                    color: isDarkMode ? "lightgrey" : "darkgrey",
+                    textTransform: "none",
+                  }}
+                />
+                </Tooltip>
+                <Tooltip title="Ctrl + Alt + C">
+                  <Tab
+                    id="codeTab"
                     label={
-                      <Box display="flex" alignItems="center" gap={1}>
-                        <FaHandsHelping /> Help
+                      <Box display="flex" alignItems="center" gap={ 1 }>
+                        <FaCode /> Code
                       </Box>
                     }
                     sx={{
@@ -167,44 +196,31 @@ await pyodide_js.loadPackage(['pandas', 'geopandas', 'requests', 'numpy', 'shape
                       textTransform: "none",
                     }}
                   />
+                </Tooltip>
+                <Tooltip title="Ctrl + Alt + O">
                   <Tab
-                    id="codeTab"
+                    id="outputTab"
                     label={
-                        <Box display="flex" alignItems="center" gap={ 1 }>
-                          <FaCode /> Code
-                        </Box>
-                      }
-                      sx={{
-                        fontWeight: "bold",
-                        color: isDarkMode ? "lightgrey" : "darkgrey",
-                        textTransform: "none",
-                      }}
-                    />
-              {/* </Tooltip> */}
-              {/* <Tooltip title="Ctrl + Alt + O"> */}
-                <Tab
-                  id="outputTab"
-                  label={
                       <Box display="flex" alignItems="center" gap={ 1 }>
                         <MdOutlineOutput /> Output
                       </Box>
-                  }
-                  sx={{
-                    fontWeight: "bold",
-                    color: isDarkMode ? "lightgrey" : "darkgrey",
-                    textTransform: "none",
-                  }}
-                />
-                {/* <Box sx={{ marginLeft: "auto", marginRight: "50px" }}> */}
-                  <MiniPackageLoadingBar currentPackage={ currentPackage } />
-                {/* </Box> */}
-              {/* </Tooltip> */}
+                    }
+                    sx={{
+                      fontWeight: "bold",
+                      color: isDarkMode ? "lightgrey" : "darkgrey",
+                      textTransform: "none",
+                    }}
+                  />
+                  {/* <Box sx={{ marginLeft: "auto", marginRight: "50px" }}>
+                    <MiniPackageLoadingBar currentPackage={ currentPackage } />
+                  </Box> */}
+                </Tooltip>
             </Tabs>
             <TabPanel value={ value } index={ 0 }>
               <Box sx={{ height: "60%", p: 1 }}>
                 <BlockExplantions
-                  isDarkMode={isDarkMode}
-                  workspaceRef={workspaceRef}
+                  isDarkMode={ isDarkMode }
+                  workspaceRef={ workspaceRef }
                 />
               </Box>
             </TabPanel>

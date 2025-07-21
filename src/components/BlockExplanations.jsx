@@ -14,8 +14,6 @@ import { useEffect, useState } from "react";
 import blockDescriptions from "../data/blockExplantions";
 import { Link } from "react-router-dom";
 
-const WINDOW_SIZE = 550;
-
 const BlockExplantions = ({ isDarkMode, workspaceRef }) => {
   const [currentBlock, setCurrentBlock] = useState(null);
   const theme = isDarkMode ? darkTheme : lightTheme;
@@ -40,18 +38,24 @@ const BlockExplantions = ({ isDarkMode, workspaceRef }) => {
   }, [workspaceRef]);
 
   return (
-    <Box>
+    <Box sx={{
+		  height: "100%",
+		  borderRadius: 4,
+		  zIndex: 1,
+		}}>
       <Stack direction="row-reverse" sx={{ paddingY: 1 }}>
         <Box
           sx={{
             height: "100%",
             zIndex: 1,
+            color: theme.palette.primary.light,
+            paddingBottom: "15px",
           }}
         >
-          <Stack direction="row" gap={1}>
-            <Tooltip title="Open R documentation web page">
+          <Stack direction="row" gap={ 1 }>
+            <Tooltip title="Open Python documentation web page">
               <IconButton
-                id="openRDocumentationButton"
+                id="openPythonDocumentationButton"
                 component="a"
                 href="https://docs.python.org/3/"
                 target="_blank"
@@ -85,12 +89,13 @@ const BlockExplantions = ({ isDarkMode, workspaceRef }) => {
         </Box>
       </Stack>
       <Box
+        id="responsiveBox0"
         sx={{
           position: "relative",
           borderRadius: "5px",
-          height: WINDOW_SIZE,
           bgcolor: theme.palette.background.paper,
           zIndex: 1,
+          overflowY: "auto",
         }}
       >
         <Box
@@ -108,7 +113,7 @@ const BlockExplantions = ({ isDarkMode, workspaceRef }) => {
               sx={{ backgroundColor: theme.palette.primary.main, height: 2 }}
             />
             <Box sx={{ m: 1.5 }}>
-              {currentBlock ? (
+              { currentBlock ? (
                 <>
                   <Stack direction="row" sx={{ mt: 1 }} alignItems="center">
                     <Typography
@@ -118,7 +123,7 @@ const BlockExplantions = ({ isDarkMode, workspaceRef }) => {
                       Block-type:
                     </Typography>
                     <Typography fontWeight="bold">
-                      {currentBlock.type}
+                      { currentBlock.type }
                     </Typography>
                   </Stack>
                   <Stack direction="row" sx={{ mt: 1 }} alignItems="center">
@@ -129,14 +134,14 @@ const BlockExplantions = ({ isDarkMode, workspaceRef }) => {
                       Functions:
                     </Typography>
                     <Typography fontWeight="bold">
-                      {Array.isArray(
+                      { Array.isArray(
                         blockDescriptions[currentBlock.type]?.functions
                       ) &&
                       blockDescriptions[currentBlock.type].functions.length > 0
                         ? blockDescriptions[currentBlock.type].functions.join(
                             ", "
                           )
-                        : ""}
+                        : "" }
                     </Typography>
                   </Stack>
 
@@ -148,16 +153,16 @@ const BlockExplantions = ({ isDarkMode, workspaceRef }) => {
                       Description:
                     </Typography>
                     <Typography variant="body1">
-                      {blockDescriptions[currentBlock.type]?.infoText ||
-                        "Für diesen Blocktyp ist noch keine Beschreibung vorhanden."}
+                      { blockDescriptions[currentBlock.type]?.infoText ||
+                        "Für diesen Blocktyp ist noch keine Beschreibung vorhanden." }
                     </Typography>
                   </Stack>
-                  {currentBlock.helpUrl ? (
+                  { currentBlock.helpUrl ? (
                     <Fab
                       variant="extended"
                       size="medium"
                       component="a"
-                      href={currentBlock.helpUrl}
+                      href={ currentBlock.helpUrl }
                       target="_blank"
                       rel="noopener noreferrer"
                       sx={{
@@ -181,13 +186,13 @@ const BlockExplantions = ({ isDarkMode, workspaceRef }) => {
                     </Fab>
                   ) : (
                     ""
-                  )}
+                  ) }
                 </>
               ) : (
                 <Typography variant="subtitle1" sx={{ mt: 1 }}>
                   Select a block to display a detailed description.
                 </Typography>
-              )}
+              ) }
             </Box>
           </Box>
         </Box>

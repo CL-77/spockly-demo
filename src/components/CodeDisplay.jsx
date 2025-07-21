@@ -94,11 +94,11 @@ import {
 		  >
 			<Stack direction="row" gap={ 1 }>
 			  <Box
-				sx={{
-				  width: "100%",
-				  display: "flex",
-				  justifyContent: "flex-start",
-				}}
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "flex-start",
+          }}
 			  >
         <Box display="flex" alignItems="center" gap={ 0.5 } sx={{ marginRight: "10px" }}>
             <Typography sx={{ fontSize: "0.9em", color: "#BBB" }}>Ctrl + Enter</Typography>  
@@ -181,12 +181,11 @@ import {
 		<Box
       id="responsiveBox1"
 		  sx={{
-			position: "relative",
-			borderRadius: "5px",
-			height: 550,
-			bgcolor: theme.palette.background.paper,
-			zIndex: 1,
-			overflowY: "auto",
+        position: "relative",
+        borderRadius: "5px",
+        bgcolor: theme.palette.background.paper,
+        zIndex: 1,
+        overflowY: "auto",
 		  }}
 		>
 		  <Typography
@@ -200,7 +199,7 @@ import {
 		  >
 			{code}
 		  </Typography>
-		  <MiniPackageLoadingBar currentPackage={ currentPackage } />
+		  {/* <MiniPackageLoadingBar currentPackage={ currentPackage } /> */}
 		</Box>
 		<FullCodeViewDialog
 		  code={ code }

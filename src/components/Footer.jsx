@@ -9,7 +9,7 @@ const Footer = () => {
     <Box
       component="footer"
       sx={{
-        padding: "1rem",
+        padding: "1rem 0",
         textAlign: "center",
         backgroundColor: theme.palette.background.paper,
         color: theme.palette.text.primary,
@@ -33,7 +33,8 @@ const Footer = () => {
         }}
       >
         <Link component={ RouterLink } to="/">Home</Link>
-        <Link component={ RouterLink } to="/spockly">SPOCKLY</Link>
+        <Link component={ RouterLink } to="/RSPockly">R SPOCKLY</Link>
+        <Link component={ RouterLink } to="/PythonSPOCKLY">Python SPOCKLY</Link>
         <Link component={ RouterLink } to="/tutorials">Tutorials</Link>
         <Link component={ RouterLink } to="/impressum">Legal Notice</Link>
         <Link
@@ -55,7 +56,7 @@ const Footer = () => {
       </Breadcrumbs>
 
       <Typography variant="body2" color="text.secondary">
-        © 2025 SPOCKLY — ifgi
+        © 2025 SPOCKLY &mdash; ifgi
       </Typography>
     </Box>
   );

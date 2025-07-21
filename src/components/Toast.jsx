@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function Toast() {
   return (
     <div
@@ -18,7 +16,7 @@ export default function Toast() {
         padding: "0 10px 0 10px",
         borderRadius: "3px",
         margin: "10px",
-        display: "none"
+        display: "none",
       }}
     >
       <p>Loading libraries...</p>

@@ -6,7 +6,8 @@ import Tutorials from "./pages/tutorials/Tutorials";
 import Impressum from "./pages/Impressum";
 import { GlobalStyles, ThemeProvider } from "@mui/material";
 import { darkTheme, lightTheme } from "./appTheme";
-import SPOCKLY from "./components/Spockly";
+import PythonSPOCKLY from "./components/PythonSpockly";
+// import RSPOCKLY from "./components/RSPOCKLY";
 import Toast from "./components/Toast";
 import './components/init.js';
 
@@ -27,7 +28,7 @@ function App() {
   }, [isDarkMode]);
 
   useEffect(() => {
-    if (~window.location.href.indexOf('SPOCKLY')) {
+    if (window.location.pathname.toLowerCase() === "/pythonspockly") {
       document.getElementById('toast').style.animation = 'slideIn 5s ease-in-out';
       document.getElementById('toast').style.display = 'block';
     }
@@ -72,9 +73,13 @@ function App() {
             }
           >
             <Route index element={ <Home isDarkMode={ isDarkMode } /> } />
+            {/* <Route
+              path="RSPOCKLY"
+              element={ <RSPOCKLY isDarkMode={ isDarkMode } /> }
+            /> */}
             <Route
-              path="spockly"
-              element={ <SPOCKLY isDarkMode={ isDarkMode } /> }
+              path="PythonSPOCKLY"
+              element={ <PythonSPOCKLY isDarkMode={ isDarkMode } /> }
             />
             <Route path="tutorials" element={ <Tutorials isDarkMode={ isDarkMode } /> } />
             <Route path="impressum" element={ <Impressum /> } />

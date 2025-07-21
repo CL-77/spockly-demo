@@ -7,6 +7,9 @@ const Impressum = () => {
       <p style={ styles.placeholder }>
         This legal notice will be added soon.
       </p>
+      <p style={ styles.placeholder }>
+        The R logo used in the homepage is distributed under the <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution-ShareAlike 4.0 International License</a> (CC-BY-SA 4.0). For further information, please refer to <a href="https://www.r-project.org/logo/" target="_blank" rel="noopener noreferrer">R Project Logo</a>.
+      </p>
     </div>
   );
 };
