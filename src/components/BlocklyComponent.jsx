@@ -1,17 +1,20 @@
 import { useEffect, useRef, useMemo, useState } from "react";
 import * as Blockly from "blockly";
 import "./blockly/customBlocks";
-import { Box, useTheme, Button } from "@mui/material";
+import { Box, useTheme, Button, Select, MenuItem } from "@mui/material";
 import { lightTheme, darkTheme } from "./blockly/blocklyThemes";
 import { Upload } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup, IconButton } from "@mui/material";
-import { FaBookOpen, FaMapMarkedAlt, FaQuestionCircle } from "react-icons/fa";
+import { FaSchool, FaUniversity, FaQuestionCircle, FaGamepad } from "react-icons/fa";
 import { MdCo2 } from "react-icons/md";
+import { MdSpeed } from "react-icons/md";
 import { Toolbar } from "@mui/material";
+import { MdChecklist, MdCreate } from "react-icons/md";
 
 import CreateDataDialog from "./CreateDataDialog.jsx";
-import SimpleTutorialPanel from "./SimpleTutorialPanel.jsx"; 
+import CheckUploadedDataDialog from "./CheckUploadedDataDialog.jsx";
+import SimpleTutorialPanel from "./SimpleTutorialPanel.jsx";
 import { pythonGenerator } from "blockly/python";
 import { english } from "../locales/english";
 import { german } from "../locales/german";
@@ -27,7 +30,12 @@ if(lang.some((l) => l.startsWith('de'))) { //Reactivate after testing
   Blockly.setLocale(english);
 }
 
-const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) => {
+const BlocklyComponent = ({
+  setCode,
+  isDarkMode,
+  onUploadClick,
+  workspaceRef,
+}) => {
   const theme = useTheme();
   const blocklyDiv = useRef(null);
   const linkRef = useRef(null);
@@ -36,7 +44,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
   const [openCreateDataDialog, setOpenCreateDataDialog] = useState(false);
 
   const [showTutorial, setShowTutorial] = useState(false);
-
+  const [showCheckDataDialog, setShowCheckDataDialog] = useState(false);
 
   // Blockly toolbox definition for Level 1 (Beginner)
   const beginnerToolbox = `
@@ -563,7 +571,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
     }
       workspaceRef.current = Blockly.inject(blocklyDiv.current, {
       toolbox: toolboxXml,
-      // renderer: "zelos",
+      media:"blockly/media/",
       theme: isDarkMode ? darkTheme : lightTheme,
       grid: {
         spacing: 40,
@@ -682,108 +690,187 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
           borderRadius: 4,
           maxHeight: 88,
         }}
-        >
-        <Tooltip title="Upload your CSV, GeoJSON or TIF data." arrow>
-          <Button
-            id="uploadDataButton"
-            variant="contained"
-            onClick={ onUploadClick }
-            sx={{
-              width: 48,
-              height: 48,
-              minWidth: 0,
-              borderRadius: "50%",
-              bgcolor: theme.palette.secondary.main,
-              color: isDarkMode ? "#FFFFFA" : "#000000",
-              "&:hover": {
-                bgcolor: theme.palette.secondary.dark,
-                color: "#fff",
-              },
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              p: 0,
-            }}
-          >
-            <Upload fontSize="medium" />
-          </Button>
-        </Tooltip>
+      >
+        <Box display="flex" alignItems="center" gap={1.5} flexWrap="wrap">
+          <Tooltip title="Upload your CSV, GeoJSON or TIF data." arrow>
+            <Button
+              id="uploadDataButton"
+              variant="contained"
+              onClick={ onUploadClick }
+              sx={{
+                width: 40,
+                height: 40,
+                minWidth: 0,
+                borderRadius: "50%",
+                bgcolor: theme.palette.secondary.main,
+                color: isDarkMode ? "#FFFFFA" : "#000000",
+                "&:hover": {
+                  bgcolor: theme.palette.secondary.dark,
+                  color: "#fff",
+                },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                p: 0,
+              }}
+            >
+              <Upload fontSize="medium" />
+            </Button>
+          </Tooltip>
 
-        <Tooltip title="Create CSV data manually">
-          <Button
-            variant="outlined"
-            onClick={ () => setOpenCreateDataDialog(true) }
-            sx={{ ml: 1,
-              color: isDarkMode ? "#FFFFFF" : "#44A1A0",
-              bgcolor: isDarkMode ? "#4F3C88" : "#FFFFFF",
-             }}
-          >
-            Create Data
-          </Button>
-        </Tooltip>
+          <Tooltip title="Check uploaded data">
+            <Button
+              id="checkDataButton"
+              variant="outlined"
+              size="small"
+              onClick={() => setShowCheckDataDialog(true)}
+              sx={{
+                height: 32,
+                fontSize: "0.75rem",
+                px: 1.5,
+                textTransform: "none"
+              }}
+            >
+              <MdChecklist style={{ marginRight: 4 }} />
+              <Box sx={{ display: { xs: "none", lg: "inline" } }}>Check Uploads</Box>
+            </Button>
+          </Tooltip>
+          <CheckUploadedDataDialog
+            open={showCheckDataDialog}
+            onClose={() => setShowCheckDataDialog(false)}
+          />
 
-        <CreateDataDialog
-          open={ openCreateDataDialog }
-          onClose={ () => setOpenCreateDataDialog(false) }
-        />
+          <Tooltip title="Create CSV data manually">
+            <Button
+              id="createDataButton"
+              variant="outlined"
+              size="small"
+              onClick={() => setOpenCreateDataDialog(true)}
+              sx={{
+                height: 32,
+                fontSize: "0.75rem",
+                px: 1.5,
+                textTransform: "none"
+              }}
+            >
+              <MdCreate style={{ marginRight: 4 }} />
+              <Box sx={{ display: { xs: "none", lg: "inline" } }}>Create Data</Box>
+            </Button>
+          </Tooltip>
+          <CreateDataDialog
+            open={openCreateDataDialog}
+            onClose={() => setOpenCreateDataDialog(false)}
+          />
 
-        <Box id="uploadFileNames" sx={{ ml: 2 }} gap={ 2 } alignItems="center" minWidth={ 0 } width="10%">
+          <Box id="uploadFileNames" sx={{ ml: 2 }} gap={ 2 } alignItems="center" minWidth={ 0 } width="10%">
           { globalThis.files[0] ? `Uploaded file${globalThis.files.length !== 1 ? 's' : ''}: ${globalThis.files.join(', ')}.` : '' }
         </Box>
 
-        <Box display="flex" alignItems="center" gap={ 2 } flex={ 1 } justifyContent="flex-end" minWidth={ 0 }>
-        <Tooltip
-            title={
-              <Box>
-                Beginner: built-in datasets & simple blocks.<br />
-                Advanced: load files, model, visualise spatial data.<br />
-                See tutorials for more information.
-              </Box>
-            }
-            arrow
-            enterDelay={ 0 }
-          >
-          <ToggleButtonGroup
-            exclusive
-            value={ level }
-            onChange={ (e, newLevel) => newLevel && setLevel(newLevel) }
-            sx={{
-              bgcolor: "background.paper",
-              borderRadius: 2,
-              boxShadow: 1,
-            }}
-            id="switchLevelsButton"
-          >
-            <ToggleButton value="level1" sx={{ px: 1.5, py: 1, gap: 1 }}>
-              <FaBookOpen /> Beginner
-            </ToggleButton>
-            <ToggleButton value="level2" sx={{ px: 1.5, py: 1, gap: 1 }}>
-              <FaMapMarkedAlt /> Advanced
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Tooltip>
+          <Box sx={{ display: "inline-flex", alignItems: "center" }}>
+            <Tooltip
+              title={
+                <Box>
+                  <div><strong>Beginner:</strong> simple blocks & built-in data</div>
+                  <div><strong>Advanced:</strong> external files, spatial modeling</div>
+                  <div>Check out the tutorials to get started!</div>
+                </Box>
+              }
+              arrow
+              enterDelay={300}
+              placement="right"
+            >
+              <span>
+                <Select
+                  value={level}
+                  onChange={(e) => setLevel(e.target.value)}
+                  size="small"
+                  sx={{
+                    height: 32,
+                    fontSize: "0.75rem",
+                    px: 0.5,
+                    textTransform: "none",
+                    backgroundColor: level === "level1" ? "#E8F5E9" : "#FFEBEE",
+                    color: level === "level1" ? "#2E7D32" : "#C62828",
+                    minWidth: "auto",
+                    width: "fit-content",
+                    borderColor: "#BDBDBD",
+                    "& .MuiSelect-select": {
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      py: 0,
+                    },
+                    "&:hover, &:focus, &.Mui-focused": {
+                      borderColor: "#BDBDBD",
+                      boxShadow: "none",
+                    },
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#BDBDBD",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#BDBDBD",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#BDBDBD",
+                    },
+                  }}
+                  id="switchLevelsDropdown"
+                  renderValue={() => (
+                    <>
+                      <Box sx={{ display: { xs: "none", sm: "none", md: "none", lg: "inline" }, fontSize: "0.75rem", letterSpacing: 0.5 }}>
+                        Choose Level
+                      </Box>
+                      <Box sx={{ display: { xs: "none", sm: "none", md: "inline", lg: "none" }, fontSize: "0.75rem", letterSpacing: 0.5 }}>
+                        Level
+                      </Box>
+                      <Box sx={{ display: { xs: "inline", sm: "inline", md: "none" } }}>
+                        <MdSpeed />
+                      </Box>
+                    </>
+                  )}
+                >
+                  <MenuItem value="level1" sx={{ fontSize: "0.85rem", color: "#2E7D32" }}>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <FaSchool style={{ marginRight: 6 }} />
+                      <Box sx={{ fontSize: "0.75rem", letterSpacing: 0.5, fontWeight: 500 }}>
+                        Beginner
+                      </Box>
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value="level2" sx={{ fontSize: "0.85rem", color: "#C62828" }}>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <FaUniversity style={{ marginRight: 6 }} />
+                      <Box sx={{ fontSize: "0.75rem", letterSpacing: 0.5, fontWeight: 500 }}>
+                        Advanced
+                      </Box>
+                    </Box>
+                  </MenuItem>
+                </Select>
+              </span>
+            </Tooltip>
+          </Box>
 
-         {/* Help button to start Spockly tour */}
-         <Tooltip title="Start Spockly Tour" arrow>
-          <IconButton
-            onClick={ () => window?.__startSpocklyTour?.() }
-            sx={{ ml: 0, color: "inherit" }}
-          >
-            <FaQuestionCircle />
-          </IconButton>
-        </Tooltip>
+          {/* Help button to start Spockly tour */}
+          <Tooltip title="Start Spockly Tour" arrow>
+            <IconButton
+              onClick={() => window?.__startSpocklyTour?.()}
+              sx={{ color: "inherit" }}
+            >
+              <FaQuestionCircle />
+            </IconButton>
+          </Tooltip>
 
-        <Tooltip title="Show Simple CO₂ Tutorial" arrow>
-          <IconButton
-            onClick={ () => setShowTutorial(prev => !prev) }
-            sx={{ ml: 0, color: showTutorial ? "green" : "inherit" }}
-          >
-            <MdCo2 />
-          </IconButton>
-        </Tooltip>
-
+          <Tooltip title="Show Simple CO₂ Tutorial" arrow>
+            <IconButton
+              id="showTutorialButton"
+              onClick={ () => setShowTutorial((prev) => !prev) }
+              sx={{ color: showTutorial ? "green" : "inherit" }}
+            >
+              <MdCo2 />
+            </IconButton>
+          </Tooltip>
         </Box>
-        </Toolbar>
+      </Toolbar>
 
       {/* Blockly rendering area */}
       <Box
@@ -797,7 +884,9 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
         }}
       />
 
-    { showTutorial && <SimpleTutorialPanel onClose={ () => setShowTutorial(false) } /> }
+      { showTutorial && (
+        <SimpleTutorialPanel onClose={() => setShowTutorial(false)} />
+      ) }
     </Box>
   );
 };

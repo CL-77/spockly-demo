@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && npm run copy-webr",
+    "copy-webr": "cp -r node_modules/@r-wasm/webr/dist/* dist/",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@blockly/field-colour": "^6.0.3",
     "@blockly/block-shareable-procedures": "^5.0.12",
     "@blockly/plugin-typed-variable-modal": "^8.0.12",
     "@emotion/react": "^11.14.0",
@@ -17,7 +19,7 @@
     "@mui/icons-material": "^7.1.0",
     "@mui/material": "^7.1.0",
     "@r-wasm/webr": "^0.2.0",
-    "blockly": "^11.2.2",
+    "blockly": "^12.1.0",
     "framer-motion": "^12.11.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
