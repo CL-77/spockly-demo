@@ -520,3 +520,445 @@ Blockly.Generator.R.forBlock["show_rows"] = function (block, generator) {
   const data = generator.valueToCode(block, "DATA", Blockly.Generator.R.ORDER_ATOMIC) || "data";
   return `head(${data}, ${rows})\n`;
 };
+Blockly.defineBlocksWithJsonArray([
+  // Data Preview Blocks
+  {
+  type: "preview_head_n",
+  message0: "preview first %1 rows of %2",
+  args0: [
+    {
+    type: "field_number",
+    name: "N",
+    value: 5,
+    min: 1
+    },
+    {
+    type: "input_value",
+    name: "DATA",
+    check: ["DataFrame", "Array", "Matrix"]
+    }
+  ],
+  output: ["DataFrame", "Array", "Matrix"], // Keep same type as input
+  colour: "#FF7043",
+  tooltip: "Preview the first N rows of a dataframe or elements of an array/matrix.",
+  helpUrl: "https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/head"
+  },
+  {
+  type: "structure_overview",
+  message0: "get structure of %1",
+  args0: [
+    {
+    type: "input_value",
+    name: "DATA",
+    check: ["DataFrame", "Array", "Matrix", "Number", "String"]
+    }
+  ],
+  output: "String",
+  colour: "#FF7043",
+  tooltip: "Get the structure of an object (dataframe, array, matrix, etc.)",
+  helpUrl: "https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/str"
+  },
+  {
+  type: "data_summary",
+  message0: "get summary of %1",
+  args0: [
+    {
+    type: "input_value",
+    name: "DATA",
+    check: ["DataFrame", "Array", "Matrix", "Number"]
+    }
+  ],
+  output: "String",
+  colour: "#FF7043",
+  tooltip: "Get summary statistics of an object",
+  helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/summary"
+  },
+  
+  // Improved Array Creation Block with Multiple Inputs
+  {
+  type: "create_array_multiple",
+  message0: "create array",
+  mutator: "array_mutator",
+  output: "Array",
+  colour: "#FF7043",
+  tooltip: "Create an array with multiple elements. Click the gear icon to add more elements.",
+  helpUrl: ""
+  },
+  
+  // Simple Vector Creation (keeping the original for backward compatibility)
+  {
+  type: "create_vector",
+  message0: "vector [ %1 ]",
+  args0: [
+    {
+    type: "input_value",
+    name: "ELEMENTS",
+    check: ["Number", "String", "Boolean"]
+    }
+  ],
+  output: "Array",
+  colour: "#FF7043",
+  tooltip: "Create a vector with comma-separated elements",
+  helpUrl: ""
+  },
+  
+  // Number sequence block
+  {
+  type: "create_sequence",
+  message0: "sequence from %1 to %2 by %3",
+  args0: [
+    {
+    type: "input_value",
+    name: "FROM",
+    check: "Number"
+    },
+    {
+    type: "input_value",
+    name: "TO",
+    check: "Number"
+    },
+    {
+    type: "input_value",
+    name: "BY",
+    check: "Number"
+    }
+  ],
+  output: "Array",
+  colour: "#FF7043",
+  tooltip: "Create a sequence of numbers from start to end by step",
+  helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/seq"
+  },
+  
+  // Data Manipulation Blocks
+  {
+  type: "data_shape",
+  message0: "get dimensions of %1",
+  args0: [
+    {
+    type: "input_value",
+    name: "DATA",
+    check: ["DataFrame", "Array", "Matrix"]
+    }
+  ],
+  output: "Array", // Returns array of dimensions
+  colour: "#FF7043",
+  tooltip: "Returns the dimensions of a dataframe, array or matrix",
+  helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/dim"
+  },
+  {
+  type: "get_length",
+  message0: "get length of %1",
+  args0: [
+    {
+    type: "input_value",
+    name: "DATA",
+    check: ["Array", "String"]
+    }
+  ],
+  output: "Number",
+  colour: "#FF7043",
+  tooltip: "Returns the length of an array or string",
+  helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/length"
+  },
+  {
+  type: "sort_array",
+  message0: "sort %1 %2",
+  args0: [
+    {
+    type: "input_value",
+    name: "DATA",
+    check: ["Array", "DataFrame"]
+    },
+    {
+    type: "field_dropdown",
+    name: "ORDER",
+    options: [
+      ["ascending", "FALSE"],
+      ["descending", "TRUE"]
+    ]
+    }
+  ],
+  output: ["Array", "DataFrame"], // Keep same type as input
+  colour: "#FF7043",
+  tooltip: "Sort an array in ascending or descending order",
+  helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/sort"
+  },
+  {
+  type: "combine_arrays",
+  message0: "combine %1 and %2",
+  args0: [
+    {
+    type: "input_value",
+    name: "ARRAY1",
+    check: ["Array", "DataFrame"]
+    },
+    {
+    type: "input_value",
+    name: "ARRAY2",
+    check: ["Array", "DataFrame"]
+    }
+  ],
+  output: ["Array", "DataFrame"], // Keep same type as inputs
+  colour: "#FF7043",
+  tooltip: "Combine two arrays or dataframes",
+  helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/c"
+  },
+  {
+  type: "append_to_array",
+  message0: "append %1 to %2",
+  args0: [
+    {
+    type: "input_value",
+    name: "ELEMENT",
+    check: ["Number", "String", "Array"]
+    },
+    {
+    type: "input_value",
+    name: "ARRAY",
+    check: "Array"
+    }
+  ],
+  output: "Array",
+  colour: "#FF7043",
+  tooltip: "Append an element to an array",
+  helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/append"
+  },
+  {
+  type: "slice_data",
+  message0: "slice %1 from %2 to %3",
+  args0: [
+    {
+    type: "input_value",
+    name: "DATA",
+    check: ["DataFrame", "Array"]
+    },
+    {
+    type: "input_value",
+    name: "START",
+    check: "Number"
+    },
+    {
+    type: "input_value",
+    name: "END",
+    check: "Number"
+    }
+  ],
+  output: ["DataFrame", "Array"], // Keep same type as input
+  colour: "#FF7043",
+  tooltip: "Extract a slice of data between specified indices",
+  helpUrl: ""
+  },
+  {
+  type: "get_element",
+  message0: "get element %1 from %2",
+  args0: [
+    {
+    type: "input_value",
+    name: "INDEX",
+    check: "Number"
+    },
+    {
+    type: "input_value",
+    name: "ARRAY",
+    check: "Array"
+    }
+  ],
+  output: ["Number", "String", "Boolean"], // Element could be any basic type
+  colour: "#FF7043",
+  tooltip: "Get a specific element from an array by index",
+  helpUrl: ""
+  }
+]);
+
+// Mutator for create_array_multiple block
+const arrayMutator = {
+  itemCount_: 2,
+
+  mutationToDom: function() {
+  const container = Blockly.utils.xml.createElement('mutation');
+  container.setAttribute('items', this.itemCount_);
+  return container;
+  },
+
+  domToMutation: function(xmlElement) {
+  const items = parseInt(xmlElement.getAttribute('items'), 10) || 2;
+  this.updateShape_(items);
+  },
+
+  decompose: function(workspace) {
+  const containerBlock = workspace.newBlock('array_container');
+  containerBlock.initSvg();
+  let connection = containerBlock.getInput('STACK').connection;
+  for (let i = 0; i < this.itemCount_; i++) {
+    const itemBlock = workspace.newBlock('array_item');
+    itemBlock.initSvg();
+    connection.connect(itemBlock.previousConnection);
+    connection = itemBlock.nextConnection;
+  }
+  return containerBlock;
+  },
+
+  compose: function(containerBlock) {
+  let itemBlock = containerBlock.getInputTargetBlock('STACK');
+  const connections = [];
+  while (itemBlock && !itemBlock.isInsertionMarker()) {
+    connections.push(itemBlock.valueConnection_);
+    itemBlock = itemBlock.nextConnection &&
+      itemBlock.nextConnection.targetBlock();
+  }
+  for (let i = 0; i < this.itemCount_; i++) {
+    const connection = this.getInput('ADD' + i);
+    if (connection && connection.connection.targetConnection) {
+    connection.connection.targetConnection.getSourceBlock().unplug();
+    }
+  }
+  this.updateShape_(connections.length);
+  for (let i = 0; i < connections.length; i++) {
+    if (connections[i]) {
+    this.getInput('ADD' + i).connection.connect(connections[i]);
+    }
+  }
+  },
+
+  updateShape_: function(itemCount) {
+  if (itemCount < 1) itemCount = 1;
+  
+  // Add new inputs
+  for (let i = 0; i < itemCount; i++) {
+    if (!this.getInput('ADD' + i)) {
+    const input = this.appendValueInput('ADD' + i)
+      .setCheck(['Number', 'String', 'Boolean']);
+    if (i === 0) {
+      input.appendField('items:');
+    }
+    }
+  }
+  
+  // Remove extra inputs
+  for (let i = itemCount; this.getInput('ADD' + i); i++) {
+    this.removeInput('ADD' + i);
+  }
+  
+  this.itemCount_ = itemCount;
+  }
+};
+
+// Define mutator helper blocks
+Blockly.defineBlocksWithJsonArray([
+  {
+  type: 'array_container',
+  message0: 'add items %1 %2',
+  args0: [
+    {
+    type: 'input_dummy'
+    },
+    {
+    type: 'input_statement',
+    name: 'STACK'
+    }
+  ],
+  colour: "#FF7043",
+  tooltip: 'Add, remove, or reorder items in the array.',
+  helpUrl: ''
+  },
+  {
+  type: 'array_item',
+  message0: 'item',
+  previousStatement: null,
+  nextStatement: null,
+  colour: "#FF7043",
+  tooltip: 'Add an item to the array.',
+  helpUrl: ''
+  }
+]);
+
+// Register the mutator
+Blockly.Extensions.registerMutator('array_mutator', arrayMutator, null, ['array_item']);
+
+// --- Generator Functions ---
+
+// Initialize R generator if it doesn't exist
+if (!Blockly.Generator.R) {
+  Blockly.Generator.R = new Blockly.Generator('R');
+  
+  // Define operator precedence for R
+  Blockly.Generator.R.ORDER_ATOMIC = 0;
+  Blockly.Generator.R.ORDER_MEMBER = 1;
+  Blockly.Generator.R.ORDER_FUNCTION_CALL = 2;
+  Blockly.Generator.R.ORDER_NONE = 99;
+}
+
+// Data Preview Generators
+Blockly.Generator.R.forBlock = Blockly.Generator.R.forBlock || {};
+
+
+// Array Creation Generators
+Blockly.Generator.R.forBlock["create_array_multiple"] = function(block, generator) {
+  const elements = [];
+  for (let i = 0; i < block.itemCount_; i++) {
+  // If R_ORDER_NONE is also failing, you could try a literal 99 here temporarily
+  const element = generator.valueToCode(block, 'ADD' + i, Blockly.Generator.R.ORDER_NONE || 99) || '0'; 
+  if (element) {
+    elements.push(element);
+  }
+  }
+  const code = elements.length > 0 ? `c(${elements.join(', ')})` : 'c()';
+  // Directly use the numeric value, or Blockly.Generator.R.ORDER_FUNCTION_CALL
+  return [code, Blockly.Generator.R.ORDER_FUNCTION_CALL || 2]; 
+};
+
+Blockly.Generator.R.forBlock["create_vector"] = function(block, generator) {
+  const elements = generator.valueToCode(block, 'ELEMENTS', Blockly.Generator.R.ORDER_NONE) || '';
+  return [`c(${elements})`, Blockly.Generator.R.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Generator.R.forBlock["create_sequence"] = function(block, generator) {
+  const from = generator.valueToCode(block, 'FROM', Blockly.Generator.R.ORDER_NONE) || '1';
+  const to = generator.valueToCode(block, 'TO', Blockly.Generator.R.ORDER_NONE) || '10';
+  const by = generator.valueToCode(block, 'BY', Blockly.Generator.R.ORDER_NONE) || '1';
+  return [`seq(${from}, ${to}, ${by})`, Blockly.Generator.R.ORDER_FUNCTION_CALL];
+};
+
+// Data Manipulation Generators
+Blockly.Generator.R.forBlock["data_shape"] = function(block, generator) {
+  const data = generator.valueToCode(block, 'DATA', Blockly.Generator.R.ORDER_NONE) || 'NULL';
+  return [`dim(${data})`, Blockly.Generator.R.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Generator.R.forBlock["get_length"] = function(block, generator) {
+  const data = generator.valueToCode(block, 'DATA', Blockly.Generator.R.ORDER_NONE) || 'NULL';
+  return [`length(${data})`, Blockly.Generator.R.ORDER_FUNCTION_CALL];
+};
+
+// FIXED: Changed Array to DATA to match the block definition
+Blockly.Generator.R.forBlock["sort_array"] = function(block, generator) {
+  const data = generator.valueToCode(block, 'DATA', Blockly.Generator.R.ORDER_NONE) || 'NULL';
+  const order = block.getFieldValue('ORDER');
+  return [`sort(${data}, decreasing = ${order})`, Blockly.Generator.R.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Generator.R.forBlock["combine_arrays"] = function(block, generator) {
+  const array1 = generator.valueToCode(block, 'ARRAY1', Blockly.Generator.R.ORDER_NONE) || 'NULL';
+  const array2 = generator.valueToCode(block, 'ARRAY2', Blockly.Generator.R.ORDER_NONE) || 'NULL';
+  return [`c(${array1}, ${array2})`, Blockly.Generator.R.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Generator.R.forBlock["append_to_array"] = function(block, generator) {
+  const element = generator.valueToCode(block, 'ELEMENT', Blockly.Generator.R.ORDER_NONE) || 'NULL';
+  const array = generator.valueToCode(block, 'ARRAY', Blockly.Generator.R.ORDER_NONE) || 'NULL';
+  return [`c(${array}, ${element})`, Blockly.Generator.R.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Generator.R.forBlock["slice_data"] = function(block, generator) {
+  const data = generator.valueToCode(block, 'DATA', Blockly.Generator.R.ORDER_NONE) || 'NULL';
+  const start = generator.valueToCode(block, 'START', Blockly.Generator.R.ORDER_NONE) || '1';
+  const end = generator.valueToCode(block, 'END', Blockly.Generator.R.ORDER_NONE) || 'length(' + data + ')';
+  return [`${data}[${start}:${end}]`, Blockly.Generator.R.ORDER_MEMBER];
+};
+
+Blockly.Generator.R.forBlock["get_element"] = function(block, generator) {
+  const index = generator.valueToCode(block, 'INDEX', Blockly.Generator.R.ORDER_NONE || 99) || '1';
+  const array = generator.valueToCode(block, 'ARRAY', Blockly.Generator.R.ORDER_FUNCTION_CALL || 2) || 'NULL'; 
+  return [`${array}[${index}]`, Blockly.Generator.R.ORDER_MEMBER || 1];
+};
+

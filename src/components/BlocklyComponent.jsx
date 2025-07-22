@@ -71,6 +71,7 @@ const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
   </category>
 
   <category name="Data Inspection" colour="#FF7043">
+  <block type="create_array_multiple"></block>
   	<block type="access_column"></block>
 	<block type="structure_overview"></block>
     <block type="data_summary"></block>
@@ -78,6 +79,10 @@ const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
 	<block type="length_data"></block>
 	<block type="show_tail"></block>
 	<block type="show_rows"></block>
+  <block type="create_sequence"></block>
+  <block type="combine_arrays"></block>
+  <block type="append_to_array"></block>
+  <block type="get_element"></block>
   </category>
 
   <category name="Variables" colour="#7d4561" custom="VARIABLE"></category>
@@ -630,7 +635,16 @@ const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
   </block>
 </category>
 
-  <category name="Geometry" colour="#4DD0E1">
+<category name="Geometry" colour="#4DD0E1">
+    <block type="coord_array_builder"></block>
+    <block type="coord_pair"></block>
+    <block type="rbind_matrix"></block>
+    <block type="create_matrix"></block>
+    <block type="create_list"></block>
+    <block type="list_item"></block>
+    <block type="epsg_code"></block>
+    <block type="st_within"></block>
+    <block type="st_sfc"></block>
     <block type="st_centroid"></block>
     <block type="st_transform"></block>
     <block type="st_buffer"></block>
