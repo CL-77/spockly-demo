@@ -20,7 +20,6 @@ import { Tooltip } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Toolbar } from "@mui/material";
 import { MdChecklist, MdCreate } from "react-icons/md";
-
 import CreateDataDialog from "./CreateDataDialog.jsx";
 import CheckUploadedDataDialog from "./CheckUploadedDataDialog.jsx";
 import CO2Tutorial from "./CO2Tutorial.jsx";
@@ -47,6 +46,21 @@ const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
   const [openCO2Tutorial, setOpenCO2Tutorial] = useState(false);
   const [openCreateDataDialog, setOpenCreateDataDialog] = useState(false);
   const [showCheckDataDialog, setShowCheckDataDialog] = useState(false);
+  const [stepCO2Tutorial, setStepCO2Tutorial] = useState(0);
+
+  // Tutorial Functions
+  const handleOpenCO2Tutorial = () => {
+    setStepCO2Tutorial(0);
+    setOpenCO2Tutorial(true);
+  };
+  const handleCloseCO2Tutorial = () => setOpenCO2Tutorial(false);
+  const nextStepCO2Tutorial = () => setStepCO2Tutorial((prev) => prev + 1);
+  const prevStepCO2Tutorial = () => setStepCO2Tutorial((prev) => prev - 1);
+
+  // Level Selectbox Functions
+  const handleChangeLevel = (event) => {
+    setLevel(event.target.value);
+  };
 
   // Blockly toolbox definition for Level 1 (Beginner)
   const beginnerToolbox = `
