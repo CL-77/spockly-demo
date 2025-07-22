@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import {
   AppBar,
@@ -51,7 +51,7 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
             }}
           >
             <img
-              src={SpocklyLogo}
+              src={ SpocklyLogo }
               alt="Spockly Logo"
               style={{ height: 40, width: 40, marginRight: 10 }}
             />
@@ -61,7 +61,7 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
           </Link>
         </Box>
 
-        <Stack direction="row" spacing={3} alignItems="center">
+        <Stack direction="row" spacing={ 3 } alignItems="center">
           <NavLink
             to="/spocklyR"
             style={({ isActive }) => ({
@@ -83,20 +83,20 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
                 ? theme.palette.primary.light
                 : theme.palette.primary.contrastText,
               fontWeight: "bold",
-            })}
+            }) }
           >
             SPOCKLY Python
           </NavLink>
 
           <NavLink
             to="/tutorials"
-            style={({ isActive }) => ({
+            style={ ({ isActive }) => ({
               textDecoration: "none",
               color: isActive
                 ? theme.palette.primary.light
                 : theme.palette.primary.contrastText,
               fontWeight: "bold",
-            })}
+            }) }
           >
             Tutorials
           </NavLink>
@@ -104,7 +104,7 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
           <Fab
             variant="extended"
             size="small"
-            onClick={toggleTheme}
+            onClick={ toggleTheme }
             sx={{
               width: "90px",
               bgcolor: theme.palette.primary.contrastText,
@@ -117,13 +117,13 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
               fontSize: "0.75rem",
             }}
           >
-            <Box display="flex" alignItems="center" gap={0.5}>
-              {isDarkMode ? (
+            <Box display="flex" alignItems="center" gap={ 0.5 }>
+              { isDarkMode ? (
                 <LightMode fontSize="small" />
               ) : (
                 <Brightness3 fontSize="small" />
-              )}
-              {isDarkMode ? "Light" : "Dark"}
+              ) }
+              { isDarkMode ? "Light" : "Dark" }
             </Box>
           </Fab>
         </Stack>

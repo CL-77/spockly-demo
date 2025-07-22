@@ -1,5 +1,3 @@
-// Footer.jsx
-import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { FaGithub } from "react-icons/fa";
 import { useTheme, Box, Breadcrumbs, Link, Typography } from "@mui/material";
@@ -11,7 +9,7 @@ const Footer = () => {
     <Box
       component="footer"
       sx={{
-        padding: "1rem",
+        padding: "1rem 0",
         textAlign: "center",
         backgroundColor: theme.palette.background.paper,
         color: theme.palette.text.primary,
@@ -34,10 +32,11 @@ const Footer = () => {
           },
         }}
       >
-        <Link component={RouterLink} to="/">Home</Link>
-        <Link component={RouterLink} to="/spockly">SPOCKLY</Link>
-        <Link component={RouterLink} to="/tutorials">Tutorials</Link>
-        <Link component={RouterLink} to="/impressum">Legal Notice</Link>
+        <Link component={ RouterLink } to="/">Home</Link>
+        <Link component={ RouterLink } to="/SPocklyR">SPOCKLY R</Link>
+        <Link component={ RouterLink } to="/SpocklyPython">SPOCKLY Python</Link>
+        <Link component={ RouterLink } to="/tutorials">Tutorials</Link>
+        <Link component={ RouterLink } to="/impressum">Legal Notice</Link>
         <Link
           href="https://github.com/ifgi/spockly-demo/"
           target="_blank"
@@ -57,7 +56,7 @@ const Footer = () => {
       </Breadcrumbs>
 
       <Typography variant="body2" color="text.secondary">
-        © 2025 SPOCKLY — ifgi
+        © 2025 SPOCKLY &mdash; ifgi
       </Typography>
     </Box>
   );

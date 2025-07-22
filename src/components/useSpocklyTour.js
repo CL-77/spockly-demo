@@ -1,7 +1,7 @@
 // Shepherd Tour Setup in SPOCKLY (React)
 // This hook creates a guided tour using Shepherd.js to introduce the UI components to the user
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import Shepherd from 'shepherd.js';
 import 'shepherd.js/dist/css/shepherd.css';
 
@@ -37,7 +37,7 @@ const useSpocklyTour = () => {
     tour.addStep({
       id: 'category',
       title: 'Block Categories',
-      text: 'Choose a category to start your SPOCKLY workflow. Each category contains blocks related to specific tasks such as data loading and -manipulation.',
+      text: 'Choose a category to start your SPOCKLY workflow. Each category contains blocks related to specific tasks such as data loading and manipulation.',
       attachTo: { element: '.blocklyToolbox', on: 'right' },
       buttons: [
         { text: 'Back', action: tour.back },
@@ -117,11 +117,11 @@ const useSpocklyTour = () => {
       ]
     });
 
-    // R code tab view
+    // Python code tab view
     tour.addStep({
       id: 'code-output',
-      title: 'R Code View',
-      text: 'This tab shows the R code generated from your blocks after clicking "Generate R Code". You can also download, copy, or reset the code from here.',
+      title: 'Python Code View',
+      text: 'This tab shows the Python code generated from your blocks after clicking "Generate Python Code". You can also download, copy, or reset the code from here.',
       attachTo: { element: '#codeTab', on: 'top' },
       buttons: [
         { text: 'Back', action: tour.back },
@@ -131,9 +131,9 @@ const useSpocklyTour = () => {
 
 /*     // Generate code button
     tour.addStep({
-      id: 'generate-r-code',
-      title: 'Generate R Code',
-      text: 'Click this button to generate the R code based on your blocks.',
+      id: 'generate-python-code',
+      title: 'Generate Python Code',
+      text: 'Click this button to generate the Python code based on your blocks.',
       attachTo: { element: '#generateCodeButton', on: 'left' },
       buttons: [
         { text: 'Back', action: tour.back },
@@ -143,9 +143,9 @@ const useSpocklyTour = () => {
 
     // Download code button
     tour.addStep({
-      id: 'download-r-code',
-      title: 'Download R Code',
-      text: 'Click here to download the generated R code as R file.',
+      id: 'download-python-code',
+      title: 'Download Python Code',
+      text: 'Click here to download the generated Python code as Python file.',
       attachTo: { element: '#downloadCodeButton', on: 'left' },
       buttons: [
         { text: 'Back', action: tour.back },
@@ -156,8 +156,8 @@ const useSpocklyTour = () => {
     // Copy code button
     tour.addStep({
       id: 'copy-code',
-      title: 'Copy R Code',
-      text: 'Click here to copy the generated R code to your clipboard.',
+      title: 'Copy Python Code',
+      text: 'Click here to copy the generated Python code to your clipboard.',
       attachTo: { element: '#copyCodeButton', on: 'left' },
       buttons: [
         { text: 'Back', action: tour.back },
@@ -168,8 +168,8 @@ const useSpocklyTour = () => {
     // Reset code button
     tour.addStep({
       id: 'reset-code',
-      title: 'Reset R Code',
-      text: 'Click here to reset the generated R code.',
+      title: 'Reset Python Code',
+      text: 'Click here to reset the generated Python code.',
       attachTo: { element: '#resetCodeButton', on: 'left' },
       buttons: [
         { text: 'Back', action: tour.back },
@@ -181,7 +181,7 @@ const useSpocklyTour = () => {
     tour.addStep({
       id: 'full-code-view',
       title: 'Full Code View',
-      text: 'Click here to view the full R code in a separate window.',
+      text: 'Click here to view the full Python code in a separate window.',
       attachTo: { element: '#fullSizeButton', on: 'left' },
       buttons: [
         { text: 'Back', action: tour.back },

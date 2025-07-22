@@ -31,8 +31,6 @@ Make sure you have the following installed:
    git clone https://github.com/mariopesch/spockly-demo.git
    cd spockly-demo
    ```
-
-````
 2. **Install dependencies**:
 
    ```bash
@@ -52,5 +50,3 @@ Make sure you have the following installed:
     - Drag and drop blocks to create your own workflows.
     - Click the "Generate R Code" button to see the generated code.
     - Modify the blocks and see how the generated code changes.
-
-````

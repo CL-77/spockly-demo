@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@blockly/field-colour": "^6.0.3",
+    "@blockly/block-shareable-procedures": "^5.0.12",
+    "@blockly/plugin-typed-variable-modal": "^8.0.12",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^7.1.0",

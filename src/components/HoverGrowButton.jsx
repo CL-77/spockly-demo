@@ -25,9 +25,9 @@ export default function HoverGrowIcon({ icon, text }) {
           transition: "transform 0.3s ease",
         }}
       >
-        {icon}
+        { icon }
       </Box>
-      <Typography variant="body2">{text}</Typography>
+      <Typography variant="body2">{ text }</Typography>
     </Box>
   );
 }

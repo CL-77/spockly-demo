@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
@@ -8,25 +8,45 @@ import { GlobalStyles, ThemeProvider } from "@mui/material";
 import { darkTheme, lightTheme } from "./appTheme";
 import SpocklyR from "./components/SpocklyR";
 import SpocklyPython from "./components/SpocklyPython";
+import Toast from "./components/Toast";
+import './components/init.js';
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
 
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(getCookie('isDarkMode') === 'true');
   const toggleTheme = () => setIsDarkMode((prev) => !prev);
   const theme = isDarkMode ? darkTheme : lightTheme;
 
+  useEffect(() => {
+    document.cookie = `isDarkMode=${isDarkMode}; path=/; max-age=31536000`; //1 year
+  }, [isDarkMode]);
+
+  useEffect(() => {
+    if (window.location.pathname.toLowerCase() === "/spocklypython") {
+      document.getElementById('toast').style.animation = 'slideIn 5s ease-in-out';
+      document.getElementById('toast').style.display = 'block';
+    }
+  }, []);
+
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={ theme }>
       <GlobalStyles
         styles={{
           html: { height: "100%" },
           body: {
             margin: 0,
             padding: 0,
-            height: "100%",
             backgroundColor: theme.palette.background.default,
           },
           "#root": {
             height: "100%",
+            width: "100%",
           },
           h1: { textTransform: "none" },
           h2: { textTransform: "none" },
@@ -43,25 +63,29 @@ function App() {
           },
         }}
       />
+      <Toast />
       <Router>
         <Routes>
           <Route
             path="/"
             element={
-              <Layout isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+              <Layout isDarkMode={ isDarkMode } toggleTheme={ toggleTheme } />
             }
           >
-            <Route index element={<Home isDarkMode={isDarkMode} />} />
+            <Route index element={ <Home isDarkMode={ isDarkMode } /> } />
             <Route
               path="spocklyR"
-              element={<SpocklyR isDarkMode={isDarkMode} />}
+              element={ <SpocklyR isDarkMode={ isDarkMode } />}
             />
-            <Route path="spocklyPython" element={<SpocklyPython />} />
+            <Route
+              path="spocklyPython"
+              element={ <SpocklyPython isDarkMode={ isDarkMode } /> }
+            />
             <Route
               path="tutorials"
-              element={<Tutorials isDarkMode={isDarkMode} />}
+              element={ <Tutorials isDarkMode={ isDarkMode } /> }
             />
-            <Route path="impressum" element={<Impressum />} />
+            <Route path="impressum" element={ <Impressum /> } />
           </Route>
         </Routes>
       </Router>

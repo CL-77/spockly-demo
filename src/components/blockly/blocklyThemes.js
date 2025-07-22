@@ -28,8 +28,7 @@ export const lightTheme = Blockly.Theme.defineTheme('lightTheme', {
 export const darkTheme = Blockly.Theme.defineTheme('darkTheme', {
   base: Blockly.Themes.Classic,
   fontStyle: {
-   'weight': 'bold',
-   'size': 12,
+    'size': 12,
   },
   blockStyles: {
     logic_blocks: { colourPrimary: "#81c784" },

@@ -12,7 +12,7 @@ const Layout = ({ isDarkMode, toggleTheme }) => {
         minHeight: "100vh",
       }}
     >
-      <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+      <Navbar isDarkMode={ isDarkMode } toggleTheme={ toggleTheme } />
       <main style={{ flex: 1 }}>
         <Outlet />
       </main>
