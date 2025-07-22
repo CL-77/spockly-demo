@@ -11,7 +11,7 @@ sys.stdout = _stdout
   const captureOutput = `
 _output = _stdout.getvalue()
 `;
-
+//
   const script = `${installAndImportCode ? installAndImportCode + '\n' : ''}\n${code}\n${captureOutput}\n_output`;
   console.log("%cThis code is being compiled:\n", "font-size: 2em; color: violet", "\n" + script);
 
