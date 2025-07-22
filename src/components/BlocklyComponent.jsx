@@ -10,21 +10,16 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel,
   Stack,
 } from "@mui/material";
 import { lightTheme, darkTheme } from "./blockly/blocklyThemes";
 import {
-  AddCircle,
-  Co2,
   Co2Outlined,
   QuestionMark,
   Upload,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { IconButton } from "@mui/material";
-import { FaSchool, FaUniversity, FaQuestionCircle } from "react-icons/fa";
-import { MdSpeed } from "react-icons/md";
 import { Toolbar } from "@mui/material";
 import { MdChecklist, MdCreate } from "react-icons/md";
 
@@ -906,7 +901,6 @@ const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
               sx={{
                 width: 40,
                 height: 40,
-                color: "inherit",
                 bgcolor: theme.palette.primary.main,
                 color: theme.palette.primary.contrastText,
                 "&:hover": {
@@ -925,7 +919,6 @@ const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
               sx={{
                 width: 40,
                 height: 40,
-                color: openCO2Tutorial ? "green" : "inherit",
                 bgcolor: theme.palette.primary.main,
                 color: theme.palette.primary.contrastText,
                 "&:hover": {
