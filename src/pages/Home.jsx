@@ -268,7 +268,11 @@ const Home = ({ isDarkMode }) => {
               }}
             >
               <Box display="flex" alignItems="center" gap={0.5}>
-                <Rocket fontSize="small" />
+                <motion.img
+                  src={ RLogo }
+                  alt="R Logo"
+                  style={{ width: "20px", marginBottom: "0" }}
+                />
                 <Typography sx={{ fontWeight: "bold" }}>
                   Start SPOCKLY R Editor
                 </Typography>

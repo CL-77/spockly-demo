@@ -1,6 +1,6 @@
 import { useEffect, useRef, useMemo, useState } from "react";
 import * as Blockly from "blockly";
-import "./blockly/customBlocks";
+import "./blockly/customBlocksPython.jsx";
 import {
   Box,
   useTheme,
@@ -10,7 +10,7 @@ import {
   FormControl,
   Stack,
 } from "@mui/material";
-import { lightTheme, darkTheme } from "./blockly/blocklyThemes";
+import { lightTheme, darkTheme } from "./blockly/blocklyThemes.js";
 import {
   Co2Outlined,
   QuestionMark,
@@ -24,8 +24,8 @@ import CreateDataDialog from "./CreateDataDialog.jsx";
 import CheckUploadedDataDialog from "./CheckUploadedDataDialog.jsx";
 import CO2Tutorial from "./CO2Tutorial.jsx";
 import { pythonGenerator } from "blockly/python";
-import { english } from "../locales/english";
-import { german } from "../locales/german";
+import { english } from "../locales/english.js";
+import { german } from "../locales/german.js";
 import * as De from "blockly/msg/de";
 import * as En from "blockly/msg/en"
 
@@ -137,7 +137,7 @@ const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
             </block>
           </category>
 
-          <category name="${Blockly.Msg.Categories["STATISTICS"]}" colour="#05a219"">
+          <category name="${Blockly.Msg.Categories["STATISTICS"]}" colour="#05a219">
             <block type="mean"></block>
             <block type="median"></block>
             <block type="std"></block>
@@ -381,7 +381,7 @@ const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
             </block>
           </category>
 
-          <category name="${Blockly.Msg.Categories["STATISTICS"]}" colour="#05a219"">
+          <category name="${Blockly.Msg.Categories["STATISTICS"]}" colour="#05a219">
             <block type="mean"></block>
             <block type="median"></block>
             <block type="std"></block>

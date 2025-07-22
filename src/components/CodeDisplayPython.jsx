@@ -19,7 +19,7 @@ import {
   import * as Blockly from "blockly/core";
   import { useState } from "react";
   import FullCodeViewDialog from "./FullCodeViewDialog";
-  import DownloadCodeDialog from "./DownloadCodeDialog";
+  import DownloadCodeDialog from "./DownloadCodeDialogPython";
   import MiniPackageLoadingBar from "./MiniPackageLoadingBar";
   
   // const CODE_DISPLAY_SIZE = 550;

@@ -1,16 +1,16 @@
 import { useEffect, useState, useRef } from "react";
-import BlocklyComponent from "./BlocklyComponent";
-import CodeDisplay from "./CodeDisplay";
+import BlocklyComponent from "./BlocklyComponentPython";
+import CodeDisplay from "./CodeDisplayPython";
 import { Card, Box, Grid, Tab, Tabs, Tooltip } from "@mui/material";
 import { darkTheme, lightTheme } from "../appTheme";
-import FileUploadManager from "./FileUploadManager";
+import FileUploadManager from "./FileUploadManagerPython";
 import CodeOutput from "./CodeOutput"
 import { MdOutlineOutput } from "react-icons/md";
 import { FaCode } from "react-icons/fa6";
 import main from "./init";
 import useSpocklyTour from "./useSpocklyTour";
 // import MiniPackageLoadingBar from "./MiniPackageLoadingBar";
-import BlockExplantions from "./BlockExplanations";
+import BlockExplantions from "./BlockExplanationsPython";
 import { FaHandsHelping } from "react-icons/fa";
 
 function TabPanel({ children, value, index }) {

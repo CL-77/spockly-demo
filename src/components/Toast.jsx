@@ -19,7 +19,7 @@ export default function Toast() {
         display: "none",
       }}
     >
-      <p>Loading libraries...</p>
+      <p>Loading Python libraries...</p>
     </div>
   );
 }

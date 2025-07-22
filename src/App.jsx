@@ -28,7 +28,7 @@ function App() {
   }, [isDarkMode]);
 
   useEffect(() => {
-    if (window.location.pathname.toLowerCase() === "/pythonspockly") {
+    if (window.location.pathname.toLowerCase() === "/spocklypython") {
       document.getElementById('toast').style.animation = 'slideIn 5s ease-in-out';
       document.getElementById('toast').style.display = 'block';
     }
