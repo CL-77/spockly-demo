@@ -1,7 +1,6 @@
 import {
 	Alert,
 	Box,
-	Fab,
 	IconButton,
 	Snackbar,
 	Stack,
@@ -18,9 +17,8 @@ import {
   } from "@mui/icons-material";
   import * as Blockly from "blockly/core";
   import { useState } from "react";
-  import FullCodeViewDialog from "./FullCodeViewDialog";
+  import FullCodeViewDialog from "./FullCodeViewDialogPython";
   import DownloadCodeDialog from "./DownloadCodeDialogPython";
-  import MiniPackageLoadingBar from "./MiniPackageLoadingBar";
   
   // const CODE_DISPLAY_SIZE = 550;
   

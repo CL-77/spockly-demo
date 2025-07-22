@@ -9,7 +9,7 @@ import { MdOutlineOutput } from "react-icons/md";
 import { FaCode } from "react-icons/fa6";
 import useSpocklyTour from "./useSpocklyTour";
 import MiniPackageLoadingBar from "./MiniPackageLoadingBar";
-import BlockExplantions from "./BlockExplanations";
+import BlockExplanations from "./BlockExplanations";
 import { FaHandsHelping } from "react-icons/fa";
 
 function TabPanel({ children, value, index }) {
@@ -152,7 +152,7 @@ export default function SpocklyR({ isDarkMode }) {
             </Tabs>
             <TabPanel value={value} index={0}>
               <Box sx={{ height: "60%", p: 1 }}>
-                <BlockExplantions
+                <BlockExplanations
                   isDarkMode={isDarkMode}
                   workspaceRef={workspaceRef}
                 />

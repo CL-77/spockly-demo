@@ -1,8 +1,7 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Box, Typography, Fab } from "@mui/material";
-import { Rocket, ImportContacts, Code } from "@mui/icons-material";
+import { ImportContacts, Code } from "@mui/icons-material";
 import { FaGlobe, FaCube, FaCodeBranch, FaCompass } from "react-icons/fa";
 import logo from "../assets/spockly_logo.png";
 import PythonLogo from "../assets/python-logo-only.svg";

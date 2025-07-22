@@ -21,7 +21,7 @@ import { IconButton } from "@mui/material";
 import { Toolbar } from "@mui/material";
 import { MdChecklist, MdCreate } from "react-icons/md";
 import CreateDataDialog from "./CreateDataDialog.jsx";
-import CheckUploadedDataDialog from "./CheckUploadedDataDialog.jsx";
+import CheckUploadedDataDialog from "./CheckUploadedDataDialogPython.jsx";
 import CO2Tutorial from "./CO2Tutorial.jsx";
 import { pythonGenerator } from "blockly/python";
 import { english } from "../locales/english.js";

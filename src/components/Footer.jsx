@@ -33,8 +33,8 @@ const Footer = () => {
         }}
       >
         <Link component={ RouterLink } to="/">Home</Link>
-        <Link component={ RouterLink } to="/RSPockly">R SPOCKLY</Link>
-        <Link component={ RouterLink } to="/PythonSPOCKLY">Python SPOCKLY</Link>
+        <Link component={ RouterLink } to="/SPocklyR">SPOCKLY R</Link>
+        <Link component={ RouterLink } to="/SpocklyPython">SPOCKLY Python</Link>
         <Link component={ RouterLink } to="/tutorials">Tutorials</Link>
         <Link component={ RouterLink } to="/impressum">Legal Notice</Link>
         <Link

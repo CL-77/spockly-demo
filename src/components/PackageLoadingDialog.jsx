@@ -12,7 +12,7 @@ const PackageLoadingDialog = ({ open, currentPackage, onClose }) => {
   return (
     <Dialog open={ open } fullWidth maxWidth="sm">
       <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        Loading Python packages...
+        Loading R packages...
         <IconButton onClick={ onClose } size="small">
           <CloseIcon />
         </IconButton>

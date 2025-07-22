@@ -35,7 +35,7 @@ const FullCodeViewDialog = ({
         >
           <Typography fontWeight="bold">Full Code View</Typography>
           <Stack direction="row">
-            <Tooltip title="Download Code as Python file">
+            <Tooltip title="Download Code as R file">
               <IconButton onClick={ handleOpenDownloadDialog }>
                 <Download />
               </IconButton>

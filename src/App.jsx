@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
@@ -6,8 +6,8 @@ import Tutorials from "./pages/tutorials/Tutorials";
 import Impressum from "./pages/Impressum";
 import { GlobalStyles, ThemeProvider } from "@mui/material";
 import { darkTheme, lightTheme } from "./appTheme";
+import SpocklyR from "./components/SpocklyR";
 import SpocklyPython from "./components/SpocklyPython";
-import PythonSpockly from "./components/PythonSpockly";
 import Toast from "./components/Toast";
 import './components/init.js';
 
@@ -75,11 +75,11 @@ function App() {
             <Route index element={ <Home isDarkMode={ isDarkMode } /> } />
             <Route
               path="spocklyR"
-              element={ <SpocklyPython isDarkMode={ isDarkMode } />}
+              element={ <SpocklyR isDarkMode={ isDarkMode } />}
             />
             <Route
               path="spocklyPython"
-              element={ <PythonSpockly isDarkMode={ isDarkMode } /> }
+              element={ <SpocklyPython isDarkMode={ isDarkMode } /> }
             />
             <Route
               path="tutorials"
