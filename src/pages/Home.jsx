@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Box, Typography, Fab } from "@mui/material";
-import { Rocket, ImportContacts } from "@mui/icons-material";
+import { Rocket, ImportContacts, Code } from "@mui/icons-material";
 import { FaGlobe, FaCube, FaCodeBranch, FaCompass } from "react-icons/fa";
 import logo from "../assets/spockly_logo.png";
 import { useTheme } from "@emotion/react";
@@ -190,6 +190,7 @@ const Home = ({ isDarkMode }) => {
               text="Blockly Interface"
             />
             <HoverGrowButton icon={<FaCodeBranch size={32} />} text="Using R" />
+            <HoverGrowButton icon={<Code size={32} />} text="Using Python" />
           </Box>
         </Box>
       </motion.section>
@@ -253,7 +254,7 @@ const Home = ({ isDarkMode }) => {
           </Box>
         </motion.div>
         <Box sx={buttonWrapperStyle(theme, isDarkMode)}>
-          <Link to="/SPOCKLY">
+          <Link to="/spocklyR">
             <Fab
               variant="extended"
               sx={{
@@ -267,7 +268,26 @@ const Home = ({ isDarkMode }) => {
               <Box display="flex" alignItems="center" gap={0.5}>
                 <Rocket fontSize="small" />
                 <Typography sx={{ fontWeight: "bold" }}>
-                  Start SPOCKLY Editor
+                  Start SPOCKLY R Editor
+                </Typography>
+              </Box>
+            </Fab>
+          </Link>
+          <Link to="/spocklyPython">
+            <Fab
+              variant="extended"
+              sx={{
+                boxShadow: "none",
+                "&:hover": {
+                  bgcolor: theme.palette.secondary.main,
+                  color: isDarkMode ? "#FFFFFA" : "#000000",
+                },
+              }}
+            >
+              <Box display="flex" alignItems="center" gap={0.5}>
+                <Rocket fontSize="small" />
+                <Typography sx={{ fontWeight: "bold" }}>
+                  Start SPOCKLY Python Editor
                 </Typography>
               </Box>
             </Fab>

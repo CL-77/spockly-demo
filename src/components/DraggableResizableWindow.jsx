@@ -1,14 +1,13 @@
-import { Clear, ClearAll } from "@mui/icons-material";
+import { Clear } from "@mui/icons-material";
 import { Button, Typography, useTheme } from "@mui/material";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Draggable from "react-draggable";
 
 const DraggableResizableWindow = ({ open, onClose, title, children }) => {
   const theme = useTheme();
   const nodeRef = useRef(null);
   const [size, setSize] = useState({ width: "80vh", height: "90vh" });
-
-  if (!open) return null;
+  const [position, setPosition] = useState({ top: 0, left: 0 });
 
   const handleResize = (e) => {
     setSize({
@@ -17,14 +16,34 @@ const DraggableResizableWindow = ({ open, onClose, title, children }) => {
     });
   };
 
+  useEffect(() => {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const numericWidth =
+      typeof size.width === "string" && size.width.endsWith("vh")
+        ? (parseFloat(size.width) / 100) * screenHeight
+        : size.width;
+    const numericHeight =
+      typeof size.height === "string" && size.height.endsWith("vh")
+        ? (parseFloat(size.height) / 100) * screenHeight
+        : size.height;
+
+    setPosition({
+      left: (screenWidth - numericWidth) / 2,
+      top: (screenHeight - numericHeight) / 2,
+    });
+  }, []);
+
+  if (!open) return null;
+
   return (
     <Draggable nodeRef={nodeRef} handle=".handle" cancel={".content"} sx={{}}>
       <div
         ref={nodeRef}
         style={{
           position: "fixed",
-          top: 100,
-          left: 100,
+          top: position.top,
+          left: position.left,
           width: size.width,
           height: size.height,
           background: theme.palette.background.paper,
@@ -32,7 +51,7 @@ const DraggableResizableWindow = ({ open, onClose, title, children }) => {
           resize: "both",
           overflow: "auto",
           zIndex: 1300,
-          borderRadius: 8,
+          borderRadius: 10,
           display: "flex",
           flexDirection: "column",
         }}
@@ -59,8 +78,6 @@ const DraggableResizableWindow = ({ open, onClose, title, children }) => {
           <Button
             onClick={onClose}
             style={{
-              background: "transparent",
-              border: "none",
               color: "white",
               fontSize: 16,
               cursor: "pointer",

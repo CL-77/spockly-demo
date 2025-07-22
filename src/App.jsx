@@ -6,7 +6,8 @@ import Tutorials from "./pages/tutorials/Tutorials";
 import Impressum from "./pages/Impressum";
 import { GlobalStyles, ThemeProvider } from "@mui/material";
 import { darkTheme, lightTheme } from "./appTheme";
-import SPOCKLY from "./components/Spockly";
+import SpocklyR from "./components/SpocklyR";
+import SpocklyPython from "./components/SpocklyPython";
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -52,10 +53,14 @@ function App() {
           >
             <Route index element={<Home isDarkMode={isDarkMode} />} />
             <Route
-              path="spockly"
-              element={<SPOCKLY isDarkMode={isDarkMode} />}
+              path="spocklyR"
+              element={<SpocklyR isDarkMode={isDarkMode} />}
             />
-            <Route path="tutorials" element={<Tutorials isDarkMode={isDarkMode} />} />
+            <Route path="spocklyPython" element={<SpocklyPython />} />
+            <Route
+              path="tutorials"
+              element={<Tutorials isDarkMode={isDarkMode} />}
+            />
             <Route path="impressum" element={<Impressum />} />
           </Route>
         </Routes>

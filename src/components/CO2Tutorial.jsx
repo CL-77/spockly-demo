@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { Box, Button, Link, Paper, Stack, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Link,
+  Paper,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+  useTheme,
+} from "@mui/material";
 import Draggable from "react-draggable";
 import ReactMarkdown from "react-markdown";
 import co2Tutorial from "../data/co2Tutorial";
@@ -35,6 +44,22 @@ const CO2Tutorial = ({ open, onClose, step, nextStep, prevStep }) => {
         title={tutorialData[language][step].title}
       >
         <Box sx={{ px: 1 }}>
+          <Stack
+            direction="row-reverse"
+            sx={{
+              paddingTop: "1vh",
+              justifyContent: "space-between",
+            }}
+          >
+            <ToggleButtonGroup
+              value={language}
+              exclusive
+              onChange={handleChangeLanguage}
+            >
+              <ToggleButton value="de">DE</ToggleButton>
+              <ToggleButton value="en">EN</ToggleButton>
+            </ToggleButtonGroup>
+          </Stack>
           <ReactMarkdown
             components={{
               a: ({ node, ...props }) => (
@@ -47,7 +72,7 @@ const CO2Tutorial = ({ open, onClose, step, nextStep, prevStep }) => {
           <Stack
             direction="row-reverse"
             sx={{
-              py:"1vh",
+              py: "2vh",
               justifyContent: "space-between",
             }}
           >
