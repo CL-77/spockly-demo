@@ -1,10 +1,4 @@
-import { useState, useRef, useEffect } from "react";
-import { Card, Box, Typography, Button, IconButton } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
-import ReactMarkdown from 'react-markdown';
-import { Link as MuiLink } from '@mui/material';
-
-const tutorialSteps = {
+const co2Tutorial = {
   de: [
     {
       title: "Willkommen im SPOCKLY-Tutorial",
@@ -18,7 +12,7 @@ const tutorialSteps = {
 
 📏 Du kannst es außerdem in der Ecke unten rechts größer oder kleiner ziehen – am besten platzierst du es so, dass du daneben mitarbeiten kannst.
 
-Viel Spaß beim Ausprobieren!`
+Viel Spaß beim Ausprobieren!`,
     },
     {
       title: "So funktioniert SPOCKLY",
@@ -60,7 +54,7 @@ SPOCKLY erzeugt automatisch R-Code aus deinen Blöcken – du brauchst ihn nicht
 
 ---
 
-ℹ️ SPOCKLY basiert auf [**Blockly**](https://developers.google.com/blockly), einer Baustein-Technik von Google.`
+ℹ️ SPOCKLY basiert auf [**Blockly**](https://developers.google.com/blockly), einer Baustein-Technik von Google.`,
     },
     {
       title: "Einführung",
@@ -92,7 +86,7 @@ Mit Hilfe von Spockly-Blöcken wirst du lernen:
 ✅ wie man die Daten lädt,  
 ✅ wie man sie anschaut und versteht,  
 ✅ und wie man sie grafisch darstellt.
-`
+`,
     },
     {
       title: "1. Daten ansehen",
@@ -107,7 +101,7 @@ Eine CSV-Datei ist wie eine **Tabelle**:
 🔍 **Fragen zur Reflexion**:
 - Welche Spalten siehst du?
 - Was bedeuten die Spaltennamen?
-- Welche Informationen kannst du direkt erkennen?`
+- Welche Informationen kannst du direkt erkennen?`,
     },
     {
       title: "2. CSV-Datei laden",
@@ -158,7 +152,7 @@ In unserem Fall nennen wir die Variable **co2**.
 - Wie du Daten lädst und in Variablen speicherst  
 - Wie du Blöcke miteinander kombinierst  
 - Warum Variablen praktisch sind, um immer wieder auf Daten zuzugreifen
-`
+`,
     },
     {
       title: "3. Vorschau anzeigen",
@@ -222,7 +216,7 @@ In unserem Fall nennen wir die Variable **co2**.
 - Wie du dir schnell einen Überblick über einen Datensatz verschaffst  
 - Was typische statistische Kennzahlen bedeuten  
 - Wie du Variablen und Blöcke kombinierst, um Daten zu untersuchen
-`
+`,
     },
     {
       title: "4. Visualisieren",
@@ -297,7 +291,7 @@ In unserem Fall nennen wir die Variable **co2**.
 - Wie du gezielt Spalten aus Datensätzen auswählst  
 - Wie du Variablen erstellst, um Daten weiterzuverwenden  
 - Wie du einfache Diagramme erstellst, um Trends sichtbar zu machen
-`
+`,
     },
     {
       title: "5. Plot exportieren",
@@ -311,7 +305,7 @@ Du kannst auswählen, ob du ihn als **Bild** (.png) oder **.pdf** abspeichern m�
 📌 So kannst du deine Ergebnisse teilen oder dokumentieren.
 
 --- 
-*Plot ist der Begriff, der für eine grafische Darstellung von Daten steht – also z. B. ein Liniendiagramm, Balkendiagramm oder Punktdiagramm. `
+*Plot ist der Begriff, der für eine grafische Darstellung von Daten steht – also z. B. ein Liniendiagramm, Balkendiagramm oder Punktdiagramm. `,
     },
   ],
   en: [
@@ -325,7 +319,7 @@ Du kannst auswählen, ob du ihn als **Bild** (.png) oder **.pdf** abspeichern m�
 
 📏 You can also resize it in the bottom right corner – ideally place it so you can work alongside it.
 
-Have fun exploring!`
+Have fun exploring!`,
     },
     {
       title: "How SPOCKLY works",
@@ -367,7 +361,7 @@ SPOCKLY automatically generates R code from your blocks – you don’t need to 
 
 ---
 
-ℹ️ SPOCKLY is based on [**Blockly**](https://developers.google.com/blockly), a block-based technique from Google.`
+ℹ️ SPOCKLY is based on [**Blockly**](https://developers.google.com/blockly), a block-based technique from Google.`,
     },
     {
       title: "Introduction",
@@ -399,7 +393,7 @@ With the help of Spockly blocks you will learn:
 ✅ how to load the data,  
 ✅ how to view and understand it,  
 ✅ and how to visualize it.
-`
+`,
     },
     {
       title: "1. View the data",
@@ -414,7 +408,7 @@ A CSV file is like a **table**:
 🔍 **Reflection questions:**
 - Which columns do you see?
 - What do the column names mean?
-- What information can you recognize directly?`
+- What information can you recognize directly?`,
     },
     {
       title: "2. Load CSV file",
@@ -465,7 +459,7 @@ In our case, we’ll call the variable **co2**.
 - How to load data and store it in variables  
 - How to combine blocks  
 - Why variables are practical for accessing data repeatedly
-`
+`,
     },
     {
       title: "3. Show preview",
@@ -529,7 +523,7 @@ In our case, we’ll call the variable **co2**.
 - How to quickly get an overview of a dataset  
 - What typical statistical measures mean  
 - How to combine variables and blocks to explore data
-`
+`,
     },
     {
       title: "4. Visualize",
@@ -604,7 +598,7 @@ In our case, we’ll call the variable **co2**.
 - How to select columns from datasets  
 - How to create variables to reuse data  
 - How to create simple charts to make trends visible
-`
+`,
     },
     {
       title: "5. Export plot",
@@ -618,164 +612,8 @@ You can choose to save it as an **image** (.png) or **.pdf**.
 📌 This way you can share or document your results.
 
 --- 
-*Plot is the term for a graphical representation of data – e.g. a line chart, bar chart, or scatter plot. `
+*Plot is the term for a graphical representation of data – e.g. a line chart, bar chart, or scatter plot. `,
     },
-  ]
+  ],
 };
-
-const useDraggable = () => {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-
-    let offsetX = 0;
-    let offsetY = 0;
-    let isDown = false;
-
-    const onMouseDown = (e) => {
-      const rect = node.getBoundingClientRect();
-      offsetX = e.clientX - rect.left;
-      offsetY = e.clientY - rect.top;
-      isDown = true;
-      document.addEventListener("mousemove", onMouseMove);
-      document.addEventListener("mouseup", onMouseUp);
-    };
-
-    const onMouseMove = (e) => {
-      if (!isDown) return;
-      node.style.left = `${e.clientX - offsetX}px`;
-      node.style.top = `${e.clientY - offsetY}px`;
-    };
-
-    const onMouseUp = () => {
-      isDown = false;
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", onMouseUp);
-    };
-
-    const header = node.querySelector(".tutorial-header");
-    header?.addEventListener("mousedown", onMouseDown);
-
-    return () => {
-      header?.removeEventListener("mousedown", onMouseDown);
-    };
-  }, []);
-
-  return ref;
-};
-
-
-const SimpleTutorialPanel = ({ onClose }) => {
-  const [stepIndex, setStepIndex] = useState(0);
-  const [lang, setLang] = useState("de");
-  const steps = tutorialSteps[lang];
-  const step = steps[stepIndex];
-  const dragRef = useDraggable();
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "ArrowRight") {
-        setStepIndex(i => Math.min(steps.length - 1, i + 1));
-      } else if (e.key === "ArrowLeft") {
-        setStepIndex(i => Math.max(0, i - 1));
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [steps.length]);
-
-  return (
-    <Box
-      ref={dragRef}
-      sx={{
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        width: 700,
-        maxHeight: "80vh",
-        minWidth: 360,
-        minHeight: 300,
-        resize: "both",
-        overflow: "auto",
-        zIndex: 1000,
-        borderRadius: 2,
-        boxShadow: 3,
-        backgroundColor: "white",
-        display: "flex",
-        flexDirection: "column",
-        cursor: "grab",
-        border: "1px solid #ddd",
-        p: 1,
-        fontSize: "0.8rem",
-      }}
-    >
-      <Card sx={{ boxShadow: "none", flexGrow: 1, display: "flex", flexDirection: "column", backgroundColor: "white"}}>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          mb={ 1 }
-          className="tutorial-header"
-          sx={{ cursor: "move" }}
-        >
-          <Box display="flex" alignItems="center">
-            <Typography variant="subtitle1" fontWeight="bold">{ step.title }</Typography>
-          </Box>
-          <Box>
-            <Button size="small" onClick={ () => setLang(lang === "de" ? "en" : "de") }>{ lang === "de" ? "EN" : "DE" }</Button>
-            <IconButton onClick={ onClose } size="small">
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        </Box>
-
-        <Box sx={{ flexGrow: 1, overflowY: 'auto', mb: 1 }}>
-          <ReactMarkdown
-            components={{
-              a: ({ node, ...props }) => (
-                <MuiLink {...props} target="_blank" rel="noopener noreferrer" />
-              )
-            }}
-          >
-            { step.content }
-          </ReactMarkdown>
-        </Box>
-
-        <Box display="flex" justifyContent="space-between">
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={ () => setStepIndex(i => Math.max(0, i - 1)) }
-            disabled={ stepIndex === 0 }
-          >
-            { lang === "de" ? "Zurück" : "Back" }
-          </Button>
-
-          { stepIndex === steps.length - 1 ? (
-            <Button
-              variant="contained"
-              color="success"
-              size="small"
-              onClick={ onClose }
-            >
-              { lang === "de" ? "Fertig" : "Finish" }
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              size="small"
-              onClick={ () => setStepIndex(i => Math.min(steps.length - 1, i + 1)) }
-            >
-              { lang === "de" ? "Weiter" : "Next" }
-            </Button>
-          ) }
-        </Box>
-      </Card>
-    </Box>
-  );
-};
-
-export default SimpleTutorialPanel;
+export default co2Tutorial;

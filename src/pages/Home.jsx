@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Box, Typography, Fab } from "@mui/material";
-import { Rocket, ImportContacts } from "@mui/icons-material";
+import { Rocket, ImportContacts, Code } from "@mui/icons-material";
 import { FaGlobe, FaCube, FaCodeBranch, FaCompass } from "react-icons/fa";
 import logo from "../assets/spockly_logo.png";
 import PythonLogo from "../assets/python-logo-only.svg";
@@ -192,6 +192,7 @@ const Home = ({ isDarkMode }) => {
               text="Blockly Interface"
             />
             <HoverGrowButton icon={ <FaCodeBranch size={ 32 } /> } text="Using R or Python" />
+            <HoverGrowButton icon={ <Code size={ 32 } /> } text="Using Python" />
           </Box>
         </Box>
       </motion.section>
@@ -254,8 +255,8 @@ const Home = ({ isDarkMode }) => {
             </Typography>
           </Box>
         </motion.div>
-        <Box sx={ buttonWrapperStyle(theme, isDarkMode) }>
-          <Link to="/RSPOCKLY">
+        <Box sx={buttonWrapperStyle(theme, isDarkMode)}>
+          <Link to="/spocklyR">
             <Fab
               variant="extended"
               sx={{
@@ -267,18 +268,14 @@ const Home = ({ isDarkMode }) => {
               }}
             >
               <Box display="flex" alignItems="center" gap={0.5}>
-                <motion.img
-                  src={ RLogo }
-                  alt="R Logo"
-                  style={{ width: "20px", marginBottom: "0" }}
-                />
+                <Rocket fontSize="small" />
                 <Typography sx={{ fontWeight: "bold" }}>
-                  Start R SPOCKLY Editor
+                  Start SPOCKLY R Editor
                 </Typography>
               </Box>
             </Fab>
           </Link>
-          <Link to="/PythonSPOCKLY">
+          <Link to="/spocklyPython">
             <Fab
               variant="extended"
               sx={{
@@ -296,7 +293,7 @@ const Home = ({ isDarkMode }) => {
                   style={{ width: "20px", marginBottom: "0" }}
                 />
                 <Typography sx={{ fontWeight: "bold" }}>
-                  Start Python SPOCKLY Editor
+                  Start SPOCKLY Python Editor
                 </Typography>
               </Box>
             </Fab>

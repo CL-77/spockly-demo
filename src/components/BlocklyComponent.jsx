@@ -1,20 +1,29 @@
 import { useEffect, useRef, useMemo, useState } from "react";
 import * as Blockly from "blockly";
 import "./blockly/customBlocks";
-import { Box, useTheme, Button, Select, MenuItem } from "@mui/material";
+import {
+  Box,
+  useTheme,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  Stack,
+} from "@mui/material";
 import { lightTheme, darkTheme } from "./blockly/blocklyThemes";
-import { Upload } from "@mui/icons-material";
+import {
+  Co2Outlined,
+  QuestionMark,
+  Upload,
+} from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
-import { ToggleButton, ToggleButtonGroup, IconButton } from "@mui/material";
-import { FaSchool, FaUniversity, FaQuestionCircle, FaGamepad } from "react-icons/fa";
-import { MdCo2 } from "react-icons/md";
-import { MdSpeed } from "react-icons/md";
+import { IconButton } from "@mui/material";
 import { Toolbar } from "@mui/material";
 import { MdChecklist, MdCreate } from "react-icons/md";
 
 import CreateDataDialog from "./CreateDataDialog.jsx";
 import CheckUploadedDataDialog from "./CheckUploadedDataDialog.jsx";
-import SimpleTutorialPanel from "./SimpleTutorialPanel.jsx";
+import CO2Tutorial from "./CO2Tutorial.jsx";
 import { pythonGenerator } from "blockly/python";
 import { english } from "../locales/english";
 import { german } from "../locales/german";
@@ -30,20 +39,13 @@ if(lang.some((l) => l.startsWith('de'))) { //Reactivate after testing
   Blockly.setLocale(english);
 }
 
-const BlocklyComponent = ({
-  setCode,
-  isDarkMode,
-  onUploadClick,
-  workspaceRef,
-}) => {
+const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
   const theme = useTheme();
   const blocklyDiv = useRef(null);
   const linkRef = useRef(null);
   const [level, setLevel] = useState("level1");
-
+  const [openCO2Tutorial, setOpenCO2Tutorial] = useState(false);
   const [openCreateDataDialog, setOpenCreateDataDialog] = useState(false);
-
-  const [showTutorial, setShowTutorial] = useState(false);
   const [showCheckDataDialog, setShowCheckDataDialog] = useState(false);
 
   // Blockly toolbox definition for Level 1 (Beginner)
@@ -571,7 +573,7 @@ const BlocklyComponent = ({
     }
       workspaceRef.current = Blockly.inject(blocklyDiv.current, {
       toolbox: toolboxXml,
-      media:"blockly/media/",
+      media: "blockly/media/",
       theme: isDarkMode ? darkTheme : lightTheme,
       grid: {
         spacing: 40,
@@ -683,29 +685,30 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
       {/* Top bar with Upload button and Level toggle */}
       <Toolbar
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          bgcolor: isDarkMode ? "#150e31" : "#f5f5f5",
-          mb: 2,
+          bgcolor: theme.palette.background.default,
           borderRadius: 4,
+          mb: 2,
           maxHeight: 88,
         }}
       >
-        <Box display="flex" alignItems="center" gap={1.5} flexWrap="wrap">
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={2}
+          sx={{ width: "100%", p: 1, flexWrap: "wrap" }}
+        >
           <Tooltip title="Upload your CSV, GeoJSON or TIF data." arrow>
-            <Button
+            <IconButton
               id="uploadDataButton"
               variant="contained"
               onClick={ onUploadClick }
               sx={{
                 width: 40,
                 height: 40,
-                minWidth: 0,
-                borderRadius: "50%",
-                bgcolor: theme.palette.secondary.main,
-                color: isDarkMode ? "#FFFFFA" : "#000000",
+                bgcolor: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
                 "&:hover": {
-                  bgcolor: theme.palette.secondary.dark,
+                  bgcolor: theme.palette.primary.dark,
                   color: "#fff",
                 },
                 display: "flex",
@@ -714,8 +717,8 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
                 p: 0,
               }}
             >
-              <Upload fontSize="medium" />
-            </Button>
+              <Upload fontSize="small" />
+            </IconButton>
           </Tooltip>
 
           <Tooltip title="Check uploaded data">
@@ -725,20 +728,23 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
               size="small"
               onClick={ () => setShowCheckDataDialog(true) }
               sx={{
-                height: 32,
-                fontSize: "0.75rem",
+                borderRadius: 4,
+                bgcolor: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
+                height: 40,
                 px: 1.5,
-                textTransform: "none"
+                textTransform: "none",
+                "&:hover": {
+                  bgcolor: theme.palette.primary.dark,
+                  color: "#fff",
+                  borderColor: theme.palette.primary.dark,
+                },
               }}
             >
               <MdChecklist style={{ marginRight: 4 }} />
-              <Box sx={{ display: { xs: "none", lg: "inline" } }}>Check Uploads</Box>
+              Check Uploads
             </Button>
           </Tooltip>
-          <CheckUploadedDataDialog
-            open={ showCheckDataDialog }
-            onClose={ () => setShowCheckDataDialog(false) }
-          />
 
           <Tooltip title="Create CSV data manually">
             <Button
@@ -747,128 +753,148 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
               size="small"
               onClick={ () => setOpenCreateDataDialog(true) }
               sx={{
-                height: 32,
-                fontSize: "0.75rem",
+                borderRadius: 4,
+                bgcolor: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
+                height: 40,
                 px: 1.5,
-                textTransform: "none"
+                textTransform: "none",
+                "&:hover": {
+                  bgcolor: theme.palette.primary.dark,
+                  color: "#fff",
+                  borderColor: theme.palette.primary.dark,
+                },
               }}
             >
               <MdCreate style={{ marginRight: 4 }} />
-              <Box sx={{ display: { xs: "none", lg: "inline" } }}>Create Data</Box>
+              Create Data
             </Button>
           </Tooltip>
-          <CreateDataDialog
-            open={ openCreateDataDialog }
-            onClose={ () => setOpenCreateDataDialog(false) }
-          />
-{/* 
-          <Box id="uploadFileNames" sx={{ ml: 2 }} gap={ 2 } alignItems="center" minWidth={ 0 } width="10%">
-            { globalThis.files[0] ? `Uploaded file${globalThis.files.length !== 1 ? 's' : ''}: ${globalThis.files.join(', ')}.` : '' }
-          </Box> */}
-          <Box sx={{ display: "inline-flex", alignItems: "center" }}>
-            <Tooltip
-              title={
-                <Box>
-                  <div><strong>Beginner:</strong> simple blocks & built-in data</div>
-                  <div><strong>Advanced:</strong> external files, spatial modeling</div>
-                  <div>Check out the tutorials to get started!</div>
-                </Box>
-              }
-              arrow
-              enterDelay={ 300 }
-              placement="right"
-            >
-              <span>
+
+          <Tooltip
+            title={
+              <Box>
+                <div>
+                  <strong>Beginner:</strong> simple blocks & built-in data
+                </div>
+                <div>
+                  <strong>Advanced:</strong> external files, spatial modeling
+                </div>
+                <div>Check out the tutorials to get started!</div>
+              </Box>
+            }
+            arrow
+            enterDelay={300}
+            placement="right"
+          >
+            <Box>
+              <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                 <Select
+                  labelId="level-select-label"
+                  id="level-select"
                   value={ level }
-                  onChange={ (e) => setLevel(e.target.value) }
-                  size="small"
+                  onChange={ handleChangeLevel }
                   sx={{
-                    height: 32,
-                    fontSize: "0.75rem",
-                    px: 0.5,
-                    textTransform: "none",
-                    backgroundColor: level === "level1" ? "#E8F5E9" : "#FFEBEE",
-                    color: level === "level1" ? "#2E7D32" : "#C62828",
-                    minWidth: "auto",
-                    width: "fit-content",
-                    borderColor: "#BDBDBD",
-                    "& .MuiSelect-select": {
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                      py: 0,
-                    },
-                    "&:hover, &:focus, &.Mui-focused": {
-                      borderColor: "#BDBDBD",
-                      boxShadow: "none",
+                    height: 40,
+                    minHeight: 40,
+                    fontSize: "0.9rem",
+                    borderRadius: 2,
+                    bgcolor:
+                      level === "level1"
+                        ? "#00c853"
+                        : level === "level2"
+                        ? "#F44336"
+                        : theme.palette.primary.main,
+                    color: "#fff",
+                    "&:hover": {
+                      bgcolor:
+                        level === "level1"
+                          ? "#00b248" // etwas dunkler
+                          : level === "level2"
+                          ? "#d32f2f"
+                          : theme.palette.primary.dark,
                     },
                     "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#BDBDBD",
+                      borderColor:
+                        level === "level1"
+                          ? "#00c853"
+                          : level === "level2"
+                          ? "#F44336"
+                          : theme.palette.primary.main,
                     },
                     "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#BDBDBD",
+                      borderColor:
+                        level === "level1"
+                          ? "#00c853"
+                          : level === "level2"
+                          ? "#F44336"
+                          : theme.palette.primary.dark,
                     },
                     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#BDBDBD",
+                      borderColor:
+                        level === "level1"
+                          ? "#00c853"
+                          : level === "level2"
+                          ? "#F44336"
+                          : theme.palette.primary.dark,
+                    },
+                    ".MuiSelect-select": {
+                      display: "flex",
+                      alignItems: "center",
+                      height: 40,
+                      paddingTop: 0,
+                      paddingBottom: 0,
                     },
                   }}
-                  id="switchLevelsDropdown"
-                  renderValue={ () => (
-                    <>
-                      <Box sx={{ display: { xs: "none", sm: "none", md: "none", lg: "inline" }, fontSize: "0.75rem", letterSpacing: 0.5 }}>
-                        Choose Level
-                      </Box>
-                      <Box sx={{ display: { xs: "none", sm: "none", md: "inline", lg: "none" }, fontSize: "0.75rem", letterSpacing: 0.5 }}>
-                        Level
-                      </Box>
-                      <Box sx={{ display: { xs: "inline", sm: "inline", md: "none" } }}>
-                        <MdSpeed />
-                      </Box>
-                    </>
-                  ) }
                 >
-                  <MenuItem value="level1" sx={{ fontSize: "0.85rem", color: "#2E7D32" }}>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <FaSchool style={{ marginRight: 6 }} />
-                      <Box sx={{ fontSize: "0.75rem", letterSpacing: 0.5, fontWeight: 500 }}>
-                        Beginner
-                      </Box>
-                    </Box>
+                  <MenuItem value="level1" sx={{ fontSize: "1rem" }}>
+                    Beginner
                   </MenuItem>
-                  <MenuItem value="level2" sx={{ fontSize: "0.85rem", color: "#C62828" }}>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <FaUniversity style={{ marginRight: 6 }} />
-                      <Box sx={{ fontSize: "0.75rem", letterSpacing: 0.5, fontWeight: 500 }}>
-                        Advanced
-                      </Box>
-                    </Box>
+                  <MenuItem value="level2" sx={{ fontSize: "1rem" }}>
+                    Advanced
                   </MenuItem>
                 </Select>
-              </span>
-            </Tooltip>
-          </Box>
+              </FormControl>
+            </Box>
+          </Tooltip>
 
           {/* Help button to start Spockly tour */}
           <Tooltip title="Start Spockly Tour" arrow>
             <IconButton
               onClick={() => window?.__startSpocklyTour?.()}
-              sx={{ color: "inherit" }}
+              sx={{
+                width: 40,
+                height: 40,
+                bgcolor: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
+                "&:hover": {
+                  bgcolor: theme.palette.primary.dark,
+                  color: "#fff",
+                },
+              }}
             >
-              <FaQuestionCircle />
+              <QuestionMark />
             </IconButton>
           </Tooltip>
-
           <Tooltip title="Show Simple CO₂ Tutorial" arrow>
             <IconButton
               id="showTutorialButton"
-              onClick={ () => setShowTutorial((prev) => !prev) }
-              sx={{ color: showTutorial ? "green" : "inherit" }}
+              onClick={ handleOpenCO2Tutorial }
+              sx={{
+                width: 40,
+                height: 40,
+                bgcolor: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
+                "&:hover": {
+                  bgcolor: theme.palette.primary.dark,
+                  color: "#fff",
+                },
+              }}
             >
-              <MdCo2 />
+              <Co2Outlined />
             </IconButton>
           </Tooltip>
-        </Box>
+        </Stack>
       </Toolbar>
 
       {/* Blockly rendering area */}
@@ -883,9 +909,25 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
         }}
       />
 
-      { showTutorial && (
-        <SimpleTutorialPanel onClose={() => setShowTutorial(false)} />
-      ) }
+      {/* Dialog */}
+
+      <CheckUploadedDataDialog
+        open={showCheckDataDialog}
+        onClose={() => setShowCheckDataDialog(false)}
+      />
+
+      <CreateDataDialog
+        open={openCreateDataDialog}
+        onClose={() => setOpenCreateDataDialog(false)}
+      />
+
+      <CO2Tutorial
+        open={openCO2Tutorial}
+        onClose={handleCloseCO2Tutorial}
+        step={stepCO2Tutorial}
+        nextStep={nextStepCO2Tutorial}
+        prevStep={prevStepCO2Tutorial}
+      />
     </Box>
   );
 };

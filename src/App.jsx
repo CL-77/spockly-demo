@@ -6,8 +6,8 @@ import Tutorials from "./pages/tutorials/Tutorials";
 import Impressum from "./pages/Impressum";
 import { GlobalStyles, ThemeProvider } from "@mui/material";
 import { darkTheme, lightTheme } from "./appTheme";
-import PythonSPOCKLY from "./components/PythonSpockly";
-// import RSPOCKLY from "./components/RSPOCKLY";
+import PythonSpocklyR from "./components/SpocklyR";
+import SpocklyPython from "./components/SpocklyPython";
 import Toast from "./components/Toast";
 import './components/init.js';
 
@@ -78,11 +78,15 @@ function App() {
               element={ <RSPOCKLY isDarkMode={ isDarkMode } /> }
             /> */}
             <Route
-              path="PythonSPOCKLY"
-              element={ <PythonSPOCKLY isDarkMode={ isDarkMode } /> }
+              path="spocklyR"
+              element={<SpocklyR isDarkMode={ isDarkMode } />}
             />
-            <Route path="tutorials" element={ <Tutorials isDarkMode={ isDarkMode } /> } />
-            <Route path="impressum" element={ <Impressum /> } />
+            <Route path="spocklyPython" element={<SpocklyPython />} />
+            <Route
+              path="tutorials"
+              element={<Tutorials isDarkMode={ isDarkMode } />}
+            />
+            <Route path="impressum" element={<Impressum />} />
           </Route>
         </Routes>
       </Router>
