@@ -20,7 +20,7 @@ export const lightTheme = Blockly.Theme.defineTheme('lightTheme', {
     flyoutForegroundColour: "#FFFFFA",
     scrollbarColour: "#FFFFFA",
     insertionMarkerColour: "#000000",
-    insertionMarkerOpacity: 0.3,
+    insertionMarkerOpacity: 1,
     trashcanColour: "#FFFFFA",
   },
 });
@@ -49,6 +49,6 @@ export const darkTheme = Blockly.Theme.defineTheme('darkTheme', {
     flyoutForegroundColour: "#FFFFFA",
     scrollbarColour: "#888888",
     insertionMarkerColour: "#FFFFFA",
-    insertionMarkerOpacity: 0.4,
+    insertionMarkerOpacity: 1,
   },
 });

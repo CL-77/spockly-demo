@@ -63,7 +63,7 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
 
         <Stack direction="row" spacing={3} alignItems="center">
           <NavLink
-            to="/spockly"
+            to="/spocklyR"
             style={({ isActive }) => ({
               textDecoration: "none",
               color: isActive
@@ -72,7 +72,20 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
               fontWeight: "bold",
             })}
           >
-            SPOCKLY
+            SPOCKLY R
+          </NavLink>
+
+          <NavLink
+            to="/spocklyPython"
+            style={({ isActive }) => ({
+              textDecoration: "none",
+              color: isActive
+                ? theme.palette.primary.light
+                : theme.palette.primary.contrastText,
+              fontWeight: "bold",
+            })}
+          >
+            SPOCKLY Python
           </NavLink>
 
           <NavLink
