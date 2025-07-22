@@ -25,7 +25,7 @@ import { MdChecklist, MdCreate } from "react-icons/md";
 
 import CreateDataDialog from "./CreateDataDialog.jsx";
 import CheckUploadedDataDialog from "./CheckUploadedDataDialog.jsx";
-import CO2Tutorial from "./Co2Tutorial.jsx";
+import CO2Tutorial from "./CO2Tutorial.jsx";
 
 const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
   const theme = useTheme();
