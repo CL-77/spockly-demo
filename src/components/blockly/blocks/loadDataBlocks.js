@@ -33,7 +33,7 @@ Blockly.defineBlocksWithJsonArray([
 Blockly.defineBlocksWithJsonArray([
   // Load CSV
   {
-    type: "load_csv",
+    type: "load_csv_r",
     message0: "load CSV file %1",
     args0: [{ type: "field_input", name: "FILENAME", text: "data.csv" }],
     output: "DataFrame",
@@ -159,7 +159,7 @@ Blockly.defineBlocksWithJsonArray([
 ]);
 
 // Generator for load_csv block
-Blockly.Generator.R.forBlock['load_csv'] = function(block) {
+Blockly.Generator.R.forBlock['load_csv_r'] = function(block) {
   var filename = block.getFieldValue('FILENAME');
 
   var code = 'read.csv("' + filename + '")';

@@ -56,17 +56,9 @@ const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
   // Blockly toolbox definition for Level 1 (Beginner)
   const beginnerToolbox = `
 <xml>
-  <category name="Tests" colour="#5C81A6">
-    <block type="head_print"></block>	
-	<block type="install_package"></block>
-	<block type="plot_vector"></block>
-	<block type="load_geojson_to_leaflet"></block>
-	<block type="load_csv_to_leaflet"></block>
-  </category>
-
   <category name="Load Data" colour="#FFA726">
     <block type="load_builtin_dataset"></block>
-	<block type="load_csv"></block>
+	<block type="load_csv_r"></block>
 	<block type="load_geojson"></block>
 	<block type="load_tif"></block>
   </category>
@@ -237,17 +229,9 @@ const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
   // Blockly toolbox definition for Level 2 (Advanced)
   const advancedToolbox = `
 <xml>
-  <category name="Tests" colour="#5C81A6">
-    <block type="head_print"></block>	
-	<block type="install_package"></block>
-	<block type="plot_vector"></block>
-	<block type="load_geojson_to_leaflet"></block>
-	<block type="load_csv_to_leaflet"></block>
-  </category>
-
   <category name="Load Data" colour="#FFA726">
     <block type="load_builtin_dataset"></block>
-    <block type="load_csv"></block>
+    <block type="load_csv_r"></block>
     <block type="load_shapefile"></block>
     <block type="load_raster"></block>
     <block type="load_txt"></block>
