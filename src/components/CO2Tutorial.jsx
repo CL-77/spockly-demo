@@ -11,7 +11,6 @@ import {
 import ReactMarkdown from "react-markdown";
 import DraggableResizableWindow from "./DraggableResizableWindow";
 
-
 const CO2Tutorial = ({
   open,
   onClose,
@@ -48,6 +47,8 @@ const CO2Tutorial = ({
       open={open}
       onClose={onClose}
       title={tutorialData[language][step].title}
+      language={language}
+      changeLanguage={handleChangeLanguage}
     >
       <Box
         sx={{
@@ -60,7 +61,7 @@ const CO2Tutorial = ({
         <Stack
           direction="row-reverse"
           sx={{
-            paddingTop: "1vh",
+            py: "1vh",
             justifyContent: "space-between",
           }}
         >
@@ -89,7 +90,7 @@ const CO2Tutorial = ({
         <Stack
           direction="row-reverse"
           sx={{
-            py: "2vh",
+            py: "1vh",
             justifyContent: "space-between",
           }}
         >

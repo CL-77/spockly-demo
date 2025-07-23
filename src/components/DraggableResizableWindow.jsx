@@ -1,9 +1,23 @@
 import { Clear } from "@mui/icons-material";
-import { Button, Typography, useTheme } from "@mui/material";
+import {
+  Button,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { useState, useRef, useEffect } from "react";
 import Draggable from "react-draggable";
 
-const DraggableResizableWindow = ({ open, onClose, title, children }) => {
+const DraggableResizableWindow = ({
+  open,
+  onClose,
+  title,
+  children,
+  language,
+  changeLanguage,
+}) => {
   const theme = useTheme();
   const nodeRef = useRef(null);
   const [size, setSize] = useState({ width: "80vh", height: "90vh" });
@@ -44,8 +58,8 @@ const DraggableResizableWindow = ({ open, onClose, title, children }) => {
           position: "fixed",
           top: position.top,
           left: position.left,
-          width: size.width,
-          height: size.height,
+          maxHeight: "80vh",
+          maxWidth: "90vh",
           background: theme.palette.background.paper,
           boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
           resize: "both",
