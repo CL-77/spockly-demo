@@ -190,7 +190,7 @@ const Home = ({ isDarkMode }) => {
               icon={ <FaCube size={ 32 } /> }
               text="Blockly Interface"
             />
-            <HoverGrowButton icon={ <FaCodeBranch size={ 32 } /> } text="Using R or Python" />
+            <HoverGrowButton icon={ <FaCodeBranch size={ 32 } /> } text="Using R" />
             <HoverGrowButton icon={ <Code size={ 32 } /> } text="Using Python" />
           </Box>
         </Box>
