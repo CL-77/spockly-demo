@@ -543,37 +543,6 @@ Blockly.defineBlocksWithJsonArray([
   tooltip: "Preview the first N rows of a dataframe or elements of an array/matrix.",
   helpUrl: "https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/head"
   },
-  {
-  type: "structure_overview",
-  message0: "get structure of %1",
-  args0: [
-    {
-    type: "input_value",
-    name: "DATA",
-    check: ["DataFrame", "Array", "Matrix", "Number", "String"]
-    }
-  ],
-  output: "String",
-  colour: "#FF7043",
-  tooltip: "Get the structure of an object (dataframe, array, matrix, etc.)",
-  helpUrl: "https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/str"
-  },
-  {
-  type: "data_summary",
-  message0: "get summary of %1",
-  args0: [
-    {
-    type: "input_value",
-    name: "DATA",
-    check: ["DataFrame", "Array", "Matrix", "Number"]
-    }
-  ],
-  output: "String",
-  colour: "#FF7043",
-  tooltip: "Get summary statistics of an object",
-  helpUrl: "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/summary"
-  },
-  
   // Improved Array Creation Block with Multiple Inputs
   {
   type: "create_array_multiple",

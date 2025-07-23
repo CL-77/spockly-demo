@@ -72,9 +72,6 @@ const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
 	<block type="length_data"></block>
 	<block type="show_tail"></block>
 	<block type="show_rows"></block>
-  <block type="create_sequence"></block>
-  <block type="combine_arrays"></block>
-  <block type="append_to_array"></block>
   <block type="get_element"></block>
   </category>
 
@@ -253,6 +250,9 @@ const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
 	<block type="length_data"></block>
 	<block type="show_tail"></block>
 	<block type="show_rows"></block>
+	<block type="create_sequence"></block>
+  	<block type="combine_arrays"></block>
+  	<block type="append_to_array"></block>
 	<block type="access_column"></block>
   </category>
 
