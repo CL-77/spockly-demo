@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import Draggable from "react-draggable";
 import ReactMarkdown from "react-markdown";
-import co2Tutorial from "../data/co2Tutorial";
 import DraggableResizableWindow from "./DraggableResizableWindow";
 
 function PaperComponent(props) {
@@ -27,10 +26,9 @@ function PaperComponent(props) {
   );
 }
 
-const CO2Tutorial = ({ open, onClose, step, nextStep, prevStep }) => {
+const CO2Tutorial = ({ open, onClose, step, nextStep, prevStep, tutorialData }) => {
   const theme = useTheme();
   const [language, setLanguage] = useState("en");
-  const [tutorialData, setTutorialData] = useState(co2Tutorial);
 
   const handleChangeLanguage = (_event, newLanguage) => {
     setLanguage(newLanguage);
@@ -85,7 +83,7 @@ const CO2Tutorial = ({ open, onClose, step, nextStep, prevStep }) => {
                   color: theme.palette.primary.contrastText,
                 }}
               >
-                Weiter
+                {language === "de" ? "Weiter" : "Next"}
               </Button>
             ) : (
               <Button
@@ -96,7 +94,7 @@ const CO2Tutorial = ({ open, onClose, step, nextStep, prevStep }) => {
                   color: theme.palette.primary.contrastText,
                 }}
               >
-                Schließen
+                {language === "de" ? "Schließen" : "Close"}
               </Button>
             )}
             {step > 0 && (
@@ -108,7 +106,7 @@ const CO2Tutorial = ({ open, onClose, step, nextStep, prevStep }) => {
                   color: theme.palette.primary.contrastText,
                 }}
               >
-                Zurück
+                {language === "de" ? "Zurück" : "Back"}
               </Button>
             )}
           </Stack>

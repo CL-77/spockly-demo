@@ -26,6 +26,7 @@ import { MdChecklist, MdCreate } from "react-icons/md";
 import CreateDataDialog from "./CreateDataDialog.jsx";
 import CheckUploadedDataDialog from "./CheckUploadedDataDialog.jsx";
 import CO2Tutorial from "./CO2Tutorial.jsx";
+import tutorialData from "./../data/co2Tutorial.js";
 
 const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
   const theme = useTheme();
@@ -977,6 +978,7 @@ const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
         step={stepCO2Tutorial}
         nextStep={nextStepCO2Tutorial}
         prevStep={prevStepCO2Tutorial}
+        tutorialData={tutorialData}
       />
     </Box>
   );
