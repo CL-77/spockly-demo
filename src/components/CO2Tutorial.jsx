@@ -29,6 +29,20 @@ const CO2Tutorial = ({
     }
   };
 
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "ArrowRight" && step < tutorialData[language].length - 1) {
+        nextStep();
+      } else if (e.key === "ArrowLeft" && step > 0) {
+        prevStep();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [nextStep, prevStep]);
+
   return (
     <DraggableResizableWindow
       open={open}
