@@ -60,8 +60,6 @@ const DraggableResizableWindow = ({
           left: position.left,
           width: size.width,
           height:size.height,
-          maxHeight: "80vh",
-          maxWidth: "90vh",
           background: theme.palette.background.paper,
           boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
           resize: "both",
