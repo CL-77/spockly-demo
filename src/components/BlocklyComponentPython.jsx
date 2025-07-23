@@ -28,6 +28,7 @@ import { english } from "../locales/english.js";
 import { german } from "../locales/german.js";
 import * as De from "blockly/msg/de";
 import * as En from "blockly/msg/en"
+import co2Tutorial from "../data/co2Tutorial.js";
 
 const lang = navigator.languages;
 if(lang.some((l) => l.startsWith('de'))) { //Reactivate after testing
@@ -941,6 +942,7 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
         step={stepCO2Tutorial}
         nextStep={nextStepCO2Tutorial}
         prevStep={prevStepCO2Tutorial}
+        tutorialData={co2Tutorial}
       />
     </Box>
   );

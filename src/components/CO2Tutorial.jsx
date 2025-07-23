@@ -26,12 +26,21 @@ function PaperComponent(props) {
   );
 }
 
-const CO2Tutorial = ({ open, onClose, step, nextStep, prevStep, tutorialData }) => {
+const CO2Tutorial = ({
+  open,
+  onClose,
+  step,
+  nextStep,
+  prevStep,
+  tutorialData,
+}) => {
   const theme = useTheme();
   const [language, setLanguage] = useState("en");
 
   const handleChangeLanguage = (_event, newLanguage) => {
-    setLanguage(newLanguage);
+    if (newLanguage !== null) {
+      setLanguage(newLanguage);
+    }
   };
 
   React.useEffect(() => {
