@@ -90,11 +90,14 @@ const DraggableResizableWindow = ({ open, onClose, title, children }) => {
         <div
           className="content"
           style={{
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            overflow: "auto",
             paddingLeft: "2vh",
             paddingRight: "2vh",
             paddingTop: "1vh",
             paddingBottom: "1vh",
-            overflow: "auto",
           }}
         >
           {children}
