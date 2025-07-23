@@ -75,7 +75,7 @@ const CO2Tutorial = ({
           </ToggleButtonGroup>
         </Stack>
 
-        <Box sx={{ flexGrow: 1, overflow: "auto", minHeight: 0 }}>
+        <Box sx={{ px:1.5, flexGrow: 1, overflow: "auto", minHeight: 0 }}>
           <ReactMarkdown
             components={{
               a: ({ node, ...props }) => (

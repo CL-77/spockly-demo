@@ -20,7 +20,7 @@ const DraggableResizableWindow = ({
 }) => {
   const theme = useTheme();
   const nodeRef = useRef(null);
-  const [size, setSize] = useState({ width: "80vh", height: "90vh" });
+  const [size, setSize] = useState({ width: "80vh", height: "60vh" });
   const [position, setPosition] = useState({ top: 0, left: 0 });
 
   const handleResize = (e) => {
@@ -58,6 +58,8 @@ const DraggableResizableWindow = ({
           position: "fixed",
           top: position.top,
           left: position.left,
+          width: size.width,
+          height:size.height,
           maxHeight: "80vh",
           maxWidth: "90vh",
           background: theme.palette.background.paper,
