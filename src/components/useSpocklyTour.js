@@ -86,7 +86,7 @@ const useSpocklyTour = () => {
       id: 'switch-levels',
       title: 'Switch Levels',
       text: 'Use this button to switch between beginner and advanced level. Advanced level contains more categories and more complex blocks and is made for students who have a broader knowledge of spatial data. Beginner level is for students with little to no knowledge of spatial data and programming.',
-      attachTo: { element: '#switchLevelsDropdown', on: 'left' },
+      attachTo: { element: '#level-select', on: 'left' },
       buttons: [
         { text: 'Back', action: tour.back },
         { text: 'Next', action: tour.next }
