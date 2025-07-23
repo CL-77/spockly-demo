@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -29,7 +29,7 @@ const CO2Tutorial = ({
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "ArrowRight" && step < tutorialData[language].length - 1) {
         nextStep();
