@@ -38,6 +38,16 @@ const Tutorials = ({ isDarkMode }) => {
   const location = useLocation();
   const theme = useTheme();
 
+  // Utility function to convert simple markdown (**bold**, *italic*) to HTML
+  const simpleMarkdownToHtml = (text) => {
+    if (!text) return "";
+    // Replace **bold** with <strong>bold</strong>
+    let html = text.replace(/\*\*(.*?)\*\*/gs, "<strong>$1</strong>");
+    // Replace *italic* with <em>italic</em>
+    html = html.replace(/\*(.*?)\*/gs, "<em>$1</em>");
+    return html;
+  };
+
   // Handles tab change
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -182,10 +192,18 @@ const Tutorials = ({ isDarkMode }) => {
               { searchResults.map((res, idx) => (
                 <React.Fragment key={ idx }>
                   <ListItemButton onClick={ () => jumpToTutorial(res.index) }>
-                    <ListItemText
-                      primary={ res.headline }
-                      secondary={ res.description.substring(0, 80) + "..." }
-                    />
+                    <Box>
+                      <Typography
+                        variant="subtitle1"
+                        fontWeight="bold"
+                        dangerouslySetInnerHTML={{ __html: simpleMarkdownToHtml(res.headline) }}
+                      />
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        dangerouslySetInnerHTML={{ __html: simpleMarkdownToHtml(res.description.substring(0, 80) + "...") }}
+                      />
+                    </Box>
                   </ListItemButton>
                   { idx < searchResults.length - 1 && <Divider /> }
                 </React.Fragment>

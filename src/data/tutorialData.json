@@ -52,12 +52,12 @@
         "url": "/data/advanced_usecase.R"
       },
       {
-        "label": "Download muelltonnen.csv",
-        "url": "/data/muelltonnen.csv"
+        "label": "Download trashbins.csv",
+        "url": "/data/trashbins.csv"
       },
       {
-        "label": "Download beispiel_abfall.csv",
-        "url": "/data/beispiel_abfall.csv"
+        "label": "Download schoolyard_trash.csv",
+        "url": "/data/schoolyard_trash.csv"
       }
     ]
   },
