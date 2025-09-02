@@ -39,7 +39,7 @@ if(lang.some((l) => l.startsWith('de'))) { //Reactivate after testing
   Blockly.setLocale(english);
 }
 
-const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
+const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) => {
   const theme = useTheme();
   const blocklyDiv = useRef(null);
   const linkRef = useRef(null);
