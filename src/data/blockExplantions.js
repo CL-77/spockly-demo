@@ -29,6 +29,7 @@ const blockDescriptions = {
     infoText:
       "Get summary statistics of a dataset using the summary() function.",
     functions: ["summary()"],
+    simpleText: "Summary statistics provide an overview of the data, including measures like mean, median, minimum, maximum, and quartiles. This block helps you understand the distribution and characteristics of your dataset.",
   },
   length_data: {
     infoText:
@@ -113,6 +114,7 @@ const blockDescriptions = {
   export_plot_png: {
     infoText: "Export the current plot to a PNG file.",
     functions: ["png()", "plot()", "dev.off()"],
+    simpleText: "PNG is a type of image file — like a photo — that you can open on any computer. When you use this block, your chart will be saved as a PNG picture. After the code runs, the image file will appear in your browser's downloads. You can then open it, share it, or add it to a report or presentation.",
   },
   export_data_csv: {
     infoText: "Export a dataframe to a CSV file.",
@@ -183,9 +185,10 @@ const blockDescriptions = {
     infoText: "Load a GeoJSON file.",
     functions: ["sf::st_read()"],
   },
-  load_csv: {
+  load_csv_r: {
     infoText: "Load a CSV file from WebR filesystem.",
     functions: ["read.csv()"],
+    simpleText: "A CSV file is a simple text file where data is stored in a table format. Each line represents a row, and values are separated by commas (or sometimes semicolons). This block loads that kind of file into your project so that you can work with it, e.g. analyze, filter or plot the data.",
   },
   load_shapefile: {
     infoText: "Load a shapefile (.shp) from WebR filesystem.",
@@ -227,9 +230,10 @@ const blockDescriptions = {
     infoText: "Filter rows from a dataframe.",
     functions: [],
   },
-  select_columns: {
+  access_column: {
     infoText: "Select specific columns from a dataframe.",
-    functions: [],
+    functions: ["$"],
+    simpleText: "This block lets you choose a single column from your data table. For example, if your data has a 'date' and a 'temperature' column, you can use this block to pick just the 'temperature' values for analysis or visualization.",
   },
   group_by_summarise: {
     infoText: "Group and summarise a dataset.",
@@ -460,7 +464,8 @@ const blockDescriptions = {
   // variable blocks
   variables_set: {
     infoText: "Set a variable to a value.",
-    functions: [],
+    functions: ["<-"],
+    simpleText: "Variables are used to store values that you can use later in your code. This block allows you to create a variable and assign it a value, which can be a number, text, or even a more complex data structure like a dataframe.",
   },
   variables_change: {
     infoText: "Change a variable by a value.",
@@ -468,7 +473,8 @@ const blockDescriptions = {
   },
   variables_get: {
     infoText: "Get the value of a variable.",
-    functions: [],
+    functions: ["name of the variable"],
+    simpleText: "This block retrieves the value stored in a variable. You can use this value in other blocks.",
   },
   // visualization blocks
   create_chart_beginner: {
@@ -478,6 +484,7 @@ const blockDescriptions = {
   create_xy_chart_beginner: {
     infoText: "Create a chart with X and Y data.",
     functions: ["plot()"],
+    simpleText: "This block creates a plot — a visual representation of your data. You provide X values (e.g. time) and Y values (e.g. temperature), and it shows how they relate. You can choose between a scatter plot (shows each point individually) or a line plot (connects the points with lines). It's useful to understand trends or patterns in your data.",
   },
   add_to_chart_beginner: {
     infoText: "Add data to existing chart.",

@@ -93,7 +93,7 @@ const BlockExplanations = ({ isDarkMode, workspaceRef }) => {
           zIndex: 1,
         }}
       >
-        <Typography
+        <Box
           sx={{
             color: isDarkMode ? "#FFFFFA" : "#000000",
             padding: 3,
@@ -147,11 +147,16 @@ const BlockExplanations = ({ isDarkMode, workspaceRef }) => {
                     >
                       Description:
                     </Typography>
-                    <Typography variant="body1">
+                    <Box component="div">
                       {blockDescriptions[currentBlock.type]?.infoText ||
                         "Für diesen Blocktyp ist noch keine Beschreibung vorhanden."}
-                    </Typography>
+                    </Box>
                   </Stack>
+                  {blockDescriptions[currentBlock.type]?.simpleText && (
+                    <Box sx={{ mt: 1, fontStyle: "italic" }}>
+                      {blockDescriptions[currentBlock.type].simpleText}
+                    </Box>
+                  )}
                   {currentBlock.helpUrl ? (
                     <Fab
                       variant="extended"
@@ -190,7 +195,7 @@ const BlockExplanations = ({ isDarkMode, workspaceRef }) => {
               )}
             </Box>
           </Box>
-        </Typography>
+        </Box>
       </Box>
     </Box>
   );

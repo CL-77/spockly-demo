@@ -1,12 +1,26 @@
 import { Clear } from "@mui/icons-material";
-import { Button, Typography, useTheme } from "@mui/material";
+import {
+  Button,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { useState, useRef, useEffect } from "react";
 import Draggable from "react-draggable";
 
-const DraggableResizableWindow = ({ open, onClose, title, children }) => {
+const DraggableResizableWindow = ({
+  open,
+  onClose,
+  title,
+  children,
+  language,
+  changeLanguage,
+}) => {
   const theme = useTheme();
   const nodeRef = useRef(null);
-  const [size, setSize] = useState({ width: "80vh", height: "90vh" });
+  const [size, setSize] = useState({ width: "80vh", height: "60vh" });
   const [position, setPosition] = useState({ top: 0, left: 0 });
 
   const handleResize = (e) => {
@@ -45,7 +59,7 @@ const DraggableResizableWindow = ({ open, onClose, title, children }) => {
           top: position.top,
           left: position.left,
           width: size.width,
-          height: size.height,
+          height:size.height,
           background: theme.palette.background.paper,
           boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
           resize: "both",
@@ -90,11 +104,14 @@ const DraggableResizableWindow = ({ open, onClose, title, children }) => {
         <div
           className="content"
           style={{
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            overflow: "auto",
             paddingLeft: "2vh",
             paddingRight: "2vh",
             paddingTop: "1vh",
             paddingBottom: "1vh",
-            overflow: "auto",
           }}
         >
           {children}

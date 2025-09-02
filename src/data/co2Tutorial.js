@@ -8,6 +8,8 @@ const co2Tutorial = {
 
 ➡️ Klicke unten auf **Weiter**, um die Tour zu starten.
 
+⌨️ Du kannst auch mit den **Pfeiltasten** auf deiner Tastatur vor- und zurückblättern.
+
 🖱 Du kannst dieses Fenster **verschieben**, indem du den oberen Bereich anklickst und ziehst.
 
 📏 Du kannst es außerdem in der Ecke unten rechts größer oder kleiner ziehen – am besten platzierst du es so, dass du daneben mitarbeiten kannst.
@@ -307,6 +309,16 @@ Du kannst auswählen, ob du ihn als **Bild** (.png) oder **.pdf** abspeichern m�
 --- 
 *Plot ist der Begriff, der für eine grafische Darstellung von Daten steht – also z. B. ein Liniendiagramm, Balkendiagramm oder Punktdiagramm. `,
     },
+    {
+      title: "Los geht's!",
+      content: `✅ Du hast das Tutorial abgeschlossen.
+
+Jetzt kannst du SPOCKLY selbstständig ausprobieren!
+
+Lade eigene Daten, erstelle Diagramme oder Karten, oder klicke auf frühere Schritte, um sie noch einmal anzusehen.
+
+Viel Spaß beim Entdecken!`
+    },
   ],
   en: [
     {
@@ -314,6 +326,8 @@ Du kannst auswählen, ob du ihn als **Bild** (.png) oder **.pdf** abspeichern m�
       content: `📚 This tutorial guides you step by step through SPOCKLY.
 
 ➡️ Click **Next** below to begin the tour.
+
+⌨️ You can also use the **arrow keys** on your keyboard to move forward and backward.
 
 🖱 You can **drag this window** by clicking and holding the top bar.
 
@@ -613,6 +627,16 @@ You can choose to save it as an **image** (.png) or **.pdf**.
 
 --- 
 *Plot is the term for a graphical representation of data – e.g. a line chart, bar chart, or scatter plot. `,
+    },
+    {
+      title: "You're ready!",
+      content: `✅ You've completed the tutorial.
+
+Now you're ready to explore SPOCKLY on your own!
+
+Load your own data, create charts or maps – or revisit earlier steps anytime.
+
+Have fun exploring!`
     },
   ],
 };
