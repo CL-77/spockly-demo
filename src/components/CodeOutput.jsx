@@ -29,7 +29,7 @@ const CodeOutput = ({ code, isDarkMode, setPlot }) => {
     const [currentPackage, setCurrentPackage] = useState("");
     const [packagesReady, setPackagesReady] = useState(false);
     const canvasRef = useRef(null);
-    const [output, setOutput] = useState("Loading Pyodide...");
+    const [output, setOutput] = useState("Loading Pyodide...\n\nIf this is taking too long, please try refreshing the page.");
 
     const CANVAS_SIZE = 650;
 
