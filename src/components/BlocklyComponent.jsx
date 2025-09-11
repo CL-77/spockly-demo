@@ -937,7 +937,7 @@ const BlocklyComponent = ({ isDarkMode, onUploadClick, workspaceRef }) => {
         id="blocklyWorkspaceContainer"
         ref={blocklyDiv}
         sx={{
-          height: "90%",
+          height: "80%",
           width: "100%",
           margin: 0,
           padding: 0,

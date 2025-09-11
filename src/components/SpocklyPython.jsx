@@ -43,7 +43,7 @@ export default function SPOCKLY({ isDarkMode }) {
     setValue(newValue);
   };
   const [isLoading, setIsLoading] = useState(true);
-  const [output, setOutput] = useState("Loading Pyodide...");
+  const [output, setOutput] = useState("Loading Pyodide...\n\nIf this is taking too long, please try refreshing the page.");
   useEffect(() => {
     const firstRun = async () => {
         const code = `
