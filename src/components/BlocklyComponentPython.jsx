@@ -917,7 +917,7 @@ def idw_interpolation(xi, yi, zi, xi_interp, yi_interp, power=2):
         id="blocklyWorkspaceContainer"
         ref={ blocklyDiv }
         sx={{
-          height: "90%",
+          height: "80%",
           width: "100%",
           margin: 0,
           padding: 0,
