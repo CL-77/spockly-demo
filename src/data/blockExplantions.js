@@ -606,5 +606,11 @@ const blockDescriptions = {
     infoText: "Train a random forest model for classification or regression.",
     functions: ["randomForest()"],
   },
+
+  /* Python version */
+  quantile: {
+      infoText: "Compute quantiles at given probabilities.",
+      functions: ["np.quantile()"],
+  }
 };
 export default blockDescriptions;

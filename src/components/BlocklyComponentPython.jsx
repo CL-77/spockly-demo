@@ -146,6 +146,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="max"></block>
             <block type="min"></block>
             <block type="sum"></block>
+            <block type="quantile"></block>
           </category>
 
           <category name="${Blockly.Msg.Categories["VARIABLES"]}" custom="VARIABLE" colour="#A65E2E"></category>
@@ -390,6 +391,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             <block type="max"></block>
             <block type="min"></block>
             <block type="sum"></block>
+            <block type="quantile"></block>
           </category>
 
           <category name="${Blockly.Msg.Categories["VARIABLES"]}" custom="VARIABLE" colour="#A65E2E"></category>

@@ -625,6 +625,49 @@ pythonGenerator.forBlock["min"] = function(block, generator) {
   return [`np.min(${mini})`, pythonGenerator.ORDER_ATOMIC];
 };
 
+/** 
+ * Quantiles of array of numbers
+ */
+Blockly.Blocks['quantile'] = { 
+  init: function() {
+    this.appendValueInput('quantile')
+        .setCheck('Array')
+        .appendField(new Blockly.FieldDropdown([
+          ["First quartile (25%)", "0.25"],
+          ["Median (50%)", "0.5"],
+          ["Third quartile (75%)", "0.75"],
+          ["90th percentile (90%)", "0.9"],
+          ["95th percentile (95%)", "0.95"],
+          ["99th percentile (99%)", "0.99"],
+          ["All quartiles (25%, 50%, 75%)", "[0.25, 0.5, 0.75]"],
+          ["All percentiles (0%, 25%, 50%, 75%, 100%)", "[0, 0.25, 0.5, 0.75, 1]"],
+          ["Custom percentile", "custom"]
+        ]), 'QUANTILE')
+        .appendField("of");
+    this.appendDummyInput('custom')
+        .appendField("Custom value (0 - 100):")
+        .appendField(new Blockly.FieldNumber(0), 'custom_q');
+    this.setOutput(true, 'Number');
+    this.setInputsInline(false);
+    this.setTooltip('Returns the selected quantile(s) of an array of numbers. To be used mainly on a column.');
+    this.setColour(150);
+  }
+};
+pythonGenerator.forBlock["quantile"] = function(block, generator) {
+  const data =
+    generator.valueToCode(block, "quantile", pythonGenerator.ORDER_NONE) || "0";
+  const selectedQ = block.getFieldValue('QUANTILE');
+  const customQ = block.getFieldValue('custom_q');
+  if (selectedQ == "custom") {
+    if (customQ < 0 || customQ > 100) {
+      return [`np.quantile(${data}, 0.5)`, pythonGenerator.ORDER_ATOMIC];
+    }
+    return [`np.quantile(${data}, ${customQ / 100})`, pythonGenerator.ORDER_ATOMIC];
+  }
+  return [`np.quantile(${data}, ${selectedQ})`, pythonGenerator.ORDER_ATOMIC];
+};
+
+
 /**
  * Manipulation data blocks
  */
