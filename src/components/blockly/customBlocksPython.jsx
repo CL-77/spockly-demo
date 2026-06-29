@@ -390,6 +390,56 @@ pythonGenerator.forBlock['read_file'] = function(block,generator) {
   return [`gpd.read_file('${fileName}')`, pythonGenerator.ORDER_ATOMIC];
 }
 
+Blockly.Blocks['load_sensebox'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Read SenseBox data')
+    this.appendDummyInput()
+        .appendField('- Box Id:')
+        .appendField(new Blockly.FieldTextInput('id'), 'ID');
+    this.appendDummyInput()
+        .appendField('- Phenomenon:')
+        .appendField(new Blockly.FieldDropdown([
+          ["Temperature", "Temperature"],
+          ["CO₂", "CO%E2%82%82"],
+        ]), 'PHENOMENON')
+    this.appendDummyInput()
+        .appendField('- From date:')
+        .appendField(new Blockly.FieldTextInput('DD'), 'DAY_FROM')
+        .appendField('/')
+        .appendField(new Blockly.FieldTextInput('MM'), 'MONTH_FROM')
+        .appendField('/')
+        .appendField(new Blockly.FieldTextInput('YYYY'), 'YEAR_FROM');
+    this.appendDummyInput()
+        .appendField('  To date:     ')
+        .appendField(new Blockly.FieldTextInput('DD'), 'DAY_TO')
+        .appendField('/')
+        .appendField(new Blockly.FieldTextInput('MM'), 'MONTH_TO')
+        .appendField('/')
+        .appendField(new Blockly.FieldTextInput('YYYY'), 'YEAR_TO');
+    this.setTooltip('Load a CSV file of SenseBox data.');
+    this.setOutput(true);
+    this.setHelpUrl('https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html');
+    this.setColour(210);
+  }
+};
+pythonGenerator.forBlock['load_sensebox'] = function(block,generator) {
+  const boxId = block.getFieldValue('ID');
+  const phenomenon = block.getFieldValue('PHENOMENON');
+  const dayFrom = block.getFieldValue('DAY_FROM');
+  const monthFrom = block.getFieldValue('MONTH_FROM');
+  const yearFrom = block.getFieldValue('YEAR_FROM');
+  const dayTo = block.getFieldValue('DAY_TO');
+  const monthTo = block.getFieldValue('MONTH_TO');
+  const yearTo = block.getFieldValue('YEAR_TO');
+  return [`pd.read_csv(load_sensebox( \
+  "https://api.opensensemap.org/boxes/data?boxId=" + "${boxId}" \
+  + "&from-date=" + "${yearFrom}" + "-" + "${monthFrom}" + "-" + "${dayFrom}" + "T00:00:00Z" \
+  + "&to-date=" + "${yearTo}" + "-" + "${monthTo}" + "-" + "${dayTo}" + "T23:59:59Z" \
+  + "&phenomenon=" + "${phenomenon}", "${boxId}", "${phenomenon}"))
+  `, pythonGenerator.ORDER_ATOMIC];
+}
+
 // Blockly.Blocks['write_file'] = {
 //   init: function() {
 //     this.appendDummyInput()
