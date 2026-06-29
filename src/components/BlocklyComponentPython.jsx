@@ -105,7 +105,8 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
                 <block type="read_file"></block>
             </category>
             <category name="${Blockly.Msg.Categories["DATA_MANIPULATION"]}" colour="#0396c1">
-              <block type="convert_column"></block>        
+              <block type="convert_column"></block>   
+              <block type="select_column"></block>     
               <block type="data_shape"></block>
               <block type="slice"></block>
               <block type="add_object"></block>
@@ -250,6 +251,7 @@ const BlocklyComponent = ({ setCode, isDarkMode, onUploadClick, workspaceRef }) 
             </category>
             <category name="${Blockly.Msg.Categories["DATA_MANIPULATION"]}" colour="#0396c1">
               <block type="convert_column"></block>
+              <block type="select_column"></block>
               <block type="convert_np_to_pd"></block>          
               <block type="data_shape"></block>
               <block type="slice"></block>

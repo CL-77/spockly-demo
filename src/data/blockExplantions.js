@@ -611,6 +611,10 @@ const blockDescriptions = {
   quantile: {
       infoText: "Compute quantiles at given probabilities.",
       functions: ["np.quantile()"],
+  },
+  select_column: {
+    infoText: "Select a specific column of a dataframe.",
+    functions: [],
   }
 };
 export default blockDescriptions;

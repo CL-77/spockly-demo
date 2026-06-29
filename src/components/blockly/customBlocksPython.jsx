@@ -671,7 +671,30 @@ pythonGenerator.forBlock["quantile"] = function(block, generator) {
 /**
  * Manipulation data blocks
  */
-                
+      
+/* Select a dataframe column */
+Blockly.Blocks['select_column'] = {
+  init: function() {
+    this.appendDummyInput('column')
+        .appendField('Select column')
+        .appendField(new Blockly.FieldTextInput('column_name'), 'column_name');
+    this.appendDummyInput()
+        .appendField('of DataFrame')
+        .appendField(new Blockly.FieldVariable('df'), 'df_name');
+    this.setOutput(true);
+    this.setInputsInline(false);
+    this.setTooltip('Select a specific column of a DataFrame.');
+    this.setColour(200);
+  }
+};
+pythonGenerator.forBlock['select_column'] = function(block) {
+  const column_name = block.getFieldValue('column_name') || 'column_name';
+  const df_name = block.getFieldValue('df_name') || 'df';
+  const getVar = block.workspace.getVariableById(df_name);
+  const Var = getVar ? getVar.name : 'undefined';  
+  return [`${Var}['${column_name}']`, pythonGenerator.ORDER_ATOMIC];
+};
+
 /* Slice iterable */
 Blockly.Blocks['slice'] = {
   init: function() {
